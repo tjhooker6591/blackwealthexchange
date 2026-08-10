@@ -731,6 +731,86 @@ export type FoundingVerificationDecisionCounts = Record<
   number
 >;
 
+export type FoundingStructuredMatchResult =
+  | "MATCH"
+  | "MISMATCH"
+  | "UNKNOWN";
+
+export type FoundingClaimRelationship =
+  | "OWNER"
+  | "OFFICER"
+  | "AUTHORIZED_REPRESENTATIVE"
+  | "OTHER";
+
+export type FoundingBusinessIntakeField = {
+  currentListingValue: string | null;
+  claimantProvidedValue: string | null;
+  normalizedMatchResult: FoundingStructuredMatchResult;
+};
+
+export type FoundingStructuredEvidenceRecord = {
+  evidenceType: string;
+  purpose: "ownership_control" | "representative_authority" | "business_identity";
+  businessId: string | null;
+  claimantUserId: string | null;
+  submittedAt: string;
+  source: string;
+  validationState:
+    | "not_reviewed"
+    | "metadata_only"
+    | "requires_more_evidence"
+    | "admin_review_required";
+  reviewState: "submitted" | "needs_followup" | "under_review";
+  matchedSignals: string[];
+  storageKey: string;
+  redactedLabel: string;
+  notes: string | null;
+};
+
+export type FoundingClaimIntakeRecord = {
+  business: {
+    businessName: FoundingBusinessIntakeField;
+    addressLine1: FoundingBusinessIntakeField;
+    city: FoundingBusinessIntakeField;
+    state: FoundingBusinessIntakeField;
+    postalCode: FoundingBusinessIntakeField;
+    phone: FoundingBusinessIntakeField;
+    website: FoundingBusinessIntakeField;
+    businessEmail: FoundingBusinessIntakeField;
+    socialUrls: FoundingBusinessIntakeField[];
+  };
+  claimant: {
+    authenticatedUserId: string | null;
+    claimantName: string | null;
+    claimantEmail: string | null;
+    claimantPhone: string | null;
+    relationshipToBusiness: FoundingClaimRelationship | null;
+    roleTitle: string | null;
+  };
+  authority: {
+    claimantSaysAuthorized: boolean;
+    requiresOwnershipEvidence: boolean;
+    requiresRepresentativeAuthorityEvidence: boolean;
+    ownershipEvidenceProvided: boolean;
+    representativeAuthorityEvidenceProvided: boolean;
+    authorizationVerified: boolean;
+  };
+  evidence: FoundingStructuredEvidenceRecord[];
+  blackOwnedStatus: "NOT_ESTABLISHED";
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type FoundingClaimIntakeFieldAudit = {
+  field: string;
+  currentlyCollected: boolean;
+  structured: boolean;
+  required: boolean;
+  optional: boolean;
+  usedByDa13Engine: boolean;
+  missingGap: string | null;
+};
+
 export type FoundingOwnershipAutomationMode =
   | "DRY_RUN"
   | "AUTO_VERIFY_DISABLED"
@@ -886,6 +966,32 @@ function extractEmailDomain(value: unknown) {
   return domain || null;
 }
 
+export function normalizeFoundingBusinessName(value: unknown) {
+  return normalizeComparisonText(value) || null;
+}
+
+export function normalizeFoundingAddress(value: unknown) {
+  return normalizeComparisonText(value) || null;
+}
+
+export function normalizeFoundingPhoneValue(value: unknown) {
+  return normalizePhone(value);
+}
+
+export function normalizeFoundingHostname(value: unknown) {
+  return normalizeHostname(value);
+}
+
+export function normalizeFoundingEmailDomain(value: unknown) {
+  return extractEmailDomain(value);
+}
+
+function toMatchResult(status: FoundingVerificationSignalStatus): FoundingStructuredMatchResult {
+  if (status === "pass") return "MATCH";
+  if (status === "fail") return "MISMATCH";
+  return "UNKNOWN";
+}
+
 function firstMeaningfulString(...values: unknown[]) {
   for (const value of values) {
     if (typeof value === "string" && value.trim()) return value.trim();
@@ -1016,6 +1122,341 @@ function buildMandatoryCondition(args: {
     status: args.status,
     reason: args.reason,
   };
+}
+
+function compareBusinessIntakeValues(
+  currentValue: unknown,
+  claimantValue: unknown,
+  normalizer: (value: unknown) => string | null,
+): FoundingStructuredMatchResult {
+  const current = normalizer(currentValue);
+  const claimant = normalizer(claimantValue);
+  if (!current || !claimant) return "UNKNOWN";
+  return current === claimant ? "MATCH" : "MISMATCH";
+}
+
+function ensureStringArray(value: unknown) {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => String(item || "").trim())
+      .filter(Boolean);
+  }
+  if (typeof value === "string") {
+    return value
+      .split(/\r?\n|,/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+  return [] as string[];
+}
+
+function buildBusinessIntakeField(args: {
+  currentListingValue: unknown;
+  claimantProvidedValue: unknown;
+  normalizer: (value: unknown) => string | null;
+}): FoundingBusinessIntakeField {
+  return {
+    currentListingValue: stringOrNull(args.currentListingValue),
+    claimantProvidedValue: stringOrNull(args.claimantProvidedValue),
+    normalizedMatchResult: compareBusinessIntakeValues(
+      args.currentListingValue,
+      args.claimantProvidedValue,
+      args.normalizer,
+    ),
+  };
+}
+
+function normalizeEvidencePurpose(
+  relationshipToBusiness: FoundingClaimRelationship | null,
+  evidenceType: string,
+): "ownership_control" | "representative_authority" | "business_identity" {
+  if (
+    evidenceType === "listed_business_phone" ||
+    evidenceType === "official_website_or_social_account" ||
+    evidenceType === "website_domain_email"
+  ) {
+    return "business_identity";
+  }
+  if (relationshipToBusiness === "AUTHORIZED_REPRESENTATIVE") {
+    return "representative_authority";
+  }
+  return "ownership_control";
+}
+
+export function isLegacyVerifiedFoundingRecord(
+  row: Pick<
+    FoundingCanonicalRecord,
+    "queueState" | "claimStatus" | "ownershipReviewStatus" | "review"
+  >,
+) {
+  const verified =
+    row.queueState === "ownership_verified" ||
+    normalizeFoundingClaimStage(row.claimStatus) === "ownership_verified" ||
+    normalizeFoundingClaimStage(row.ownershipReviewStatus) ===
+      "ownership_verified";
+  if (!verified) return false;
+  const review = row.review || {};
+  const claimIntake = (review as any)?.claimIntake;
+  const evidence = Array.isArray((review as any)?.structuredEvidenceSubmissions)
+    ? (review as any).structuredEvidenceSubmissions
+    : Array.isArray((review as any)?.evidenceSubmissions)
+      ? (review as any).evidenceSubmissions
+      : [];
+  return !claimIntake || evidence.length === 0;
+}
+
+export function buildFoundingClaimIntakeRecord(args: {
+  business: Record<string, any> | null | undefined;
+  claimantValues: Record<string, any>;
+  claimantUserId: string | null;
+  evidence: Array<Record<string, any>>;
+  existingRecord?: Record<string, any> | null;
+}) {
+  const business = args.business || {};
+  const claimantValues = args.claimantValues || {};
+  const existingRecord = args.existingRecord || {};
+  const relationshipToBusiness = (
+    stringOrNull(claimantValues.relationshipToBusiness) ||
+    stringOrNull(existingRecord?.claimant?.relationshipToBusiness) ||
+    null
+  ) as FoundingClaimRelationship | null;
+  const currentTimestamp = new Date().toISOString();
+  const evidence = (args.evidence || []).map((item) => {
+    const evidenceType =
+      stringOrNull(item.evidenceType) || stringOrNull(item.type) || "other";
+    const purpose =
+      item.purpose ||
+      normalizeEvidencePurpose(relationshipToBusiness, evidenceType);
+    return {
+      evidenceType,
+      purpose,
+      businessId: stringOrNull(item.businessId) || stringOrNull(business._id),
+      claimantUserId: stringOrNull(item.claimantUserId) || args.claimantUserId,
+      submittedAt: stringOrNull(item.submittedAt) || currentTimestamp,
+      source: stringOrNull(item.source) || "claimant_portal",
+      validationState:
+        (stringOrNull(item.validationState) as
+          | "not_reviewed"
+          | "metadata_only"
+          | "requires_more_evidence"
+          | "admin_review_required"
+          | null) || "metadata_only",
+      reviewState:
+        (stringOrNull(item.reviewState) as
+          | "submitted"
+          | "needs_followup"
+          | "under_review"
+          | null) || "submitted",
+      matchedSignals: ensureStringArray(item.matchedSignals),
+      storageKey: stringOrNull(item.storageKey) || "",
+      redactedLabel: stringOrNull(item.redactedLabel) || "Evidence submitted",
+      notes: stringOrNull(item.notes),
+    } satisfies FoundingStructuredEvidenceRecord;
+  });
+  const ownershipEvidenceProvided = evidence.some(
+    (item) => item.purpose === "ownership_control",
+  );
+  const representativeAuthorityEvidenceProvided = evidence.some(
+    (item) => item.purpose === "representative_authority",
+  );
+
+  return {
+    business: {
+      businessName: buildBusinessIntakeField({
+        currentListingValue: business.business_name,
+        claimantProvidedValue: claimantValues.businessName,
+        normalizer: normalizeFoundingBusinessName,
+      }),
+      addressLine1: buildBusinessIntakeField({
+        currentListingValue:
+          business.streetAddress || business.address1 || business.address,
+        claimantProvidedValue: claimantValues.addressLine1,
+        normalizer: normalizeFoundingAddress,
+      }),
+      city: buildBusinessIntakeField({
+        currentListingValue: business.city,
+        claimantProvidedValue: claimantValues.city,
+        normalizer: normalizeFoundingBusinessName,
+      }),
+      state: buildBusinessIntakeField({
+        currentListingValue: business.state,
+        claimantProvidedValue: claimantValues.state,
+        normalizer: normalizeFoundingBusinessName,
+      }),
+      postalCode: buildBusinessIntakeField({
+        currentListingValue: business.zip || business.postalCode,
+        claimantProvidedValue: claimantValues.postalCode,
+        normalizer: normalizeFoundingBusinessName,
+      }),
+      phone: buildBusinessIntakeField({
+        currentListingValue: business.phone || business.contactPhone,
+        claimantProvidedValue: claimantValues.phone,
+        normalizer: normalizeFoundingPhoneValue,
+      }),
+      website: buildBusinessIntakeField({
+        currentListingValue: business.website || business.siteUrl,
+        claimantProvidedValue: claimantValues.website,
+        normalizer: normalizeFoundingHostname,
+      }),
+      businessEmail: buildBusinessIntakeField({
+        currentListingValue: business.email || business.contactEmail,
+        claimantProvidedValue: claimantValues.businessEmail,
+        normalizer: (value) =>
+          normalizeFoundingEmailDomain(value) ||
+          normalizeFoundingHostname(value),
+      }),
+      socialUrls: ensureStringArray(claimantValues.socialUrls).map((value) =>
+        buildBusinessIntakeField({
+          currentListingValue: ensureStringArray(
+            business.socialUrls || [
+              business.instagram,
+              business.facebook,
+              business.linkedin,
+              business.twitter,
+            ],
+          )[0] || null,
+          claimantProvidedValue: value,
+          normalizer: normalizeFoundingHostname,
+        }),
+      ),
+    },
+    claimant: {
+      authenticatedUserId: args.claimantUserId,
+      claimantName:
+        stringOrNull(claimantValues.claimantName) ||
+        stringOrNull(existingRecord?.claimant?.claimantName),
+      claimantEmail:
+        stringOrNull(claimantValues.claimantEmail) ||
+        stringOrNull(existingRecord?.claimant?.claimantEmail),
+      claimantPhone:
+        stringOrNull(claimantValues.claimantPhone) ||
+        stringOrNull(existingRecord?.claimant?.claimantPhone),
+      relationshipToBusiness,
+      roleTitle:
+        stringOrNull(claimantValues.roleTitle) ||
+        stringOrNull(existingRecord?.claimant?.roleTitle),
+    },
+    authority: {
+      claimantSaysAuthorized: Boolean(relationshipToBusiness),
+      requiresOwnershipEvidence:
+        relationshipToBusiness === "OWNER" ||
+        relationshipToBusiness === "OFFICER",
+      requiresRepresentativeAuthorityEvidence:
+        relationshipToBusiness === "AUTHORIZED_REPRESENTATIVE",
+      ownershipEvidenceProvided,
+      representativeAuthorityEvidenceProvided,
+      authorizationVerified: false,
+    },
+    evidence,
+    blackOwnedStatus: "NOT_ESTABLISHED",
+    createdAt:
+      stringOrNull(existingRecord?.createdAt) || currentTimestamp,
+    updatedAt: currentTimestamp,
+  } satisfies FoundingClaimIntakeRecord;
+}
+
+export function getFoundingClaimIntakeFieldAudit(): FoundingClaimIntakeFieldAudit[] {
+  return [
+    {
+      field: "business.businessName",
+      currentlyCollected: false,
+      structured: true,
+      required: true,
+      optional: false,
+      usedByDa13Engine: true,
+      missingGap: "Current claim flow does not store a claimant-confirmed business-name field separately from the listing.",
+    },
+    {
+      field: "business.addressLine1 / city / state / postalCode",
+      currentlyCollected: false,
+      structured: true,
+      required: true,
+      optional: false,
+      usedByDa13Engine: true,
+      missingGap: "Current claim flow lacks structured address confirmation and normalized comparison storage.",
+    },
+    {
+      field: "business.phone",
+      currentlyCollected: false,
+      structured: true,
+      required: false,
+      optional: true,
+      usedByDa13Engine: true,
+      missingGap: "Phone comparison was previously inferred only from sparse claim data.",
+    },
+    {
+      field: "business.website / domain",
+      currentlyCollected: false,
+      structured: true,
+      required: false,
+      optional: true,
+      usedByDa13Engine: true,
+      missingGap: "Website/domain confirmation was not previously collected from the claimant intake flow.",
+    },
+    {
+      field: "business.businessEmail",
+      currentlyCollected: false,
+      structured: true,
+      required: false,
+      optional: true,
+      usedByDa13Engine: true,
+      missingGap: "Business email/domain relationship was not explicitly captured at intake.",
+    },
+    {
+      field: "business.socialUrls",
+      currentlyCollected: false,
+      structured: true,
+      required: false,
+      optional: true,
+      usedByDa13Engine: false,
+      missingGap: "Social URLs were not captured as structured claimant-provided values.",
+    },
+    {
+      field: "claimant.authenticatedUserId",
+      currentlyCollected: true,
+      structured: true,
+      required: true,
+      optional: false,
+      usedByDa13Engine: true,
+      missingGap: null,
+    },
+    {
+      field: "claimant.claimantName",
+      currentlyCollected: false,
+      structured: true,
+      required: true,
+      optional: false,
+      usedByDa13Engine: false,
+      missingGap: "Claimant name was not being collected in the dedicated claim-intake flow.",
+    },
+    {
+      field: "claimant.claimantEmail / claimantPhone",
+      currentlyCollected: true,
+      structured: true,
+      required: true,
+      optional: false,
+      usedByDa13Engine: true,
+      missingGap: "Email existed implicitly, but claimant-confirmed contact fields were not persisted as structured intake data.",
+    },
+    {
+      field: "claimant.relationshipToBusiness / roleTitle",
+      currentlyCollected: false,
+      structured: true,
+      required: true,
+      optional: false,
+      usedByDa13Engine: true,
+      missingGap: "The claim flow lacked a structured relationship/authority declaration.",
+    },
+    {
+      field: "authority.ownershipEvidence / representativeAuthorityEvidence metadata",
+      currentlyCollected: false,
+      structured: true,
+      required: true,
+      optional: false,
+      usedByDa13Engine: true,
+      missingGap: "Evidence previously existed only as loose submission references without purpose/validation metadata.",
+    },
+  ];
 }
 
 function summarizeGroupOutcome(
@@ -1385,13 +1826,16 @@ export function deriveFoundingVerificationDecision(
   const business = row.business || {};
   const claim = row.claim || {};
   const review = row.review || {};
+  const claimIntake = ((review as any)?.claimIntake || {}) as Partial<FoundingClaimIntakeRecord>;
   const membership = row.membership || {};
   const user = row.user || {};
   const normalCheck = row.normalCheck || null;
   const auditHistory = Array.isArray(row.auditHistory) ? row.auditHistory : [];
-  const evidenceSubmissions = Array.isArray(review?.evidenceSubmissions)
-    ? review.evidenceSubmissions
-    : [];
+  const evidenceSubmissions = Array.isArray((review as any)?.structuredEvidenceSubmissions)
+    ? (review as any).structuredEvidenceSubmissions
+    : Array.isArray(review?.evidenceSubmissions)
+      ? review.evidenceSubmissions
+      : [];
 
   const businessWebsite = firstMeaningfulString(
     business.website,
@@ -1399,6 +1843,7 @@ export function deriveFoundingVerificationDecision(
     business.domain,
   );
   const claimWebsite = firstMeaningfulString(
+    claimIntake?.business?.website?.claimantProvidedValue,
     claim.website,
     membership.website,
     review.website,
@@ -1408,12 +1853,19 @@ export function deriveFoundingVerificationDecision(
     business.contactEmail,
   );
   const claimantEmail = firstMeaningfulString(
+    claimIntake?.claimant?.claimantEmail,
     row.email,
     claim.email,
     membership.email,
     user.email,
   );
-  const claimantEmails = [claim.email, membership.email, user.email, row.email];
+  const claimantEmails = [
+    claimIntake?.claimant?.claimantEmail,
+    claim.email,
+    membership.email,
+    user.email,
+    row.email,
+  ];
   const businessAddress = firstMeaningfulString(
     business.address,
     business.streetAddress,
@@ -1421,16 +1873,35 @@ export function deriveFoundingVerificationDecision(
     business.fullAddress,
   );
   const claimAddress = firstMeaningfulString(
+    claimIntake?.business?.addressLine1?.claimantProvidedValue,
     claim.address,
     claim.businessAddress,
     membership.address,
     user.address,
+  );
+  const claimCity = firstMeaningfulString(
+    claimIntake?.business?.city?.claimantProvidedValue,
+    claim.city,
+    membership.city,
+  );
+  const claimState = firstMeaningfulString(
+    claimIntake?.business?.state?.claimantProvidedValue,
+    claim.state,
+    membership.state,
+  );
+  const claimPostalCode = firstMeaningfulString(
+    claimIntake?.business?.postalCode?.claimantProvidedValue,
+    claim.postalCode,
+    claim.zip,
+    membership.postalCode,
   );
   const businessPhone = firstMeaningfulString(
     business.phone,
     business.contactPhone,
   );
   const claimantPhone = firstMeaningfulString(
+    claimIntake?.claimant?.claimantPhone,
+    claimIntake?.business?.phone?.claimantProvidedValue,
     claim.phone,
     membership.phone,
     user.phone,
@@ -1442,6 +1913,9 @@ export function deriveFoundingVerificationDecision(
     business.twitter,
   );
   const claimSocial = firstMeaningfulString(
+    ...(Array.isArray(claimIntake?.business?.socialUrls)
+      ? claimIntake.business.socialUrls.map((item) => item.claimantProvidedValue)
+      : []),
     claim.instagram,
     claim.facebook,
     claim.linkedin,
@@ -1451,16 +1925,43 @@ export function deriveFoundingVerificationDecision(
     "Business name match",
     "business_name_match",
     row.businessName,
-    firstMeaningfulString(claim.businessName, membership.membershipName),
-    ["business.business_name", "claim.businessName", "membership.membershipName"],
+    firstMeaningfulString(
+      claimIntake?.business?.businessName?.claimantProvidedValue,
+      claim.businessName,
+      membership.membershipName,
+    ),
+    [
+      "business.business_name",
+      "ownership_reviews.claimIntake.business.businessName",
+      "claim.businessName",
+      "membership.membershipName",
+    ],
     (value) => normalizeComparisonText(value) || null,
   );
   const addressSignal = compareSignalValues(
     "Address match",
     "address_match",
-    businessAddress,
-    claimAddress,
-    ["business.address", "claim.businessAddress", "membership.address"],
+    firstMeaningfulString(
+      businessAddress,
+      [business.city, business.state, business.zip]
+        .filter(Boolean)
+        .join(" ")
+        .trim(),
+    ),
+    firstMeaningfulString(
+      claimAddress,
+      [claimCity, claimState, claimPostalCode].filter(Boolean).join(" ").trim(),
+    ),
+    [
+      "business.address",
+      "business.city",
+      "business.state",
+      "ownership_reviews.claimIntake.business.addressLine1",
+      "ownership_reviews.claimIntake.business.city",
+      "ownership_reviews.claimIntake.business.state",
+      "ownership_reviews.claimIntake.business.postalCode",
+      "claim.businessAddress",
+    ],
     (value) => normalizeComparisonText(value) || null,
   );
   const phoneSignal = compareSignalValues(
@@ -1585,14 +2086,57 @@ export function deriveFoundingVerificationDecision(
     ["claimantEmail", "business.email", "business.website"],
     (value) => extractEmailDomain(value) || normalizeHostname(value),
   );
+  const claimantRelationship =
+    (stringOrNull(claimIntake?.claimant?.relationshipToBusiness) as
+      | FoundingClaimRelationship
+      | null) || null;
+  const structuredEvidence = evidenceSubmissions as Array<Record<string, any>>;
+  const representativeAuthorityEvidence = structuredEvidence.filter((item) => {
+    const purpose = String(item?.purpose || "").trim().toLowerCase();
+    return (
+      purpose === "representative_authority" ||
+      String(item?.evidenceType || item?.type || "")
+        .trim()
+        .toLowerCase() === "written_owner_or_officer_authorization"
+    );
+  });
+  const ownershipControlEvidence = structuredEvidence.filter((item) => {
+    const purpose = String(item?.purpose || "").trim().toLowerCase();
+    return purpose === "ownership_control" || !purpose;
+  });
   const authorityEvidenceSignal = buildSignal({
     key: "representative_authority_evidence",
     label: "Representative authority evidence",
-    status: evidenceSubmissions.length ? "pass" : "fail",
-    summary: evidenceSubmissions.length
-      ? "Authority/ownership evidence was submitted and can be reviewed."
-      : "No submitted authority evidence is attached to the current review record.",
-    dataUsed: ["ownership_reviews.evidenceSubmissions", "ownership_reviews.evidenceStatus"],
+    status:
+      claimantRelationship === "AUTHORIZED_REPRESENTATIVE"
+        ? representativeAuthorityEvidence.length
+          ? "pass"
+          : "fail"
+        : claimantRelationship === "OWNER" || claimantRelationship === "OFFICER"
+          ? ownershipControlEvidence.length
+            ? "pass"
+            : "fail"
+          : evidenceSubmissions.length
+            ? "pass"
+            : "fail",
+    summary:
+      claimantRelationship === "AUTHORIZED_REPRESENTATIVE"
+        ? representativeAuthorityEvidence.length
+          ? "Representative-authority evidence was submitted."
+          : "The claimant selected authorized representative, but no representative-authority evidence was submitted."
+        : claimantRelationship === "OWNER" || claimantRelationship === "OFFICER"
+          ? ownershipControlEvidence.length
+            ? "Ownership/control evidence was submitted for the declared relationship."
+            : "The claimant declared owner/officer status, but ownership/control evidence is missing."
+          : evidenceSubmissions.length
+            ? "Authority/ownership evidence was submitted and can be reviewed."
+            : "No submitted authority evidence is attached to the current review record.",
+    dataUsed: [
+      "ownership_reviews.claimIntake.claimant.relationshipToBusiness",
+      "ownership_reviews.structuredEvidenceSubmissions",
+      "ownership_reviews.evidenceSubmissions",
+      "ownership_reviews.evidenceStatus",
+    ],
   });
   const claimantHistorySignal = buildSignal({
     key: "existing_verified_representative_history",
@@ -1673,11 +2217,14 @@ export function deriveFoundingVerificationDecision(
   const evidenceExistsSignal = buildSignal({
     key: "submitted_ownership_control_evidence",
     label: "Submitted ownership/control evidence",
-    status: evidenceSubmissions.length ? "pass" : "fail",
-    summary: evidenceSubmissions.length
-      ? `${evidenceSubmissions.length} evidence submission(s) are attached to the review record.`
+    status: ownershipControlEvidence.length ? "pass" : "fail",
+    summary: ownershipControlEvidence.length
+      ? `${ownershipControlEvidence.length} ownership/control evidence submission(s) are attached to the review record.`
       : "No ownership/control evidence has been submitted yet.",
-    dataUsed: ["ownership_reviews.evidenceSubmissions"],
+    dataUsed: [
+      "ownership_reviews.structuredEvidenceSubmissions",
+      "ownership_reviews.evidenceSubmissions",
+    ],
   });
   const evidenceValidationSignal = buildSignal({
     key: "evidence_validation_boundary",

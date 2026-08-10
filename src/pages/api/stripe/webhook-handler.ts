@@ -28,6 +28,7 @@ import {
 } from "@/lib/black-card";
 import { ensureBlackCardMembershipAndCard } from "@/lib/black-card-membership";
 import {
+  buildFoundingClaimIntakeRecord,
   FOUNDING_MEMBERSHIP_ITEM_ID,
   FOUNDING_MEMBERSHIP_NAME,
   FOUNDING_MEMBERSHIP_PRICE_CENTS,
@@ -1869,6 +1870,38 @@ export default async function webhookHandler(
         });
       } else {
         const membershipId = `${FOUNDING_MEMBERSHIP_PRODUCT_KEY}:${membershipBusinessId}`;
+        const foundingBusiness = await db.collection("businesses").findOne({
+          $or: [{ _id: membershipBusinessId as any }, { _id: String(membershipBusinessId) as any }],
+        });
+        const initialClaimIntake = buildFoundingClaimIntakeRecord({
+          business: foundingBusiness,
+          claimantUserId: userId,
+          claimantValues: {
+            businessName: foundingBusiness?.business_name || FOUNDING_MEMBERSHIP_NAME,
+            addressLine1:
+              foundingBusiness?.address || foundingBusiness?.streetAddress || "",
+            city: foundingBusiness?.city || "",
+            state: foundingBusiness?.state || "",
+            postalCode: foundingBusiness?.zip || foundingBusiness?.postalCode || "",
+            phone: foundingBusiness?.phone || "",
+            website: foundingBusiness?.website || "",
+            businessEmail: foundingBusiness?.email || "",
+            socialUrls: [
+              foundingBusiness?.instagram,
+              foundingBusiness?.facebook,
+              foundingBusiness?.linkedin,
+              foundingBusiness?.twitter,
+            ]
+              .filter(Boolean)
+              .join("\n"),
+            claimantName: "",
+            claimantEmail: email || "",
+            claimantPhone: "",
+            relationshipToBusiness: "",
+            roleTitle: "",
+          },
+          evidence: [],
+        });
 
         await db.collection("business_memberships").updateOne(
           { membershipId },
@@ -1941,6 +1974,9 @@ export default async function webhookHandler(
                 : null,
               stripeSessionId,
               claimLocked: true,
+              proposedBusinessProfile: initialClaimIntake.business,
+              claimantProfile: initialClaimIntake.claimant,
+              authorityProfile: initialClaimIntake.authority,
               auditHistory: [
                 {
                   action: "claim_created_from_paid_webhook",
@@ -1986,6 +2022,8 @@ export default async function webhookHandler(
                 "official_website_or_social_account",
                 "written_owner_or_officer_authorization",
               ],
+              claimIntake: initialClaimIntake,
+              structuredEvidenceSubmissions: [],
               evidenceSubmissions: [],
               evidencePublicSummary: null,
               auditHistory: [

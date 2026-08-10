@@ -255,6 +255,15 @@ export default function ClaimVerificationPage() {
               const business = row.business || null;
               const normalCheck = row.normalCheck || null;
               const verificationDecision = row.verificationDecision || null;
+              const claimIntake = review?.claimIntake || null;
+              const structuredEvidence = Array.isArray(
+                review?.structuredEvidenceSubmissions,
+              )
+                ? review.structuredEvidenceSubmissions
+                : [];
+              const legacyVerified =
+                String(row.queueState || "").trim() === "ownership_verified" &&
+                !claimIntake;
               const membershipId = String(
                 row.membershipId || membership?.membershipId || "",
               );
@@ -369,6 +378,85 @@ export default function ClaimVerificationPage() {
                             membership?.managementAccessStatus,
                         )}
                       </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-white/10 bg-black/25 p-4">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <div className="text-sm font-semibold text-white">
+                          Claim intake evidence
+                        </div>
+                        <div className="mt-1 text-sm text-white/60">
+                          Current listing values stay separate from claimant-provided values until ownership verification is complete.
+                        </div>
+                      </div>
+                      {legacyVerified ? (
+                        <div className="rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-xs font-bold text-sky-200">
+                          Legacy verified
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <div className="mt-3 grid gap-3 md:grid-cols-2 text-sm">
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                        <div className="text-white/45">Claimant relationship</div>
+                        <div className="mt-1 text-white/85">
+                          {labelize(
+                            claimIntake?.claimant?.relationshipToBusiness ||
+                              "-",
+                          )}
+                        </div>
+                        <div className="mt-1 text-xs text-white/55">
+                          Role: {claimIntake?.claimant?.roleTitle || "-"}
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                        <div className="text-white/45">Evidence metadata</div>
+                        <div className="mt-1 text-white/85">
+                          {structuredEvidence.length
+                            ? `${structuredEvidence.length} structured evidence record(s)`
+                            : "No structured evidence submitted yet"}
+                        </div>
+                        <div className="mt-1 text-xs text-white/55">
+                          Authorization verified:{" "}
+                          {claimIntake?.authority?.authorizationVerified
+                            ? "Yes"
+                            : "No"}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-4 text-sm">
+                      {[
+                        [
+                          "Business name",
+                          claimIntake?.business?.businessName,
+                        ],
+                        [
+                          "Address",
+                          claimIntake?.business?.addressLine1,
+                        ],
+                        ["Phone", claimIntake?.business?.phone],
+                        ["Website", claimIntake?.business?.website],
+                      ].map(([label, field]: any) => (
+                        <div
+                          key={label}
+                          className="rounded-xl border border-white/10 bg-black/30 p-3"
+                        >
+                          <div className="text-white/45">{label}</div>
+                          <div className="mt-1 text-white/85">
+                            Listing: {field?.currentListingValue || "-"}
+                          </div>
+                          <div className="mt-1 text-white/75">
+                            Claimant: {field?.claimantProvidedValue || "-"}
+                          </div>
+                          <div className="mt-1 text-xs text-white/55">
+                            Match:{" "}
+                            {labelize(field?.normalizedMatchResult || "UNKNOWN")}
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
