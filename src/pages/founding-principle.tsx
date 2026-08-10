@@ -11,6 +11,21 @@ const platformLanes = [
   "Support and accountability through public contact, support, and release-history surfaces.",
 ];
 
+const strategyMix = [
+  {
+    title: "70% Claim-first growth",
+    body: "The strongest current emphasis is helping legitimate businesses claim existing listings and move into stronger ownership, profile quality, and trust signals.",
+  },
+  {
+    title: "20% New visibility and sponsor readiness",
+    body: "The next layer is adding qualified new businesses and improving practical discovery surfaces where live inventory and sponsor visibility are already real.",
+  },
+  {
+    title: "10% Public explanation and trust content",
+    body: "A smaller share remains focused on founder identity, support clarity, release truthfulness, and educational pages that explain the platform without inflating it.",
+  },
+];
+
 export default function About() {
   const canonical = canonicalUrl("/founding-principle");
   const founderSchema = {
@@ -39,164 +54,196 @@ export default function About() {
         />
         <link rel="canonical" href={canonical} />
       </Head>
-      <script type="application/ld+json">{JSON.stringify(founderSchema)}</script>
+      <script type="application/ld+json">
+        {JSON.stringify(founderSchema)}
+      </script>
       <div className="min-h-screen bg-black text-white">
-      <section className="container mx-auto px-4 py-16 text-left">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-gold mb-8">
-          Founder Story and Founding Principle
-        </h1>
+        <section className="container mx-auto px-4 py-16 text-left">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gold mb-8">
+            Founder Story and Founding Principle
+          </h1>
 
-        <div className="space-y-6 text-lg text-gray-300 max-w-4xl">
-          <p>
-            Black Wealth Exchange was founded by{" "}
-            <strong className="text-gold">Thomas James Hooker Sr.</strong> as a
-            founder-led platform built to help Black-owned businesses become
-            easier to discover, easier to trust, and easier to support.
+          <div className="space-y-6 text-lg text-gray-300 max-w-4xl">
+            <p>
+              Black Wealth Exchange was founded by{" "}
+              <strong className="text-gold">Thomas James Hooker Sr.</strong> as
+              a founder-led platform built to help Black-owned businesses become
+              easier to discover, easier to trust, and easier to support.
+            </p>
+
+            <p>
+              The founding principle is straightforward: Black-owned businesses,
+              consumers, and partners need stronger economic infrastructure than
+              scattered listings and vague promises. BWE was created to connect
+              discovery, ownership, commerce, and growth in one practical
+              system.
+            </p>
+
+            <p>
+              That means helping a business get found in the directory, helping
+              the rightful owner claim and strengthen the profile, helping
+              customers discover products and offers, and building trust through
+              clearer public presentation, support paths, and verifiable
+              platform behavior.
+            </p>
+
+            <p>
+              BWE operates as a{" "}
+              <strong className="text-gold">
+                mission-driven for-profit business
+              </strong>
+              . It is not a nonprofit, not a government program, and not a
+              faceless template site. The platform exists to build durable
+              value, create useful economic pathways, and earn trust by being
+              factual about what is live now.
+            </p>
+
+            <p>
+              The goal is not to overstate scale or pretend every future feature
+              already exists. The goal is to keep building a platform where
+              Black business discovery, claim and ownership, commerce,
+              sponsorship, and growth tools fit together in a credible, useful
+              way.
+            </p>
+
+            <p className="italic text-gold">
+              Black Wealth Exchange — Black-Owned Business Discovery and Growth
+              Platform
+            </p>
+
+            <p>
+              Trust comes from accurate positioning, visible ownership, public
+              contact paths, and execution. That is why the founder is named
+              publicly, why the platform descriptor is consistent, and why BWE
+              should only claim what current runtime and public records actually
+              support.
+            </p>
+          </div>
+        </section>
+
+        <section className="container mx-auto px-4 py-12">
+          <h2 className="text-3xl font-bold text-gold mb-6">Our Values</h2>
+          <ul className="space-y-4 text-gray-300 text-lg list-disc list-inside max-w-4xl">
+            <li>
+              <strong>Economic Justice:</strong> Building structures that
+              correct the historical denial of access to wealth and ownership.
+            </li>
+            <li>
+              <strong>Integrity and Accountability:</strong> Operating
+              transparently, lawfully, and with unwavering commitment to
+              community trust.
+            </li>
+            <li>
+              <strong>Generational Prosperity:</strong> Laying foundations not
+              just for today, but for the prosperity of future Black
+              generations.
+            </li>
+            <li>
+              <strong>Strategic Empowerment:</strong> Creating opportunities
+              intentionally, with clear strategy and measurable outcomes.
+            </li>
+            <li>
+              <strong>Constitutional and Legal Affirmation:</strong> Asserting
+              our rightful place in the economy under the protections afforded
+              by law.
+            </li>
+          </ul>
+        </section>
+
+        <section className="container mx-auto px-4 py-12">
+          <h2 className="text-3xl font-bold text-gold mb-6">Leadership</h2>
+          <p className="text-lg text-gray-300 max-w-4xl">
+            Black Wealth Exchange is led by{" "}
+            <strong className="text-white">Thomas James Hooker Sr.</strong>,
+            Founder, Black Wealth Exchange. The platform is founder-led, and its
+            public identity should reflect that clearly.
+            <br />
+            <br />
+            BWE is being built to serve businesses, consumers, sponsors,
+            partners, and future investors who need to understand who is leading
+            the platform and what the company is trying to build.
           </p>
+        </section>
 
-          <p>
-            The founding principle is straightforward: Black-owned businesses,
-            consumers, and partners need stronger economic infrastructure than
-            scattered listings and vague promises. BWE was created to connect
-            discovery, ownership, commerce, and growth in one practical system.
+        <section className="container mx-auto px-4 py-12">
+          <h2 className="text-3xl font-bold text-gold mb-6">
+            Organizational Status
+          </h2>
+          <p className="text-lg text-gray-300 max-w-4xl">
+            Black Wealth Exchange operates as a for-profit, mission-driven
+            organization. Our focus is to lawfully build economic structures,
+            opportunities, and wealth systems that empower the Black community.
+            We are committed to transparency, constitutional integrity, and a
+            strategic approach to collective advancement. Profit supports the
+            business model; the mission is to strengthen ownership, visibility,
+            opportunity, and long-term economic participation.
           </p>
+        </section>
 
-          <p>
-            That means helping a business get found in the directory, helping
-            the rightful owner claim and strengthen the profile, helping
-            customers discover products and offers, and building trust through
-            clearer public presentation, support paths, and verifiable platform
-            behavior.
+        <section className="container mx-auto px-4 py-12">
+          <h2 className="text-3xl font-bold text-gold mb-6">
+            What BWE Is Building
+          </h2>
+          <div className="grid gap-4 max-w-4xl md:grid-cols-2">
+            {platformLanes.map((lane) => (
+              <div
+                key={lane}
+                className="rounded-xl border border-white/10 bg-white/5 p-5 text-base text-gray-300"
+              >
+                {lane}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="container mx-auto px-4 py-12">
+          <h2 className="text-3xl font-bold text-gold mb-6">
+            Current 70/20/10 Public Strategy
+          </h2>
+          <p className="text-lg text-gray-300 max-w-4xl">
+            At this stage, the public strategy is claim-focused by design. BWE
+            is emphasizing existing-listing claims first, then selective new
+            visibility growth, while keeping a smaller share of attention on
+            founder story, support, and trust content that explains what is
+            live now.
           </p>
+          <div className="mt-6 grid gap-4 max-w-5xl md:grid-cols-3">
+            {strategyMix.map((item) => (
+              <div
+                key={item.title}
+                className="rounded-xl border border-white/10 bg-white/5 p-5"
+              >
+                <h3 className="text-lg font-semibold text-gold">
+                  {item.title}
+                </h3>
+                <p className="mt-2 text-base text-gray-300">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
-          <p>
-            BWE operates as a{" "}
-            <strong className="text-gold">
-              mission-driven for-profit business
-            </strong>
-            . It is not a nonprofit, not a government program, and not a
-            faceless template site. The platform exists to build durable value,
-            create useful economic pathways, and earn trust by being factual
-            about what is live now.
+        <section className="container mx-auto px-4 py-12 text-center">
+          <h2 className="text-2xl font-bold text-gold mb-4">Contact Us</h2>
+          <p className="text-gray-400 mb-6">
+            For serious inquiries, partnerships, or collaborations, please
+            contact us at:
+            <br />
+            <strong className="text-white">info@blackwealthexchange.com</strong>
           </p>
+        </section>
 
-          <p>
-            The goal is not to overstate scale or pretend every future feature
-            already exists. The goal is to keep building a platform where Black
-            business discovery, claim and ownership, commerce, sponsorship, and
-            growth tools fit together in a credible, useful way.
+        <section className="container mx-auto px-4 py-12 text-center">
+          <p className="text-lg text-gold font-semibold">
+            Founded by Thomas James Hooker Sr.
+            <br />
+            Built as a founder-led, mission-driven platform for Black business
+            discovery and growth.
           </p>
+        </section>
 
-          <p className="italic text-gold">
-            Black Wealth Exchange — Black-Owned Business Discovery and Growth
-            Platform
-          </p>
-
-          <p>
-            Trust comes from accurate positioning, visible ownership, public
-            contact paths, and execution. That is why the founder is named
-            publicly, why the platform descriptor is consistent, and why BWE
-            should only claim what current runtime and public records actually
-            support.
-          </p>
-        </div>
-      </section>
-
-      <section className="container mx-auto px-4 py-12">
-        <h2 className="text-3xl font-bold text-gold mb-6">Our Values</h2>
-        <ul className="space-y-4 text-gray-300 text-lg list-disc list-inside max-w-4xl">
-          <li>
-            <strong>Economic Justice:</strong> Building structures that correct
-            the historical denial of access to wealth and ownership.
-          </li>
-          <li>
-            <strong>Integrity and Accountability:</strong> Operating
-            transparently, lawfully, and with unwavering commitment to community
-            trust.
-          </li>
-          <li>
-            <strong>Generational Prosperity:</strong> Laying foundations not
-            just for today, but for the prosperity of future Black generations.
-          </li>
-          <li>
-            <strong>Strategic Empowerment:</strong> Creating opportunities
-            intentionally, with clear strategy and measurable outcomes.
-          </li>
-          <li>
-            <strong>Constitutional and Legal Affirmation:</strong> Asserting our
-            rightful place in the economy under the protections afforded by law.
-          </li>
-        </ul>
-      </section>
-
-      <section className="container mx-auto px-4 py-12">
-        <h2 className="text-3xl font-bold text-gold mb-6">Leadership</h2>
-        <p className="text-lg text-gray-300 max-w-4xl">
-          Black Wealth Exchange is led by{" "}
-          <strong className="text-white">Thomas James Hooker Sr.</strong>,
-          Founder, Black Wealth Exchange. The platform is founder-led, and its
-          public identity should reflect that clearly.
-          <br />
-          <br />
-          BWE is being built to serve businesses, consumers, sponsors, partners,
-          and future investors who need to understand who is leading the
-          platform and what the company is trying to build.
-        </p>
-      </section>
-
-      <section className="container mx-auto px-4 py-12">
-        <h2 className="text-3xl font-bold text-gold mb-6">
-          Organizational Status
-        </h2>
-        <p className="text-lg text-gray-300 max-w-4xl">
-          Black Wealth Exchange operates as a for-profit, mission-driven
-          organization. Our focus is to lawfully build economic structures,
-          opportunities, and wealth systems that empower the Black community. We
-          are committed to transparency, constitutional integrity, and a
-          strategic approach to collective advancement. Profit supports the
-          business model; the mission is to strengthen ownership, visibility,
-          opportunity, and long-term economic participation.
-        </p>
-      </section>
-
-      <section className="container mx-auto px-4 py-12">
-        <h2 className="text-3xl font-bold text-gold mb-6">
-          What BWE Is Building
-        </h2>
-        <div className="grid gap-4 max-w-4xl md:grid-cols-2">
-          {platformLanes.map((lane) => (
-            <div
-              key={lane}
-              className="rounded-xl border border-white/10 bg-white/5 p-5 text-base text-gray-300"
-            >
-              {lane}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="container mx-auto px-4 py-12 text-center">
-        <h2 className="text-2xl font-bold text-gold mb-4">Contact Us</h2>
-        <p className="text-gray-400 mb-6">
-          For serious inquiries, partnerships, or collaborations, please contact
-          us at:
-          <br />
-          <strong className="text-white">info@blackwealthexchange.com</strong>
-        </p>
-      </section>
-
-      <section className="container mx-auto px-4 py-12 text-center">
-        <p className="text-lg text-gold font-semibold">
-          Founded by Thomas James Hooker Sr.
-          <br />
-          Built as a founder-led, mission-driven platform for Black business
-          discovery and growth.
-        </p>
-      </section>
-
-      <footer className="bg-black text-center py-6">
-        <div className="text-gray-500 text-sm space-y-2" />
-      </footer>
+        <footer className="bg-black text-center py-6">
+          <div className="text-gray-500 text-sm space-y-2" />
+        </footer>
       </div>
     </>
   );

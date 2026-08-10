@@ -29,6 +29,21 @@ const commitments = [
   "Build with standards that scale across the diaspora.",
 ];
 
+const strategyMix = [
+  {
+    title: "70% Claim and strengthen existing listings",
+    body: "The current public growth focus is helping real businesses find their existing BWE listing, claim it, and move into stronger trust, profile quality, and monthly growth support.",
+  },
+  {
+    title: "20% Add strong new businesses and visibility",
+    body: "A smaller but important share of the work is bringing in qualified new businesses, improving sponsor-ready visibility, and strengthening discovery where real public inventory exists.",
+  },
+  {
+    title: "10% Explain, support, and educate",
+    body: "The remaining share is trust content: founder identity, support paths, release clarity, and practical explanation of what BWE does now without exaggerating future scope.",
+  },
+];
+
 const founderStory = [
   {
     title: "Who founded BWE",
@@ -98,7 +113,9 @@ export default function About() {
       <script type="application/ld+json">
         {JSON.stringify(organizationSchema)}
       </script>
-      <script type="application/ld+json">{JSON.stringify(founderSchema)}</script>
+      <script type="application/ld+json">
+        {JSON.stringify(founderSchema)}
+      </script>
       <main className="min-h-screen bg-black text-white">
         <section className="border-b border-white/10">
           <div className="mx-auto max-w-6xl px-4 py-14 sm:py-18">
@@ -116,9 +133,9 @@ export default function About() {
                 Growth Platform.
               </span>{" "}
               Founded by Thomas James Hooker Sr., BWE is a mission-driven
-              for-profit platform focused on discovery, ownership, commerce,
-              and growth pathways that can help Black businesses and consumers
-              take real action.
+              for-profit platform focused on discovery, ownership, commerce, and
+              growth pathways that can help Black businesses and consumers take
+              real action.
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <Link
@@ -152,8 +169,7 @@ export default function About() {
                 Founder Identity
               </p>
               <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
-                Thomas James Hooker Sr. is the founder of Black Wealth
-                Exchange.
+                Thomas James Hooker Sr. is the founder of Black Wealth Exchange.
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-white/72 sm:text-base">
                 BWE is not presented as an anonymous directory or generic
@@ -184,9 +200,7 @@ export default function About() {
 
         <section>
           <div className="mx-auto max-w-6xl px-4 py-12 sm:py-14">
-            <h2 className="mb-6 text-2xl font-bold sm:text-3xl">
-              Our Pillars
-            </h2>
+            <h2 className="mb-6 text-2xl font-bold sm:text-3xl">Our Pillars</h2>
             <div className="grid gap-4 sm:grid-cols-2">
               {pillars.map((item) => (
                 <article
@@ -226,6 +240,41 @@ export default function About() {
                 </li>
               ))}
             </ul>
+          </div>
+        </section>
+
+        <section className="border-b border-white/10 bg-white/[0.03]">
+          <div className="mx-auto max-w-6xl px-4 py-12 sm:py-14">
+            <div className="max-w-3xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#D4AF37]">
+                Current Execution Focus
+              </p>
+              <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
+                BWE&apos;s current public strategy is claim-first and trust-led.
+              </h2>
+              <p className="mt-4 text-sm leading-relaxed text-white/72 sm:text-base">
+                On public and editorial surfaces, BWE is currently operating on
+                an agreed <span className="font-semibold text-white">70/20/10</span>{" "}
+                emphasis: claim and strengthen existing listings first, add
+                quality new business visibility second, and keep a smaller share
+                focused on explanatory trust content.
+              </p>
+            </div>
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              {strategyMix.map((item) => (
+                <article
+                  key={item.title}
+                  className="rounded-xl border border-white/10 bg-black/40 p-5"
+                >
+                  <h3 className="text-base font-semibold text-[#D4AF37]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-white/72">
+                    {item.body}
+                  </p>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
