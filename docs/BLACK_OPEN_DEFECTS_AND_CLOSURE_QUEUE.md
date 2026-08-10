@@ -18,7 +18,7 @@ _Last updated: 2026-08-10 America/Los_Angeles_
 - Current non-blocked execution target:
   - `DA-13` broader automated business verification
 - Standing future/scaling lane:
-  - `DA-13` broader automated business verification — PARTIAL (activation remains OFF; Phase 4 intake readiness added)
+  - `DA-13` broader automated business verification — PARTIAL (activation remains OFF; authenticated runtime proof + admin signal visibility added)
 - Current preserved public state:
   - `P1 directory fallback`: COMPLETE
   - `P1 marketplace product visibility`: COMPLETE
@@ -294,16 +294,28 @@ _Last updated: 2026-08-10 America/Los_Angeles_
   - current code now surfaces shadow-validation summary data, real-data signal coverage, an activation-contract blueprint, an audit-record contract, and an automation mode guard with `DRY_RUN` as the default state
   - current code now adds a claimant-facing ownership-evidence intake API/page, stores structured claimant relationship and evidence metadata, preserves current listing values beside claimant-provided values with normalized match results, and shows the new intake data in admin claim verification
   - new paid founding claims now seed a structured intake snapshot from the current listing so future claimants confirm/correct data instead of starting from an empty evidence shell
+  - authenticated local runtime proof now confirms a claimant can open the evidence flow, see current business data, submit structured claimant/evidence data, persist it, and still cannot rewrite the public listing before verification
+  - authenticated local runtime proof now confirms a second claimant cannot read the first claimant's evidence metadata and that admin Claim Verification shows the recommendation path plus the specific identity/authorization mismatch fields the engine consumed
   - legacy verified ownership remains preserved; older verified records are not retroactively invalidated merely because they lack modern structured intake fields
   - automatic ownership activation remains OFF; Black-owned status remains separate and is not inferred automatically
-  - the live historical/read-only sample is still too small to justify activation review (`1` resolved case), and that lone disagreement is a conservative false negative caused by missing historical evidence/identity fields in the current joined record
+  - the live historical/read-only sample is still too small to justify activation review (`1` legacy claim and `0` new-structure live claims), and the earlier lone disagreement remains a conservative false negative caused by missing historical evidence/identity fields in the current joined record
 - Missing requirements to close the broader automation objective:
   - larger real/historical shadow-validation sample before any activation checkpoint
-  - broader future-claim runtime proof showing the new intake fields are consistently populated for ordinary claimants
-  - owner review of the activation boundary, false-positive posture, and current live-data coverage limitations
+  - public/state registration verification is still a documented future signal only:
+    - `BUSINESS EXISTS`
+    - `REGISTERED NAME`
+    - `REGISTRATION STATUS`
+    - `REGISTERED JURISDICTION`
+    - `REGISTERED ADDRESS` where legally/publicly available
+    - future use: strengthen business-legitimacy checks and reduce admin review for identity mismatches when local BWE data is sparse
+  - Black-owned-status policy remains an explicit owner decision and must stay separate from business legitimacy / claimant authorization / ownership verification:
+    - `OWNER ATTESTATION`
+    - `SUPPORTING BUSINESS OWNERSHIP DOCUMENTATION`
+    - `RECOGNIZED THIRD-PARTY CERTIFICATION`
+    - `ADMIN EXCEPTION REVIEW`
   - any future automatic ownership activation must remain atomic, idempotent, replay-safe, and protected by a last-second conflict recheck before state mutation
 - Next action:
-  - stop after Phase 3 expanded shadow validation and review the evidence before any separate activation phase; preserve `BWE-10` and `BWE-13` as external proof dependencies only
+  - DA-13 is ready to close in human-verification mode with automated recommendations + admin `Verify Ownership` preserved; keep `BWE-10` and `BWE-13` as external proof dependencies only and do not open any separate activation phase without explicit owner review
 
 ### DA-07 closure note — Monday, August 10, 2026
 
