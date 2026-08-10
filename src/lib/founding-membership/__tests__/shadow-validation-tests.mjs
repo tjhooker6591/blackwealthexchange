@@ -162,12 +162,30 @@ const revokedHistory = buildRow({
   },
 });
 
-const unknownAuthorization = buildRow({
+const verificationFailed = buildRow({
   membershipId: "membership-6",
   claimId: "claim-6",
+  queueState: "ownership_verification_failed",
+  claimStatus: "ownership_verification_failed",
+  ownershipReviewStatus: "ownership_verification_failed",
+  auditHistory: [{ action: "verification_failed" }],
+});
+
+const disputedClaim = buildRow({
+  membershipId: "membership-7",
+  claimId: "claim-7",
+  queueState: "disputed",
+  claimStatus: "disputed",
+  ownershipReviewStatus: "disputed",
+  claimStage: "disputed",
+});
+
+const unknownAuthorization = buildRow({
+  membershipId: "membership-8",
+  claimId: "claim-8",
   email: "",
   membership: {
-    membershipId: "membership-6",
+    membershipId: "membership-8",
     membershipName: "Example Business LLC",
     email: "",
     phone: "4045551111",
@@ -176,7 +194,7 @@ const unknownAuthorization = buildRow({
     businessId: "business-1",
   },
   claim: {
-    membershipId: "membership-6",
+    membershipId: "membership-8",
     businessId: "business-1",
     businessName: "Example Business LLC",
     businessAddress: "123 Auburn Ave Atlanta GA 30303",
@@ -187,13 +205,47 @@ const unknownAuthorization = buildRow({
   user: { _id: "user-1", email: "" },
 });
 
+const identityMismatch = buildRow({
+  membershipId: "membership-9",
+  claimId: "claim-9",
+  claim: {
+    membershipId: "membership-9",
+    businessId: "business-1",
+    businessName: "Different Business LLC",
+    businessAddress: "999 Different St Atlanta GA 30310",
+    phone: "9995551212",
+    website: "different.example.com",
+    email: "owner@example.com",
+  },
+});
+
+const paymentCompleteOwnershipNotProven = buildRow({
+  membershipId: "membership-10",
+  claimId: "claim-10",
+  queueState: "additional_evidence_required",
+  claimStatus: "additional_evidence_required",
+  ownershipReviewStatus: "additional_evidence_required",
+  paymentStatus: "paid",
+  payment: { _id: "payment-10" },
+  review: {
+    sourceMembershipId: "membership-10",
+    reviewStatus: "additional_evidence_required",
+    evidenceStatus: "missing",
+    evidenceSubmissions: [],
+  },
+});
+
 const rows = [
   verifiedAutoEligible,
   missingEvidence,
   ownerConflict,
   competingClaimants,
   revokedHistory,
+  verificationFailed,
+  disputedClaim,
   unknownAuthorization,
+  identityMismatch,
+  paymentCompleteOwnershipNotProven,
 ].map((row) => ({
   ...row,
   verificationDecision: deriveFoundingVerificationDecision(row),
@@ -201,21 +253,21 @@ const rows = [
 
 const summary = getFoundingShadowValidationSummary(rows);
 
-assert.equal(summary.totalCasesTested, 6);
+assert.equal(summary.totalCasesTested, 10);
 assert.equal(summary.falseAutoVerifyCount, 0);
 assert.equal(summary.mandatoryUnknownBlocksAutoVerify, true);
 assert.equal(summary.expectedAutoVerify, 1);
-assert.equal(summary.expectedMoreEvidence, 1);
-assert.equal(summary.expectedConflictDispute, 2);
-assert.equal(summary.expectedAdminReview, 2);
-assert.equal(summary.engineAgreementCount, 6);
+assert.equal(summary.expectedMoreEvidence, 2);
+assert.equal(summary.expectedConflictDispute, 3);
+assert.equal(summary.expectedAdminReview, 4);
+assert.equal(summary.engineAgreementCount, 10);
 assert.equal(summary.engineDisagreementCount, 0);
 
 const coverageByKey = Object.fromEntries(
   summary.signalCoverage.map((item) => [item.key, item]),
 );
-assert.equal(coverageByKey.business_name_match.available, 6);
-assert.equal(coverageByKey.required_evidence_present.adminFallbackRequired, 1);
+assert.equal(coverageByKey.business_name_match.available, 10);
+assert.equal(coverageByKey.required_evidence_present.adminFallbackRequired, 2);
 assert.equal(
   coverageByKey.claimant_domain_relationship_if_available.adminFallbackRequired,
   1,

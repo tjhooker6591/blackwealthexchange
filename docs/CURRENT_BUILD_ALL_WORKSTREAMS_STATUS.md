@@ -14,6 +14,18 @@ Interpret all workstream activity through that directive and its Revenue Gate be
 
 ---
 
+## 0) DA-13 automated ownership-verification scaling readiness
+
+- **Status:** PARTIAL
+- **Entry point:** `/admin/claim-verification` and `src/lib/founding-membership.ts`
+- **Expected final outcome:** BWE can safely classify which claims are high-confidence enough for future automated Ownership Verification without granting ownership automatically until a separate explicit activation checkpoint is accepted.
+- **Current actual outcome:** Phase 3 shadow validation and activation-readiness work is implemented at `0dc2f9e42c29de475220eef659c839c434cef38c`. The system now exposes explainable dry-run recommendations, mandatory-condition gating, shadow-validation summary, signal-coverage analysis, an activation-contract blueprint, and an audit-record shape. Automatic ownership activation remains OFF and Black-owned-status inference remains OFF.
+- **Exact blocker:** live historical/read-only sample is still too small to justify activation review (`1` resolved case), and the single disagreement is a conservative false negative caused by missing historical evidence/identity fields in the current joined record rather than a dangerous false positive.
+- **Files/routes/endpoints involved:** `src/lib/founding-membership.ts`, `src/pages/api/admin/founding-memberships.ts`, `src/pages/admin/claim-verification.tsx`, `src/lib/founding-membership/__tests__/shadow-validation-tests.mjs`
+- **Exact closure condition:** larger real/historical shadow-validation sample plus explicit owner review confirms false auto-verify remains zero and activation may be considered in a separate phase. No ownership-state mutation is permitted before that checkpoint.
+
+---
+
 ## 1) Auth / login / session
 
 - **Status:** PARTIAL

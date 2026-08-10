@@ -7,8 +7,8 @@ _Last updated: 2026-08-10 America/Los_Angeles_
 - Program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Latest runtime checkpoint SHA: `fb8c11c19ecf035154ae6a48a3cc5bd87d8a2f73`
-- Current git HEAD verified live during session: `fb8c11c19ecf035154ae6a48a3cc5bd87d8a2f73`
+- Latest runtime checkpoint SHA: `0dc2f9e42c29de475220eef659c839c434cef38c`
+- Current git HEAD verified live during session: `0dc2f9e42c29de475220eef659c839c434cef38c`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
 - Runtime application countdown: `0` unresolved runtime follow-through files remain from the DA-06/DA-08/DA-09/DA-07/DA-10 public-surface bundle
@@ -18,7 +18,7 @@ _Last updated: 2026-08-10 America/Los_Angeles_
 - Current non-blocked execution target:
   - `DA-13` broader automated business verification
 - Standing future/scaling lane:
-  - `DA-13` broader automated business verification — PENDING
+  - `DA-13` broader automated business verification — PARTIAL (activation remains OFF pending owner review)
 - Current preserved public state:
   - `P1 directory fallback`: COMPLETE
   - `P1 marketplace product visibility`: COMPLETE
@@ -286,21 +286,20 @@ _Last updated: 2026-08-10 America/Los_Angeles_
 
 ### DA-13 pending note — Monday, August 10, 2026
 
-- Status: PENDING
+- Status: PARTIAL
 - Current reality:
   - `DA-12` is accepted complete, but it closes only the internal normal-check classifier and admin queue routing layer
-  - current code automatically classifies routine versus exception admin review from internal record consistency, payment linkage state, missing-linked-record detection, claimant mismatch, and cross-business management mismatch
-  - current code does not yet automate business-name, address, website/domain, email/domain, phone, or social-profile matching against claim evidence
-  - current code stores evidence references and supports admin actions, but does not automatically validate documents, representative authorization, public registration status, or Black-owned-status evidence
-  - current code still requires admin action to convert a claim from classification into verified ownership, management rights, and final business-verification approval
+  - current code now defines explainable business-identity, claimant-authorization, ownership/control, risk/conflict, Black-owned-status, and payment-integrity signal groups
+  - current code now produces dry-run-only `AUTO_VERIFY_ELIGIBLE`, `ADMIN_REVIEW_REQUIRED`, `MORE_EVIDENCE_REQUIRED`, `CONFLICT_BLOCKED`, `DISPUTED`, and `VERIFICATION_FAILED` recommendations with explicit mandatory-condition gating
+  - current code now surfaces shadow-validation summary data, real-data signal coverage, an activation-contract blueprint, an audit-record contract, and an automation mode guard with `DRY_RUN` as the default state
+  - automatic ownership activation remains OFF; Black-owned status remains separate and is not inferred automatically
+  - the live historical/read-only sample is still too small to justify activation review (`1` resolved case), and that lone disagreement is a conservative false negative caused by missing historical evidence/identity fields in the current joined record
 - Missing requirements to close the broader automation objective:
-  - automated business legitimacy matching across business-name/address/domain/contact signals
-  - automated claimant / representative authorization validation beyond current user-id consistency checks
-  - automated public registration / ownership evidence evaluation
-  - explicit Black-owned-status evidence policy and automation boundary
-  - clear stop-line definition between automatic classification and required admin verification/approval
+  - larger real/historical shadow-validation sample before any activation checkpoint
+  - owner review of the activation boundary, false-positive posture, and current live-data coverage limitations
+  - any future automatic ownership activation must remain atomic, idempotent, replay-safe, and protected by a last-second conflict recheck before state mutation
 - Next action:
-  - implement `DA-13` before declaring non-blocked BWE engineering complete; preserve `BWE-10` and `BWE-13` as external proof dependencies only
+  - stop after Phase 3 expanded shadow validation and review the evidence before any separate activation phase; preserve `BWE-10` and `BWE-13` as external proof dependencies only
 
 ### DA-07 closure note — Monday, August 10, 2026
 
