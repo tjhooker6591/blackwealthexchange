@@ -184,13 +184,23 @@ Interpret all workstream activity through that directive and its Revenue Gate be
 - **Files/routes/endpoints involved:** `src/pages/api/auth/logout.ts`, `src/pages/api/auth/login.ts`, `src/pages/api/auth/signup.ts`, `src/pages/api/auth/me.ts`, `src/hooks/useAuth.ts`, `docs/PRODUCTION_AUTH_SESSION_AUDIT_2026-04-09.md`.
 - **Exact closure condition:** fresh current evidence either reproduces the defect on the canonical environment and justifies a narrow fix, or proves the issue is not currently reproducible and downgrades the lane accordingly.
 
+## 18) Ownership verification scaling lane
+
+- **Status:** COMPLETE
+- **Entry point:** `/admin/claim-verification`, `/api/admin/founding-memberships`
+- **Expected final outcome:** ownership verification queue exposes a reusable first-pass machine classifier that separates routine admin review from exception-only review without changing the underlying claim lifecycle.
+- **Current actual outcome:** the shared founding-membership layer now derives a canonical normal-check result per record, the admin API returns verdict-level counts plus per-row normal-check details, and the admin claim-verification UI surfaces routine-versus-exception review status, verdict reason, consistency class, and detected issues. Existing business and organization ownership flows remain preserved.
+- **Exact blocker:** none in the current canonical repo state.
+- **Files/routes/endpoints involved:** `src/lib/founding-membership.ts`, `src/pages/api/admin/founding-memberships.ts`, `src/pages/admin/claim-verification.tsx`, `src/lib/founding-membership/__tests__/normal-check-tests.mjs`.
+- **Exact closure condition:** satisfied on Monday, August 10, 2026 by commit chain `b51f6e25fd8316f54d2df396b85ef7407d6107de` -> `fb8c11c19ecf035154ae6a48a3cc5bd87d8a2f73` plus focused founding-membership proofs, `npm run typecheck`, `node scripts/runtime-check.mjs`, and `node scripts/check-critical-paths.mjs`.
+
 ---
 
 ## Grouped summary
 
 ### COMPLETE
 
-- _(none currently marked complete under strict end-state standard)_
+- 18. Ownership verification scaling lane
 
 ### PARTIAL
 

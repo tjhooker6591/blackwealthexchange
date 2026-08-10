@@ -7,8 +7,8 @@ _Last updated: 2026-08-10 America/Los_Angeles_
 - Program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Latest runtime checkpoint SHA: `18239e685ab3557f6c39ce9f20bc68dcd315344c`
-- Current git HEAD verified live during session: `18239e685ab3557f6c39ce9f20bc68dcd315344c`
+- Latest runtime checkpoint SHA: `fb8c11c19ecf035154ae6a48a3cc5bd87d8a2f73`
+- Current git HEAD verified live during session: `fb8c11c19ecf035154ae6a48a3cc5bd87d8a2f73`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
 - Runtime application countdown: `0` unresolved runtime follow-through files remain from the DA-06/DA-08/DA-09/DA-07/DA-10 public-surface bundle
@@ -16,9 +16,9 @@ _Last updated: 2026-08-10 America/Los_Angeles_
   - `BWE-10` owner-authorized final marketplace payment verification
   - `BWE-13` second-machine auth/runtime parity proof
 - Current non-blocked execution target:
-  - `DA-12` scalable legitimacy / ownership verification
+  - none; all remaining open items are external proof dependencies only
 - Standing future/scaling lane:
-  - `DA-12` scalable legitimacy / ownership verification (not the immediate execution target)
+  - `DA-12` scalable legitimacy / ownership verification — COMPLETE
 - Current preserved public state:
   - `P1 directory fallback`: COMPLETE
   - `P1 marketplace product visibility`: COMPLETE
@@ -254,6 +254,35 @@ _Last updated: 2026-08-10 America/Los_Angeles_
   - `node scripts/runtime-proof-da04-onboarding.mjs` pass on Monday, August 10, 2026 with `4/4` roles passing
 - Next action:
   - move to `DA-12` scalable legitimacy / ownership verification while preserving the now-proven onboarding routes and external-blocker status for `BWE-10` and `BWE-13`
+
+### DA-12 closure note — Monday, August 10, 2026
+
+- Status: COMPLETE
+- Current reality:
+  - the shared founding-membership verification layer now derives a canonical machine normal-check result for each claim record instead of leaving scalability decisions to ad hoc per-page interpretation
+  - the classifier distinguishes routine admin review from exception-only admin review and preserves the underlying consistency classification and detected issue list
+  - `/api/admin/founding-memberships` now returns aggregate routine-versus-exception counts and per-record normal-check verdicts for the current admin queue
+  - `/admin/claim-verification` now surfaces the automated normal-check verdict, verdict reason, consistency label, detected issues, and queue-level counts without changing claim transitions or reopening already closed ownership behavior
+  - no P1 or major defect was discovered while closing the DA-12 scaling lane
+- Exact files:
+  - `src/lib/founding-membership.ts`
+  - `src/pages/api/admin/founding-memberships.ts`
+  - `src/pages/admin/claim-verification.tsx`
+  - `src/lib/founding-membership/__tests__/normal-check-tests.mjs`
+- Proof:
+  - Commit chain:
+    - `b51f6e25fd8316f54d2df396b85ef7407d6107de`
+    - `fb8c11c19ecf035154ae6a48a3cc5bd87d8a2f73`
+  - `npm run typecheck` pass on Monday, August 10, 2026
+  - `node src/lib/founding-membership/__tests__/normal-check-tests.mjs` pass on Monday, August 10, 2026
+  - `node src/lib/founding-membership/__tests__/platform-queue-tests.mjs` pass on Monday, August 10, 2026
+  - `node src/lib/founding-membership/__tests__/claim-reconciliation-tests.mjs` pass on Monday, August 10, 2026
+  - `node src/lib/founding-membership/__tests__/claim-verification-joins-tests.mjs` pass on Monday, August 10, 2026
+  - `node scripts/runtime-check.mjs` pass on Monday, August 10, 2026 with localhost confirmed live on port `3000`
+  - `node scripts/check-critical-paths.mjs` pass on Monday, August 10, 2026
+  - `/admin/claim-verification` returns the expected auth redirect `307` to `/login?redirect=%2Fadmin%2Fclaim-verification` on Monday, August 10, 2026
+- Next action:
+  - no remaining non-blocked implementation lane remains; preserve the DA-12 classifier/admin-review lane and wait on either `BWE-10` payment proof authorization or `BWE-13` second-machine parity access
 
 ### DA-07 closure note — Monday, August 10, 2026
 
