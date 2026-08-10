@@ -609,6 +609,7 @@ export type FoundingCanonicalRecord = {
   payment?: Record<string, any> | null;
   user?: Record<string, any> | null;
   normalCheck?: FoundingNormalCheckResult | null;
+  verificationDecision?: FoundingVerificationDecision | null;
 };
 
 export type FoundingConsistencyClassification =
@@ -655,6 +656,871 @@ export type FoundingNormalCheckCounts = {
   routineAdminReview: number;
   exceptionAdminReview: number;
 };
+
+export type FoundingVerificationDisposition =
+  | "AUTO_VERIFY_ELIGIBLE"
+  | "ADMIN_REVIEW_REQUIRED"
+  | "MORE_EVIDENCE_REQUIRED"
+  | "CONFLICT_BLOCKED"
+  | "DISPUTED"
+  | "VERIFICATION_FAILED";
+
+export type FoundingVerificationSignalStatus =
+  | "pass"
+  | "fail"
+  | "unknown"
+  | "not_applicable";
+
+export type FoundingVerificationGroupId =
+  | "business_identity"
+  | "claimant_authorization"
+  | "ownership_control"
+  | "risk_exception"
+  | "black_owned_status"
+  | "payment_integrity";
+
+export type FoundingVerificationSignal = {
+  key: string;
+  label: string;
+  status: FoundingVerificationSignalStatus;
+  summary: string;
+  dataUsed: string[];
+  implementedWithExistingData: boolean;
+  requiresFutureExternalData: boolean;
+  blocksAutoVerify: boolean;
+  requiresAdminReview: boolean;
+};
+
+export type FoundingVerificationGroupResult = {
+  id: FoundingVerificationGroupId;
+  label: string;
+  summary: string;
+  passCount: number;
+  failCount: number;
+  unknownCount: number;
+  signals: FoundingVerificationSignal[];
+};
+
+export type FoundingVerificationDecision = {
+  policyVersion: string;
+  disposition: FoundingVerificationDisposition;
+  autoVerifyEligible: boolean;
+  adminReviewRequired: boolean;
+  ownershipAutomationPermitted: boolean;
+  paymentIntegritySeparateFromOwnership: boolean;
+  blackOwnedStatusAutomationImplemented: boolean;
+  automationBoundary: string;
+  rationale: string[];
+  mandatoryFailures: string[];
+  mandatoryUnknowns: string[];
+  groups: FoundingVerificationGroupResult[];
+};
+
+export type FoundingVerificationDecisionCounts = Record<
+  FoundingVerificationDisposition,
+  number
+>;
+
+function normalizeComparisonText(value: unknown) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function normalizePhone(value: unknown) {
+  const digits = String(value || "").replace(/\D+/g, "");
+  if (!digits) return null;
+  return digits.length === 11 && digits.startsWith("1")
+    ? digits.slice(1)
+    : digits;
+}
+
+function normalizeHostname(value: unknown) {
+  const raw = String(value || "").trim();
+  if (!raw) return null;
+  try {
+    const withProtocol = /^[a-z]+:\/\//i.test(raw) ? raw : `https://${raw}`;
+    const hostname = new URL(withProtocol).hostname
+      .trim()
+      .toLowerCase()
+      .replace(/^www\./, "");
+    return hostname || null;
+  } catch {
+    return raw.toLowerCase().replace(/^www\./, "") || null;
+  }
+}
+
+function extractEmailDomain(value: unknown) {
+  const raw = String(value || "").trim().toLowerCase();
+  if (!raw.includes("@")) return null;
+  const domain = raw.split("@").pop()?.trim().replace(/^www\./, "") || "";
+  return domain || null;
+}
+
+function firstMeaningfulString(...values: unknown[]) {
+  for (const value of values) {
+    if (typeof value === "string" && value.trim()) return value.trim();
+  }
+  return null;
+}
+
+function uniqueNormalizedValues(
+  values: unknown[],
+  normalizer: (value: unknown) => string | null,
+) {
+  return Array.from(
+    new Set(values.map((value) => normalizer(value)).filter(Boolean)),
+  ) as string[];
+}
+
+function countAuditActions(auditHistory: any[], action: string) {
+  return auditHistory.filter(
+    (item) => String(item?.action || "").trim() === action,
+  ).length;
+}
+
+function buildSignal(args: {
+  key: string;
+  label: string;
+  status: FoundingVerificationSignalStatus;
+  summary: string;
+  dataUsed: string[];
+  implementedWithExistingData?: boolean;
+  requiresFutureExternalData?: boolean;
+  blocksAutoVerify?: boolean;
+  requiresAdminReview?: boolean;
+}): FoundingVerificationSignal {
+  return {
+    key: args.key,
+    label: args.label,
+    status: args.status,
+    summary: args.summary,
+    dataUsed: args.dataUsed,
+    implementedWithExistingData: args.implementedWithExistingData !== false,
+    requiresFutureExternalData: args.requiresFutureExternalData === true,
+    blocksAutoVerify: args.blocksAutoVerify !== false,
+    requiresAdminReview: args.requiresAdminReview !== false,
+  };
+}
+
+function summarizeGroup(signals: FoundingVerificationSignal[]) {
+  const passCount = signals.filter((signal) => signal.status === "pass").length;
+  const failCount = signals.filter((signal) => signal.status === "fail").length;
+  const unknownCount = signals.filter(
+    (signal) => signal.status === "unknown",
+  ).length;
+  const summary =
+    failCount > 0
+      ? `${failCount} failing signal${failCount === 1 ? "" : "s"}`
+      : unknownCount > 0
+        ? `${unknownCount} unresolved signal${unknownCount === 1 ? "" : "s"}`
+        : `${passCount} passing signal${passCount === 1 ? "" : "s"}`;
+  return { passCount, failCount, unknownCount, summary };
+}
+
+function buildGroup(
+  id: FoundingVerificationGroupId,
+  label: string,
+  signals: FoundingVerificationSignal[],
+): FoundingVerificationGroupResult {
+  return {
+    id,
+    label,
+    signals,
+    ...summarizeGroup(signals),
+  };
+}
+
+function compareSignalValues(
+  label: string,
+  key: string,
+  leftValue: unknown,
+  rightValue: unknown,
+  dataUsed: string[],
+  normalizer: (value: unknown) => string | null,
+) {
+  const left = normalizer(leftValue);
+  const right = normalizer(rightValue);
+  if (!left || !right) {
+    return buildSignal({
+      key,
+      label,
+      status: "unknown",
+      summary: "Current BWE records do not contain both values yet.",
+      dataUsed,
+    });
+  }
+  if (left === right) {
+    return buildSignal({
+      key,
+      label,
+      status: "pass",
+      summary: "Current BWE values are consistent.",
+      dataUsed,
+    });
+  }
+  return buildSignal({
+    key,
+    label,
+    status: "fail",
+    summary: "Current BWE values materially disagree.",
+    dataUsed,
+  });
+}
+
+export function deriveFoundingVerificationDecision(
+  row: FoundingCanonicalRecord,
+): FoundingVerificationDecision {
+  const business = row.business || {};
+  const claim = row.claim || {};
+  const review = row.review || {};
+  const membership = row.membership || {};
+  const user = row.user || {};
+  const normalCheck = row.normalCheck || null;
+  const auditHistory = Array.isArray(row.auditHistory) ? row.auditHistory : [];
+  const evidenceSubmissions = Array.isArray(review?.evidenceSubmissions)
+    ? review.evidenceSubmissions
+    : [];
+
+  const businessWebsite = firstMeaningfulString(
+    business.website,
+    business.siteUrl,
+    business.domain,
+  );
+  const claimWebsite = firstMeaningfulString(
+    claim.website,
+    membership.website,
+    review.website,
+  );
+  const businessEmail = firstMeaningfulString(
+    business.email,
+    business.contactEmail,
+  );
+  const claimantEmail = firstMeaningfulString(
+    row.email,
+    claim.email,
+    membership.email,
+    user.email,
+  );
+  const claimantEmails = [claim.email, membership.email, user.email, row.email];
+  const businessAddress = firstMeaningfulString(
+    business.address,
+    business.streetAddress,
+    business.address1,
+    business.fullAddress,
+  );
+  const claimAddress = firstMeaningfulString(
+    claim.address,
+    claim.businessAddress,
+    membership.address,
+    user.address,
+  );
+  const businessPhone = firstMeaningfulString(
+    business.phone,
+    business.contactPhone,
+  );
+  const claimantPhone = firstMeaningfulString(
+    claim.phone,
+    membership.phone,
+    user.phone,
+  );
+  const businessSocial = firstMeaningfulString(
+    business.instagram,
+    business.facebook,
+    business.linkedin,
+    business.twitter,
+  );
+  const claimSocial = firstMeaningfulString(
+    claim.instagram,
+    claim.facebook,
+    claim.linkedin,
+    claim.twitter,
+  );
+  const businessNameSignal = compareSignalValues(
+    "Business name match",
+    "business_name_match",
+    row.businessName,
+    firstMeaningfulString(claim.businessName, membership.membershipName),
+    ["business.business_name", "claim.businessName", "membership.membershipName"],
+    (value) => normalizeComparisonText(value) || null,
+  );
+  const addressSignal = compareSignalValues(
+    "Address match",
+    "address_match",
+    businessAddress,
+    claimAddress,
+    ["business.address", "claim.businessAddress", "membership.address"],
+    (value) => normalizeComparisonText(value) || null,
+  );
+  const phoneSignal = compareSignalValues(
+    "Listed phone match",
+    "phone_match",
+    businessPhone,
+    claimantPhone,
+    ["business.phone", "claim.phone", "membership.phone", "user.phone"],
+    normalizePhone,
+  );
+  const websiteSignal = compareSignalValues(
+    "Website / domain match",
+    "website_domain_match",
+    businessWebsite,
+    claimWebsite,
+    ["business.website", "claim.website", "membership.website"],
+    normalizeHostname,
+  );
+  const businessEmailDomainSignal = compareSignalValues(
+    "Business email / domain match",
+    "business_email_domain_match",
+    businessEmail || businessWebsite,
+    claimantEmail || claimWebsite,
+    ["business.email", "business.website", "claim.email", "membership.email"],
+    (value) => extractEmailDomain(value) || normalizeHostname(value),
+  );
+  const socialSignal = compareSignalValues(
+    "Social profile consistency",
+    "social_profile_consistency",
+    businessSocial,
+    claimSocial,
+    ["business.social", "claim.social"],
+    normalizeHostname,
+  );
+  const businessListingSignal = buildSignal({
+    key: "existing_bwe_listing_history",
+    label: "Existing BWE listing history",
+    status: row.business ? "pass" : "fail",
+    summary: row.business
+      ? "A current BWE business listing exists for this claim."
+      : "No current BWE business listing was joined to the claim.",
+    dataUsed: ["businesses.foundingMembershipId", "membership.businessId"],
+  });
+  const publicRegistrationSignal = buildSignal({
+    key: "public_business_registration_verification",
+    label: "Public business-registration verification",
+    status: "unknown",
+    summary:
+      "Current BWE records do not include a live state/jurisdiction registration lookup.",
+    dataUsed: ["businesses.*", "claims.*"],
+    implementedWithExistingData: false,
+    requiresFutureExternalData: true,
+  });
+  const duplicateListingSignal = buildSignal({
+    key: "duplicate_business_listing_detection",
+    label: "Duplicate business/listing detection",
+    status:
+      row.normalCheck?.consistency === "missing_linked_record" ? "fail" : "pass",
+    summary:
+      row.normalCheck?.consistency === "missing_linked_record"
+        ? "Current BWE joins indicate a missing linked record that needs review."
+        : "No duplicate/missing-link listing conflict was detected in current BWE joins.",
+    dataUsed: ["normalCheck.consistency", "membership.businessId", "businesses"],
+  });
+
+  const businessIdentityGroup = buildGroup("business_identity", "Business identity / legitimacy", [
+    businessListingSignal,
+    businessNameSignal,
+    addressSignal,
+    phoneSignal,
+    websiteSignal,
+    businessEmailDomainSignal,
+    socialSignal,
+    publicRegistrationSignal,
+    duplicateListingSignal,
+  ]);
+
+  const claimantIdentitySignal = buildSignal({
+    key: "authenticated_account_identity",
+    label: "Authenticated account identity",
+    status: row.userId && row.user ? "pass" : "fail",
+    summary:
+      row.userId && row.user
+        ? "A claimant account record is linked to this membership."
+        : "The claim is missing a joined authenticated claimant account.",
+    dataUsed: ["membership.userId", "users.foundingMembershipId"],
+  });
+  const claimantEmailValues = uniqueNormalizedValues(
+    claimantEmails,
+    (value) => String(value || "").trim().toLowerCase() || null,
+  );
+  const claimantContactSignal = buildSignal({
+    key: "claimant_contact_consistency",
+    label: "Claimant contact consistency",
+    status:
+      claimantEmailValues.length === 0
+        ? "unknown"
+        : claimantEmailValues.length === 1
+          ? "pass"
+          : "fail",
+    summary:
+      claimantEmailValues.length === 0
+        ? "Current BWE records do not yet contain claimant contact details from multiple sources."
+        : claimantEmailValues.length === 1
+          ? "Claim, membership, and user claimant contact values are consistent."
+          : "Claim, membership, and user claimant contact values disagree.",
+    dataUsed: ["claim.email", "membership.email", "user.email"],
+  });
+  const claimantDomainSignal = compareSignalValues(
+    "Claimant email / business-domain relationship",
+    "claimant_domain_relationship",
+    claimantEmail,
+    businessEmail || businessWebsite,
+    ["claimantEmail", "business.email", "business.website"],
+    (value) => extractEmailDomain(value) || normalizeHostname(value),
+  );
+  const authorityEvidenceSignal = buildSignal({
+    key: "representative_authority_evidence",
+    label: "Representative authority evidence",
+    status: evidenceSubmissions.length ? "pass" : "fail",
+    summary: evidenceSubmissions.length
+      ? "Authority/ownership evidence was submitted and can be reviewed."
+      : "No submitted authority evidence is attached to the current review record.",
+    dataUsed: ["ownership_reviews.evidenceSubmissions", "ownership_reviews.evidenceStatus"],
+  });
+  const claimantHistorySignal = buildSignal({
+    key: "existing_verified_representative_history",
+    label: "Existing verified representative history",
+    status:
+      row.queueState === "ownership_verified" &&
+      row.claimedByUserId &&
+      row.claimedByUserId === row.userId
+        ? "pass"
+        : "unknown",
+    summary:
+      row.queueState === "ownership_verified" &&
+      row.claimedByUserId &&
+      row.claimedByUserId === row.userId
+        ? "The same claimant already appears in verified ownership history."
+        : "Current BWE history does not establish verified representative history automatically.",
+    dataUsed: ["businesses.claimedByUserId", "users._id", "auditHistory"],
+  });
+  const conflictingClaimantSignal = buildSignal({
+    key: "conflicting_claimant_detection",
+    label: "Conflicting claimant detection",
+    status:
+      row.normalCheck?.issues?.includes("conflicting_claimant") === true
+        ? "fail"
+        : "pass",
+    summary:
+      row.normalCheck?.issues?.includes("conflicting_claimant") === true
+        ? "A different claimant is already linked to this business state."
+        : "No direct conflicting claimant mismatch was detected.",
+    dataUsed: ["businesses.claimedByUserId", "membership.userId", "normalCheck.issues"],
+  });
+  const conflictingOwnerSignal = buildSignal({
+    key: "conflicting_verified_owner_detection",
+    label: "Conflicting verified-owner detection",
+    status:
+      row.ownerUserIds.some((ownerId) => ownerId && ownerId !== row.userId) ||
+      (row.claimedByUserId != null && row.claimedByUserId !== row.userId)
+        ? "fail"
+        : "pass",
+    summary:
+      row.ownerUserIds.some((ownerId) => ownerId && ownerId !== row.userId) ||
+      (row.claimedByUserId != null && row.claimedByUserId !== row.userId)
+        ? "A different verified or claimed owner is already present."
+        : "No conflicting verified owner was detected in current BWE ownership fields.",
+    dataUsed: ["businesses.ownerUserIds", "businesses.claimedByUserId", "membership.userId"],
+  });
+
+  const claimantAuthorizationGroup = buildGroup(
+    "claimant_authorization",
+    "Claimant authorization",
+    [
+      claimantIdentitySignal,
+      claimantContactSignal,
+      claimantDomainSignal,
+      authorityEvidenceSignal,
+      claimantHistorySignal,
+      conflictingClaimantSignal,
+      conflictingOwnerSignal,
+    ],
+  );
+
+  const evidenceExistsSignal = buildSignal({
+    key: "submitted_ownership_control_evidence",
+    label: "Submitted ownership/control evidence",
+    status: evidenceSubmissions.length ? "pass" : "fail",
+    summary: evidenceSubmissions.length
+      ? `${evidenceSubmissions.length} evidence submission(s) are attached to the review record.`
+      : "No ownership/control evidence has been submitted yet.",
+    dataUsed: ["ownership_reviews.evidenceSubmissions"],
+  });
+  const evidenceValidationSignal = buildSignal({
+    key: "evidence_validation_boundary",
+    label: "Evidence validation boundary",
+    status:
+      String(review?.evidenceValidationStatus || "").trim() === "auto_validated"
+        ? "pass"
+        : evidenceSubmissions.length
+          ? "unknown"
+          : "fail",
+    summary:
+      String(review?.evidenceValidationStatus || "").trim() === "auto_validated"
+        ? "Evidence was marked auto-validatable by the policy contract."
+        : evidenceSubmissions.length
+          ? "BWE can confirm evidence presence and basic linkage, but not document-content validity automatically."
+          : "Evidence content cannot be validated because required submissions are missing.",
+    dataUsed: ["ownership_reviews.evidenceSubmissions", "ownership_reviews.evidenceStatus"],
+  });
+  const verifiedOwnershipSignal = buildSignal({
+    key: "current_verified_ownership_records",
+    label: "Current verified ownership records",
+    status:
+      row.queueState === "ownership_verified" &&
+      row.claimedByUserId === row.userId
+        ? "pass"
+        : conflictingOwnerSignal.status === "fail"
+          ? "fail"
+          : "unknown",
+    summary:
+      row.queueState === "ownership_verified" &&
+      row.claimedByUserId === row.userId
+        ? "Current BWE records already show this claimant as the verified owner."
+        : conflictingOwnerSignal.status === "fail"
+          ? "A different verified owner record blocks automatic ownership activation."
+          : "Current BWE ownership records require verification review before activation.",
+    dataUsed: ["businesses.claimedByUserId", "businesses.ownerUserIds", "queueState"],
+  });
+  const previousVerificationSignal = buildSignal({
+    key: "previous_bwe_verification_history",
+    label: "Previous BWE verification history",
+    status:
+      row.queueState === "ownership_verified" ||
+      countAuditActions(auditHistory, "verify") > 0
+        ? "pass"
+        : "unknown",
+    summary:
+      row.queueState === "ownership_verified" ||
+      countAuditActions(auditHistory, "verify") > 0
+        ? "Verification history exists in the audit trail."
+        : "No prior verified-ownership history is established for automatic reuse.",
+    dataUsed: ["auditHistory", "queueState"],
+  });
+  const disputeStateSignal = buildSignal({
+    key: "conflict_or_dispute_state",
+    label: "Conflict / dispute state",
+    status:
+      row.queueState === "disputed"
+        ? "fail"
+        : row.queueState === "ownership_verification_failed"
+          ? "fail"
+          : "pass",
+    summary:
+      row.queueState === "disputed"
+        ? "This claim is currently disputed."
+        : row.queueState === "ownership_verification_failed"
+          ? "This claim already carries a verification-failed state."
+          : "No current dispute or failure state blocks ordinary verification flow.",
+    dataUsed: ["queueState", "claimStatus", "ownershipReviewStatus"],
+  });
+
+  const ownershipControlGroup = buildGroup(
+    "ownership_control",
+    "Ownership / control",
+    [
+      evidenceExistsSignal,
+      evidenceValidationSignal,
+      verifiedOwnershipSignal,
+      previousVerificationSignal,
+      disputeStateSignal,
+    ],
+  );
+
+  const materialMismatchSignal = buildSignal({
+    key: "material_business_data_disagreement",
+    label: "Material business-data disagreement",
+    status:
+      [businessNameSignal, addressSignal, phoneSignal, websiteSignal].some(
+        (signal) => signal.status === "fail",
+      )
+        ? "fail"
+        : "pass",
+    summary:
+      [businessNameSignal, addressSignal, phoneSignal, websiteSignal].some(
+        (signal) => signal.status === "fail",
+      )
+        ? "At least one identity signal materially disagrees."
+        : "No material disagreement was detected in the compared identity signals.",
+    dataUsed: [
+      "business.business_name",
+      "claim.businessName",
+      "business.address",
+      "claim.businessAddress",
+      "business.phone",
+      "claim.phone",
+      "business.website",
+      "claim.website",
+    ],
+  });
+  const evidenceMissingSignal = buildSignal({
+    key: "evidence_missing",
+    label: "Evidence missing",
+    status: evidenceSubmissions.length ? "pass" : "fail",
+    summary: evidenceSubmissions.length
+      ? "At least one evidence submission is present."
+      : "Required ownership/control evidence is missing.",
+    dataUsed: ["ownership_reviews.evidenceSubmissions"],
+  });
+  const evidenceInconsistentSignal = buildSignal({
+    key: "evidence_inconsistent",
+    label: "Evidence inconsistent",
+    status:
+      claimantDomainSignal.status === "fail" ||
+      materialMismatchSignal.status === "fail"
+        ? "fail"
+        : evidenceSubmissions.length
+          ? "unknown"
+          : "pass",
+    summary:
+      claimantDomainSignal.status === "fail" ||
+      materialMismatchSignal.status === "fail"
+        ? "Submitted claim details conflict with current business/contact signals."
+        : evidenceSubmissions.length
+          ? "Evidence exists, but document content is not auto-validated yet."
+          : "No conflicting evidence pattern is detectable because no evidence is present.",
+    dataUsed: ["ownership_reviews.evidenceSubmissions", "business/contact comparisons"],
+  });
+  const stateTransitionSignal = buildSignal({
+    key: "suspicious_state_transitions",
+    label: "Suspicious state transitions",
+    status:
+      countAuditActions(auditHistory, "reopen_verification") > 0 &&
+      countAuditActions(auditHistory, "verify") > 0
+        ? "fail"
+        : "pass",
+    summary:
+      countAuditActions(auditHistory, "reopen_verification") > 0 &&
+      countAuditActions(auditHistory, "verify") > 0
+        ? "Verification was reopened after prior verification and needs admin review."
+        : "No suspicious reopen-after-verify transition was detected in the audit trail.",
+    dataUsed: ["auditHistory"],
+  });
+  const repeatedFailureSignal = buildSignal({
+    key: "repeated_failed_verification_attempts",
+    label: "Repeated failed verification attempts",
+    status:
+      countAuditActions(auditHistory, "verification_failed") > 0 ||
+      row.queueState === "ownership_verification_failed"
+        ? "fail"
+        : "pass",
+    summary:
+      countAuditActions(auditHistory, "verification_failed") > 0 ||
+      row.queueState === "ownership_verification_failed"
+        ? "A prior verification failure exists and should stay in admin review."
+        : "No prior verification-failed history was detected.",
+    dataUsed: ["auditHistory", "queueState"],
+  });
+  const conflictingRecordsSignal = buildSignal({
+    key: "conflicting_bwe_records",
+    label: "Conflicting BWE records",
+    status:
+      normalCheck?.verdict === "exception_admin_review" ? "fail" : "pass",
+    summary:
+      normalCheck?.verdict === "exception_admin_review"
+        ? "The DA-12 normal check already detected a record-level exception."
+        : "The DA-12 normal check did not detect a record-level exception.",
+    dataUsed: ["normalCheck.verdict", "normalCheck.issues"],
+  });
+
+  const riskExceptionGroup = buildGroup("risk_exception", "Risk / exception", [
+    conflictingOwnerSignal,
+    conflictingClaimantSignal,
+    materialMismatchSignal,
+    evidenceMissingSignal,
+    evidenceInconsistentSignal,
+    stateTransitionSignal,
+    repeatedFailureSignal,
+    conflictingRecordsSignal,
+  ]);
+
+  const blackOwnedPolicySignal = buildSignal({
+    key: "black_owned_status_policy_boundary",
+    label: "Black-owned status policy boundary",
+    status: "pass",
+    summary:
+      "BWE must rely on attestation, permitted supporting documentation, or recognized certification sources instead of proxy inference.",
+    dataUsed: ["policy.da13.black_owned_status"],
+    blocksAutoVerify: false,
+    requiresAdminReview: false,
+  });
+  const blackOwnedEvidenceSignal = buildSignal({
+    key: "black_owned_status_evidence",
+    label: "Black-owned status evidence",
+    status: "unknown",
+    summary:
+      "Current BWE records do not auto-verify Black-owned status from proxies or document-content inference.",
+    dataUsed: ["ownership_reviews.evidenceSubmissions", "businesses.*"],
+    blocksAutoVerify: false,
+  });
+  const blackOwnedAutomationSignal = buildSignal({
+    key: "black_owned_status_automation",
+    label: "Black-owned status automation",
+    status: "unknown",
+    summary:
+      "DA-13 defines the policy boundary only; automated Black-owned-status verification is not implemented in this phase.",
+    dataUsed: ["policy.da13.black_owned_status"],
+    implementedWithExistingData: false,
+    requiresFutureExternalData: true,
+    blocksAutoVerify: false,
+  });
+  const blackOwnedStatusGroup = buildGroup(
+    "black_owned_status",
+    "Black-owned status",
+    [blackOwnedPolicySignal, blackOwnedEvidenceSignal, blackOwnedAutomationSignal],
+  );
+
+  const paymentConsistencySignal = buildSignal({
+    key: "payment_entitlement_integrity",
+    label: "Payment / entitlement integrity",
+    status:
+      row.paymentStatus === "paid" && row.payment != null ? "pass" : "fail",
+    summary:
+      row.paymentStatus === "paid" && row.payment != null
+        ? "Payment linkage is internally consistent."
+        : "Payment linkage is incomplete or inconsistent.",
+    dataUsed: ["payments", "membership.paymentStatus", "normalCheck.issues"],
+    blocksAutoVerify: false,
+  });
+  const paymentNotOwnershipSignal = buildSignal({
+    key: "payment_not_ownership_evidence",
+    label: "Payment is not ownership evidence",
+    status: "pass",
+    summary:
+      "Payment integrity is tracked separately and cannot by itself verify ownership or representative authority.",
+    dataUsed: ["policy.da13.payment_boundary"],
+    blocksAutoVerify: false,
+    requiresAdminReview: false,
+  });
+  const paymentIntegrityGroup = buildGroup(
+    "payment_integrity",
+    "Payment / entitlement integrity",
+    [paymentConsistencySignal, paymentNotOwnershipSignal],
+  );
+
+  const groups = [
+    businessIdentityGroup,
+    claimantAuthorizationGroup,
+    ownershipControlGroup,
+    riskExceptionGroup,
+    blackOwnedStatusGroup,
+    paymentIntegrityGroup,
+  ];
+  const mandatoryFailures: string[] = [];
+  const mandatoryUnknowns: string[] = [];
+  const requiresEvidence = evidenceExistsSignal.status === "fail";
+  const ownerConflict =
+    conflictingOwnerSignal.status === "fail" ||
+    conflictingClaimantSignal.status === "fail";
+  const disputed = row.queueState === "disputed";
+  const failedVerification =
+    row.queueState === "ownership_verification_failed" ||
+    repeatedFailureSignal.status === "fail";
+  const materialConflict =
+    materialMismatchSignal.status === "fail" ||
+    conflictingRecordsSignal.status === "fail" ||
+    stateTransitionSignal.status === "fail";
+
+  const mandatorySignals = [
+    businessListingSignal,
+    businessNameSignal,
+    claimantIdentitySignal,
+    claimantContactSignal,
+    authorityEvidenceSignal,
+    evidenceValidationSignal,
+    conflictingOwnerSignal,
+    conflictingClaimantSignal,
+    disputeStateSignal,
+  ];
+
+  for (const signal of mandatorySignals) {
+    if (signal.status === "fail" && signal.blocksAutoVerify) {
+      mandatoryFailures.push(signal.label);
+    } else if (signal.status === "unknown" && signal.blocksAutoVerify) {
+      mandatoryUnknowns.push(signal.label);
+    }
+  }
+
+  let disposition: FoundingVerificationDisposition =
+    "ADMIN_REVIEW_REQUIRED";
+  if (disputed) {
+    disposition = "DISPUTED";
+  } else if (ownerConflict) {
+    disposition = "CONFLICT_BLOCKED";
+  } else if (requiresEvidence) {
+    disposition = "MORE_EVIDENCE_REQUIRED";
+  } else if (failedVerification) {
+    disposition = "VERIFICATION_FAILED";
+  } else if (
+    mandatoryFailures.length === 0 &&
+    mandatoryUnknowns.length === 0 &&
+    materialConflict === false &&
+    evidenceValidationSignal.status === "pass"
+  ) {
+    disposition = "AUTO_VERIFY_ELIGIBLE";
+  }
+
+  const rationale = [
+    "DA-13 separates payment/entitlement integrity from Claim Verification and Ownership Verification.",
+    "Current BWE data can compare internal record consistency, claimant linkage, and basic contact/domain signals.",
+    "Current BWE data cannot automatically validate document contents, public registration records, or Black-owned-status evidence.",
+  ];
+  if (disposition !== "AUTO_VERIFY_ELIGIBLE") {
+    rationale.push(
+      "This case stays out of auto-verify because at least one mandatory signal is failing, unresolved, or still requires administrator evidence review.",
+    );
+  }
+
+  return {
+    policyVersion: "da13-v1",
+    disposition,
+    autoVerifyEligible: disposition === "AUTO_VERIFY_ELIGIBLE",
+    adminReviewRequired: disposition !== "AUTO_VERIFY_ELIGIBLE",
+    ownershipAutomationPermitted: disposition === "AUTO_VERIFY_ELIGIBLE",
+    paymentIntegritySeparateFromOwnership: true,
+    blackOwnedStatusAutomationImplemented: false,
+    automationBoundary:
+      "Current BWE automation can classify ordinary versus exception claim-verification work from existing internal records, but document-content validation, public registration checks, and Black-owned-status evidence remain outside automatic ownership activation.",
+    rationale,
+    mandatoryFailures,
+    mandatoryUnknowns,
+    groups,
+  };
+}
+
+export function getFoundingVerificationDecisionCounts(
+  rows: Array<
+    FoundingCanonicalRecord & {
+      verificationDecision?: FoundingVerificationDecision | null;
+    }
+  >,
+): FoundingVerificationDecisionCounts {
+  return {
+    AUTO_VERIFY_ELIGIBLE: rows.filter(
+      (row) =>
+        row.verificationDecision?.disposition === "AUTO_VERIFY_ELIGIBLE",
+    ).length,
+    ADMIN_REVIEW_REQUIRED: rows.filter(
+      (row) =>
+        row.verificationDecision?.disposition === "ADMIN_REVIEW_REQUIRED",
+    ).length,
+    MORE_EVIDENCE_REQUIRED: rows.filter(
+      (row) =>
+        row.verificationDecision?.disposition === "MORE_EVIDENCE_REQUIRED",
+    ).length,
+    CONFLICT_BLOCKED: rows.filter(
+      (row) => row.verificationDecision?.disposition === "CONFLICT_BLOCKED",
+    ).length,
+    DISPUTED: rows.filter(
+      (row) => row.verificationDecision?.disposition === "DISPUTED",
+    ).length,
+    VERIFICATION_FAILED: rows.filter(
+      (row) => row.verificationDecision?.disposition === "VERIFICATION_FAILED",
+    ).length,
+  };
+}
 
 export function deriveFoundingQueueState(args: {
   membershipStatus?: unknown;
@@ -1094,6 +1960,8 @@ export async function getFoundingClaimVerificationRecords(db: Db) {
     const currentRow = rows[rows.length - 1];
     const normalCheck = deriveFoundingNormalCheckResult(currentRow);
     Object.assign(currentRow, { normalCheck });
+    const verificationDecision = deriveFoundingVerificationDecision(currentRow);
+    Object.assign(currentRow, { verificationDecision });
   }
 
   rows.sort(

@@ -20,6 +20,14 @@ type Payload = {
     routineAdminReview?: number;
     exceptionAdminReview?: number;
   };
+  verificationDecisionCounts?: {
+    AUTO_VERIFY_ELIGIBLE?: number;
+    ADMIN_REVIEW_REQUIRED?: number;
+    MORE_EVIDENCE_REQUIRED?: number;
+    CONFLICT_BLOCKED?: number;
+    DISPUTED?: number;
+    VERIFICATION_FAILED?: number;
+  };
   reviews?: any[];
   fulfillment?: any[];
   onboarding?: any[];
@@ -37,6 +45,22 @@ function verdictTone(verdict: unknown) {
   return verdict === "exception_admin_review"
     ? "border-red-500/30 bg-red-500/10 text-red-100"
     : "border-emerald-500/30 bg-emerald-500/10 text-emerald-100";
+}
+
+function dispositionTone(value: unknown) {
+  if (value === "AUTO_VERIFY_ELIGIBLE") {
+    return "border-emerald-500/30 bg-emerald-500/10 text-emerald-100";
+  }
+  if (value === "MORE_EVIDENCE_REQUIRED") {
+    return "border-yellow-500/30 bg-yellow-500/10 text-yellow-100";
+  }
+  if (value === "CONFLICT_BLOCKED" || value === "DISPUTED") {
+    return "border-red-500/30 bg-red-500/10 text-red-100";
+  }
+  if (value === "VERIFICATION_FAILED") {
+    return "border-rose-500/30 bg-rose-500/10 text-rose-100";
+  }
+  return "border-sky-500/30 bg-sky-500/10 text-sky-100";
 }
 
 const ACTIONS = [
@@ -182,6 +206,45 @@ export default function ClaimVerificationPage() {
             </div>
           </div>
 
+          <div className="grid gap-3 md:grid-cols-6">
+            <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm">
+              <div className="text-emerald-100/75">Auto-Verify Eligible</div>
+              <div className="mt-1 text-xl font-semibold text-emerald-50">
+                {data?.verificationDecisionCounts?.AUTO_VERIFY_ELIGIBLE || 0}
+              </div>
+            </div>
+            <div className="rounded-xl border border-sky-500/20 bg-sky-500/10 p-3 text-sm">
+              <div className="text-sky-100/75">Admin Review Required</div>
+              <div className="mt-1 text-xl font-semibold text-sky-50">
+                {data?.verificationDecisionCounts?.ADMIN_REVIEW_REQUIRED || 0}
+              </div>
+            </div>
+            <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/10 p-3 text-sm">
+              <div className="text-yellow-100/75">More Evidence Required</div>
+              <div className="mt-1 text-xl font-semibold text-yellow-50">
+                {data?.verificationDecisionCounts?.MORE_EVIDENCE_REQUIRED || 0}
+              </div>
+            </div>
+            <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm">
+              <div className="text-red-100/75">Conflict Blocked</div>
+              <div className="mt-1 text-xl font-semibold text-red-50">
+                {data?.verificationDecisionCounts?.CONFLICT_BLOCKED || 0}
+              </div>
+            </div>
+            <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm">
+              <div className="text-red-100/75">Disputed</div>
+              <div className="mt-1 text-xl font-semibold text-red-50">
+                {data?.verificationDecisionCounts?.DISPUTED || 0}
+              </div>
+            </div>
+            <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-3 text-sm">
+              <div className="text-rose-100/75">Verification Failed</div>
+              <div className="mt-1 text-xl font-semibold text-rose-50">
+                {data?.verificationDecisionCounts?.VERIFICATION_FAILED || 0}
+              </div>
+            </div>
+          </div>
+
           <div className="space-y-4">
             {rows.map((row) => {
               const claim = row.claim || null;
@@ -191,6 +254,7 @@ export default function ClaimVerificationPage() {
               const fulfillment = row.fulfillment || null;
               const business = row.business || null;
               const normalCheck = row.normalCheck || null;
+              const verificationDecision = row.verificationDecision || null;
               const membershipId = String(
                 row.membershipId || membership?.membershipId || "",
               );
@@ -351,6 +415,124 @@ export default function ClaimVerificationPage() {
                           ? normalCheck.issues.map(labelize).join(" • ")
                           : "No exception issues detected."}
                       </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-white/10 bg-black/25 p-4">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <div className="text-sm font-semibold text-white">
+                          DA-13 verification contract
+                        </div>
+                        <div className="mt-1 text-sm text-white/60">
+                          Explainable business-identity, claimant-authorization,
+                          ownership-control, risk, Black-owned-status, and
+                          payment-integrity signals.
+                        </div>
+                      </div>
+                      <div
+                        className={`rounded-full border px-3 py-1 text-xs font-bold ${dispositionTone(
+                          verificationDecision?.disposition,
+                        )}`}
+                      >
+                        {labelize(
+                          verificationDecision?.disposition ||
+                            "ADMIN_REVIEW_REQUIRED",
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="mt-3 grid gap-3 md:grid-cols-2 text-sm">
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                        <div className="text-white/45">Policy version</div>
+                        <div className="mt-1 text-white/85">
+                          {verificationDecision?.policyVersion || "da13-v1"}
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                        <div className="text-white/45">Automation boundary</div>
+                        <div className="mt-1 text-white/85">
+                          {verificationDecision?.automationBoundary || "-"}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 grid gap-3 md:grid-cols-2 text-sm">
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                        <div className="text-white/45">
+                          Mandatory failures
+                        </div>
+                        <div className="mt-1 text-white/85">
+                          {Array.isArray(
+                            verificationDecision?.mandatoryFailures,
+                          ) && verificationDecision.mandatoryFailures.length
+                            ? verificationDecision.mandatoryFailures.join(" • ")
+                            : "None"}
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                        <div className="text-white/45">
+                          Mandatory unknowns
+                        </div>
+                        <div className="mt-1 text-white/85">
+                          {Array.isArray(
+                            verificationDecision?.mandatoryUnknowns,
+                          ) && verificationDecision.mandatoryUnknowns.length
+                            ? verificationDecision.mandatoryUnknowns.join(" • ")
+                            : "None"}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                      {Array.isArray(verificationDecision?.groups)
+                        ? verificationDecision.groups.map((group: any) => (
+                            <div
+                              key={group.id}
+                              className="rounded-xl border border-white/10 bg-black/30 p-3 text-sm"
+                            >
+                              <div className="font-semibold text-white">
+                                {group.label}
+                              </div>
+                              <div className="mt-1 text-white/55">
+                                {group.summary}
+                              </div>
+                              <div className="mt-2 text-xs text-white/45">
+                                Pass {group.passCount || 0} • Fail{" "}
+                                {group.failCount || 0} • Unknown{" "}
+                                {group.unknownCount || 0}
+                              </div>
+                              <div className="mt-3 space-y-2">
+                                {Array.isArray(group.signals)
+                                  ? group.signals.map((signal: any) => (
+                                      <div
+                                        key={signal.key}
+                                        className="rounded-lg border border-white/10 px-3 py-2"
+                                      >
+                                        <div className="flex items-center justify-between gap-3">
+                                          <div className="font-medium text-white/90">
+                                            {signal.label}
+                                          </div>
+                                          <div className="text-[11px] uppercase tracking-wide text-white/55">
+                                            {labelize(signal.status)}
+                                          </div>
+                                        </div>
+                                        <div className="mt-1 text-white/65">
+                                          {signal.summary}
+                                        </div>
+                                        <div className="mt-1 text-[11px] text-white/40">
+                                          Data:{" "}
+                                          {Array.isArray(signal.dataUsed)
+                                            ? signal.dataUsed.join(", ")
+                                            : "-"}
+                                        </div>
+                                      </div>
+                                    ))
+                                  : null}
+                              </div>
+                            </div>
+                          ))
+                        : null}
                     </div>
                   </div>
 

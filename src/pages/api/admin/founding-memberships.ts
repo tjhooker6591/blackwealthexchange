@@ -11,6 +11,7 @@ import {
   getFoundingClaimVerificationCounts,
   getFoundingClaimVerificationRecords,
   getFoundingNormalCheckCounts,
+  getFoundingVerificationDecisionCounts,
   getPendingFoundingClaimVerifications,
   normalizeFoundingClaimStage,
   normalizeFoundingPaymentStatus,
@@ -326,6 +327,8 @@ export default async function handler(
         getFoundingClaimVerificationCounts(db),
       ]);
     const normalCheckCounts = getFoundingNormalCheckCounts(normalizedRecords);
+    const verificationDecisionCounts =
+      getFoundingVerificationDecisionCounts(normalizedRecords);
 
     return res.status(200).json({
       ok: true,
@@ -334,6 +337,7 @@ export default async function handler(
       records: normalizedRecords,
       claimVerificationCounts,
       normalCheckCounts,
+      verificationDecisionCounts,
       reviews,
       fulfillment,
       onboarding,
