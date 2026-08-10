@@ -10,6 +10,7 @@ import {
   formatUsdFromCents,
   getFoundingClaimVerificationCounts,
   getFoundingClaimVerificationRecords,
+  getFoundingNormalCheckCounts,
   getPendingFoundingClaimVerifications,
   normalizeFoundingClaimStage,
   normalizeFoundingPaymentStatus,
@@ -324,6 +325,7 @@ export default async function handler(
         getFoundingClaimVerificationRecords(db),
         getFoundingClaimVerificationCounts(db),
       ]);
+    const normalCheckCounts = getFoundingNormalCheckCounts(normalizedRecords);
 
     return res.status(200).json({
       ok: true,
@@ -331,6 +333,7 @@ export default async function handler(
       claims: normalizedClaims,
       records: normalizedRecords,
       claimVerificationCounts,
+      normalCheckCounts,
       reviews,
       fulfillment,
       onboarding,

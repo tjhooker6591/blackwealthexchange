@@ -16,6 +16,10 @@ type Payload = {
     verificationFailed?: number;
     verifiedHistory?: number;
   };
+  normalCheckCounts?: {
+    routineAdminReview?: number;
+    exceptionAdminReview?: number;
+  };
   reviews?: any[];
   fulfillment?: any[];
   onboarding?: any[];
@@ -27,6 +31,12 @@ function labelize(value: unknown) {
     typeof value === "string" ? value : value == null ? "" : String(value);
   if (!text) return "-";
   return text.replace(/[_-]/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
+}
+
+function verdictTone(verdict: unknown) {
+  return verdict === "exception_admin_review"
+    ? "border-red-500/30 bg-red-500/10 text-red-100"
+    : "border-emerald-500/30 bg-emerald-500/10 text-emerald-100";
 }
 
 const ACTIONS = [
@@ -127,7 +137,7 @@ export default function ClaimVerificationPage() {
 
           {loading ? <div>Loading…</div> : null}
 
-          <div className="grid gap-3 md:grid-cols-5">
+          <div className="grid gap-3 md:grid-cols-7">
             <div className="rounded-xl border border-white/10 bg-black/25 p-3 text-sm">
               <div className="text-white/45">Pending Verification</div>
               <div className="mt-1 text-xl font-semibold text-white">
@@ -158,6 +168,18 @@ export default function ClaimVerificationPage() {
                 {data?.claimVerificationCounts?.verifiedHistory || 0}
               </div>
             </div>
+            <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm">
+              <div className="text-emerald-100/75">Routine Admin Review</div>
+              <div className="mt-1 text-xl font-semibold text-emerald-50">
+                {data?.normalCheckCounts?.routineAdminReview || 0}
+              </div>
+            </div>
+            <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm">
+              <div className="text-red-100/75">Exception Review</div>
+              <div className="mt-1 text-xl font-semibold text-red-50">
+                {data?.normalCheckCounts?.exceptionAdminReview || 0}
+              </div>
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -168,6 +190,7 @@ export default function ClaimVerificationPage() {
               const onboarding = row.onboarding || null;
               const fulfillment = row.fulfillment || null;
               const business = row.business || null;
+              const normalCheck = row.normalCheck || null;
               const membershipId = String(
                 row.membershipId || membership?.membershipId || "",
               );
@@ -281,6 +304,49 @@ export default function ClaimVerificationPage() {
                           fulfillment?.ownershipAccessStatus ||
                             membership?.managementAccessStatus,
                         )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-white/10 bg-black/25 p-4">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <div className="text-sm font-semibold text-white">
+                          Automated normal check
+                        </div>
+                        <div className="mt-1 text-sm text-white/60">
+                          Shared DA-12 classifier for routine versus exception-only review.
+                        </div>
+                      </div>
+                      <div
+                        className={`rounded-full border px-3 py-1 text-xs font-bold ${verdictTone(
+                          normalCheck?.verdict,
+                        )}`}
+                      >
+                        {labelize(normalCheck?.verdict || "routine_admin_review")}
+                      </div>
+                    </div>
+                    <div className="mt-3 grid gap-3 md:grid-cols-2 text-sm">
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                        <div className="text-white/45">Consistency</div>
+                        <div className="mt-1 text-white/85">
+                          {labelize(normalCheck?.consistency)}
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                        <div className="text-white/45">Verdict reason</div>
+                        <div className="mt-1 text-white/85">
+                          {labelize(normalCheck?.verdictReason)}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-3 rounded-xl border border-white/10 bg-black/30 p-3 text-sm">
+                      <div className="text-white/45">Detected issues</div>
+                      <div className="mt-1 text-white/85">
+                        {Array.isArray(normalCheck?.issues) &&
+                        normalCheck.issues.length
+                          ? normalCheck.issues.map(labelize).join(" • ")
+                          : "No exception issues detected."}
                       </div>
                     </div>
                   </div>

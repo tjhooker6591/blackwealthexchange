@@ -608,6 +608,52 @@ export type FoundingCanonicalRecord = {
   fulfillment?: Record<string, any> | null;
   payment?: Record<string, any> | null;
   user?: Record<string, any> | null;
+  normalCheck?: FoundingNormalCheckResult | null;
+};
+
+export type FoundingConsistencyClassification =
+  | "consistent_verified"
+  | "consistent_pending_verification"
+  | "conflicting_claimant"
+  | "payment_inconsistency"
+  | "conflicting_state"
+  | "missing_linked_record"
+  | "legacy_status_requiring_normalization";
+
+export type FoundingNormalCheckVerdict =
+  | "routine_admin_review"
+  | "exception_admin_review";
+
+export type FoundingNormalCheckIssue =
+  | "missing_membership_id"
+  | "missing_business_link"
+  | "missing_claimant_user"
+  | "missing_review_record"
+  | "missing_claim_record"
+  | "missing_business_record"
+  | "payment_inconsistency"
+  | "conflicting_state"
+  | "conflicting_claimant"
+  | "cross_business_management_access";
+
+export type FoundingNormalCheckResult = {
+  consistency: FoundingConsistencyClassification;
+  issues: FoundingNormalCheckIssue[];
+  verdict: FoundingNormalCheckVerdict;
+  verdictReason:
+    | "verified_history_consistent"
+    | "pending_flow_consistent"
+    | "missing_linked_record"
+    | "payment_inconsistency"
+    | "conflicting_claimant"
+    | "conflicting_state"
+    | "legacy_status_requiring_normalization";
+  needsExceptionReview: boolean;
+};
+
+export type FoundingNormalCheckCounts = {
+  routineAdminReview: number;
+  exceptionAdminReview: number;
 };
 
 export function deriveFoundingQueueState(args: {
@@ -647,8 +693,10 @@ export function deriveFoundingQueueState(args: {
   return null;
 }
 
-export function classifyFoundingConsistency(row: FoundingCanonicalRecord) {
-  const issues: string[] = [];
+export function collectFoundingConsistencyIssues(
+  row: FoundingCanonicalRecord,
+): FoundingNormalCheckIssue[] {
+  const issues: FoundingNormalCheckIssue[] = [];
   if (!row.membershipId) issues.push("missing_membership_id");
   if (!row.businessId) issues.push("missing_business_link");
   if (!row.userId) issues.push("missing_claimant_user");
@@ -683,6 +731,14 @@ export function classifyFoundingConsistency(row: FoundingCanonicalRecord) {
     issues.push("cross_business_management_access");
   }
 
+  return issues;
+}
+
+export function classifyFoundingConsistency(
+  row: FoundingCanonicalRecord,
+): FoundingConsistencyClassification {
+  const issues = collectFoundingConsistencyIssues(row);
+
   if (!issues.length && row.queueState === "ownership_verified")
     return "consistent_verified";
   if (
@@ -702,6 +758,52 @@ export function classifyFoundingConsistency(row: FoundingCanonicalRecord) {
   if (issues.some((issue) => issue.startsWith("missing_")))
     return "missing_linked_record";
   return "legacy_status_requiring_normalization";
+}
+
+export function deriveFoundingNormalCheckResult(
+  row: FoundingCanonicalRecord,
+): FoundingNormalCheckResult {
+  const issues = collectFoundingConsistencyIssues(row);
+  const consistency = classifyFoundingConsistency(row);
+
+  if (consistency === "consistent_verified") {
+    return {
+      consistency,
+      issues,
+      verdict: "routine_admin_review",
+      verdictReason: "verified_history_consistent",
+      needsExceptionReview: false,
+    };
+  }
+
+  if (consistency === "consistent_pending_verification") {
+    return {
+      consistency,
+      issues,
+      verdict: "routine_admin_review",
+      verdictReason: "pending_flow_consistent",
+      needsExceptionReview: false,
+    };
+  }
+
+  const verdictReason =
+    consistency === "missing_linked_record"
+      ? "missing_linked_record"
+      : consistency === "payment_inconsistency"
+        ? "payment_inconsistency"
+        : consistency === "conflicting_claimant"
+          ? "conflicting_claimant"
+          : consistency === "conflicting_state"
+            ? "conflicting_state"
+            : "legacy_status_requiring_normalization";
+
+  return {
+    consistency,
+    issues,
+    verdict: "exception_admin_review",
+    verdictReason,
+    needsExceptionReview: true,
+  };
 }
 
 export async function getFoundingClaimVerificationRecords(db: Db) {
@@ -988,6 +1090,10 @@ export async function getFoundingClaimVerificationRecords(db: Db) {
       payment: sourcePayment,
       user,
     });
+
+    const currentRow = rows[rows.length - 1];
+    const normalCheck = deriveFoundingNormalCheckResult(currentRow);
+    Object.assign(currentRow, { normalCheck });
   }
 
   rows.sort(
@@ -1018,6 +1124,21 @@ export async function getFoundingClaimVerificationCounts(db: Db) {
     ).length,
     verifiedHistory: rows.filter(
       (row) => row.queueState === "ownership_verified",
+    ).length,
+  };
+}
+
+export function getFoundingNormalCheckCounts(
+  rows: Array<
+    FoundingCanonicalRecord & { normalCheck?: FoundingNormalCheckResult | null }
+  >,
+): FoundingNormalCheckCounts {
+  return {
+    routineAdminReview: rows.filter(
+      (row) => row.normalCheck?.verdict === "routine_admin_review",
+    ).length,
+    exceptionAdminReview: rows.filter(
+      (row) => row.normalCheck?.verdict === "exception_admin_review",
     ).length,
   };
 }
