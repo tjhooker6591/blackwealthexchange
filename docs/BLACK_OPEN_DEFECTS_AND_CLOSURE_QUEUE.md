@@ -7,16 +7,16 @@ _Last updated: 2026-08-10 America/Los_Angeles_
 - Program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Latest runtime checkpoint SHA: `832d09461d606b3da4a876d9e043441bc61d56ee`
-- Current git HEAD verified live during session: `832d09461d606b3da4a876d9e043441bc61d56ee`
+- Latest runtime checkpoint SHA: `ccf1172667c54d8aa0c4d87fd14111b40e163259`
+- Current git HEAD verified live during session: `ccf1172667c54d8aa0c4d87fd14111b40e163259`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
-- Runtime application countdown: `0` unresolved runtime follow-through files remain from the DA-06/DA-08/DA-09/DA-07 public-surface bundle
+- Runtime application countdown: `0` unresolved runtime follow-through files remain from the DA-06/DA-08/DA-09/DA-07/DA-10 public-surface bundle
 - External validation dependencies only:
   - `BWE-10` owner-authorized final marketplace payment verification
   - `BWE-13` second-machine auth/runtime parity proof
 - Current non-blocked execution target:
-  - `DA-10` claim-focused content strategy
+  - `DA-04` account-type onboarding
 - Standing future/scaling lane:
   - `DA-12` scalable legitimacy / ownership verification (not the immediate execution target)
 - Current preserved public state:
@@ -25,11 +25,12 @@ _Last updated: 2026-08-10 America/Los_Angeles_
   - `P1 homepage featured sponsors`: COMPLETE
   - `P1 directory sponsor sidebar`: COMPLETE
   - `Founder identity / trust`: COMPLETE
+  - `Claim-focused content strategy`: COMPLETE
   - `Claim This Listing / Claim Your Listing`: CORRECT — PRESERVE
   - `Legitimate marketplace products`: `3`
   - `QA product`: EXCLUDED
   - `Change-impact audit`: COMPLETE — NO ADDITIONAL MAJOR REGRESSION FOUND
-  - `Production auth/session audit`: `NOT YET VERIFIED`
+  - `Production auth/session audit`: `NOT YET VERIFIED` — historical code-path audit exists, but no fresh August 10 reproduction was run
 
 ## Current ordered execution queue — reconciled 2026-08-10
 
@@ -206,6 +207,33 @@ _Last updated: 2026-08-10 America/Los_Angeles_
      - second development environment runtime access
    - Next action:
      - replay the current local auth/session proof matrix on the second machine
+
+### DA-10 closure note — Monday, August 10, 2026
+
+- Status: COMPLETE
+- Current reality:
+  - the agreed public/editorial `70/20/10` strategy is now stated explicitly across the homepage, About, Founding Principle, and Join the Mission surfaces
+  - the public emphasis is now clear and internally consistent: claim and strengthen existing listings first, add selective qualified new visibility second, and keep a smaller share focused on founder-led trust/support explanation
+  - DA-10 preserved the DA-07 founder identity baseline instead of replacing it
+  - claim terminology remains unchanged and correct: `Claim This Listing` / `Claim Your Listing`
+  - sponsor surfaces, neutral fallback media, and the three legitimate marketplace products remain preserved
+- Exact files:
+  - `src/pages/about.tsx`
+  - `src/pages/founding-principle.tsx`
+  - `src/pages/index.tsx`
+  - `src/pages/join-the-mission.tsx`
+- Proof:
+  - Commit: `ccf1172667c54d8aa0c4d87fd14111b40e163259`
+  - `npm run typecheck` pass on Monday, August 10, 2026
+  - `npm run runtime:check` pass on Monday, August 10, 2026
+  - `npm run check:critical-paths` pass on Monday, August 10, 2026
+  - localhost checks on Monday, August 10, 2026:
+    - `/` returns `200` and renders `Current 70 / 20 / 10 focus`
+    - `/about` returns `200` and renders `Current Execution Focus`
+    - `/founding-principle` returns `200` and renders `Current 70/20/10 Public Strategy`
+    - `/join-the-mission` returns `200` after the strategy section was added
+- Next action:
+  - move to `DA-04` account-type onboarding while preserving DA-07/DA-10 trust and claim language as the factual public baseline
 
 ### DA-07 closure note — Monday, August 10, 2026
 

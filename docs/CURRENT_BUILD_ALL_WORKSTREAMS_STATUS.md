@@ -176,13 +176,13 @@ Interpret all workstream activity through that directive and its Revenue Gate be
 
 ## 17) Production auth/session audit lane
 
-- **Status:** OPEN DEFECT
+- **Status:** PARTIAL
 - **Entry point:** production auth/logout/session behavior (`/api/auth/logout`, `/api/auth/me`, cookie issuance paths)
 - **Expected final outcome:** logout invalidates active session predictably and timeout policy is explicit + consistently enforced.
-- **Current actual outcome:** audit now confirms root cause at code-path level: (1) logout clear-scope mismatch vs issued cookie scope and (2) mixed 30m vs 7d session model across login/signup.
-- **Exact blocker:** production evidence packet capture + approval for narrow controlled release fix.
+- **Current actual outcome:** an older April 9, 2026 audit identified plausible root causes at code-path level, but no fresh Monday, August 10, 2026 reproduction was run in the DA-07/DA-10 lanes, so this is not currently verified as a live reproducible defect in the current canonical proof set.
+- **Exact blocker:** fresh current reproduction or non-reproduction evidence is still needed before classifying this lane as a present open defect or closing it as not currently reproducible.
 - **Files/routes/endpoints involved:** `src/pages/api/auth/logout.ts`, `src/pages/api/auth/login.ts`, `src/pages/api/auth/signup.ts`, `src/pages/api/auth/me.ts`, `src/hooks/useAuth.ts`, `docs/PRODUCTION_AUTH_SESSION_AUDIT_2026-04-09.md`.
-- **Exact closure condition:** narrow release fix shipped and verified (logout clears correctly + timeout behavior matches defined policy) with production evidence.
+- **Exact closure condition:** fresh current evidence either reproduces the defect on the canonical environment and justifies a narrow fix, or proves the issue is not currently reproducible and downgrades the lane accordingly.
 
 ---
 
@@ -219,4 +219,4 @@ Interpret all workstream activity through that directive and its Revenue Gate be
 
 ### OPEN DEFECT
 
-- 17. Production auth/session audit lane
+- _(none currently marked open defect under current canonical proof discipline)_

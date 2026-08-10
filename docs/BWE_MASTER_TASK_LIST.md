@@ -4,10 +4,10 @@
 - program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - branch: `friday-release-candidate`
-- latest runtime checkpoint SHA: `832d09461d606b3da4a876d9e043441bc61d56ee`
-- current git HEAD verified live during session: `832d09461d606b3da4a876d9e043441bc61d56ee`
-- last completed workstream: `DA-07 founder identity / trust`
-- current active workstream: `QUEUE CHECKPOINT / NEXT: DA-10 claim-focused content strategy`
+- latest runtime checkpoint SHA: `ccf1172667c54d8aa0c4d87fd14111b40e163259`
+- current git HEAD verified live during session: `ccf1172667c54d8aa0c4d87fd14111b40e163259`
+- last completed workstream: `DA-10 claim-focused content strategy`
+- current active workstream: `QUEUE CHECKPOINT / NEXT: DA-04 account-type onboarding`
 - standing scaling lane (not immediate execution target): `DA-12 scalable legitimacy / ownership verification`
 - DA-01 current result: `COMPLETE`
 - BWE-02 current result: `COMPLETE`
@@ -29,6 +29,7 @@
   - `9f7de64ef1431bae6d33b00394eefbb1af6842d8` -> align external black-business resource page branding and social SEO metadata
   - `fffec5d1327ce6bb292390c60ed5cf90feb0fe08` -> align signup welcome messaging to the current live marketplace offer
   - `832d09461d606b3da4a876d9e043441bc61d56ee` -> close founder identity / trust surfaces with explicit founder-led public positioning
+  - `ccf1172667c54d8aa0c4d87fd14111b40e163259` -> close claim-focused public/editorial strategy surfaces with explicit 70/20/10 claim-first positioning
 - exact production files committed:
   - `75f4dd1850c720ce94015c5beb4bbff98f34b40c` -> `src/lib/directoryOwnership.ts`, `src/lib/directoryProfileContract.ts`, `src/lib/directoryPublicMedia.ts`, `src/pages/api/business/media.ts`, `src/pages/api/business/profile.ts`, `src/pages/api/business/update.ts`, `src/pages/business-directory/[alias].tsx`, `src/pages/dashboard/edit-business.tsx`, `src/pages/edit-business.tsx`, `src/pages/api/organizations/claim.ts`, `src/pages/organizations/[slug].tsx`
   - `ddeb5f20591669d4d8832f27d4f31b0ba13fd3c1` -> `src/components/challenge/ChallengeShareCard.tsx`, `src/pages/admin/challenge.tsx`, `src/pages/api/admin/challenge.ts`, `src/pages/api/challenge/creators.ts`, `src/pages/api/challenge/join.ts`, `src/pages/api/challenge/stats.ts`, `src/pages/challenge.tsx`, `src/pages/challenge/creators.tsx`
@@ -44,6 +45,7 @@
   - `9f7de64ef1431bae6d33b00394eefbb1af6842d8` -> `src/pages/black-business-websites.tsx`
   - `fffec5d1327ce6bb292390c60ed5cf90feb0fe08` -> `src/pages/api/auth/signup.ts`
   - `832d09461d606b3da4a876d9e043441bc61d56ee` -> `src/components/footer.tsx`, `src/pages/about.tsx`, `src/pages/contact.tsx`, `src/pages/founding-principle.tsx`, `src/pages/index.tsx`, `src/pages/support.tsx`
+  - `ccf1172667c54d8aa0c4d87fd14111b40e163259` -> `src/pages/about.tsx`, `src/pages/founding-principle.tsx`, `src/pages/index.tsx`, `src/pages/join-the-mission.tsx`
 - runtime application files still dirty:
   - none
 - tests/proofs completed in this recovery closure cycle:
@@ -67,15 +69,16 @@
   - `/marketplace` returns `200`, renders `Showing 3 products`, and preserves the legitimate product set on Monday, August 10, 2026
   - `/api/sponsored-businesses` returns the verified eight-card sponsor set on Monday, August 10, 2026
   - `/business-directory` returns `200`, preserves `Claim This Listing`, and still resolves neutral fallback media on Monday, August 10, 2026
+  - DA-10 localhost proof on Monday, August 10, 2026 confirms `/`, `/about`, `/founding-principle`, and `/join-the-mission` return `200` and render the new claim-first `70/20/10` public strategy language
 - unresolved blockers/data dependencies:
   - `repo_clean` still has a large pre-existing dirty working tree and is not clean
   - normal `git commit` hooks trigger repo-wide `eslint src/ --fix` plus `prettier --write .`, which creates broad churn and must be handled carefully
   - `BWE-10 Marketplace checkout / fulfillment proof` remains an external validation dependency pending one owner-authorized real payment completion + Stripe/webhook/DB/UI fulfillment capture; localhost `Stripe is not configured` is not currently classified as an application-code defect
   - `BWE-13 Auth/session parity` remains an external validation dependency pending second-machine parity capture
-  - production auth/session audit remains recorded as `NOT YET VERIFIED`; no fresh reproduction was run or established in the DA-07 lane
+  - production auth/session audit is now explicitly reconciled back to `NOT YET VERIFIED` in current control records; no fresh August 10 reproduction was run in the DA-07/DA-10 lanes, so the older code-path audit is preserved as historical evidence rather than a currently reproduced live defect
 - current dirty-tree count: `379` file-level git status entries (`git status --porcelain=v1 -uall`)
-- exact next workstream: `continue DA-10 claim-focused content strategy` while preserving `BWE-10` and `BWE-13` as external proof blockers
-- exact first action for the next session: keep founder identity wording factual, keep claim wording unchanged (`Claim This Listing` / `Claim Your Listing`), keep the three legitimate products visible, preserve the approved `/default-image.jpg` fallback, and continue the next non-Stripe trust/content queue only
+- exact next workstream: `continue DA-04 account-type onboarding` while preserving `BWE-10` and `BWE-13` as external proof blockers
+- exact first action for the next session: audit Business Owner, Seller, Employer, and General User onboarding entry, redirect, and destination states from the current canonical runtime without disturbing the newly closed DA-10 claim-first language
 - production/deployment status: no deploy this session; no production Mongo writes; no Stripe production mutations
 - dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-04T16-51-54-0700-session-close`
 - localhost runtime status: `http://127.0.0.1:3000` live on PID `6106`
@@ -85,6 +88,7 @@
   - `P1 homepage featured sponsors`: COMPLETE
   - `P1 directory sponsor sidebar`: COMPLETE
   - `Founder identity / trust surfaces`: COMPLETE
+  - `Claim-focused content strategy`: COMPLETE
   - `Claim This Listing / Claim Your Listing`: CORRECT — PRESERVE
   - `legitimate marketplace products`: `3`
   - `QA product`: EXCLUDED
@@ -104,9 +108,9 @@
 ## CURRENT CANONICAL PROGRAM STATUS — 2026-08-10
 
 - total unique canonical workstreams: `30`
-- complete: `24`
-- active: `1`
-- pending: `4`
+- complete: `25`
+- active: `0`
+- pending: `3`
 - blocked: `2`
 - superseded: `0`
 
@@ -139,7 +143,7 @@
 | DA-07  | Founder identity / trust                                                  | COMPLETE | `832d094`   | Closed on Monday, August 10, 2026 after making the founder-led identity explicit across homepage trust/schema, About, Contact, Support, footer, and founding-principle surfaces while preserving marketplace count, sponsor surfaces, neutral fallback media, and claim terminology.                                                                                                                                 |
 | DA-08  | Brand / SEO consistency                                                   | COMPLETE | `9f7de64`   | Closed on Sunday, August 9, 2026 after auditing the priority public SEO/brand surfaces and completing the remaining runtime SEO bundle on `/black-business-websites`: corrected the page title, canonical positioning copy, meta description, Open Graph metadata, and Twitter metadata while preserving current product, sponsor, fallback-image, and claim terminology behavior.                            |
 | DA-09  | Social / site offer alignment                                             | COMPLETE | `fffec5d`   | Closed on Sunday, August 9, 2026 after preserving the verified three-product marketplace state across public offer surfaces and correcting the remaining signup welcome-copy claim from an exaggerated marketplace promise to factual live-catalog language.                                                                                                                                                  |
-| DA-10  | Claim-focused content strategy                                            | ACTIVE   | `pending`   | Preserve and restate the agreed `70/20/10` strategy on current public/editorial surfaces without disturbing the newly closed founder-identity trust layer.                                                                                                                                                                                                                                                     |
+| DA-10  | Claim-focused content strategy                                            | COMPLETE | `ccf1172`   | Closed on Monday, August 10, 2026 after restating the agreed `70/20/10` claim-first strategy across homepage, About, Founding Principle, and Join the Mission surfaces while preserving founder identity trust language, claim terminology, sponsor behavior, and the three legitimate marketplace products.                                                                                          |
 | DA-11  | Sponsor basic search                                                      | COMPLETE | `f098f49`   | Same underlying lane as BWE-18; closure audit confirms PAMFA works as an ordinary public business after sponsor expiry and the remaining names fail because no linked public business/source row exists.                                                                                                                                                                                                      |
 | DA-12  | Scalable legitimacy / ownership verification                              | PENDING  | `5310b59`   | Standing future/scaling lane only, not the immediate execution target; current owner verification is strong for normal flows, and the next eventual step is automated normal checks plus admin-review exception routing.                                                                                                                                                                                       |
 
