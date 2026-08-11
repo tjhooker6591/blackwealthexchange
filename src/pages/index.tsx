@@ -1460,63 +1460,6 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="mx-auto mt-5 max-w-5xl rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-            <div className="max-w-3xl text-left">
-              <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-                Current 70 / 20 / 10 focus
-              </p>
-              <h3 className="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
-                BWE&apos;s current public strategy is claim-first.
-              </h3>
-              <p className="mt-2 text-sm text-white/75">
-                The current emphasis is straightforward: spend most of the
-                effort helping existing businesses claim and strengthen their
-                listing, reserve a smaller share for quality new visibility, and
-                keep a lighter but important share on founder-led trust content
-                and public support clarity.
-              </p>
-            </div>
-
-            <div className="mt-5 grid gap-3 md:grid-cols-3">
-              <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">
-                  70%
-                </div>
-                <h4 className="mt-1 text-sm font-extrabold text-white">
-                  Claim and strengthen listings
-                </h4>
-                <p className="mt-1 text-xs text-white/70">
-                  Prioritize businesses that already have a public BWE listing
-                  and need ownership, trust, and profile improvement.
-                </p>
-              </article>
-              <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">
-                  20%
-                </div>
-                <h4 className="mt-1 text-sm font-extrabold text-white">
-                  Add qualified new visibility
-                </h4>
-                <p className="mt-1 text-xs text-white/70">
-                  Expand strong listings, sponsor-ready discovery, and other
-                  practical visibility lanes where live inventory is real.
-                </p>
-              </article>
-              <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">
-                  10%
-                </div>
-                <h4 className="mt-1 text-sm font-extrabold text-white">
-                  Explain and support clearly
-                </h4>
-                <p className="mt-1 text-xs text-white/70">
-                  Keep founder story, support routes, and public positioning
-                  factual, current, and easy to understand.
-                </p>
-              </article>
-            </div>
-          </section>
-
           <div className="mx-auto mt-5 max-w-4xl rounded-xl border border-yellow-500/20 bg-yellow-500/8 p-3 sm:p-3.5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="text-left">
