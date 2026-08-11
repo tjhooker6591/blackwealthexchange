@@ -986,12 +986,6 @@ export function normalizeFoundingEmailDomain(value: unknown) {
   return extractEmailDomain(value);
 }
 
-function toMatchResult(status: FoundingVerificationSignalStatus): FoundingStructuredMatchResult {
-  if (status === "pass") return "MATCH";
-  if (status === "fail") return "MISMATCH";
-  return "UNKNOWN";
-}
-
 function firstMeaningfulString(...values: unknown[]) {
   for (const value of values) {
     if (typeof value === "string" && value.trim()) return value.trim();

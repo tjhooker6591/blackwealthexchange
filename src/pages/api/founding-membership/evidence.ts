@@ -73,7 +73,7 @@ export default async function handler(
       return res.status(401).json({ ok: false, error: "unauthorized" });
     }
 
-    const { db, membership, business, review, claim, onboarding, user, userId, email } =
+    const { db, membership, business, review, claim: _claim, onboarding, user, userId, email } =
       context;
     const existingClaimIntake = (review as any)?.claimIntake || null;
 

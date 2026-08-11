@@ -122,6 +122,19 @@ export default async function handler(
         displayPhone: s(b.phone) || s(b.businessPhone),
         displayCategory: s(b.category) || s(b.businessCategory),
         derivedStatus,
+        automationDisposition:
+          typeof b?.blackOwnedVerification?.decision?.disposition === "string"
+            ? b.blackOwnedVerification.decision.disposition
+            : null,
+        automationSummary:
+          typeof b?.blackOwnedVerification?.decision?.summary === "string"
+            ? b.blackOwnedVerification.decision.summary
+            : null,
+        requiredActions: Array.isArray(
+          b?.blackOwnedVerification?.decision?.requiredActions,
+        )
+          ? b.blackOwnedVerification.decision.requiredActions
+          : [],
         createdAtIso: iso(b.createdAt),
         submittedAtIso: iso(b.submittedAt),
         updatedAtIso: iso(b.updatedAt),

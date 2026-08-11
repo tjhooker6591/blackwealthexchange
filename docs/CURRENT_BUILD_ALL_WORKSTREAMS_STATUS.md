@@ -1,5 +1,37 @@
 # Current Build — Canonical All-Workstreams Status
 
+## Compact checkpoint — 2026-08-11
+
+- CURRENT HEAD: `75f8cb1af44fc05d3dca66f4911b8a4df8d51ee4`
+- LATEST RUNTIME CHECKPOINT: `1af802a483855ee6029894de27989bbac97c8cad`
+- DIRTY APPLICATION FILE COUNT: `0`
+- COMPLETED VERIFICATION CAPABILITIES:
+  - existing claim / ownership verification preserved
+  - DA-13 human-verification mode complete
+  - structured intake, explainable decisioning, admin visibility, and exception routing complete
+- FINAL MISSING AUTOMATION CAPABILITIES:
+  - prospective automated Black-owned verification for new businesses
+  - qualifying-owner attestation capture
+  - 51% ownership/control calculation
+  - automated more-evidence routing without default admin review
+  - safe public-activation contract kept OFF until proof closes
+- EXISTING INVENTORY PRESERVATION RULE:
+  - established inventory remains untouched and outside the prospective automation lane
+- NEW-BUSINESS PROSPECTIVE RULE:
+  - only new businesses may enter the final Black-owned verification automation path, and race inference is prohibited
+
+## Implementation result — 2026-08-11
+
+- prospective automated new-business Black-owned verification: implemented locally
+- existing inventory preserved: yes
+- qualifying owner records + explicit Black self-attestation: implemented
+- 51% ownership/control calculation: implemented
+- automated more-evidence routing: implemented
+- exception-only human review path: implemented
+- safe public activation contract: implemented / dry run / off
+- production auto-activation enabled: no
+- automatic racial inference: no
+
 Status labels allowed:
 
 - COMPLETE

@@ -1,5 +1,38 @@
 ## CURRENT SESSION HANDOFF
 
+## COMPACT CHECKPOINT — 2026-08-11
+
+- CURRENT HEAD: `75f8cb1af44fc05d3dca66f4911b8a4df8d51ee4`
+- LATEST RUNTIME CHECKPOINT: `1af802a483855ee6029894de27989bbac97c8cad`
+- DIRTY APPLICATION FILE COUNT: `0`
+- COMPLETED VERIFICATION CAPABILITIES:
+  - existing claim / ownership verification preserved
+  - DA-13 human-verification mode complete
+  - structured claim intake, evidence metadata, decision engine, admin visibility, and exception routing complete
+- FINAL MISSING AUTOMATION CAPABILITIES:
+  - prospective automated Black-owned verification for new businesses
+  - qualifying-owner attestation and percentage calculation
+  - automated more-evidence loop
+  - exception-only admin queue for new-business verification
+  - safe public-activation contract kept OFF behind feature gate until proof closes
+- EXISTING INVENTORY PRESERVATION RULE:
+  - existing BWE inventory remains the established verified baseline and must not be reverified, downgraded, hidden, or mass-migrated through the new-business automation path
+- NEW-BUSINESS PROSPECTIVE RULE:
+  - the final missing verification scope applies prospectively to new businesses only and must not use automatic racial inference
+
+## IMPLEMENTATION RESULT — 2026-08-11
+
+- FINAL AUTOMATED NEW-BUSINESS VERIFICATION: IMPLEMENTED LOCALLY
+- EXISTING INVENTORY PRESERVED: YES
+- NEW-BUSINESS BLACK SELF-ATTESTATION: CAPTURED EXPLICITLY
+- QUALIFYING OWNER RECORDS: IMPLEMENTED
+- 51% OWNERSHIP / CONTROL CALCULATION: IMPLEMENTED
+- AUTOMATED MORE-EVIDENCE REQUESTS: IMPLEMENTED
+- HUMAN EXCEPTION ROUTING: EXCEPTION-ONLY
+- SAFE PUBLIC ACTIVATION CONTRACT: IMPLEMENTED / DRY RUN / OFF
+- PRODUCTION AUTO-ACTIVATION ENABLED: NO
+- AUTOMATIC RACIAL INFERENCE: NO
+
 - timestamp: 2026-08-10 PDT
 - program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`

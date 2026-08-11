@@ -7,8 +7,13 @@ export type AdminBusinessBucket =
   | "duplicate_review";
 
 const PENDING_STATUSES = ["pending", "pending_approval", "pending_review"];
-const APPROVED_STATUSES = ["approved", "active"];
-const REJECTED_STATUSES = ["rejected", "denied"];
+const APPROVED_STATUSES = [
+  "approved",
+  "active",
+  "auto_verified_black_owned",
+  "pending_public_activation",
+];
+const REJECTED_STATUSES = ["rejected", "denied", "verification_failed"];
 const DUPLICATE_REVIEW_STATUSES = ["duplicate_pending_review"];
 
 function normalizeStatusValue(value: unknown): string {

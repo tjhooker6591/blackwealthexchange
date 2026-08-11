@@ -21,6 +21,9 @@ type Business = {
   missingFields?: string[];
   sourceLabel?: string | null;
   listingType?: string | null;
+  automationDisposition?: string | null;
+  automationSummary?: string | null;
+  requiredActions?: Array<{ code?: string; message?: string }>;
 };
 
 const PAGE_SIZE = 25;
@@ -295,6 +298,29 @@ export default function BusinessApprovals() {
                               <div className="mt-1 text-xs text-zinc-500">
                                 ID: {biz._id}
                               </div>
+                              {biz.automationDisposition ? (
+                                <div className="mt-2 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-xs text-zinc-200">
+                                  <div className="font-semibold text-gold">
+                                    {biz.automationDisposition}
+                                  </div>
+                                  {biz.automationSummary ? (
+                                    <div className="mt-1 text-zinc-300">
+                                      {biz.automationSummary}
+                                    </div>
+                                  ) : null}
+                                  {Array.isArray(biz.requiredActions) &&
+                                  biz.requiredActions.length ? (
+                                    <ul className="mt-2 list-disc space-y-1 pl-4 text-yellow-200">
+                                      {biz.requiredActions.map((item, index) => (
+                                        <li key={`${biz._id}-required-${index}`}>
+                                          {item?.message ||
+                                            "Additional evidence required"}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  ) : null}
+                                </div>
+                              ) : null}
                               {biz.queueKind &&
                               biz.queueKind !== "approvable_submission" ? (
                                 <div className="mt-1 text-xs text-yellow-300">

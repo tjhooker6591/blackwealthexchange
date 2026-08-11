@@ -2,6 +2,38 @@
 
 _Last updated: 2026-08-10 America/Los_Angeles_
 
+## Compact checkpoint — 2026-08-11
+
+- CURRENT HEAD: `75f8cb1af44fc05d3dca66f4911b8a4df8d51ee4`
+- LATEST RUNTIME CHECKPOINT: `1af802a483855ee6029894de27989bbac97c8cad`
+- DIRTY APPLICATION FILE COUNT: `0`
+- COMPLETED VERIFICATION CAPABILITIES:
+  - existing claim / ownership verification preserved
+  - DA-13 human-verification mode complete
+  - dry-run recommendation engine, structured intake, admin visibility, and exception routing complete
+- FINAL MISSING AUTOMATION CAPABILITIES:
+  - prospective automated Black-owned verification for new businesses
+  - qualifying Black-owner attestation + verified ownership/control calculation
+  - deterministic automated more-evidence requests
+  - exception-only admin queue for new-business verification
+  - safe public-activation contract implemented but left OFF until proof closes
+- EXISTING INVENTORY PRESERVATION RULE:
+  - current public BWE inventory remains the established verified Black-owned baseline and is not subject to the new-business automation lane
+- NEW-BUSINESS PROSPECTIVE RULE:
+  - only new-business submissions enter the final automated verification lane, and automatic racial inference remains prohibited
+
+## Implementation result — 2026-08-11
+
+- final automated new-business Black-owned verification: implemented locally
+- existing inventory preserved: yes
+- qualifying owner records + Black self-attestation: implemented
+- 51% ownership/control calculation: implemented
+- automated more-evidence requests: implemented
+- human exception routing: exception-only
+- safe public activation contract: implemented / dry run / off
+- production auto-activation enabled: no
+- automatic racial inference: no
+
 ## Current canonical execution state
 
 - Program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
