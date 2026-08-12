@@ -99,9 +99,9 @@ export default function About() {
             <p>
               Trust grows when people can see who built the platform, understand
               what it offers, and reach real support when they need help. That
-              is why the founder is named publicly, why the platform
-              description stays clear, and why BWE only describes features that
-              visitors can actually use today.
+              is why the founder is named publicly, why the platform description
+              stays clear, and why BWE only describes features that visitors can
+              actually use today.
             </p>
           </div>
         </section>
@@ -140,13 +140,13 @@ export default function About() {
           <p className="text-lg text-gray-300 max-w-4xl">
             Black Wealth Exchange is led by{" "}
             <strong className="text-white">Thomas James Hooker Sr.</strong>. He
-            leads the platform&apos;s direction, public accountability, and long-term
-            growth.
+            leads the platform&apos;s direction, public accountability, and
+            long-term growth.
             <br />
             <br />
-            BWE is built to serve businesses, consumers, sponsors, partners,
-            and future investors who want a clear understanding of who is
-            leading the company and what the platform is here to do.
+            BWE is built to serve businesses, consumers, sponsors, partners, and
+            future investors who want a clear understanding of who is leading
+            the company and what the platform is here to do.
           </p>
         </section>
 

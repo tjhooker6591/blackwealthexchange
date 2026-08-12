@@ -1059,7 +1059,6 @@ export default function Home() {
             <div className="mx-auto mt-1 max-w-4xl text-left text-[11px] text-white/50">
               Live platform inventory snapshot.
             </div>
-
           </div>
 
           {showHomepageBanner ? (
@@ -1388,9 +1387,9 @@ export default function Home() {
                   move into monthly growth support.
                 </h3>
                 <p className="mt-2 text-sm text-white/75">
-                  This path is for an existing BWE listing. Membership and
-                  claim processing begin after payment, while ownership
-                  verification is handled separately.
+                  This path is for an existing BWE listing. Membership and claim
+                  processing begin after payment, while ownership verification
+                  is handled separately.
                 </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-left">

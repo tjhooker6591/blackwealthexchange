@@ -278,9 +278,7 @@ export default function BlackCardLandingPage() {
                   3. Unlocked state: your dashboard card, rewards, and
                   redemption actions become available immediately.
                 </li>
-                <li>
-                  4. Physical cards are not currently available.
-                </li>
+                <li>4. Physical cards are not currently available.</li>
               </ul>
             </div>
 

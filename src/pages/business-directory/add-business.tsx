@@ -549,7 +549,9 @@ export default function AddBusinessForm() {
               </legend>
               <button
                 type="button"
-                onClick={() => setOwners((current) => [...current, createEmptyOwner()])}
+                onClick={() =>
+                  setOwners((current) => [...current, createEmptyOwner()])
+                }
                 className="rounded bg-gray-700 px-3 py-2 text-sm font-semibold text-white hover:bg-gray-600"
               >
                 Add Owner
@@ -574,7 +576,9 @@ export default function AddBusinessForm() {
                         type="button"
                         onClick={() =>
                           setOwners((current) =>
-                            current.filter((_, itemIndex) => itemIndex !== index),
+                            current.filter(
+                              (_, itemIndex) => itemIndex !== index,
+                            ),
                           )
                         }
                         className="text-sm text-red-300 hover:text-red-200"
@@ -605,7 +609,11 @@ export default function AddBusinessForm() {
                         step="0.01"
                         value={owner.ownershipPercentage}
                         onChange={(e) =>
-                          updateOwner(index, "ownershipPercentage", e.target.value)
+                          updateOwner(
+                            index,
+                            "ownershipPercentage",
+                            e.target.value,
+                          )
                         }
                         required
                         className="w-full p-2 rounded bg-gray-700 text-white mt-1"
@@ -653,7 +661,11 @@ export default function AddBusinessForm() {
                         type="checkbox"
                         checked={owner.isBlackAttested}
                         onChange={(e) =>
-                          updateOwner(index, "isBlackAttested", e.target.checked)
+                          updateOwner(
+                            index,
+                            "isBlackAttested",
+                            e.target.checked,
+                          )
                         }
                         className="h-4 w-4"
                       />
@@ -670,7 +682,11 @@ export default function AddBusinessForm() {
                         type="text"
                         value={owner.ownershipEvidenceIds}
                         onChange={(e) =>
-                          updateOwner(index, "ownershipEvidenceIds", e.target.value)
+                          updateOwner(
+                            index,
+                            "ownershipEvidenceIds",
+                            e.target.value,
+                          )
                         }
                         placeholder="Document 1, Document 2"
                         className="w-full p-2 rounded bg-gray-700 text-white mt-1"
@@ -687,7 +703,11 @@ export default function AddBusinessForm() {
                         type="text"
                         value={owner.controlEvidenceIds}
                         onChange={(e) =>
-                          updateOwner(index, "controlEvidenceIds", e.target.value)
+                          updateOwner(
+                            index,
+                            "controlEvidenceIds",
+                            e.target.value,
+                          )
                         }
                         placeholder="Document 1"
                         className="w-full p-2 rounded bg-gray-700 text-white mt-1"
@@ -735,7 +755,9 @@ export default function AddBusinessForm() {
                         type="button"
                         onClick={() =>
                           setEvidence((current) =>
-                            current.filter((_, itemIndex) => itemIndex !== index),
+                            current.filter(
+                              (_, itemIndex) => itemIndex !== index,
+                            ),
                           )
                         }
                         className="text-sm text-red-300 hover:text-red-200"
@@ -763,7 +785,9 @@ export default function AddBusinessForm() {
                         <option value="ownership_attestation">
                           Ownership Attestation
                         </option>
-                        <option value="ownership_ledger">Ownership Ledger</option>
+                        <option value="ownership_ledger">
+                          Ownership Ledger
+                        </option>
                         <option value="operating_agreement">
                           Operating Agreement
                         </option>
@@ -776,7 +800,9 @@ export default function AddBusinessForm() {
                         <option value="authorized_representative_letter">
                           Authorized Representative Letter
                         </option>
-                        <option value="business_license">Business License</option>
+                        <option value="business_license">
+                          Business License
+                        </option>
                         <option value="government_registration">
                           Government Registration
                         </option>
