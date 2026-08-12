@@ -1,37 +1,11 @@
 // /src/pages/black-student-opportunities/index.tsx
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-type OpportunityType =
-  | "Internship"
-  | "Scholarship"
-  | "Grant"
-  | "Fellowship"
-  | "Mentorship"
-  | "Research"
-  | "Competition"
-  | "Career";
-
-type Opportunity = {
-  id: string;
-  title: string;
-  org: string;
-  type: OpportunityType;
-  level: "High School" | "Undergrad" | "Graduate" | "Any";
-  mode: "Remote" | "In-Person" | "Hybrid" | "Any";
-  field:
-    | "STEM"
-    | "Business"
-    | "Healthcare"
-    | "Creative"
-    | "Public Service"
-    | "Finance"
-    | "Any";
-  note: string;
-  href: string;
-  isFeatured?: boolean;
-};
+import {
+  getStudentHubRecords,
+  type StudentHubRecord,
+} from "@/lib/studentHub/catalog";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -60,102 +34,7 @@ const CORE_ROUTES = [
   },
 ] as const;
 
-// Curated “works now” list.
-// Later, you can replace/augment this with a feed from your API (RSS aggregation).
-const CURATED: Opportunity[] = [
-  {
-    id: "uncf",
-    title: "UNCF Scholarships & Programs",
-    org: "UNCF",
-    type: "Scholarship",
-    level: "Any",
-    mode: "Any",
-    field: "Any",
-    note: "Scholarship and program listings vary year-round—check often.",
-    href: "https://uncf.org/scholarships",
-    isFeatured: true,
-  },
-  {
-    id: "tmcf",
-    title: "TMCF Scholarships",
-    org: "Thurgood Marshall College Fund (TMCF)",
-    type: "Scholarship",
-    level: "Undergrad",
-    mode: "Any",
-    field: "Any",
-    note: "Strong for HBCU students—deadlines rotate through the year.",
-    href: "https://www.tmcf.org/students-alumni/scholarships/",
-    isFeatured: true,
-  },
-  {
-    id: "inroads",
-    title: "INROADS Career Development & Opportunities",
-    org: "INROADS",
-    type: "Internship",
-    level: "Undergrad",
-    mode: "Any",
-    field: "Business",
-    note: "Career support + pathways into major employers.",
-    href: "https://inroads.org/",
-  },
-  {
-    id: "mlt",
-    title: "MLT Career Prep",
-    org: "Management Leadership for Tomorrow (MLT)",
-    type: "Mentorship",
-    level: "Undergrad",
-    mode: "Any",
-    field: "Business",
-    note: "Coaching + community. High-value for career acceleration.",
-    href: "https://mlt.org/career-prep/",
-  },
-  {
-    id: "nsbe",
-    title: "NSBE (STEM Community + Career Resources)",
-    org: "NSBE",
-    type: "Career",
-    level: "Any",
-    mode: "Any",
-    field: "STEM",
-    note: "Student membership + events + career connections.",
-    href: "https://www.nsbe.org/",
-  },
-  {
-    id: "naba",
-    title: "NABA Student Resources",
-    org: "NABA",
-    type: "Mentorship",
-    level: "Undergrad",
-    mode: "Any",
-    field: "Finance",
-    note: "Accounting/finance pathway support through chapters and programs.",
-    href: "https://www.nabainc.org/",
-  },
-  {
-    id: "scholarshipamerica",
-    title: "Scholarship Search",
-    org: "Scholarship America",
-    type: "Scholarship",
-    level: "Any",
-    mode: "Any",
-    field: "Any",
-    note: "Broad scholarship search tool—use with UNCF/TMCF too.",
-    href: "https://www.scholarshipamerica.org/",
-  },
-  {
-    id: "nsf-reu",
-    title: "NSF REU (Research Experiences for Undergraduates)",
-    org: "National Science Foundation",
-    type: "Research",
-    level: "Undergrad",
-    mode: "Any",
-    field: "STEM",
-    note: "Research programs hosted by universities. Great for grad school paths.",
-    href: "https://www.nsf.gov/crssprgm/reu/",
-  },
-];
-
-const TYPES: Array<OpportunityType | "All"> = [
+const TYPES = [
   "All",
   "Internship",
   "Scholarship",
@@ -167,7 +46,7 @@ const TYPES: Array<OpportunityType | "All"> = [
   "Career",
 ];
 
-const LEVELS: Array<Opportunity["level"] | "All"> = [
+const LEVELS = [
   "All",
   "High School",
   "Undergrad",
@@ -175,7 +54,7 @@ const LEVELS: Array<Opportunity["level"] | "All"> = [
   "Any",
 ];
 
-const MODES: Array<Opportunity["mode"] | "All"> = [
+const MODES = [
   "All",
   "Remote",
   "In-Person",
@@ -183,7 +62,7 @@ const MODES: Array<Opportunity["mode"] | "All"> = [
   "Any",
 ];
 
-const FIELDS: Array<Opportunity["field"] | "All"> = [
+const FIELDS = [
   "All",
   "STEM",
   "Business",
@@ -192,7 +71,76 @@ const FIELDS: Array<Opportunity["field"] | "All"> = [
   "Public Service",
   "Finance",
   "Any",
-];
+ ] as const;
+
+type Opportunity = {
+  id: string;
+  title: string;
+  org: string;
+  type: (typeof TYPES)[number];
+  level: (typeof LEVELS)[number];
+  mode: (typeof MODES)[number];
+  field: (typeof FIELDS)[number];
+  note: string;
+  href: string;
+  isFeatured?: boolean;
+};
+
+function formatType(record: StudentHubRecord): Opportunity["type"] {
+  switch (record.opportunityType) {
+    case "internship":
+      return "Internship";
+    case "scholarship":
+    case "financial_aid":
+      return "Scholarship";
+    case "grant":
+      return "Grant";
+    case "fellowship":
+      return "Fellowship";
+    case "research":
+      return "Research";
+    case "mentorship":
+      return "Mentorship";
+    default:
+      return "Career";
+  }
+}
+
+function formatLevel(record: StudentHubRecord): Opportunity["level"] {
+  switch (record.studentLevel) {
+    case "high_school":
+      return "High School";
+    case "undergraduate":
+      return "Undergrad";
+    case "graduate":
+      return "Graduate";
+    default:
+      return "Any";
+  }
+}
+
+function formatMode(record: StudentHubRecord): Opportunity["mode"] {
+  switch (record.attendanceMode) {
+    case "remote":
+      return "Remote";
+    case "in_person":
+      return "In-Person";
+    case "hybrid":
+      return "Hybrid";
+    default:
+      return "Any";
+  }
+}
+
+function formatField(record: StudentHubRecord): Opportunity["field"] {
+  const discipline = (record.discipline || "").toLowerCase();
+  if (discipline.includes("stem") || discipline.includes("health")) return "STEM";
+  if (discipline.includes("finance") || discipline.includes("account")) return "Finance";
+  if (discipline.includes("business") || discipline.includes("consult")) return "Business";
+  if (discipline.includes("creative") || discipline.includes("design")) return "Creative";
+  if (discipline.includes("public")) return "Public Service";
+  return "Any";
+}
 
 export default function StudentOpportunitiesHub() {
   const [q, setQ] = useState("");
@@ -201,34 +149,22 @@ export default function StudentOpportunitiesHub() {
   const [mode, setMode] = useState<(typeof MODES)[number]>("All");
   const [field, setField] = useState<(typeof FIELDS)[number]>("All");
 
-  // Optional future feed hook (won’t break if endpoint doesn’t exist)
-  const [liveFeed, setLiveFeed] = useState<Opportunity[] | null>(null);
-
-  useEffect(() => {
-    let alive = true;
-
-    // If you later build an API like:
-    // /api/opportunities/latest?limit=8
-    // You can power this hub with live RSS aggregation.
-    fetch("/api/opportunities/latest?limit=8")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (!alive) return;
-        if (Array.isArray(data)) setLiveFeed(data);
-      })
-      .catch(() => {
-        // silently ignore until you create the endpoint
-      });
-
-    return () => {
-      alive = false;
-    };
-  }, []);
-
   const data = useMemo(() => {
-    // Priority: live feed if available; else curated.
-    return (liveFeed && liveFeed.length ? liveFeed : CURATED).slice(0, 50);
-  }, [liveFeed]);
+    return getStudentHubRecords("hub").map(
+      (record): Opportunity => ({
+        id: record.id,
+        title: record.title,
+        org: record.organization,
+        type: formatType(record),
+        level: formatLevel(record),
+        mode: formatMode(record),
+        field: formatField(record),
+        note: record.statusNote || record.description,
+        href: record.applicationUrl,
+        isFeatured: Boolean(record.featured),
+      }),
+    );
+  }, []);
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
@@ -304,6 +240,10 @@ export default function StudentOpportunitiesHub() {
           <span className="text-white font-semibold"> build leverage</span>, and
           <span className="text-white font-semibold"> join a network</span> that
           grows with them.
+        </p>
+        <p className="mt-2 text-xs sm:text-sm text-gray-400 max-w-3xl mx-auto">
+          It is built with Black students in mind and remains open to all
+          students pursuing opportunities for which they qualify.
         </p>
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
