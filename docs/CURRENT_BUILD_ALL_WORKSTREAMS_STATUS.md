@@ -1,20 +1,27 @@
 # Current Build — Canonical All-Workstreams Status
 
-## Compact checkpoint — 2026-08-11
+## Compact checkpoint — 2026-08-12
 
-- CURRENT HEAD: `75f8cb1af44fc05d3dca66f4911b8a4df8d51ee4`
-- LATEST RUNTIME CHECKPOINT: `1af802a483855ee6029894de27989bbac97c8cad`
-- DIRTY APPLICATION FILE COUNT: `0`
+- LATEST VERIFIED RUNTIME HEAD: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
+- PUBLIC UX RECONCILIATION COMMITS PRESENT:
+  - `4cc163a7a955d38fd3403680bc5ceaa0cd3c6c1e`
+  - `53d023a535437a4e848e575ac7b4310584916b05`
+  - `5fa3db91f0d81e61f8218fd007bb008b9de1e4bc`
+  - `7322e189ff275330f6050599f91351212cfc7efb`
+  - `dea50fb5dc1497ba6bfa317bccc2afb4d09bc413`
+- RUNTIME RECONCILIATION COMMIT: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
+- LIVE ROOT RUNTIME DIRTY COUNT: `0` tracked runtime diffs
+- PRE-EXISTING ROOT PUBLIC ASSET DIRTINESS: `1` untracked upload directory (`public/uploads/businesses/`)
 - COMPLETED VERIFICATION CAPABILITIES:
   - existing claim / ownership verification preserved
-  - DA-13 human-verification mode complete
-  - structured intake, explainable decisioning, admin visibility, and exception routing complete
-- FINAL MISSING AUTOMATION CAPABILITIES:
-  - prospective automated Black-owned verification for new businesses
-  - qualifying-owner attestation capture
-  - 51% ownership/control calculation
-  - automated more-evidence routing without default admin review
-  - safe public-activation contract kept OFF until proof closes
+  - ownership verification complete
+  - prospective new-business Black-owned verification automation implemented
+  - structured intake, explainable decisioning, automated more-evidence routing, admin visibility, and exception routing complete
+- PRESERVED SAFETY BOUNDARIES:
+  - existing verified BWE inventory remains unchanged
+  - safe public-activation contract remains implemented but feature-gated OFF
+  - production auto-activation remains OFF
+  - automatic racial inference remains prohibited
 - EXISTING INVENTORY PRESERVATION RULE:
   - established inventory remains untouched and outside the prospective automation lane
 - NEW-BUSINESS PROSPECTIVE RULE:
@@ -22,15 +29,27 @@
 
 ## Implementation result — 2026-08-11
 
-- prospective automated new-business Black-owned verification: implemented locally
+- prospective automated new-business Black-owned verification: implemented
 - existing inventory preserved: yes
 - qualifying owner records + explicit Black self-attestation: implemented
+- business legitimacy automation: implemented
+- claimant authorization automation: implemented
 - 51% ownership/control calculation: implemented
 - automated more-evidence routing: implemented
 - exception-only human review path: implemented
 - safe public activation contract: implemented / dry run / off
 - production auto-activation enabled: no
 - automatic racial inference: no
+
+## Student Hub — structured current + upcoming opportunity rebuild
+
+- **Status:** REQUIRED / NOT COMPLETE
+- **Primary audience:** Black students
+- **Access:** open to all students
+- **HBCU resources:** included as part of the hub
+- **HBCU focus of entire hub:** no
+- **Current baseline:** 27 hardcoded opportunity records, 27 stale/unverified, 27 missing structured dates, 4 duplicate URL groups / 8 duplicate raw entries, 1 confirmed broken link, dead/unsupported feed hooks, no canonical opportunity model, no freshness automation, no Student Hub admin maintenance surface
+- **Required outcome:** structured opportunity data, source verification, current + legitimate upcoming opportunities, date-derived lifecycle states, stale/broken-link review, duplicate control, and maintainability through existing BWE admin architecture
 
 Status labels allowed:
 

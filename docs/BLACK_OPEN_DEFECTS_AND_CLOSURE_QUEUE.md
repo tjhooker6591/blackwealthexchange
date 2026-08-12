@@ -1,22 +1,23 @@
 # BLACK OPEN DEFECTS AND CLOSURE QUEUE
 
-_Last updated: 2026-08-10 America/Los_Angeles_
+_Last updated: 2026-08-12 America/Los_Angeles_
 
-## Compact checkpoint — 2026-08-11
+## Compact checkpoint — 2026-08-12
 
-- CURRENT HEAD: `75f8cb1af44fc05d3dca66f4911b8a4df8d51ee4`
-- LATEST RUNTIME CHECKPOINT: `1af802a483855ee6029894de27989bbac97c8cad`
-- DIRTY APPLICATION FILE COUNT: `0`
+- LATEST VERIFIED RUNTIME HEAD: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
+- PUBLIC UX RECONCILIATION COMMITS PRESENT: `4cc163a`, `53d023a`, `5fa3db9`, `7322e18`, `dea50fb`
+- RUNTIME RECONCILIATION COMMIT: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
+- LIVE ROOT RUNTIME DIRTY COUNT: `0` tracked runtime diffs
+- PRE-EXISTING ROOT PUBLIC ASSET DIRTINESS: `1` untracked upload directory (`public/uploads/businesses/`)
 - COMPLETED VERIFICATION CAPABILITIES:
   - existing claim / ownership verification preserved
-  - DA-13 human-verification mode complete
-  - dry-run recommendation engine, structured intake, admin visibility, and exception routing complete
-- FINAL MISSING AUTOMATION CAPABILITIES:
-  - prospective automated Black-owned verification for new businesses
-  - qualifying Black-owner attestation + verified ownership/control calculation
-  - deterministic automated more-evidence requests
-  - exception-only admin queue for new-business verification
-  - safe public-activation contract implemented but left OFF until proof closes
+  - ownership verification complete
+  - deterministic new-business Black-owned eligibility automation complete
+  - dry-run recommendation engine, structured intake, automated more-evidence handling, admin visibility, and exception routing complete
+- PRESERVED SAFETY BOUNDARIES:
+  - safe public-activation contract implemented but left OFF behind feature gate
+  - production auto-activation remains OFF
+  - automatic racial inference remains prohibited
 - EXISTING INVENTORY PRESERVATION RULE:
   - current public BWE inventory remains the established verified Black-owned baseline and is not subject to the new-business automation lane
 - NEW-BUSINESS PROSPECTIVE RULE:
@@ -24,9 +25,11 @@ _Last updated: 2026-08-10 America/Los_Angeles_
 
 ## Implementation result — 2026-08-11
 
-- final automated new-business Black-owned verification: implemented locally
+- final automated new-business Black-owned verification: implemented
 - existing inventory preserved: yes
 - qualifying owner records + Black self-attestation: implemented
+- business legitimacy automation: implemented
+- claimant authorization automation: implemented
 - 51% ownership/control calculation: implemented
 - automated more-evidence requests: implemented
 - human exception routing: exception-only
@@ -39,8 +42,8 @@ _Last updated: 2026-08-10 America/Los_Angeles_
 - Program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Latest runtime checkpoint SHA: `1af802a483855ee6029894de27989bbac97c8cad`
-- Current git HEAD verified live during session: `3f109bb507f71a4e729046068acd00176fc591cc`
+- Latest verified runtime head SHA: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
+- Current git HEAD verified before control-record update: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
 - Runtime application countdown: `0` unresolved runtime follow-through files remain from the DA-06/DA-08/DA-09/DA-07/DA-10 public-surface bundle
@@ -48,7 +51,8 @@ _Last updated: 2026-08-10 America/Los_Angeles_
   - `BWE-10` owner-authorized final marketplace payment verification
   - `BWE-13` second-machine auth/runtime parity proof
 - Current non-blocked execution target:
-  - `none`
+  - `OWNER ACCEPTANCE TESTING` — Thomas walkthrough of the new-business verification flow before any broader engineering lane resumes
+  - `STUDENT HUB — STRUCTURED CURRENT + UPCOMING OPPORTUNITY REBUILD` — REQUIRED / NOT COMPLETE after runtime closure
 - Standing future/scaling lane:
   - `AUTOMATIC OWNERSHIP ACTIVATION` — DEFERRED (real-world evidence gate not met)
 - Current preserved public state:
