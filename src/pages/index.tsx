@@ -1060,42 +1060,6 @@ export default function Home() {
               Live platform inventory snapshot.
             </div>
 
-            <section className="mx-auto mt-4 max-w-5xl rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-              <div className="grid gap-4 md:grid-cols-[1.2fr,0.8fr]">
-                <div>
-                  <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#D4AF37]">
-                    Founder-led identity
-                  </div>
-                  <h2 className="mt-2 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
-                    Built by Thomas James Hooker Sr. to make Black business
-                    discovery and growth more actionable.
-                  </h2>
-                  <p className="mt-3 text-sm leading-6 text-white/74 sm:text-[15px]">
-                    BWE was created to do more than list names. The platform is
-                    being built to help businesses get discovered, help owners
-                    claim and strengthen listings, help consumers find credible
-                    businesses and products, and help growth opportunities
-                    connect in one public system.
-                  </p>
-                </div>
-                <div className="grid gap-2">
-                  <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white/80">
-                    Founder: Thomas James Hooker Sr.
-                  </div>
-                  <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white/80">
-                    Company: Black Wealth Exchange
-                  </div>
-                  <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white/80">
-                    Positioning: Black-Owned Business Discovery and Growth
-                    Platform
-                  </div>
-                  <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-3 text-sm text-white/80">
-                    Public trust paths: About, Contact, Support, Claim, and
-                    Marketplace surfaces
-                  </div>
-                </div>
-              </div>
-            </section>
           </div>
 
           {showHomepageBanner ? (
