@@ -391,7 +391,7 @@ export default function Pricing() {
                 },
                 {
                   ok: true,
-                  text: "Physical card option is not active yet and is planned for a future vendor-fulfilled phase",
+                  text: "Physical cards are not currently available",
                 },
               ]}
               ctaText={
@@ -482,9 +482,8 @@ export default function Pricing() {
               current system checks.
             </p>
             <p className="mt-3 text-xs text-gray-400">
-              Future roadmap items such as community features, custom reports,
-              and VIP partner lanes are not included unless explicitly marked
-              active.
+              Only currently available benefits are included in the plans shown
+              here.
             </p>
 
             <div className="mt-5 grid grid-cols-1 gap-4 text-sm md:grid-cols-3">

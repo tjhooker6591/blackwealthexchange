@@ -95,56 +95,6 @@ export default function JoinTheMissionPage() {
         </div>
       </section>
 
-      <section className="relative max-w-6xl mx-auto px-6 pb-10">
-        <div className="rounded-2xl border border-yellow-500/20 bg-white/5 p-6">
-          <div className="max-w-3xl">
-            <p className="text-xs font-bold uppercase tracking-[0.12em] text-yellow-400">
-              Current 70/20/10 Focus
-            </p>
-            <h2 className="mt-3 text-2xl font-bold text-white">
-              The public strategy is claim-first, then selective growth, then
-              trust storytelling.
-            </h2>
-            <p className="mt-3 text-white/80 leading-relaxed">
-              That means most near-term effort should help existing businesses
-              claim and strengthen their listing, a smaller share should expand
-              qualified public visibility, and the rest should explain the
-              mission clearly without overstating what is live.
-            </p>
-          </div>
-
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
-            <div className="rounded-xl border border-white/10 bg-black/30 p-5">
-              <div className="text-sm font-bold text-yellow-400">
-                70% Claim existing listings
-              </div>
-              <p className="mt-2 text-sm text-white/80 leading-relaxed">
-                Improve claim discovery, ownership trust, and profile quality
-                for businesses already visible on BWE.
-              </p>
-            </div>
-            <div className="rounded-xl border border-white/10 bg-black/30 p-5">
-              <div className="text-sm font-bold text-yellow-400">
-                20% Add strong new visibility
-              </div>
-              <p className="mt-2 text-sm text-white/80 leading-relaxed">
-                Bring in qualified businesses, sponsor-ready surfaces, and
-                practical discovery improvements where the inventory is real.
-              </p>
-            </div>
-            <div className="rounded-xl border border-white/10 bg-black/30 p-5">
-              <div className="text-sm font-bold text-yellow-400">
-                10% Explain and support
-              </div>
-              <p className="mt-2 text-sm text-white/80 leading-relaxed">
-                Keep founder story, support routes, and public trust content
-                accurate, current, and useful.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Roles */}
       <section className="relative max-w-6xl mx-auto px-6 pb-12">
         <h2 className="text-3xl font-extrabold text-yellow-400">Open Roles</h2>
