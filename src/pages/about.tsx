@@ -29,25 +29,6 @@ const commitments = [
   "Build with standards that scale across the diaspora.",
 ];
 
-const founderStory = [
-  {
-    title: "Who founded BWE",
-    body: "Black Wealth Exchange was founded by Thomas James Hooker Sr., Founder of Black Wealth Exchange.",
-  },
-  {
-    title: "Why it exists",
-    body: "BWE exists to make it easier to discover Black-owned businesses, strengthen business visibility, and create clearer paths for commerce, ownership, and long-term growth.",
-  },
-  {
-    title: "How the platform works",
-    body: "The platform connects discovery, claim and ownership workflows, marketplace activity, jobs, learning resources, and sponsor visibility so businesses and consumers can take practical next steps in one place.",
-  },
-  {
-    title: "Why trust matters",
-    body: "BWE is a founder-led, mission-driven for-profit platform built to help people discover Black-owned businesses, understand what the platform offers today, and reach the team through clear support and contact options.",
-  },
-];
-
 const trustSignals = [
   "Founder identified publicly as Thomas James Hooker Sr.",
   "Mission-driven for-profit platform, not a nonprofit or government program.",
@@ -143,42 +124,6 @@ export default function About() {
               >
                 Read the founder story and founding principle
               </Link>
-            </div>
-          </div>
-        </section>
-
-        <section className="border-b border-white/10 bg-white/[0.02]">
-          <div className="mx-auto max-w-6xl px-4 py-12 sm:py-14">
-            <div className="max-w-3xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#D4AF37]">
-                Founder Identity
-              </p>
-              <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
-                Thomas James Hooker Sr. is the founder of Black Wealth Exchange.
-              </h2>
-              <p className="mt-4 text-sm leading-relaxed text-white/72 sm:text-base">
-                BWE is not presented as an anonymous directory or generic
-                community template. It is a real founder-led platform with a
-                public mission: help Black-owned businesses get discovered,
-                strengthen trust through ownership and claim workflows, support
-                commerce through marketplace and sponsor surfaces, and build
-                toward stronger growth infrastructure over time.
-              </p>
-            </div>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              {founderStory.map((item) => (
-                <article
-                  key={item.title}
-                  className="rounded-xl border border-white/10 bg-black/40 p-5"
-                >
-                  <h3 className="text-base font-semibold text-[#D4AF37]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-white/72">
-                    {item.body}
-                  </p>
-                </article>
-              ))}
             </div>
           </div>
         </section>

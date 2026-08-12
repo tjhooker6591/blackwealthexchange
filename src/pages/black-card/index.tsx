@@ -77,7 +77,7 @@ export default function BlackCardLandingPage() {
         <title>BWE Black Card | Black Wealth Exchange</title>
         <meta
           name="description"
-          content="BWE Black Card is BWE's flagship membership product with clear tier value, premium benefits, and secure activation flow."
+          content="BWE Black Card is a BWE membership benefit with clear plan-to-tier mapping, member rewards access, and secure activation through pricing."
         />
       </Head>
 
@@ -106,7 +106,7 @@ export default function BlackCardLandingPage() {
             <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
               <div>
                 <div className="inline-flex rounded-full border border-[#D4AF37]/60 bg-[#D4AF37]/10 px-3 py-1 text-xs font-extrabold uppercase tracking-[0.22em] text-[#F1D57A]">
-                  FLAGSHIP MEMBERSHIP
+                  MEMBERSHIP BENEFIT
                 </div>
                 <h1 className="mt-3 text-4xl font-black leading-tight text-[#F1D57A] md:text-6xl">
                   BWE Black Card
@@ -116,14 +116,15 @@ export default function BlackCardLandingPage() {
                   member advantage.
                 </p>
                 <p className="mt-4 max-w-3xl text-[#D9D9D9]">
-                  {BLACK_CARD_POSITIONING}. Black Card is included with your
-                  membership plan. Use pricing page to activate membership.
+                  {BLACK_CARD_POSITIONING}. Black Card is a membership benefit
+                  tied to your BWE plan. Premium includes Standard, Founding
+                  Member includes Signature, and Elite remains invite-only.
                 </p>
 
                 <div className="mt-6 grid gap-3 text-sm text-[#DDD] sm:grid-cols-3">
                   <div className="rounded-xl border border-white/10 bg-black/40 p-3">
                     <div className="text-xs uppercase tracking-[0.16em] text-[#CDA94C]">
-                      Entry Tier
+                      Premium Plan
                     </div>
                     <div className="mt-1 font-semibold">Standard</div>
                     <div className="text-xs text-white/70">
@@ -132,7 +133,7 @@ export default function BlackCardLandingPage() {
                   </div>
                   <div className="rounded-xl border border-white/10 bg-black/40 p-3">
                     <div className="text-xs uppercase tracking-[0.16em] text-[#CDA94C]">
-                      Membership Tier
+                      Founding Member Plan
                     </div>
                     <div className="mt-1 font-semibold">Signature</div>
                     <div className="text-xs text-white/70">
@@ -141,7 +142,7 @@ export default function BlackCardLandingPage() {
                   </div>
                   <div className="rounded-xl border border-white/10 bg-black/40 p-3">
                     <div className="text-xs uppercase tracking-[0.16em] text-[#CDA94C]">
-                      Executive Tier
+                      Elite Tier
                     </div>
                     <div className="mt-1 font-semibold">Elite</div>
                     <div className="text-xs text-white/70">
@@ -186,13 +187,8 @@ export default function BlackCardLandingPage() {
               Black Card tiers and plan mapping
             </h2>
             <p className="mt-2 text-sm text-[#B0B0B0]">
-              Black Card is included with your plan. Use pricing as the only
-              membership checkout path.
-            </p>
-            <p className="mt-2 text-xs text-[#AFAFAF]">
-              Your membership plan determines your Black Card tier. Premium
-              activates Standard. Founding Member activates Signature. Elite is
-              invite-only.
+              Your BWE membership plan determines your Black Card tier. Use the
+              pricing page to activate the plan that matches the tier you want.
             </p>
 
             <div className="mt-4 grid gap-4 lg:grid-cols-3">
@@ -283,8 +279,7 @@ export default function BlackCardLandingPage() {
                   redemption actions become available immediately.
                 </li>
                 <li>
-                  4. Physical card option planned for a future vendor-fulfilled
-                  phase.
+                  4. Physical cards are not currently available.
                 </li>
               </ul>
             </div>
@@ -299,8 +294,8 @@ export default function BlackCardLandingPage() {
                   points.
                 </li>
                 <li>
-                  • Signature adds expanding access and broader redemption
-                  opportunities as rollout continues.
+                  • Signature adds broader rewards access and higher-tier member
+                  benefits in the current system.
                 </li>
                 <li>
                   • Elite is invite-only and represents the highest-tier

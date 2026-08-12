@@ -1724,8 +1724,7 @@ export default function Home() {
                 Join Creator or Consulting Waitlist
               </h4>
               <p className="mt-1 text-xs text-white/70">
-                Stay close to new launches without cluttering the top of the
-                homepage.
+                Get updates when new creator and consulting opportunities open.
               </p>
               <button
                 type="button"

@@ -14,7 +14,7 @@ export default function Storefront() {
         <meta
           name="description"
           content={truncateMeta(
-            "Explore Black Wealth Exchange storefront categories and open the live marketplace to see the current public catalog state.",
+            "Explore Black Wealth Exchange storefront categories and jump into the marketplace to browse available products and seller opportunities.",
           )}
         />
         <link rel="canonical" href={canonicalUrl("/storefront")} />
@@ -25,11 +25,9 @@ export default function Storefront() {
             Discover Black-Owned Excellence
           </h1>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-10">
-            The Storefront highlights the kinds of Black-owned categories BWE
-            is building around across fashion, wellness, art, culture,
-            education, and more. Live public marketplace inventory can change
-            over time, so open the marketplace to see the current catalog
-            state.
+            Explore featured Black-owned shopping categories, then open the
+            marketplace to browse the products and sellers currently available
+            on BWE.
           </p>
 
           <div className="flex flex-col md:flex-row justify-center gap-6 mb-12">

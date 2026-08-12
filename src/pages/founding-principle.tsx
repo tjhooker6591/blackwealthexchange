@@ -11,21 +11,6 @@ const platformLanes = [
   "Support and accountability through public contact, support, and release-history surfaces.",
 ];
 
-const strategyMix = [
-  {
-    title: "70% Claim-first growth",
-    body: "The strongest current emphasis is helping legitimate businesses claim existing listings and move into stronger ownership, profile quality, and trust signals.",
-  },
-  {
-    title: "20% New visibility and sponsor readiness",
-    body: "The next layer is adding qualified new businesses and improving practical discovery surfaces where live inventory and sponsor visibility are already real.",
-  },
-  {
-    title: "10% Public explanation and trust content",
-    body: "A smaller share remains focused on founder identity, support clarity, release truthfulness, and educational pages that explain the platform without inflating it.",
-  },
-];
-
 export default function About() {
   const canonical = canonicalUrl("/founding-principle");
   const founderSchema = {
@@ -83,8 +68,8 @@ export default function About() {
               That means helping a business get found in the directory, helping
               the rightful owner claim and strengthen the profile, helping
               customers discover products and offers, and building trust through
-              clearer public presentation, support paths, and verifiable
-              platform behavior.
+              clear public information, responsive support, and honest platform
+              behavior.
             </p>
 
             <p>
@@ -112,11 +97,11 @@ export default function About() {
             </p>
 
             <p>
-              Trust comes from accurate positioning, visible ownership, public
-              contact paths, and execution. That is why the founder is named
-              publicly, why the platform descriptor is consistent, and why BWE
-              should only claim what current runtime and public records actually
-              support.
+              Trust grows when people can see who built the platform, understand
+              what it offers, and reach real support when they need help. That
+              is why the founder is named publicly, why the platform
+              description stays clear, and why BWE only describes features that
+              visitors can actually use today.
             </p>
           </div>
         </section>
@@ -154,14 +139,14 @@ export default function About() {
           <h2 className="text-3xl font-bold text-gold mb-6">Leadership</h2>
           <p className="text-lg text-gray-300 max-w-4xl">
             Black Wealth Exchange is led by{" "}
-            <strong className="text-white">Thomas James Hooker Sr.</strong>,
-            Founder, Black Wealth Exchange. The platform is founder-led, and its
-            public identity should reflect that clearly.
+            <strong className="text-white">Thomas James Hooker Sr.</strong>. He
+            leads the platform&apos;s direction, public accountability, and long-term
+            growth.
             <br />
             <br />
-            BWE is being built to serve businesses, consumers, sponsors,
-            partners, and future investors who need to understand who is leading
-            the platform and what the company is trying to build.
+            BWE is built to serve businesses, consumers, sponsors, partners,
+            and future investors who want a clear understanding of who is
+            leading the company and what the platform is here to do.
           </p>
         </section>
 
@@ -171,12 +156,9 @@ export default function About() {
           </h2>
           <p className="text-lg text-gray-300 max-w-4xl">
             Black Wealth Exchange operates as a for-profit, mission-driven
-            organization. Our focus is to lawfully build economic structures,
-            opportunities, and wealth systems that empower the Black community.
-            We are committed to transparency, constitutional integrity, and a
-            strategic approach to collective advancement. Profit supports the
-            business model; the mission is to strengthen ownership, visibility,
-            opportunity, and long-term economic participation.
+            organization. Profit supports the business model, while the mission
+            remains focused on strengthening Black business ownership,
+            visibility, opportunity, and long-term economic participation.
           </p>
         </section>
 
@@ -196,32 +178,6 @@ export default function About() {
           </div>
         </section>
 
-        <section className="container mx-auto px-4 py-12">
-          <h2 className="text-3xl font-bold text-gold mb-6">
-            Current 70/20/10 Public Strategy
-          </h2>
-          <p className="text-lg text-gray-300 max-w-4xl">
-            At this stage, the public strategy is claim-focused by design. BWE
-            is emphasizing existing-listing claims first, then selective new
-            visibility growth, while keeping a smaller share of attention on
-            founder story, support, and trust content that explains what is
-            live now.
-          </p>
-          <div className="mt-6 grid gap-4 max-w-5xl md:grid-cols-3">
-            {strategyMix.map((item) => (
-              <div
-                key={item.title}
-                className="rounded-xl border border-white/10 bg-white/5 p-5"
-              >
-                <h3 className="text-lg font-semibold text-gold">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-base text-gray-300">{item.body}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
         <section className="container mx-auto px-4 py-12 text-center">
           <h2 className="text-2xl font-bold text-gold mb-4">Contact Us</h2>
           <p className="text-gray-400 mb-6">
@@ -229,15 +185,6 @@ export default function About() {
             contact us at:
             <br />
             <strong className="text-white">info@blackwealthexchange.com</strong>
-          </p>
-        </section>
-
-        <section className="container mx-auto px-4 py-12 text-center">
-          <p className="text-lg text-gold font-semibold">
-            Founded by Thomas James Hooker Sr.
-            <br />
-            Built as a founder-led, mission-driven platform for Black business
-            discovery and growth.
           </p>
         </section>
 

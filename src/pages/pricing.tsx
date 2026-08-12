@@ -508,8 +508,8 @@ export default function Pricing() {
                   Founding Member Plan
                 </div>
                 <p className="mt-2 text-gray-300">
-                  Includes Signature Black Card mapping. Future founder-only
-                  benefits are not live unless explicitly marked active.
+                  Includes Signature Black Card mapping and current Black Card
+                  rewards access available with that tier.
                 </p>
               </div>
             </div>

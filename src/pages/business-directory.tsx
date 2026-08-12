@@ -2439,8 +2439,7 @@ export default function BusinessDirectory({
                               <span className="text-white/72">
                                 Location:
                               </span>{" "}
-                              {getLocation(item as Row) ||
-                                "Location details coming soon"}
+                              {getLocation(item as Row) || "Location not listed"}
                             </div>
 
                             {/* Snippet line (quote-style like your example) */}
@@ -2455,7 +2454,7 @@ export default function BusinessDirectory({
                             >
                               {getDesc(item as Row)
                                 ? `“${getDesc(item as Row)}”`
-                                : "Business details are being expanded."}
+                                : "View this business profile for current public details."}
                             </div>
 
                             <div className="mt-2 flex flex-wrap gap-2">
@@ -2548,9 +2547,7 @@ export default function BusinessDirectory({
                                 {getPhone(item as Row)}
                               </a>
                             ) : (
-                              <div className="text-white/35">
-                                Contact details coming soon
-                              </div>
+                              <div className="text-white/35">Contact not listed</div>
                             )}
                           </div>
                         </div>

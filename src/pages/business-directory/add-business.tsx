@@ -59,6 +59,26 @@ function splitIds(value: string) {
     .filter(Boolean);
 }
 
+function buildEvidenceId(index: number) {
+  return `evidence-${index + 1}`;
+}
+
+function normalizeEvidenceRefs(value: string) {
+  return splitIds(value).map((item) => {
+    const normalized = item.toLowerCase();
+    const directMatch = normalized.match(/^evidence-(\d+)$/);
+    if (directMatch) return `evidence-${directMatch[1]}`;
+
+    const documentMatch = normalized.match(/^(?:document|doc)\s*-?\s*(\d+)$/);
+    if (documentMatch) return buildEvidenceId(Number(documentMatch[1]) - 1);
+
+    const numberMatch = normalized.match(/^#?(\d+)$/);
+    if (numberMatch) return buildEvidenceId(Number(numberMatch[1]) - 1);
+
+    return item;
+  });
+}
+
 export default function AddBusinessForm() {
   const router = useRouter();
 
@@ -204,12 +224,22 @@ export default function AddBusinessForm() {
         JSON.stringify(
           owners.map((owner) => ({
             ...owner,
-            ownershipEvidenceIds: splitIds(owner.ownershipEvidenceIds),
-            controlEvidenceIds: splitIds(owner.controlEvidenceIds),
+            ownershipEvidenceIds: normalizeEvidenceRefs(
+              owner.ownershipEvidenceIds,
+            ),
+            controlEvidenceIds: normalizeEvidenceRefs(owner.controlEvidenceIds),
           })),
         ),
       );
-      formData.append("evidence", JSON.stringify(evidence));
+      formData.append(
+        "evidence",
+        JSON.stringify(
+          evidence.map((item, index) => ({
+            ...item,
+            evidenceId: item.evidenceId.trim() || buildEvidenceId(index),
+          })),
+        ),
+      );
 
       const res = await fetch("/api/business/create", {
         method: "POST",
@@ -526,8 +556,8 @@ export default function AddBusinessForm() {
               </button>
             </div>
             <p className="mt-2 text-sm text-gray-400">
-              Capture every qualifying owner and link each owner to the evidence
-              IDs listed below.
+              Add every qualifying owner and note which supporting documents
+              show that person&apos;s ownership and control.
             </p>
             <div className="space-y-4 mt-4">
               {owners.map((owner, index) => (
@@ -631,8 +661,10 @@ export default function AddBusinessForm() {
                     </label>
                     <label className="block sm:col-span-2">
                       <span className="block">
-                        Ownership Evidence IDs{" "}
-                        <span className="text-gray-400">(comma separated)</span>
+                        Ownership documents for this owner{" "}
+                        <span className="text-gray-400">
+                          (for example: Document 1, Document 2)
+                        </span>
                       </span>
                       <input
                         type="text"
@@ -640,14 +672,16 @@ export default function AddBusinessForm() {
                         onChange={(e) =>
                           updateOwner(index, "ownershipEvidenceIds", e.target.value)
                         }
-                        placeholder="own-doc-1, own-doc-2"
+                        placeholder="Document 1, Document 2"
                         className="w-full p-2 rounded bg-gray-700 text-white mt-1"
                       />
                     </label>
                     <label className="block sm:col-span-2">
                       <span className="block">
-                        Control Evidence IDs{" "}
-                        <span className="text-gray-400">(comma separated)</span>
+                        Control documents for this owner{" "}
+                        <span className="text-gray-400">
+                          (for example: Document 1)
+                        </span>
                       </span>
                       <input
                         type="text"
@@ -655,7 +689,7 @@ export default function AddBusinessForm() {
                         onChange={(e) =>
                           updateOwner(index, "controlEvidenceIds", e.target.value)
                         }
-                        placeholder="ctrl-doc-1"
+                        placeholder="Document 1"
                         className="w-full p-2 rounded bg-gray-700 text-white mt-1"
                       />
                     </label>
@@ -668,7 +702,7 @@ export default function AddBusinessForm() {
           <fieldset>
             <div className="flex items-center justify-between">
               <legend className="text-xl font-bold text-gold">
-                Structured Evidence
+                Supporting Documents
               </legend>
               <button
                 type="button"
@@ -681,8 +715,10 @@ export default function AddBusinessForm() {
               </button>
             </div>
             <p className="mt-2 text-sm text-gray-400">
-              Use stable evidence IDs so owner records can link to ownership and
-              control evidence without manual admin reconstruction.
+              Add the documents or references that support ownership, control,
+              representative authority, business legitimacy, or Black
+              self-attestation. Use the document number shown on each card when
+              you connect a document to an owner above.
             </p>
             <div className="space-y-4 mt-4">
               {evidence.map((item, index) => (
@@ -692,7 +728,7 @@ export default function AddBusinessForm() {
                 >
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold text-gold">
-                      Evidence {index + 1}
+                      Document {index + 1}
                     </h3>
                     {evidence.length > 1 ? (
                       <button
@@ -709,20 +745,14 @@ export default function AddBusinessForm() {
                     ) : null}
                   </div>
                   <div className="grid gap-3 sm:grid-cols-2 mt-3">
+                    <div className="block">
+                      <span className="block">Document number</span>
+                      <div className="mt-1 rounded bg-gray-700 px-3 py-2 text-white/90">
+                        Document {index + 1}
+                      </div>
+                    </div>
                     <label className="block">
-                      <span className="block">Evidence ID</span>
-                      <input
-                        type="text"
-                        value={item.evidenceId}
-                        onChange={(e) =>
-                          updateEvidence(index, "evidenceId", e.target.value)
-                        }
-                        required
-                        className="w-full p-2 rounded bg-gray-700 text-white mt-1"
-                      />
-                    </label>
-                    <label className="block">
-                      <span className="block">Evidence Type</span>
+                      <span className="block">Document Type</span>
                       <select
                         value={item.evidenceType}
                         onChange={(e) =>
@@ -774,7 +804,7 @@ export default function AddBusinessForm() {
                       </select>
                     </label>
                     <label className="block">
-                      <span className="block">Reference URL or File Note</span>
+                      <span className="block">Document link or file note</span>
                       <input
                         type="text"
                         value={item.reference}
@@ -821,17 +851,6 @@ export default function AddBusinessForm() {
                             "ownershipPercentage",
                             e.target.value,
                           )
-                        }
-                        className="w-full p-2 rounded bg-gray-700 text-white mt-1"
-                      />
-                    </label>
-                    <label className="block">
-                      <span className="block">Source Label</span>
-                      <input
-                        type="text"
-                        value={item.sourceLabel}
-                        onChange={(e) =>
-                          updateEvidence(index, "sourceLabel", e.target.value)
                         }
                         className="w-full p-2 rounded bg-gray-700 text-white mt-1"
                       />
