@@ -59,7 +59,10 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl">
         <div className="mb-2 flex items-center justify-between gap-3 border-b border-white/10 pb-2">
           <div className="text-[11px] leading-tight text-white/70 sm:text-xs">
-            <p>Black Wealth Exchange — Black-Owned Business Discovery and Growth Platform.</p>
+            <p>
+              Black Wealth Exchange — Black-Owned Business Discovery and Growth
+              Platform.
+            </p>
             <p className="mt-0.5 text-white/50">
               Founded by Thomas James Hooker Sr.
             </p>

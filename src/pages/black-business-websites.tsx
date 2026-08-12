@@ -156,10 +156,10 @@ export default function BlackOwnedDirectories() {
             Black-Owned Business Directory Resources
           </h1>
           <p className="text-lg mt-2 text-gray-300">
-            Black Wealth Exchange is a Black-Owned Business Discovery and
-            Growth Platform. This page highlights external directories,
-            marketplaces, and resource hubs that can help you discover more
-            Black-owned businesses.
+            Black Wealth Exchange is a Black-Owned Business Discovery and Growth
+            Platform. This page highlights external directories, marketplaces,
+            and resource hubs that can help you discover more Black-owned
+            businesses.
           </p>
           <div className="mt-4">
             <Link href="/">

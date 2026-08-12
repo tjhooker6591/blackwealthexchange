@@ -404,7 +404,9 @@ export default function ClaimVerificationPage() {
                           Claim intake evidence
                         </div>
                         <div className="mt-1 text-sm text-white/60">
-                          Current listing values stay separate from claimant-provided values until ownership verification is complete.
+                          Current listing values stay separate from
+                          claimant-provided values until ownership verification
+                          is complete.
                         </div>
                       </div>
                       {legacyVerified ? (
@@ -416,7 +418,9 @@ export default function ClaimVerificationPage() {
 
                     <div className="mt-3 grid gap-3 md:grid-cols-2 text-sm">
                       <div className="rounded-xl border border-white/10 bg-black/30 p-3">
-                        <div className="text-white/45">Claimant relationship</div>
+                        <div className="text-white/45">
+                          Claimant relationship
+                        </div>
                         <div className="mt-1 text-white/85">
                           {labelize(
                             claimIntake?.claimant?.relationshipToBusiness ||
@@ -445,14 +449,8 @@ export default function ClaimVerificationPage() {
 
                     <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-4 text-sm">
                       {[
-                        [
-                          "Business name",
-                          claimIntake?.business?.businessName,
-                        ],
-                        [
-                          "Address",
-                          claimIntake?.business?.addressLine1,
-                        ],
+                        ["Business name", claimIntake?.business?.businessName],
+                        ["Address", claimIntake?.business?.addressLine1],
                         ["Phone", claimIntake?.business?.phone],
                         ["Website", claimIntake?.business?.website],
                       ].map(([label, field]: any) => (
@@ -494,7 +492,10 @@ export default function ClaimVerificationPage() {
                               claimIntake?.business?.businessEmail,
                             ],
                           ].map(([label, field]: any) => (
-                            <div key={label} className="rounded-lg border border-white/10 px-3 py-2">
+                            <div
+                              key={label}
+                              className="rounded-lg border border-white/10 px-3 py-2"
+                            >
                               <div className="text-white/55">{label}</div>
                               {renderMatchField(field)}
                             </div>
@@ -618,9 +619,7 @@ export default function ClaimVerificationPage() {
 
                     <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
                       <div className="rounded-xl border border-white/10 bg-black/30 p-3">
-                        <div className="text-white/45">
-                          Black-owned status
-                        </div>
+                        <div className="text-white/45">Black-owned status</div>
                         <div className="mt-1 text-white/85">
                           {labelize(
                             verificationDecision?.blackOwnedStatusLabel ||
@@ -646,9 +645,7 @@ export default function ClaimVerificationPage() {
 
                     <div className="mt-3 grid gap-3 md:grid-cols-2 text-sm">
                       <div className="rounded-xl border border-white/10 bg-black/30 p-3">
-                        <div className="text-white/45">
-                          Mandatory failures
-                        </div>
+                        <div className="text-white/45">Mandatory failures</div>
                         <div className="mt-1 text-white/85">
                           {Array.isArray(
                             verificationDecision?.mandatoryFailures,
@@ -658,9 +655,7 @@ export default function ClaimVerificationPage() {
                         </div>
                       </div>
                       <div className="rounded-xl border border-white/10 bg-black/30 p-3">
-                        <div className="text-white/45">
-                          Mandatory unknowns
-                        </div>
+                        <div className="text-white/45">Mandatory unknowns</div>
                         <div className="mt-1 text-white/85">
                           {Array.isArray(
                             verificationDecision?.mandatoryUnknowns,
@@ -689,7 +684,9 @@ export default function ClaimVerificationPage() {
                         Auto-verify mandatory conditions
                       </div>
                       <div className="mt-3 space-y-2">
-                        {Array.isArray(verificationDecision?.mandatoryConditions)
+                        {Array.isArray(
+                          verificationDecision?.mandatoryConditions,
+                        )
                           ? verificationDecision.mandatoryConditions.map(
                               (condition: any) => (
                                 <div

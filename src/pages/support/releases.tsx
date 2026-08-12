@@ -26,9 +26,9 @@ export default function ReleasesPage() {
             What’s New at Black Wealth Exchange
           </h1>
           <p className="text-zinc-300 max-w-3xl">
-            This page summarizes recent platform improvements so you can
-            quickly see what is available now, what has improved, and which
-            foundation updates are setting up future features.
+            This page summarizes recent platform improvements so you can quickly
+            see what is available now, what has improved, and which foundation
+            updates are setting up future features.
           </p>
 
           <section className="rounded-xl border border-yellow-500/20 bg-zinc-950/70 p-5">
@@ -43,9 +43,7 @@ export default function ReleasesPage() {
                 <dd className="inline">{releaseMeta.releaseId}</dd>
               </div>
               <div>
-                <dt className="inline font-medium text-zinc-400">
-                  Published:
-                </dt>{" "}
+                <dt className="inline font-medium text-zinc-400">Published:</dt>{" "}
                 <dd className="inline">{releaseMeta.publishedDate}</dd>
               </div>
               <div>

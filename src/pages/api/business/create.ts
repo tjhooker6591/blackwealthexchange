@@ -176,7 +176,8 @@ export default async function handler(
       { existingBusinessConflict },
     );
 
-    const slug = existingSubmission?.slug || buildUniqueSlug(slugBase, existingWithSlug);
+    const slug =
+      existingSubmission?.slug || buildUniqueSlug(slugBase, existingWithSlug);
     const alias = existingSubmission?.alias || slug;
 
     const doc: any = {

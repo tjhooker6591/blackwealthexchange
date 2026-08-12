@@ -731,10 +731,7 @@ export type FoundingVerificationDecisionCounts = Record<
   number
 >;
 
-export type FoundingStructuredMatchResult =
-  | "MATCH"
-  | "MISMATCH"
-  | "UNKNOWN";
+export type FoundingStructuredMatchResult = "MATCH" | "MISMATCH" | "UNKNOWN";
 
 export type FoundingClaimRelationship =
   | "OWNER"
@@ -750,7 +747,10 @@ export type FoundingBusinessIntakeField = {
 
 export type FoundingStructuredEvidenceRecord = {
   evidenceType: string;
-  purpose: "ownership_control" | "representative_authority" | "business_identity";
+  purpose:
+    | "ownership_control"
+    | "representative_authority"
+    | "business_identity";
   businessId: string | null;
   claimantUserId: string | null;
   submittedAt: string;
@@ -960,9 +960,16 @@ function normalizeHostname(value: unknown) {
 }
 
 function extractEmailDomain(value: unknown) {
-  const raw = String(value || "").trim().toLowerCase();
+  const raw = String(value || "")
+    .trim()
+    .toLowerCase();
   if (!raw.includes("@")) return null;
-  const domain = raw.split("@").pop()?.trim().replace(/^www\./, "") || "";
+  const domain =
+    raw
+      .split("@")
+      .pop()
+      ?.trim()
+      .replace(/^www\./, "") || "";
   return domain || null;
 }
 
@@ -1131,9 +1138,7 @@ function compareBusinessIntakeValues(
 
 function ensureStringArray(value: unknown) {
   if (Array.isArray(value)) {
-    return value
-      .map((item) => String(item || "").trim())
-      .filter(Boolean);
+    return value.map((item) => String(item || "").trim()).filter(Boolean);
   }
   if (typeof value === "string") {
     return value
@@ -1209,11 +1214,11 @@ export function buildFoundingClaimIntakeRecord(args: {
   const business = args.business || {};
   const claimantValues = args.claimantValues || {};
   const existingRecord = args.existingRecord || {};
-  const relationshipToBusiness = (
-    stringOrNull(claimantValues.relationshipToBusiness) ||
+  const relationshipToBusiness = (stringOrNull(
+    claimantValues.relationshipToBusiness,
+  ) ||
     stringOrNull(existingRecord?.claimant?.relationshipToBusiness) ||
-    null
-  ) as FoundingClaimRelationship | null;
+    null) as FoundingClaimRelationship | null;
   const currentTimestamp = new Date().toISOString();
   const evidence = (args.evidence || []).map((item) => {
     const evidenceType =
@@ -1301,14 +1306,15 @@ export function buildFoundingClaimIntakeRecord(args: {
       }),
       socialUrls: ensureStringArray(claimantValues.socialUrls).map((value) =>
         buildBusinessIntakeField({
-          currentListingValue: ensureStringArray(
-            business.socialUrls || [
-              business.instagram,
-              business.facebook,
-              business.linkedin,
-              business.twitter,
-            ],
-          )[0] || null,
+          currentListingValue:
+            ensureStringArray(
+              business.socialUrls || [
+                business.instagram,
+                business.facebook,
+                business.linkedin,
+                business.twitter,
+              ],
+            )[0] || null,
           claimantProvidedValue: value,
           normalizer: normalizeFoundingHostname,
         }),
@@ -1343,8 +1349,7 @@ export function buildFoundingClaimIntakeRecord(args: {
     },
     evidence,
     blackOwnedStatus: "NOT_ESTABLISHED",
-    createdAt:
-      stringOrNull(existingRecord?.createdAt) || currentTimestamp,
+    createdAt: stringOrNull(existingRecord?.createdAt) || currentTimestamp,
     updatedAt: currentTimestamp,
   } satisfies FoundingClaimIntakeRecord;
 }
@@ -1358,7 +1363,8 @@ export function getFoundingClaimIntakeFieldAudit(): FoundingClaimIntakeFieldAudi
       required: true,
       optional: false,
       usedByDa13Engine: true,
-      missingGap: "Current claim flow does not store a claimant-confirmed business-name field separately from the listing.",
+      missingGap:
+        "Current claim flow does not store a claimant-confirmed business-name field separately from the listing.",
     },
     {
       field: "business.addressLine1 / city / state / postalCode",
@@ -1367,7 +1373,8 @@ export function getFoundingClaimIntakeFieldAudit(): FoundingClaimIntakeFieldAudi
       required: true,
       optional: false,
       usedByDa13Engine: true,
-      missingGap: "Current claim flow lacks structured address confirmation and normalized comparison storage.",
+      missingGap:
+        "Current claim flow lacks structured address confirmation and normalized comparison storage.",
     },
     {
       field: "business.phone",
@@ -1376,7 +1383,8 @@ export function getFoundingClaimIntakeFieldAudit(): FoundingClaimIntakeFieldAudi
       required: false,
       optional: true,
       usedByDa13Engine: true,
-      missingGap: "Phone comparison was previously inferred only from sparse claim data.",
+      missingGap:
+        "Phone comparison was previously inferred only from sparse claim data.",
     },
     {
       field: "business.website / domain",
@@ -1385,7 +1393,8 @@ export function getFoundingClaimIntakeFieldAudit(): FoundingClaimIntakeFieldAudi
       required: false,
       optional: true,
       usedByDa13Engine: true,
-      missingGap: "Website/domain confirmation was not previously collected from the claimant intake flow.",
+      missingGap:
+        "Website/domain confirmation was not previously collected from the claimant intake flow.",
     },
     {
       field: "business.businessEmail",
@@ -1394,7 +1403,8 @@ export function getFoundingClaimIntakeFieldAudit(): FoundingClaimIntakeFieldAudi
       required: false,
       optional: true,
       usedByDa13Engine: true,
-      missingGap: "Business email/domain relationship was not explicitly captured at intake.",
+      missingGap:
+        "Business email/domain relationship was not explicitly captured at intake.",
     },
     {
       field: "business.socialUrls",
@@ -1403,7 +1413,8 @@ export function getFoundingClaimIntakeFieldAudit(): FoundingClaimIntakeFieldAudi
       required: false,
       optional: true,
       usedByDa13Engine: false,
-      missingGap: "Social URLs were not captured as structured claimant-provided values.",
+      missingGap:
+        "Social URLs were not captured as structured claimant-provided values.",
     },
     {
       field: "claimant.authenticatedUserId",
@@ -1421,7 +1432,8 @@ export function getFoundingClaimIntakeFieldAudit(): FoundingClaimIntakeFieldAudi
       required: true,
       optional: false,
       usedByDa13Engine: false,
-      missingGap: "Claimant name was not being collected in the dedicated claim-intake flow.",
+      missingGap:
+        "Claimant name was not being collected in the dedicated claim-intake flow.",
     },
     {
       field: "claimant.claimantEmail / claimantPhone",
@@ -1430,7 +1442,8 @@ export function getFoundingClaimIntakeFieldAudit(): FoundingClaimIntakeFieldAudi
       required: true,
       optional: false,
       usedByDa13Engine: true,
-      missingGap: "Email existed implicitly, but claimant-confirmed contact fields were not persisted as structured intake data.",
+      missingGap:
+        "Email existed implicitly, but claimant-confirmed contact fields were not persisted as structured intake data.",
     },
     {
       field: "claimant.relationshipToBusiness / roleTitle",
@@ -1439,16 +1452,19 @@ export function getFoundingClaimIntakeFieldAudit(): FoundingClaimIntakeFieldAudi
       required: true,
       optional: false,
       usedByDa13Engine: true,
-      missingGap: "The claim flow lacked a structured relationship/authority declaration.",
+      missingGap:
+        "The claim flow lacked a structured relationship/authority declaration.",
     },
     {
-      field: "authority.ownershipEvidence / representativeAuthorityEvidence metadata",
+      field:
+        "authority.ownershipEvidence / representativeAuthorityEvidence metadata",
       currentlyCollected: false,
       structured: true,
       required: true,
       optional: false,
       usedByDa13Engine: true,
-      missingGap: "Evidence previously existed only as loose submission references without purpose/validation metadata.",
+      missingGap:
+        "Evidence previously existed only as loose submission references without purpose/validation metadata.",
     },
   ];
 }
@@ -1785,7 +1801,9 @@ export function getFoundingShadowValidationSummary(
       row.verificationDecision || deriveFoundingVerificationDecision(row);
     return (
       decision.disposition === "AUTO_VERIFY_ELIGIBLE" &&
-      decision.mandatoryConditions.every((condition) => condition.status === "pass")
+      decision.mandatoryConditions.every(
+        (condition) => condition.status === "pass",
+      )
     );
   }).length;
   const estimatedHighConfidenceAutoVerifyPercent = totalCasesTested
@@ -1820,12 +1838,15 @@ export function deriveFoundingVerificationDecision(
   const business = row.business || {};
   const claim = row.claim || {};
   const review = row.review || {};
-  const claimIntake = ((review as any)?.claimIntake || {}) as Partial<FoundingClaimIntakeRecord>;
+  const claimIntake = ((review as any)?.claimIntake ||
+    {}) as Partial<FoundingClaimIntakeRecord>;
   const membership = row.membership || {};
   const user = row.user || {};
   const normalCheck = row.normalCheck || null;
   const auditHistory = Array.isArray(row.auditHistory) ? row.auditHistory : [];
-  const evidenceSubmissions = Array.isArray((review as any)?.structuredEvidenceSubmissions)
+  const evidenceSubmissions = Array.isArray(
+    (review as any)?.structuredEvidenceSubmissions,
+  )
     ? (review as any).structuredEvidenceSubmissions
     : Array.isArray(review?.evidenceSubmissions)
       ? review.evidenceSubmissions
@@ -1908,7 +1929,9 @@ export function deriveFoundingVerificationDecision(
   );
   const claimSocial = firstMeaningfulString(
     ...(Array.isArray(claimIntake?.business?.socialUrls)
-      ? claimIntake.business.socialUrls.map((item) => item.claimantProvidedValue)
+      ? claimIntake.business.socialUrls.map(
+          (item) => item.claimantProvidedValue,
+        )
       : []),
     claim.instagram,
     claim.facebook,
@@ -2013,15 +2036,27 @@ export function deriveFoundingVerificationDecision(
     key: "duplicate_business_listing_detection",
     label: "Duplicate business/listing detection",
     status:
-      row.normalCheck?.consistency === "missing_linked_record" ? "fail" : "pass",
+      row.normalCheck?.consistency === "missing_linked_record"
+        ? "fail"
+        : "pass",
     summary:
       row.normalCheck?.consistency === "missing_linked_record"
         ? "Current BWE joins indicate a missing linked record that needs review."
         : "No duplicate/missing-link listing conflict was detected in current BWE joins.",
-    dataUsed: ["normalCheck.consistency", "membership.businessId", "businesses"],
+    dataUsed: [
+      "normalCheck.consistency",
+      "membership.businessId",
+      "businesses",
+    ],
   });
-  const addressSignalRequired = hasComparableValue(businessAddress, claimAddress);
-  const websiteSignalRequired = hasComparableValue(businessWebsite, claimWebsite);
+  const addressSignalRequired = hasComparableValue(
+    businessAddress,
+    claimAddress,
+  );
+  const websiteSignalRequired = hasComparableValue(
+    businessWebsite,
+    claimWebsite,
+  );
   const phoneSignalRequired = hasComparableValue(businessPhone, claimantPhone);
   const claimantDomainSignalRequired = hasComparableValue(
     claimantEmail,
@@ -2029,17 +2064,21 @@ export function deriveFoundingVerificationDecision(
     businessWebsite,
   );
 
-  const businessIdentityGroup = buildGroup("business_identity", "Business identity / legitimacy", [
-    businessListingSignal,
-    businessNameSignal,
-    addressSignal,
-    phoneSignal,
-    websiteSignal,
-    businessEmailDomainSignal,
-    socialSignal,
-    publicRegistrationSignal,
-    duplicateListingSignal,
-  ]);
+  const businessIdentityGroup = buildGroup(
+    "business_identity",
+    "Business identity / legitimacy",
+    [
+      businessListingSignal,
+      businessNameSignal,
+      addressSignal,
+      phoneSignal,
+      websiteSignal,
+      businessEmailDomainSignal,
+      socialSignal,
+      publicRegistrationSignal,
+      duplicateListingSignal,
+    ],
+  );
 
   const claimantIdentitySignal = buildSignal({
     key: "authenticated_account_identity",
@@ -2053,7 +2092,10 @@ export function deriveFoundingVerificationDecision(
   });
   const claimantEmailValues = uniqueNormalizedValues(
     claimantEmails,
-    (value) => String(value || "").trim().toLowerCase() || null,
+    (value) =>
+      String(value || "")
+        .trim()
+        .toLowerCase() || null,
   );
   const claimantContactSignal = buildSignal({
     key: "claimant_contact_consistency",
@@ -2081,12 +2123,14 @@ export function deriveFoundingVerificationDecision(
     (value) => extractEmailDomain(value) || normalizeHostname(value),
   );
   const claimantRelationship =
-    (stringOrNull(claimIntake?.claimant?.relationshipToBusiness) as
-      | FoundingClaimRelationship
-      | null) || null;
+    (stringOrNull(
+      claimIntake?.claimant?.relationshipToBusiness,
+    ) as FoundingClaimRelationship | null) || null;
   const structuredEvidence = evidenceSubmissions as Array<Record<string, any>>;
   const representativeAuthorityEvidence = structuredEvidence.filter((item) => {
-    const purpose = String(item?.purpose || "").trim().toLowerCase();
+    const purpose = String(item?.purpose || "")
+      .trim()
+      .toLowerCase();
     return (
       purpose === "representative_authority" ||
       String(item?.evidenceType || item?.type || "")
@@ -2095,7 +2139,9 @@ export function deriveFoundingVerificationDecision(
     );
   });
   const ownershipControlEvidence = structuredEvidence.filter((item) => {
-    const purpose = String(item?.purpose || "").trim().toLowerCase();
+    const purpose = String(item?.purpose || "")
+      .trim()
+      .toLowerCase();
     return purpose === "ownership_control" || !purpose;
   });
   const authorityEvidenceSignal = buildSignal({
@@ -2160,7 +2206,11 @@ export function deriveFoundingVerificationDecision(
       row.normalCheck?.issues?.includes("conflicting_claimant") === true
         ? "A different claimant is already linked to this business state."
         : "No direct conflicting claimant mismatch was detected.",
-    dataUsed: ["businesses.claimedByUserId", "membership.userId", "normalCheck.issues"],
+    dataUsed: [
+      "businesses.claimedByUserId",
+      "membership.userId",
+      "normalCheck.issues",
+    ],
   });
   const conflictingOwnerSignal = buildSignal({
     key: "conflicting_verified_owner_detection",
@@ -2175,7 +2225,11 @@ export function deriveFoundingVerificationDecision(
       (row.claimedByUserId != null && row.claimedByUserId !== row.userId)
         ? "A different verified or claimed owner is already present."
         : "No conflicting verified owner was detected in current BWE ownership fields.",
-    dataUsed: ["businesses.ownerUserIds", "businesses.claimedByUserId", "membership.userId"],
+    dataUsed: [
+      "businesses.ownerUserIds",
+      "businesses.claimedByUserId",
+      "membership.userId",
+    ],
   });
   const competingClaimantsSignal = buildSignal({
     key: "competing_claimants_detected",
@@ -2235,7 +2289,10 @@ export function deriveFoundingVerificationDecision(
         : evidenceSubmissions.length
           ? "BWE can confirm evidence presence and basic linkage, but not document-content validity automatically."
           : "Evidence content cannot be validated because required submissions are missing.",
-    dataUsed: ["ownership_reviews.evidenceSubmissions", "ownership_reviews.evidenceStatus"],
+    dataUsed: [
+      "ownership_reviews.evidenceSubmissions",
+      "ownership_reviews.evidenceStatus",
+    ],
   });
   const verifiedOwnershipSignal = buildSignal({
     key: "current_verified_ownership_records",
@@ -2254,7 +2311,11 @@ export function deriveFoundingVerificationDecision(
         : conflictingOwnerSignal.status === "fail"
           ? "A different verified owner record blocks automatic ownership activation."
           : "Current BWE ownership records require verification review before activation.",
-    dataUsed: ["businesses.claimedByUserId", "businesses.ownerUserIds", "queueState"],
+    dataUsed: [
+      "businesses.claimedByUserId",
+      "businesses.ownerUserIds",
+      "queueState",
+    ],
   });
   const previousVerificationSignal = buildSignal({
     key: "previous_bwe_verification_history",
@@ -2337,18 +2398,22 @@ export function deriveFoundingVerificationDecision(
   const materialMismatchSignal = buildSignal({
     key: "material_business_data_disagreement",
     label: "Material business-data disagreement",
-    status:
-      [businessNameSignal, addressSignal, phoneSignal, websiteSignal].some(
-        (signal) => signal.status === "fail",
-      )
-        ? "fail"
-        : "pass",
-    summary:
-      [businessNameSignal, addressSignal, phoneSignal, websiteSignal].some(
-        (signal) => signal.status === "fail",
-      )
-        ? "At least one identity signal materially disagrees."
-        : "No material disagreement was detected in the compared identity signals.",
+    status: [
+      businessNameSignal,
+      addressSignal,
+      phoneSignal,
+      websiteSignal,
+    ].some((signal) => signal.status === "fail")
+      ? "fail"
+      : "pass",
+    summary: [
+      businessNameSignal,
+      addressSignal,
+      phoneSignal,
+      websiteSignal,
+    ].some((signal) => signal.status === "fail")
+      ? "At least one identity signal materially disagrees."
+      : "No material disagreement was detected in the compared identity signals.",
     dataUsed: [
       "business.business_name",
       "claim.businessName",
@@ -2386,7 +2451,10 @@ export function deriveFoundingVerificationDecision(
         : evidenceSubmissions.length
           ? "Evidence exists, but document content is not auto-validated yet."
           : "No conflicting evidence pattern is detectable because no evidence is present.",
-    dataUsed: ["ownership_reviews.evidenceSubmissions", "business/contact comparisons"],
+    dataUsed: [
+      "ownership_reviews.evidenceSubmissions",
+      "business/contact comparisons",
+    ],
   });
   const stateTransitionSignal = buildSignal({
     key: "suspicious_state_transitions",
@@ -2421,8 +2489,7 @@ export function deriveFoundingVerificationDecision(
   const conflictingRecordsSignal = buildSignal({
     key: "conflicting_bwe_records",
     label: "Conflicting BWE records",
-    status:
-      normalCheck?.verdict === "exception_admin_review" ? "fail" : "pass",
+    status: normalCheck?.verdict === "exception_admin_review" ? "fail" : "pass",
     summary:
       normalCheck?.verdict === "exception_admin_review"
         ? "The DA-12 normal check already detected a record-level exception."
@@ -2476,7 +2543,11 @@ export function deriveFoundingVerificationDecision(
   const blackOwnedStatusGroup = buildGroup(
     "black_owned_status",
     "Black-owned status",
-    [blackOwnedPolicySignal, blackOwnedEvidenceSignal, blackOwnedAutomationSignal],
+    [
+      blackOwnedPolicySignal,
+      blackOwnedEvidenceSignal,
+      blackOwnedAutomationSignal,
+    ],
   );
 
   const paymentConsistencySignal = buildSignal({
@@ -2524,8 +2595,7 @@ export function deriveFoundingVerificationDecision(
     conflictingOwnerSignal.status === "fail" ||
     conflictingClaimantSignal.status === "fail";
   const disputed =
-    row.queueState === "disputed" ||
-    competingClaimantsSignal.status === "fail";
+    row.queueState === "disputed" || competingClaimantsSignal.status === "fail";
   const failedVerification =
     row.queueState === "ownership_verification_failed" ||
     repeatedFailureSignal.status === "fail";
@@ -2671,8 +2741,7 @@ export function deriveFoundingVerificationDecision(
     }
   }
 
-  let disposition: FoundingVerificationDisposition =
-    "ADMIN_REVIEW_REQUIRED";
+  let disposition: FoundingVerificationDisposition = "ADMIN_REVIEW_REQUIRED";
   if (disputed) {
     disposition = "DISPUTED";
   } else if (ownerConflict) {
@@ -2729,8 +2798,7 @@ export function getFoundingVerificationDecisionCounts(
 ): FoundingVerificationDecisionCounts {
   return {
     AUTO_VERIFY_ELIGIBLE: rows.filter(
-      (row) =>
-        row.verificationDecision?.disposition === "AUTO_VERIFY_ELIGIBLE",
+      (row) => row.verificationDecision?.disposition === "AUTO_VERIFY_ELIGIBLE",
     ).length,
     ADMIN_REVIEW_REQUIRED: rows.filter(
       (row) =>

@@ -208,13 +208,14 @@ const SUPPORTED_EVIDENCE_TYPES: Record<string, NewBusinessEvidenceType> = {
   other: "OTHER",
 };
 
-const SUPPORTED_EVIDENCE_PURPOSES: Record<string, NewBusinessEvidencePurpose> = {
-  business_legitimacy: "BUSINESS_LEGITIMACY",
-  ownership: "OWNERSHIP",
-  control: "CONTROL",
-  authority: "AUTHORITY",
-  black_attestation: "BLACK_ATTESTATION",
-};
+const SUPPORTED_EVIDENCE_PURPOSES: Record<string, NewBusinessEvidencePurpose> =
+  {
+    business_legitimacy: "BUSINESS_LEGITIMACY",
+    ownership: "OWNERSHIP",
+    control: "CONTROL",
+    authority: "AUTHORITY",
+    black_attestation: "BLACK_ATTESTATION",
+  };
 
 const ALLOWED_RELATIONSHIPS: Record<string, BusinessClaimantRelationship> = {
   owner: "OWNER",
@@ -410,12 +411,16 @@ export function validateBusinessSubmission(
   const normalizedLocation = normalizeLocationParts(location);
   const addressLine1 = normalizeText(input.addressLine1 || "");
   const city = normalizeText(input.city || normalizedLocation.city);
-  const state = normalizeText(input.state || normalizedLocation.state).toUpperCase();
+  const state = normalizeText(
+    input.state || normalizedLocation.state,
+  ).toUpperCase();
   const postalCode = normalizePostalCode(input.postalCode || "");
   const phone = normalizePhone(input.phone);
   const email = normalizeText(input.email).toLowerCase();
   const website = normalizeOptionalUrl(input.website || "");
-  const businessEmail = normalizeText(input.businessEmail || input.email).toLowerCase();
+  const businessEmail = normalizeText(
+    input.businessEmail || input.email,
+  ).toLowerCase();
   const description = normalizeText(input.description);
   const facebook = normalizeOptionalUrl(input.facebook || "");
   const twitter = normalizeOptionalUrl(input.twitter || "");
@@ -479,7 +484,8 @@ export function validateBusinessSubmission(
   if (!isValidPhone(claimantPhone)) {
     return {
       ok: false,
-      error: "Please enter a valid claimant phone number with at least 10 digits.",
+      error:
+        "Please enter a valid claimant phone number with at least 10 digits.",
     };
   }
 
@@ -771,9 +777,7 @@ export function deriveNewBusinessVerificationDecision(
   );
 
   const claimantAuthorizationKnown =
-    claimantDomain &&
-    businessDomain &&
-    claimantDomain === businessDomain;
+    claimantDomain && businessDomain && claimantDomain === businessDomain;
   const claimantHasEvidence =
     submission.relationshipToBusiness === "AUTHORIZED_REPRESENTATIVE"
       ? submission.evidence.some((item) => item.purpose === "AUTHORITY")
@@ -781,7 +785,9 @@ export function deriveNewBusinessVerificationDecision(
   const claimantAuthorizationStatus: VerificationSignalStatus =
     claimantAuthorizationKnown || claimantHasEvidence
       ? "PASS"
-      : requiredActions.some((item) => item.code === "MISSING_AUTHORITY_EVIDENCE")
+      : requiredActions.some(
+            (item) => item.code === "MISSING_AUTHORITY_EVIDENCE",
+          )
         ? "UNKNOWN"
         : "UNKNOWN";
   const claimantAuthorization = buildSignal(
@@ -821,7 +827,9 @@ export function deriveNewBusinessVerificationDecision(
     ownership.qualifyingBlackOwnershipPercentage >= 51 &&
     ownership.hasRequiredControl
       ? "PASS"
-      : requiredActions.some((item) => item.code === "MISSING_BLACK_ATTESTATION")
+      : requiredActions.some(
+            (item) => item.code === "MISSING_BLACK_ATTESTATION",
+          )
         ? "UNKNOWN"
         : "FAIL";
   const blackOwnershipEligibility = buildSignal(
@@ -835,11 +843,7 @@ export function deriveNewBusinessVerificationDecision(
   );
 
   const evidenceValidationStatus: VerificationSignalStatus =
-    hasUnsupportedEvidence
-      ? "UNKNOWN"
-      : hasSupportedOnly
-        ? "PASS"
-        : "UNKNOWN";
+    hasUnsupportedEvidence ? "UNKNOWN" : hasSupportedOnly ? "PASS" : "UNKNOWN";
   const evidenceValidation = buildSignal(
     "EVIDENCE_VALIDATION",
     evidenceValidationStatus,
@@ -849,7 +853,8 @@ export function deriveNewBusinessVerificationDecision(
   );
 
   const conflictDetected =
-    Boolean(options?.existingBusinessConflict) || Boolean(options?.competingClaim);
+    Boolean(options?.existingBusinessConflict) ||
+    Boolean(options?.competingClaim);
   const riskConflictStatus: VerificationSignalStatus = options?.disputed
     ? "FAIL"
     : conflictDetected

@@ -1871,18 +1871,25 @@ export default async function webhookHandler(
       } else {
         const membershipId = `${FOUNDING_MEMBERSHIP_PRODUCT_KEY}:${membershipBusinessId}`;
         const foundingBusiness = await db.collection("businesses").findOne({
-          $or: [{ _id: membershipBusinessId as any }, { _id: String(membershipBusinessId) as any }],
+          $or: [
+            { _id: membershipBusinessId as any },
+            { _id: String(membershipBusinessId) as any },
+          ],
         });
         const initialClaimIntake = buildFoundingClaimIntakeRecord({
           business: foundingBusiness,
           claimantUserId: userId,
           claimantValues: {
-            businessName: foundingBusiness?.business_name || FOUNDING_MEMBERSHIP_NAME,
+            businessName:
+              foundingBusiness?.business_name || FOUNDING_MEMBERSHIP_NAME,
             addressLine1:
-              foundingBusiness?.address || foundingBusiness?.streetAddress || "",
+              foundingBusiness?.address ||
+              foundingBusiness?.streetAddress ||
+              "",
             city: foundingBusiness?.city || "",
             state: foundingBusiness?.state || "",
-            postalCode: foundingBusiness?.zip || foundingBusiness?.postalCode || "",
+            postalCode:
+              foundingBusiness?.zip || foundingBusiness?.postalCode || "",
             phone: foundingBusiness?.phone || "",
             website: foundingBusiness?.website || "",
             businessEmail: foundingBusiness?.email || "",

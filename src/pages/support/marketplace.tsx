@@ -21,8 +21,8 @@ export default function MarketplaceSupportPage() {
             Marketplace Support
           </h1>
           <p className="mt-2 text-sm text-white/80">
-            Need help with an order, seller communication, delivery timing, or
-            a payment concern? We can help.
+            Need help with an order, seller communication, delivery timing, or a
+            payment concern? We can help.
           </p>
 
           <div className="mt-5 rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/85">

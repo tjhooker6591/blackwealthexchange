@@ -311,12 +311,16 @@ export default function BusinessApprovals() {
                                   {Array.isArray(biz.requiredActions) &&
                                   biz.requiredActions.length ? (
                                     <ul className="mt-2 list-disc space-y-1 pl-4 text-yellow-200">
-                                      {biz.requiredActions.map((item, index) => (
-                                        <li key={`${biz._id}-required-${index}`}>
-                                          {item?.message ||
-                                            "Additional evidence required"}
-                                        </li>
-                                      ))}
+                                      {biz.requiredActions.map(
+                                        (item, index) => (
+                                          <li
+                                            key={`${biz._id}-required-${index}`}
+                                          >
+                                            {item?.message ||
+                                              "Additional evidence required"}
+                                          </li>
+                                        ),
+                                      )}
                                     </ul>
                                   ) : null}
                                 </div>

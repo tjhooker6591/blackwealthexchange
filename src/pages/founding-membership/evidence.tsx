@@ -156,8 +156,10 @@ export default function FoundingMembershipEvidencePage() {
         setData(json);
         const intake = json.claimIntake;
         setForm({
-          businessName: intake?.business?.businessName?.claimantProvidedValue || "",
-          addressLine1: intake?.business?.addressLine1?.claimantProvidedValue || "",
+          businessName:
+            intake?.business?.businessName?.claimantProvidedValue || "",
+          addressLine1:
+            intake?.business?.addressLine1?.claimantProvidedValue || "",
           city: intake?.business?.city?.claimantProvidedValue || "",
           state: intake?.business?.state?.claimantProvidedValue || "",
           postalCode: intake?.business?.postalCode?.claimantProvidedValue || "",
@@ -165,17 +167,17 @@ export default function FoundingMembershipEvidencePage() {
           website: intake?.business?.website?.claimantProvidedValue || "",
           businessEmail:
             intake?.business?.businessEmail?.claimantProvidedValue || "",
-          socialUrls:
-            Array.isArray(intake?.business?.socialUrls)
-              ? intake.business.socialUrls
-                  .map((item: MatchField) => item.claimantProvidedValue)
-                  .filter(Boolean)
-                  .join("\n")
-              : "",
+          socialUrls: Array.isArray(intake?.business?.socialUrls)
+            ? intake.business.socialUrls
+                .map((item: MatchField) => item.claimantProvidedValue)
+                .filter(Boolean)
+                .join("\n")
+            : "",
           claimantName: intake?.claimant?.claimantName || "",
           claimantEmail: intake?.claimant?.claimantEmail || "",
           claimantPhone: intake?.claimant?.claimantPhone || "",
-          relationshipToBusiness: intake?.claimant?.relationshipToBusiness || "",
+          relationshipToBusiness:
+            intake?.claimant?.relationshipToBusiness || "",
           roleTitle: intake?.claimant?.roleTitle || "",
           evidence:
             Array.isArray(intake?.evidence) && intake.evidence.length
@@ -200,7 +202,10 @@ export default function FoundingMembershipEvidencePage() {
     if (form.relationshipToBusiness === "AUTHORIZED_REPRESENTATIVE") {
       return "Representative authority evidence is required for authorized representatives.";
     }
-    if (form.relationshipToBusiness === "OWNER" || form.relationshipToBusiness === "OFFICER") {
+    if (
+      form.relationshipToBusiness === "OWNER" ||
+      form.relationshipToBusiness === "OFFICER"
+    ) {
       return "Ownership/control evidence is required for owners and officers.";
     }
     return "Declare your relationship to the business so BWE can determine the right evidence requirements.";
@@ -286,7 +291,9 @@ export default function FoundingMembershipEvidencePage() {
       if (!res.ok || !json?.ok) {
         throw new Error(json?.error || "Unable to save ownership evidence");
       }
-      setMessage("Ownership evidence intake saved. Public listing data remains unchanged until verification.");
+      setMessage(
+        "Ownership evidence intake saved. Public listing data remains unchanged until verification.",
+      );
     } catch (err: any) {
       setError(err?.message || "Unable to save ownership evidence");
     } finally {
@@ -321,36 +328,70 @@ export default function FoundingMembershipEvidencePage() {
           </div>
 
           {loading ? <div>Loading…</div> : null}
-          {error ? <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-red-100">{error}</div> : null}
-          {message ? <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-emerald-100">{message}</div> : null}
+          {error ? (
+            <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-red-100">
+              {error}
+            </div>
+          ) : null}
+          {message ? (
+            <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-emerald-100">
+              {message}
+            </div>
+          ) : null}
 
           {data?.legacyVerified ? (
             <div className="rounded-2xl border border-sky-500/30 bg-sky-500/10 p-4 text-sky-100">
-              This membership already appears to be historically verified. Phase 4 preserves legacy verified ownership and uses this intake structure for future verification readiness rather than retroactive invalidation.
+              This membership already appears to be historically verified. Phase
+              4 preserves legacy verified ownership and uses this intake
+              structure for future verification readiness rather than
+              retroactive invalidation.
             </div>
           ) : null}
 
           <div className="grid gap-6 lg:grid-cols-2">
             <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <h2 className="text-xl font-bold text-white">Current listing data</h2>
+              <h2 className="text-xl font-bold text-white">
+                Current listing data
+              </h2>
               <div className="mt-4 space-y-3 text-sm text-white/75">
-                <div>Business name: {data?.currentListing?.businessName || "-"}</div>
+                <div>
+                  Business name: {data?.currentListing?.businessName || "-"}
+                </div>
                 <div>Address: {data?.currentListing?.addressLine1 || "-"}</div>
-                <div>City / State / ZIP: {[data?.currentListing?.city, data?.currentListing?.state, data?.currentListing?.postalCode].filter(Boolean).join(" / ") || "-"}</div>
+                <div>
+                  City / State / ZIP:{" "}
+                  {[
+                    data?.currentListing?.city,
+                    data?.currentListing?.state,
+                    data?.currentListing?.postalCode,
+                  ]
+                    .filter(Boolean)
+                    .join(" / ") || "-"}
+                </div>
                 <div>Phone: {data?.currentListing?.phone || "-"}</div>
                 <div>Website: {data?.currentListing?.website || "-"}</div>
-                <div>Business email: {data?.currentListing?.businessEmail || "-"}</div>
+                <div>
+                  Business email: {data?.currentListing?.businessEmail || "-"}
+                </div>
               </div>
             </section>
 
             <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <h2 className="text-xl font-bold text-white">DA-13 intake readiness</h2>
+              <h2 className="text-xl font-bold text-white">
+                DA-13 intake readiness
+              </h2>
               <div className="mt-4 space-y-2 text-sm text-white/75">
                 {(data?.fieldAudit || []).map((item) => (
-                  <div key={item.field} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/25 px-3 py-2">
+                  <div
+                    key={item.field}
+                    className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/25 px-3 py-2"
+                  >
                     <span>{item.field}</span>
                     <span className="text-xs text-white/55">
-                      {item.required ? "Required" : "Optional"} · {item.usedByDa13Engine ? "Used by engine" : "Stored for admin"}
+                      {item.required ? "Required" : "Optional"} ·{" "}
+                      {item.usedByDa13Engine
+                        ? "Used by engine"
+                        : "Stored for admin"}
                     </span>
                   </div>
                 ))}
@@ -359,7 +400,9 @@ export default function FoundingMembershipEvidencePage() {
           </div>
 
           <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
-            <h2 className="text-xl font-bold text-white">Claimant-provided business confirmation</h2>
+            <h2 className="text-xl font-bold text-white">
+              Claimant-provided business confirmation
+            </h2>
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               {businessFields.map(({ label, key, match }) => (
                 <label key={key} className="block">
@@ -367,11 +410,16 @@ export default function FoundingMembershipEvidencePage() {
                   <input
                     value={form[key] || ""}
                     onChange={(event) =>
-                      setForm((current) => ({ ...current, [key]: event.target.value }))
+                      setForm((current) => ({
+                        ...current,
+                        [key]: event.target.value,
+                      }))
                     }
                     className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none"
                   />
-                  <div className={`mt-1 text-xs ${fieldTone(String(match || "UNKNOWN"))}`}>
+                  <div
+                    className={`mt-1 text-xs ${fieldTone(String(match || "UNKNOWN"))}`}
+                  >
                     Current normalized comparison: {match || "UNKNOWN"}
                   </div>
                 </label>
@@ -382,7 +430,10 @@ export default function FoundingMembershipEvidencePage() {
               <textarea
                 value={form.socialUrls}
                 onChange={(event) =>
-                  setForm((current) => ({ ...current, socialUrls: event.target.value }))
+                  setForm((current) => ({
+                    ...current,
+                    socialUrls: event.target.value,
+                  }))
                 }
                 rows={4}
                 className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none"
@@ -395,37 +446,88 @@ export default function FoundingMembershipEvidencePage() {
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <label className="block">
                 <div className="mb-1 text-sm text-white/60">Claimant name</div>
-                <input value={form.claimantName} onChange={(event) => setForm((current) => ({ ...current, claimantName: event.target.value }))} className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none" />
+                <input
+                  value={form.claimantName}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      claimantName: event.target.value,
+                    }))
+                  }
+                  className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none"
+                />
               </label>
               <label className="block">
                 <div className="mb-1 text-sm text-white/60">Claimant email</div>
-                <input value={form.claimantEmail} onChange={(event) => setForm((current) => ({ ...current, claimantEmail: event.target.value }))} className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none" />
+                <input
+                  value={form.claimantEmail}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      claimantEmail: event.target.value,
+                    }))
+                  }
+                  className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none"
+                />
               </label>
               <label className="block">
                 <div className="mb-1 text-sm text-white/60">Claimant phone</div>
-                <input value={form.claimantPhone} onChange={(event) => setForm((current) => ({ ...current, claimantPhone: event.target.value }))} className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none" />
+                <input
+                  value={form.claimantPhone}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      claimantPhone: event.target.value,
+                    }))
+                  }
+                  className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none"
+                />
               </label>
               <label className="block">
-                <div className="mb-1 text-sm text-white/60">Relationship to business</div>
-                <select value={form.relationshipToBusiness} onChange={(event) => setForm((current) => ({ ...current, relationshipToBusiness: event.target.value }))} className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none">
+                <div className="mb-1 text-sm text-white/60">
+                  Relationship to business
+                </div>
+                <select
+                  value={form.relationshipToBusiness}
+                  onChange={(event) =>
+                    setForm((current) => ({
+                      ...current,
+                      relationshipToBusiness: event.target.value,
+                    }))
+                  }
+                  className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none"
+                >
                   <option value="">Select relationship</option>
                   <option value="OWNER">Owner</option>
                   <option value="OFFICER">Officer</option>
-                  <option value="AUTHORIZED_REPRESENTATIVE">Authorized Representative</option>
+                  <option value="AUTHORIZED_REPRESENTATIVE">
+                    Authorized Representative
+                  </option>
                   <option value="OTHER">Other approved relationship</option>
                 </select>
               </label>
             </div>
             <label className="mt-4 block">
               <div className="mb-1 text-sm text-white/60">Role / title</div>
-              <input value={form.roleTitle} onChange={(event) => setForm((current) => ({ ...current, roleTitle: event.target.value }))} className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none" />
+              <input
+                value={form.roleTitle}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    roleTitle: event.target.value,
+                  }))
+                }
+                className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none"
+              />
             </label>
             <p className="mt-3 text-sm text-yellow-200">{requiredHint}</p>
           </section>
 
           <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
             <div className="flex items-center justify-between gap-3">
-              <h2 className="text-xl font-bold text-white">Evidence metadata</h2>
+              <h2 className="text-xl font-bold text-white">
+                Evidence metadata
+              </h2>
               <button
                 type="button"
                 onClick={() =>
@@ -441,40 +543,145 @@ export default function FoundingMembershipEvidencePage() {
             </div>
             <div className="mt-4 space-y-4">
               {form.evidence.map((item, index) => (
-                <div key={`${index}:${item.storageKey}`} className="rounded-2xl border border-white/10 bg-black/25 p-4">
+                <div
+                  key={`${index}:${item.storageKey}`}
+                  className="rounded-2xl border border-white/10 bg-black/25 p-4"
+                >
                   <div className="grid gap-4 md:grid-cols-2">
                     <label className="block">
-                      <div className="mb-1 text-sm text-white/60">Evidence type</div>
-                      <select value={item.evidenceType} onChange={(event) => setForm((current) => ({ ...current, evidence: current.evidence.map((entry, entryIndex) => entryIndex === index ? { ...entry, evidenceType: event.target.value } : entry) }))} className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none">
-                        <option value="written_owner_or_officer_authorization">Written owner/officer authorization</option>
-                        <option value="formation_document">Formation document</option>
-                        <option value="business_license">Business license</option>
-                        <option value="website_domain_email">Website/domain email</option>
-                        <option value="listed_business_phone">Listed business phone</option>
-                        <option value="official_website_or_social_account">Official website or social account</option>
+                      <div className="mb-1 text-sm text-white/60">
+                        Evidence type
+                      </div>
+                      <select
+                        value={item.evidenceType}
+                        onChange={(event) =>
+                          setForm((current) => ({
+                            ...current,
+                            evidence: current.evidence.map(
+                              (entry, entryIndex) =>
+                                entryIndex === index
+                                  ? {
+                                      ...entry,
+                                      evidenceType: event.target.value,
+                                    }
+                                  : entry,
+                            ),
+                          }))
+                        }
+                        className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none"
+                      >
+                        <option value="written_owner_or_officer_authorization">
+                          Written owner/officer authorization
+                        </option>
+                        <option value="formation_document">
+                          Formation document
+                        </option>
+                        <option value="business_license">
+                          Business license
+                        </option>
+                        <option value="website_domain_email">
+                          Website/domain email
+                        </option>
+                        <option value="listed_business_phone">
+                          Listed business phone
+                        </option>
+                        <option value="official_website_or_social_account">
+                          Official website or social account
+                        </option>
                         <option value="other">Other</option>
                       </select>
                     </label>
                     <label className="block">
-                      <div className="mb-1 text-sm text-white/60">Evidence purpose</div>
-                      <select value={item.purpose} onChange={(event) => setForm((current) => ({ ...current, evidence: current.evidence.map((entry, entryIndex) => entryIndex === index ? { ...entry, purpose: event.target.value } : entry) }))} className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none">
-                        <option value="ownership_control">Ownership / control</option>
-                        <option value="representative_authority">Representative authority</option>
-                        <option value="business_identity">Business identity</option>
+                      <div className="mb-1 text-sm text-white/60">
+                        Evidence purpose
+                      </div>
+                      <select
+                        value={item.purpose}
+                        onChange={(event) =>
+                          setForm((current) => ({
+                            ...current,
+                            evidence: current.evidence.map(
+                              (entry, entryIndex) =>
+                                entryIndex === index
+                                  ? { ...entry, purpose: event.target.value }
+                                  : entry,
+                            ),
+                          }))
+                        }
+                        className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none"
+                      >
+                        <option value="ownership_control">
+                          Ownership / control
+                        </option>
+                        <option value="representative_authority">
+                          Representative authority
+                        </option>
+                        <option value="business_identity">
+                          Business identity
+                        </option>
                       </select>
                     </label>
                     <label className="block">
-                      <div className="mb-1 text-sm text-white/60">Evidence reference / storage key</div>
-                      <input value={item.storageKey} onChange={(event) => setForm((current) => ({ ...current, evidence: current.evidence.map((entry, entryIndex) => entryIndex === index ? { ...entry, storageKey: event.target.value } : entry) }))} className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none" />
+                      <div className="mb-1 text-sm text-white/60">
+                        Evidence reference / storage key
+                      </div>
+                      <input
+                        value={item.storageKey}
+                        onChange={(event) =>
+                          setForm((current) => ({
+                            ...current,
+                            evidence: current.evidence.map(
+                              (entry, entryIndex) =>
+                                entryIndex === index
+                                  ? { ...entry, storageKey: event.target.value }
+                                  : entry,
+                            ),
+                          }))
+                        }
+                        className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none"
+                      />
                     </label>
                     <label className="block">
-                      <div className="mb-1 text-sm text-white/60">Redacted label</div>
-                      <input value={item.redactedLabel} onChange={(event) => setForm((current) => ({ ...current, evidence: current.evidence.map((entry, entryIndex) => entryIndex === index ? { ...entry, redactedLabel: event.target.value } : entry) }))} className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none" />
+                      <div className="mb-1 text-sm text-white/60">
+                        Redacted label
+                      </div>
+                      <input
+                        value={item.redactedLabel}
+                        onChange={(event) =>
+                          setForm((current) => ({
+                            ...current,
+                            evidence: current.evidence.map(
+                              (entry, entryIndex) =>
+                                entryIndex === index
+                                  ? {
+                                      ...entry,
+                                      redactedLabel: event.target.value,
+                                    }
+                                  : entry,
+                            ),
+                          }))
+                        }
+                        className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none"
+                      />
                     </label>
                   </div>
                   <label className="mt-4 block">
                     <div className="mb-1 text-sm text-white/60">Notes</div>
-                    <textarea value={item.notes} onChange={(event) => setForm((current) => ({ ...current, evidence: current.evidence.map((entry, entryIndex) => entryIndex === index ? { ...entry, notes: event.target.value } : entry) }))} rows={3} className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none" />
+                    <textarea
+                      value={item.notes}
+                      onChange={(event) =>
+                        setForm((current) => ({
+                          ...current,
+                          evidence: current.evidence.map((entry, entryIndex) =>
+                            entryIndex === index
+                              ? { ...entry, notes: event.target.value }
+                              : entry,
+                          ),
+                        }))
+                      }
+                      rows={3}
+                      className="w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-white outline-none"
+                    />
                   </label>
                 </div>
               ))}

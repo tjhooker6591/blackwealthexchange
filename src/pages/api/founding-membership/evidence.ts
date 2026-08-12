@@ -39,7 +39,10 @@ async function getAuthenticatedMembership(req: NextApiRequest) {
   if (!membership) return null;
 
   const business = await db.collection("businesses").findOne({
-    $or: [{ _id: membership.businessId as any }, { _id: String(membership.businessId) as any }],
+    $or: [
+      { _id: membership.businessId as any },
+      { _id: String(membership.businessId) as any },
+    ],
   });
   const review = await db
     .collection("ownership_reviews")
@@ -52,10 +55,22 @@ async function getAuthenticatedMembership(req: NextApiRequest) {
     .findOne({ membershipId: membership.membershipId });
   const user = await db.collection("users").findOne(
     { $or: [{ _id: membership.userId as any }, { email }] },
-    { projection: { firstName: 1, lastName: 1, name: 1, email: 1, phone: 1 } },
+    {
+      projection: { firstName: 1, lastName: 1, name: 1, email: 1, phone: 1 },
+    },
   );
 
-  return { db, membership, business, review, claim, onboarding, user, userId, email };
+  return {
+    db,
+    membership,
+    business,
+    review,
+    claim,
+    onboarding,
+    user,
+    userId,
+    email,
+  };
 }
 
 export default async function handler(
@@ -73,21 +88,34 @@ export default async function handler(
       return res.status(401).json({ ok: false, error: "unauthorized" });
     }
 
-    const { db, membership, business, review, claim: _claim, onboarding, user, userId, email } =
-      context;
+    const {
+      db,
+      membership,
+      business,
+      review,
+      claim: _claim,
+      onboarding,
+      user,
+      userId,
+      email,
+    } = context;
     const existingClaimIntake = (review as any)?.claimIntake || null;
 
     if (req.method === "GET") {
       const claimIntake = buildFoundingClaimIntakeRecord({
         business,
-        claimantUserId: membership.userId ? String(membership.userId) : userId || null,
+        claimantUserId: membership.userId
+          ? String(membership.userId)
+          : userId || null,
         claimantValues: {
           businessName:
-            existingClaimIntake?.business?.businessName?.claimantProvidedValue ||
+            existingClaimIntake?.business?.businessName
+              ?.claimantProvidedValue ||
             business?.business_name ||
             membership.membershipName,
           addressLine1:
-            existingClaimIntake?.business?.addressLine1?.claimantProvidedValue ||
+            existingClaimIntake?.business?.addressLine1
+              ?.claimantProvidedValue ||
             business?.address ||
             business?.streetAddress ||
             "",
@@ -113,14 +141,20 @@ export default async function handler(
             business?.website ||
             "",
           businessEmail:
-            existingClaimIntake?.business?.businessEmail?.claimantProvidedValue ||
+            existingClaimIntake?.business?.businessEmail
+              ?.claimantProvidedValue ||
             business?.email ||
             "",
           socialUrls:
             existingClaimIntake?.business?.socialUrls?.map(
               (item: any) => item.claimantProvidedValue,
             ) ||
-            [business?.instagram, business?.facebook, business?.linkedin, business?.twitter]
+            [
+              business?.instagram,
+              business?.facebook,
+              business?.linkedin,
+              business?.twitter,
+            ]
               .filter(Boolean)
               .join("\n"),
           claimantName:
@@ -129,7 +163,10 @@ export default async function handler(
             user?.name ||
             "",
           claimantEmail:
-            existingClaimIntake?.claimant?.claimantEmail || email || user?.email || "",
+            existingClaimIntake?.claimant?.claimantEmail ||
+            email ||
+            user?.email ||
+            "",
           claimantPhone:
             existingClaimIntake?.claimant?.claimantPhone || user?.phone || "",
           relationshipToBusiness:
@@ -156,30 +193,39 @@ export default async function handler(
         },
         currentListing: {
           businessName: stringOrNull(business?.business_name),
-          addressLine1: stringOrNull(business?.address || business?.streetAddress),
+          addressLine1: stringOrNull(
+            business?.address || business?.streetAddress,
+          ),
           city: stringOrNull(business?.city),
           state: stringOrNull(business?.state),
           postalCode: stringOrNull(business?.zip || business?.postalCode),
           phone: stringOrNull(business?.phone),
           website: stringOrNull(business?.website),
           businessEmail: stringOrNull(business?.email),
-          socialUrls: [business?.instagram, business?.facebook, business?.linkedin, business?.twitter]
+          socialUrls: [
+            business?.instagram,
+            business?.facebook,
+            business?.linkedin,
+            business?.twitter,
+          ]
             .filter(Boolean)
             .map((item) => String(item)),
         },
         claimIntake,
         fieldAudit: getFoundingClaimIntakeFieldAudit(),
         legacyVerified:
-          normalizeFoundingClaimStage(review?.reviewStatus || membership.ownershipReviewStatus) ===
-            "ownership_verified" && !existingClaimIntake,
+          normalizeFoundingClaimStage(
+            review?.reviewStatus || membership.ownershipReviewStatus,
+          ) === "ownership_verified" && !existingClaimIntake,
       });
     }
 
-    const payload =
-      req.body && typeof req.body === "object" ? req.body : {};
+    const payload = req.body && typeof req.body === "object" ? req.body : {};
     const claimIntake = buildFoundingClaimIntakeRecord({
       business,
-      claimantUserId: membership.userId ? String(membership.userId) : userId || null,
+      claimantUserId: membership.userId
+        ? String(membership.userId)
+        : userId || null,
       claimantValues: payload.claimantValues || {},
       evidence: Array.isArray(payload.evidence) ? payload.evidence : [],
       existingRecord: existingClaimIntake,
