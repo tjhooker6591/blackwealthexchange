@@ -14,6 +14,8 @@ import {
   Bell,
   Sparkles,
 } from "lucide-react";
+import { getStudentHubRecords } from "@/lib/studentHub/catalog";
+import { getStudentHubStatusLabel } from "@/lib/studentHub/lifecycle";
 
 type ScholarshipItem = {
   title: string;
@@ -131,65 +133,22 @@ function ScholarshipCard({ item }: { item: ScholarshipItem }) {
 export default function ScholarshipsPage() {
   const YEAR = 2026;
 
-  const scholarships: ScholarshipItem[] = [
-    {
-      title: "Jackie Robinson Foundation Scholarship",
-      description:
-        "Major scholarship + leadership development for high-achieving students with strong leadership and service.",
-      statusNote:
-        "2026 application deadline was Jan 7, 2026; currently closed. Next cycle typically opens in summer. (Verify on official site.)",
-      whoItsFor: [
-        "High school seniors entering a 4-year college/university",
-        "Strong leadership + community service",
-        "Academic achievement + financial need factors may apply",
-      ],
-      howToApply: [
-        "Review eligibility and required materials on the official JRF page.",
-        "Prepare transcripts, activities list, and recommendations early.",
-        "Apply as soon as the next window opens (summer cycle).",
-      ],
-      link: "https://jackierobinson.org/apply/",
-      tags: ["Leadership", "High school seniors", "Major award"],
-    },
-    {
-      title: "Ron Brown Scholar Program",
-      description:
-        "Prestigious scholarship program recognizing academic excellence, leadership, and service among Black/African American students.",
-      statusNote:
-        "Official site indicates the 2026 application is closed. Check for the next application window on the official page.",
-      whoItsFor: [
-        "Black/African American high school seniors",
-        "Leadership + community impact",
-        "Strong academics and character",
-      ],
-      howToApply: [
-        "Confirm the current application cycle status on the official site.",
-        "Prepare essays + leadership/service documentation.",
-        "Submit early once the next window opens.",
-      ],
-      link: "https://ronbrown.org",
-      tags: ["Prestige", "Leadership", "Service"],
-    },
-    {
-      title: "UNCF Scholarships (Search & Apply)",
-      description:
-        "UNCF offers a broad range of scholarships and programs. Deadlines vary by scholarship and partner program.",
-      statusNote:
-        "Deadlines vary by program—use UNCF’s scholarship listings and apply to matching opportunities.",
-      whoItsFor: [
-        "Students meeting UNCF scholarship criteria (often GPA + enrollment requirements)",
-        "Students with FAFSA filed (common requirement)",
-        "Students attending or planning to attend eligible institutions",
-      ],
-      howToApply: [
-        "Visit UNCF scholarships and review opportunities that match your profile.",
-        "Create/maintain a strong profile (GPA, major, school, FAFSA).",
-        "Apply to multiple opportunities and track each deadline.",
-      ],
-      link: "https://uncf.org/scholarships",
-      tags: ["UNCF", "Many programs", "Deadlines vary"],
-    },
-  ];
+  const scholarships: ScholarshipItem[] = getStudentHubRecords(
+    "scholarships",
+  ).map((record) => ({
+    title: record.title,
+    description: record.description,
+    statusNote: record.statusNote || getStudentHubStatusLabel(record.status),
+    whoItsFor: [record.eligibilitySummary],
+    howToApply:
+      record.howToApply && record.howToApply.length
+        ? record.howToApply
+        : [
+            "Review the official source and apply through the current program page.",
+          ],
+    link: record.applicationUrl,
+    tags: [...(record.tags || []), getStudentHubStatusLabel(record.status)],
+  }));
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">

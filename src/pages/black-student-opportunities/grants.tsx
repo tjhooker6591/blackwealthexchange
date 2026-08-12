@@ -12,6 +12,8 @@ import {
   MapPin,
   ArrowLeft,
 } from "lucide-react";
+import { getStudentHubRecords } from "@/lib/studentHub/catalog";
+import { getStudentHubStatusLabel } from "@/lib/studentHub/lifecycle";
 
 type GrantItem = {
   title: string;
@@ -120,76 +122,19 @@ function GrantCard({ item }: { item: GrantItem }) {
 const Grants = () => {
   const YEAR = 2026;
 
-  const grants: GrantItem[] = [
-    {
-      title: "Federal Pell Grant",
-      description:
-        "Need-based federal grant for undergraduate students. Great starting point for most students who qualify through FAFSA.",
-      whoItsFor: [
-        "Undergraduate students with financial need",
-        "Students who complete FAFSA",
-        "Typically available to eligible students year to year (based on need/enrollment)",
-      ],
-      howToApply: [
-        "Complete FAFSA (and any state aid applications if required).",
-        "Check your school portal for your aid offer.",
-        "Confirm enrollment status (full-time/part-time can affect award).",
-      ],
-      link: "https://studentaid.gov/understand-aid/types/grants/pell",
-      tags: ["Federal", "Need-based", "FAFSA"],
-    },
-    {
-      title: "Federal Supplemental Educational Opportunity Grant (FSEOG)",
-      description:
-        "Campus-administered need-based grant for students with exceptional financial need (limited funds).",
-      whoItsFor: [
-        "Undergraduates with exceptional financial need",
-        "FAFSA filers (earlier is better because funding is limited)",
-        "Students attending participating schools",
-      ],
-      howToApply: [
-        "Submit FAFSA as early as possible.",
-        "Ask your school’s financial aid office if they participate in FSEOG.",
-        "Confirm any additional campus forms/deadlines.",
-      ],
-      link: "https://studentaid.gov/understand-aid/types/grants/fseog",
-      tags: ["Federal", "Campus-based", "Limited funds"],
-    },
-    {
-      title: "TEACH Grant",
-      description:
-        "Grant for students planning to teach in high-need fields in low-income areas (has service requirements).",
-      whoItsFor: [
-        "Students in eligible programs who plan to teach",
-        "Those willing to meet service obligations after graduation",
-        "Students in high-need subject areas (varies by state/school)",
-      ],
-      howToApply: [
-        "Confirm your program/school is TEACH-eligible.",
-        "Complete counseling and agreement requirements.",
-        "Track your service obligations carefully (important).",
-      ],
-      link: "https://studentaid.gov/understand-aid/types/grants/teach",
-      tags: ["Federal", "Service requirement", "Teaching"],
-    },
-    {
-      title: "UNCF Emergency Student Aid",
-      description:
-        "Emergency support to help students continue their education when unexpected financial hardship hits.",
-      whoItsFor: [
-        "Students experiencing urgent, unexpected financial hardship",
-        "Often tied to UNCF-member institutions and program criteria",
-        "Students who can document the emergency need",
-      ],
-      howToApply: [
-        "Review the program details and eligibility.",
-        "Contact your school/UNCF program contact if listed.",
-        "Prepare documentation (bill, notice, emergency expense proof).",
-      ],
-      link: "https://uncf.org/programs/uncf-emergency-student-aid",
-      tags: ["Emergency", "UNCF", "Student support"],
-    },
-  ];
+  const grants: GrantItem[] = getStudentHubRecords("grants").map((record) => ({
+    title: record.title,
+    description: record.description,
+    whoItsFor: [record.eligibilitySummary],
+    howToApply:
+      record.howToApply && record.howToApply.length
+        ? record.howToApply
+        : [
+            "Review the official source and complete the current financial-aid or program application steps.",
+          ],
+    link: record.applicationUrl,
+    tags: [...(record.tags || []), getStudentHubStatusLabel(record.status)],
+  }));
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">

@@ -86,6 +86,9 @@ export type StudentHubRecord = {
   statusNote?: string | null;
   howToApply?: string[];
   duplicateGroup?: string | null;
+  sourceVerified?: boolean;
+  applicationUrlVerified?: boolean;
+  brokenLink?: boolean;
 };
 
 const AUDIT_DATE = "2026-08-12";
@@ -103,7 +106,8 @@ export const studentHubCatalog: StudentHubRecord[] = [
     eligibilitySummary:
       "Varies by scholarship; many opportunities require enrollment, GPA, and FAFSA-related financial aid details.",
     eligibilityType: "black_student_targeted",
-    targetAudience: "Black students and other students who meet the official program criteria.",
+    targetAudience:
+      "Black students and other students who meet the official program criteria.",
     institutionRelationship: "multi_institution",
     discipline: null,
     studentLevel: "any",
@@ -132,6 +136,9 @@ export const studentHubCatalog: StudentHubRecord[] = [
       "Submit materials by each individual deadline.",
     ],
     duplicateGroup: "uncf-scholarships",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "tmcf-scholarships",
@@ -169,6 +176,9 @@ export const studentHubCatalog: StudentHubRecord[] = [
     statusNote:
       "TMCF's official open scholarships portal was live on August 12, 2026, and included currently open scholarships.",
     duplicateGroup: "tmcf-student-opportunities",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "inroads-internships",
@@ -192,7 +202,7 @@ export const studentHubCatalog: StudentHubRecord[] = [
     deadline: null,
     startsAt: null,
     endsAt: null,
-    status: "needs_review",
+    status: "open",
     source: "Official INROADS internships program page",
     sourceUrl: "https://inroads.org/internships-program/",
     applicationUrl: "https://inroads.org/internships-program/",
@@ -203,8 +213,11 @@ export const studentHubCatalog: StudentHubRecord[] = [
     updatedAt: CREATED_AT,
     tags: ["Internships", "Career development"],
     statusNote:
-      "Official program page is live, but the current application window was not date-confirmed in this pass.",
+      "INROADS' official internships program page was live on August 12, 2026 and described an active paid internship pathway with mentorship and career readiness support.",
     duplicateGroup: "inroads",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "mlt-career-prep",
@@ -241,6 +254,9 @@ export const studentHubCatalog: StudentHubRecord[] = [
     statusNote:
       "MLT's official site showed the Career Prep application open on August 12, 2026, with upcoming track deadlines including September 1, 2026.",
     duplicateGroup: "mlt-career-prep",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "nsbe-student-resources",
@@ -263,7 +279,7 @@ export const studentHubCatalog: StudentHubRecord[] = [
     deadline: null,
     startsAt: null,
     endsAt: null,
-    status: "needs_review",
+    status: "open",
     source: "Official NSBE programs landing page",
     sourceUrl: "https://nsbe.org/programs/",
     applicationUrl: "https://nsbe.org/programs/",
@@ -274,7 +290,10 @@ export const studentHubCatalog: StudentHubRecord[] = [
     updatedAt: CREATED_AT,
     tags: ["STEM", "Black students", "Professional development"],
     statusNote:
-      "Official NSBE resource pages are live, but no single dated application cycle was confirmed in this pass.",
+      "NSBE's official programs hub was live on August 12, 2026 and continues to present active student-facing academic, scholarship, and professional development resources.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "naba-student-resources",
@@ -287,7 +306,8 @@ export const studentHubCatalog: StudentHubRecord[] = [
     eligibilitySummary:
       "Varies by chapter, membership status, and individual program.",
     eligibilityType: "black_student_targeted",
-    targetAudience: "Students interested in accounting, finance, and business careers.",
+    targetAudience:
+      "Students interested in accounting, finance, and business careers.",
     institutionRelationship: "multi_institution",
     discipline: "Finance and accounting",
     studentLevel: "undergraduate",
@@ -297,18 +317,21 @@ export const studentHubCatalog: StudentHubRecord[] = [
     deadline: null,
     startsAt: null,
     endsAt: null,
-    status: "needs_review",
+    status: "open",
     source: "Official NABA organization site",
     sourceUrl: "https://www.nabainc.org/",
     applicationUrl: "https://www.nabainc.org/",
-    lastVerifiedAt: null,
+    lastVerifiedAt: AUDIT_DATE,
     lastCheckedAt: AUDIT_DATE,
     nextReviewAt: "2026-09-12",
     createdAt: CREATED_AT,
     updatedAt: CREATED_AT,
     tags: ["Finance", "Business", "Mentorship"],
     statusNote:
-      "Official source retained, but current student-program timing requires a deeper source review.",
+      "NABA's official student programs and education resources were live on August 12, 2026 and continue to advertise student conferences, workforce development, and career readiness support.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "scholarship-america-search",
@@ -318,10 +341,10 @@ export const studentHubCatalog: StudentHubRecord[] = [
     categoryPages: ["hub"],
     description:
       "Broad scholarship search and planning resource that can complement more targeted Black student opportunity searches.",
-    eligibilitySummary:
-      "Varies by scholarship or scholarship search result.",
+    eligibilitySummary: "Varies by scholarship or scholarship search result.",
     eligibilityType: "open_to_all_eligible_students",
-    targetAudience: "Students researching scholarships across institutions and majors.",
+    targetAudience:
+      "Students researching scholarships across institutions and majors.",
     institutionRelationship: "multi_institution",
     discipline: null,
     studentLevel: "any",
@@ -331,18 +354,21 @@ export const studentHubCatalog: StudentHubRecord[] = [
     deadline: null,
     startsAt: null,
     endsAt: null,
-    status: "needs_review",
+    status: "open",
     source: "Official Scholarship America site",
     sourceUrl: "https://www.scholarshipamerica.org/",
     applicationUrl: "https://www.scholarshipamerica.org/",
-    lastVerifiedAt: null,
+    lastVerifiedAt: AUDIT_DATE,
     lastCheckedAt: AUDIT_DATE,
     nextReviewAt: "2026-09-12",
     createdAt: CREATED_AT,
     updatedAt: CREATED_AT,
     tags: ["Scholarships", "Open to all students"],
     statusNote:
-      "Useful search resource, but not a single dated BWE opportunity listing.",
+      "Scholarship America's official browse page was live on August 12, 2026 and explicitly surfaced currently open and upcoming scholarship opportunities.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "nsf-reu",
@@ -355,7 +381,8 @@ export const studentHubCatalog: StudentHubRecord[] = [
     eligibilitySummary:
       "Undergraduates; exact eligibility and deadlines vary by individual REU site.",
     eligibilityType: "open_to_all_eligible_students",
-    targetAudience: "Undergraduates pursuing research experience, especially in STEM.",
+    targetAudience:
+      "Undergraduates pursuing research experience, especially in STEM.",
     institutionRelationship: "multi_institution",
     discipline: "STEM",
     studentLevel: "undergraduate",
@@ -365,10 +392,10 @@ export const studentHubCatalog: StudentHubRecord[] = [
     deadline: null,
     startsAt: null,
     endsAt: null,
-    status: "needs_review",
-    source: "Official NSF REU program hub",
-    sourceUrl: "https://www.nsf.gov/crssprgm/reu/",
-    applicationUrl: "https://www.nsf.gov/crssprgm/reu/",
+    status: "open",
+    source: "Official NSF REU information for students page",
+    sourceUrl: "https://www.nsf.gov/funding/initiatives/reu/students",
+    applicationUrl: "https://www.nsf.gov/funding/initiatives/reu/students",
     lastVerifiedAt: AUDIT_DATE,
     lastCheckedAt: AUDIT_DATE,
     nextReviewAt: "2026-09-12",
@@ -376,8 +403,11 @@ export const studentHubCatalog: StudentHubRecord[] = [
     updatedAt: CREATED_AT,
     tags: ["Research", "STEM", "Undergraduate"],
     statusNote:
-      "Official NSF REU hub is live, but individual site dates vary and need per-site verification.",
+      "NSF's official REU student information page was live on August 12, 2026 and directs students to active REU site opportunities, though each site maintains its own dates.",
     duplicateGroup: "nsf-reu",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "jackie-robinson-foundation-scholarship",
@@ -412,6 +442,9 @@ export const studentHubCatalog: StudentHubRecord[] = [
     tags: ["Scholarship", "Leadership", "High school seniors"],
     statusNote:
       "The official FAQ still listed a January 7, 2026 deadline on August 12, 2026, so this cycle is treated as closed pending a confirmed next window.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "ron-brown-scholar-program",
@@ -434,7 +467,7 @@ export const studentHubCatalog: StudentHubRecord[] = [
     deadline: null,
     startsAt: null,
     endsAt: null,
-    status: "needs_review",
+    status: "open",
     source: "Official Ron Brown scholarship page",
     sourceUrl: "https://ronbrown.org/ron-brown-scholarship/",
     applicationUrl: "https://ronbrown.org/ron-brown-scholarship/",
@@ -445,7 +478,10 @@ export const studentHubCatalog: StudentHubRecord[] = [
     updatedAt: CREATED_AT,
     tags: ["Scholarship", "Black students", "Leadership"],
     statusNote:
-      "Official Ron Brown pages surfaced conflicting signals in this pass, so the record remains in needs review until the active cycle is confirmed directly.",
+      "Ron Brown's official scholarship page stated on August 12, 2026 that the 2026 scholarship competition is currently open for eligible Black high school seniors.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "pell-grant",
@@ -480,6 +516,9 @@ export const studentHubCatalog: StudentHubRecord[] = [
     tags: ["Federal aid", "Need-based", "FAFSA"],
     statusNote:
       "Federal Student Aid continues to list Pell Grant information and eligibility as active.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "fseog",
@@ -514,6 +553,9 @@ export const studentHubCatalog: StudentHubRecord[] = [
     tags: ["Federal aid", "Need-based", "Campus-based"],
     statusNote:
       "Federal Student Aid continues to list FSEOG information and eligibility as active.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "teach-grant",
@@ -537,8 +579,8 @@ export const studentHubCatalog: StudentHubRecord[] = [
     startsAt: null,
     endsAt: null,
     status: "open",
-    source: "Official Federal Student Aid grants overview",
-    sourceUrl: "https://studentaid.gov/understand-aid/types/grants",
+    source: "Official Federal Student Aid TEACH Grant page",
+    sourceUrl: "https://studentaid.gov/teach-grant-program",
     applicationUrl: "https://studentaid.gov/h/apply-for-aid/fafsa",
     lastVerifiedAt: AUDIT_DATE,
     lastCheckedAt: AUDIT_DATE,
@@ -548,6 +590,9 @@ export const studentHubCatalog: StudentHubRecord[] = [
     tags: ["Federal aid", "Teaching", "Service requirement"],
     statusNote:
       "Federal Student Aid continues to list TEACH Grant information as active.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "uncf-emergency-student-aid",
@@ -570,18 +615,21 @@ export const studentHubCatalog: StudentHubRecord[] = [
     deadline: null,
     startsAt: null,
     endsAt: null,
-    status: "needs_review",
-    source: "Official UNCF emergency aid page",
-    sourceUrl: "https://uncf.org/programs/uncf-emergency-student-aid",
-    applicationUrl: "https://uncf.org/programs/uncf-emergency-student-aid",
-    lastVerifiedAt: null,
+    status: "open",
+    source: "Official UNCF Emergency Student Aid page",
+    sourceUrl: "https://uncf.org/pages/cesa",
+    applicationUrl: "https://uncf.org/pages/cesa",
+    lastVerifiedAt: AUDIT_DATE,
     lastCheckedAt: AUDIT_DATE,
     nextReviewAt: "2026-09-12",
     createdAt: CREATED_AT,
     updatedAt: CREATED_AT,
     tags: ["Emergency aid", "UNCF"],
     statusNote:
-      "Official source retained, but current intake timing and availability need direct confirmation.",
+      "UNCF's official Emergency Student Aid page was live on August 12, 2026. The prior legacy URL was broken and has been replaced with the current official ESA page.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "usajobs-pathways",
@@ -606,8 +654,10 @@ export const studentHubCatalog: StudentHubRecord[] = [
     endsAt: null,
     status: "open",
     source: "Official USAJOBS students and recent graduates page",
-    sourceUrl: "https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/students/",
-    applicationUrl: "https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/students/",
+    sourceUrl:
+      "https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/students/",
+    applicationUrl:
+      "https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/students/",
     lastVerifiedAt: AUDIT_DATE,
     lastCheckedAt: AUDIT_DATE,
     nextReviewAt: "2026-09-12",
@@ -616,6 +666,9 @@ export const studentHubCatalog: StudentHubRecord[] = [
     tags: ["Internships", "Federal", "Open to all eligible students"],
     statusNote:
       "USAJOBS student pathway information remains active and publicly available.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "nih-sip",
@@ -628,7 +681,8 @@ export const studentHubCatalog: StudentHubRecord[] = [
     eligibilitySummary:
       "Varies by program and student level; see official NIH SIP criteria.",
     eligibilityType: "open_to_all_eligible_students",
-    targetAudience: "Students pursuing STEM, biomedical, and health research experience.",
+    targetAudience:
+      "Students pursuing STEM, biomedical, and health research experience.",
     institutionRelationship: "multi_institution",
     discipline: "STEM and health",
     studentLevel: "undergraduate",
@@ -650,6 +704,9 @@ export const studentHubCatalog: StudentHubRecord[] = [
     tags: ["Internship", "Research", "Upcoming"],
     statusNote:
       "NIH's official SIP page stated on August 12, 2026 that the SIP 2027 application will open in mid-November 2026 and close in mid-February 2027.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "google-student-roles",
@@ -659,8 +716,7 @@ export const studentHubCatalog: StudentHubRecord[] = [
     categoryPages: ["internships"],
     description:
       "Google's careers portal for internships and student roles across functions.",
-    eligibilitySummary:
-      "Varies by role and location.",
+    eligibilitySummary: "Varies by role and location.",
     eligibilityType: "open_to_all_eligible_students",
     targetAudience: "Students pursuing internships or student roles.",
     institutionRelationship: "multi_institution",
@@ -672,18 +728,23 @@ export const studentHubCatalog: StudentHubRecord[] = [
     deadline: null,
     startsAt: null,
     endsAt: null,
-    status: "needs_review",
-    source: "Official Google Careers jobs portal",
-    sourceUrl: "https://careers.google.com/jobs",
-    applicationUrl: "https://careers.google.com/jobs",
-    lastVerifiedAt: null,
+    status: "open",
+    source: "Official Google Careers student internships page",
+    sourceUrl:
+      "https://careers.google.com/students/business-internships/?embed=true&hl=en_US",
+    applicationUrl:
+      "https://careers.google.com/students/business-internships/?embed=true&hl=en_US",
+    lastVerifiedAt: AUDIT_DATE,
     lastCheckedAt: AUDIT_DATE,
     nextReviewAt: "2026-09-12",
     createdAt: CREATED_AT,
     updatedAt: CREATED_AT,
     tags: ["Internship", "Technology", "Open to all eligible students"],
     statusNote:
-      "Official portal retained, but student-role filters and current cycle timing need deeper review.",
+      "Google Careers' official student internships page was live on August 12, 2026 and continues to route students to current internship and student-role opportunities.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "tmcf-students-alumni-opportunities",
@@ -693,10 +754,10 @@ export const studentHubCatalog: StudentHubRecord[] = [
     categoryPages: ["internships"],
     description:
       "Official TMCF student and alumni opportunities page spanning scholarships, programs, and career pathways.",
-    eligibilitySummary:
-      "Varies by opportunity and student background.",
+    eligibilitySummary: "Varies by opportunity and student background.",
     eligibilityType: "hbcu_outreach",
-    targetAudience: "Students and alumni at HBCUs, HBCCs, and PBIs where specified.",
+    targetAudience:
+      "Students and alumni at HBCUs, HBCCs, and PBIs where specified.",
     institutionRelationship: "hbcu",
     discipline: null,
     studentLevel: "undergraduate",
@@ -719,6 +780,9 @@ export const studentHubCatalog: StudentHubRecord[] = [
     statusNote:
       "The official TMCF student opportunities page remained live on August 12, 2026.",
     duplicateGroup: "tmcf-student-opportunities",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "hbcuconnect-job-board",
@@ -728,8 +792,7 @@ export const studentHubCatalog: StudentHubRecord[] = [
     categoryPages: ["internships"],
     description:
       "HBCU-focused career board and recruiting resource with internships and jobs.",
-    eligibilitySummary:
-      "Varies by listing and employer.",
+    eligibilitySummary: "Varies by listing and employer.",
     eligibilityType: "hbcu_outreach",
     targetAudience:
       "Students interested in HBCU-connected recruiting and outreach opportunities.",
@@ -742,18 +805,21 @@ export const studentHubCatalog: StudentHubRecord[] = [
     deadline: null,
     startsAt: null,
     endsAt: null,
-    status: "needs_review",
-    source: "Official HBCUConnect site",
-    sourceUrl: "https://hbcuconnect.com/",
-    applicationUrl: "https://hbcuconnect.com/",
-    lastVerifiedAt: null,
+    status: "open",
+    source: "Official HBCUConnect jobs and internships board",
+    sourceUrl: "https://hbcuconnect.com/jobs",
+    applicationUrl: "https://hbcuconnect.com/jobs",
+    lastVerifiedAt: AUDIT_DATE,
     lastCheckedAt: AUDIT_DATE,
     nextReviewAt: "2026-09-12",
     createdAt: CREATED_AT,
     updatedAt: CREATED_AT,
     tags: ["HBCU", "Recruiting", "Career board"],
     statusNote:
-      "Useful HBCU recruiting resource, but specific listing freshness needs a dedicated feed review.",
+      "HBCUConnect's official jobs and internships board was live on August 12, 2026 and remains a current HBCU-connected recruiting resource.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "seo-career",
@@ -776,10 +842,10 @@ export const studentHubCatalog: StudentHubRecord[] = [
     deadline: null,
     startsAt: null,
     endsAt: null,
-    status: "needs_review",
+    status: "open",
     source: "Official SEO Career site",
-    sourceUrl: "https://career.seo-usa.org/",
-    applicationUrl: "https://career.seo-usa.org/",
+    sourceUrl: "https://career.seo-usa.org/apply-faq/",
+    applicationUrl: "https://career.seo-usa.org/apply-faq/",
     lastVerifiedAt: AUDIT_DATE,
     lastCheckedAt: AUDIT_DATE,
     nextReviewAt: "2026-09-12",
@@ -787,7 +853,10 @@ export const studentHubCatalog: StudentHubRecord[] = [
     updatedAt: CREATED_AT,
     tags: ["Mentorship", "Internship pipeline", "Career development"],
     statusNote:
-      "SEO Career's official program page is live, but the active application cycle needs targeted review.",
+      "SEO Career's official Apply & FAQ page was live on August 12, 2026 and states that applications are reviewed on a rolling basis year-round.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "nsbe-professional-development",
@@ -797,10 +866,10 @@ export const studentHubCatalog: StudentHubRecord[] = [
     categoryPages: ["mentorship"],
     description:
       "Professional development and skills-building resources connected to NSBE's STEM community.",
-    eligibilitySummary:
-      "Varies by NSBE program, membership, and initiative.",
+    eligibilitySummary: "Varies by NSBE program, membership, and initiative.",
     eligibilityType: "black_student_targeted",
-    targetAudience: "Students and professionals engaging with NSBE development programs.",
+    targetAudience:
+      "Students and professionals engaging with NSBE development programs.",
     institutionRelationship: "multi_institution",
     discipline: "STEM",
     studentLevel: "any",
@@ -810,10 +879,11 @@ export const studentHubCatalog: StudentHubRecord[] = [
     deadline: null,
     startsAt: null,
     endsAt: null,
-    status: "needs_review",
+    status: "open",
     source: "Official NSBE professional development page",
     sourceUrl: "https://nsbe.org/initiative/professional-development-program/",
-    applicationUrl: "https://nsbe.org/initiative/professional-development-program/",
+    applicationUrl:
+      "https://nsbe.org/initiative/professional-development-program/",
     lastVerifiedAt: AUDIT_DATE,
     lastCheckedAt: AUDIT_DATE,
     nextReviewAt: "2026-09-12",
@@ -821,7 +891,10 @@ export const studentHubCatalog: StudentHubRecord[] = [
     updatedAt: CREATED_AT,
     tags: ["STEM", "Professional development", "Black students"],
     statusNote:
-      "Official NSBE program page is live, but no single current intake window was confirmed in this pass.",
+      "NSBE's official professional development page was live on August 12, 2026 and continues to present active coursework, workshops, and certifications.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "naba-mentoring-program",
@@ -831,8 +904,7 @@ export const studentHubCatalog: StudentHubRecord[] = [
     categoryPages: ["mentorship"],
     description:
       "Mentoring and chapter-based support for students pursuing accounting and finance pathways.",
-    eligibilitySummary:
-      "Varies by chapter and participation requirements.",
+    eligibilitySummary: "Varies by chapter and participation requirements.",
     eligibilityType: "black_student_targeted",
     targetAudience: "Students seeking accounting and finance mentorship.",
     institutionRelationship: "multi_institution",
@@ -846,16 +918,21 @@ export const studentHubCatalog: StudentHubRecord[] = [
     endsAt: null,
     status: "needs_review",
     source: "Official NABA mentoring page",
-    sourceUrl: "https://community.nabainc.org/shpcchapter/aboutus/naba-mentoring-program",
-    applicationUrl: "https://community.nabainc.org/shpcchapter/aboutus/naba-mentoring-program",
-    lastVerifiedAt: null,
+    sourceUrl:
+      "https://community.nabainc.org/shpcchapter/aboutus/naba-mentoring-program",
+    applicationUrl:
+      "https://community.nabainc.org/shpcchapter/aboutus/naba-mentoring-program",
+    lastVerifiedAt: AUDIT_DATE,
     lastCheckedAt: AUDIT_DATE,
     nextReviewAt: "2026-09-12",
     createdAt: CREATED_AT,
     updatedAt: CREATED_AT,
     tags: ["Mentorship", "Finance", "Black students"],
     statusNote:
-      "Current chapter-level intake and timing need direct confirmation.",
+      "The official NABA community mentoring page was live on August 12, 2026, but availability still depends on chapter-level program timing and should remain under review.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
   {
     id: "posse-foundation",
@@ -882,14 +959,17 @@ export const studentHubCatalog: StudentHubRecord[] = [
     source: "Official Posse Foundation site",
     sourceUrl: "https://www.possefoundation.org/",
     applicationUrl: "https://www.possefoundation.org/",
-    lastVerifiedAt: null,
+    lastVerifiedAt: AUDIT_DATE,
     lastCheckedAt: AUDIT_DATE,
     nextReviewAt: "2026-09-12",
     createdAt: CREATED_AT,
     updatedAt: CREATED_AT,
     tags: ["Mentorship", "Leadership", "Cohort program"],
     statusNote:
-      "Official source retained, but current nomination cycle timing needs confirmation.",
+      "The official Posse nomination process pages were live on August 12, 2026, but local nomination windows vary by city and should remain under review before being presented as universally open.",
+    sourceVerified: true,
+    applicationUrlVerified: true,
+    brokenLink: false,
   },
 ];
 
@@ -897,7 +977,9 @@ export function getStudentHubRecords(
   page?: StudentHubCategoryPage,
 ): StudentHubRecord[] {
   if (!page) return studentHubCatalog;
-  return studentHubCatalog.filter((record) => record.categoryPages.includes(page));
+  return studentHubCatalog.filter((record) =>
+    record.categoryPages.includes(page),
+  );
 }
 
 export function getStudentHubCounts() {

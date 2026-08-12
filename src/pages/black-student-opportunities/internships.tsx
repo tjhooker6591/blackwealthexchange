@@ -13,6 +13,8 @@ import {
   AlertTriangle,
   Rss,
 } from "lucide-react";
+import { getStudentHubRecords } from "@/lib/studentHub/catalog";
+import { getStudentHubStatusLabel } from "@/lib/studentHub/lifecycle";
 
 type FeedItem = {
   title: string;
@@ -152,50 +154,14 @@ export default function Internships() {
   }, []);
 
   const featuredPrograms = useMemo(
-    () => [
-      {
-        title: "USAJOBS Pathways (Federal Internships)",
-        desc: "Paid internships across U.S. federal agencies. Great for students who want stable, résumé-building experience.",
-        eligibility: "Varies by listing (student status required).",
-        link: "https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/students/",
-        tags: ["Paid", "Federal", "Many fields"],
-      },
-      {
-        title: "NIH Summer Internship Program (SIP)",
-        desc: "Research-focused internships at NIH. Strong option for STEM, health, and biomedical students.",
-        eligibility: "Varies by program (often undergraduate/grad).",
-        link: "https://www.training.nih.gov/programs/sip/",
-        tags: ["Research", "STEM", "Prestige"],
-      },
-      {
-        title: "NSF REU (Research Experiences for Undergraduates)",
-        desc: "Paid summer research at universities/labs across the U.S. Excellent for building grad-school-ready experience.",
-        eligibility: "Undergraduates (requirements vary by site).",
-        link: "https://www.nsf.gov/crssprgm/reu/",
-        tags: ["Paid", "Research", "Summer"],
-      },
-      {
-        title: "Google Careers — Student & Internship Roles",
-        desc: "Search current student internships (engineering, design, business, and more).",
-        eligibility: "Varies by role/location.",
-        link: "https://careers.google.com/jobs",
-        tags: ["Tech", "Students", "Global"],
-      },
-      {
-        title: "Thurgood Marshall College Fund (TMCF) Opportunities",
-        desc: "Career, internship, and leadership opportunities strongly aligned with HBCU students and Black excellence.",
-        eligibility: "Varies by opportunity.",
-        link: "https://www.tmcf.org/students-alumni/",
-        tags: ["HBCU", "Career", "Network"],
-      },
-      {
-        title: "HBCUConnect Internship & Job Board",
-        desc: "A consistent place to find internships plus employer outreach to HBCU talent.",
-        eligibility: "Varies by listing.",
-        link: "https://hbcuconnect.com/",
-        tags: ["HBCU", "Board", "Recruiting"],
-      },
-    ],
+    () =>
+      getStudentHubRecords("internships").map((record) => ({
+        title: record.title,
+        desc: record.description,
+        eligibility: record.eligibilitySummary,
+        link: record.applicationUrl,
+        tags: [...(record.tags || []), getStudentHubStatusLabel(record.status)],
+      })),
     [],
   );
 
