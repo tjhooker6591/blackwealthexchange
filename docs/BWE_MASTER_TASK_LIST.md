@@ -2,7 +2,7 @@
 
 ## COMPACT CHECKPOINT — 2026-08-12
 
-- LATEST VERIFIED RUNTIME HEAD: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
+- LATEST VERIFIED RUNTIME HEAD: `7845d42b64868b9c313efb79050ebaecccaf3c94`
 - PUBLIC UX RECONCILIATION COMMITS PRESENT: `4cc163a`, `53d023a`, `5fa3db9`, `7322e18`, `dea50fb`
 - RUNTIME RECONCILIATION COMMIT: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
 - LIVE ROOT RUNTIME DIRTY COUNT: `0` tracked runtime diffs
@@ -44,15 +44,16 @@
 - latest verified runtime head SHA: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
 - current git HEAD verified before control-record update: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
 - last completed workstream: `DA-13 automated verification + human ownership verification`
-- current active workstream: `none`
-- next accepted execution target: `OWNER ACCEPTANCE TESTING`
+- current active workstream: `STUDENT HUB — PHASE 1 STRUCTURED DATA FOUNDATION`
+- next accepted execution target: `STUDENT HUB — PHASE 2 VERIFIED RECORD MIGRATION + ADMIN MAINTENANCE`
 - standing scaling lane: `automatic ownership activation — DEFERRED (real-world evidence gate not met)`
 - DA-01 current result: `COMPLETE`
 - BWE-02 current result: `COMPLETE`
 - last runtime commit SHA: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
 - unresolved tracked root runtime application files: `0`
 - pre-existing untracked root public asset directories: `public/uploads/businesses/`
-- student hub — structured current + upcoming opportunity rebuild: `REQUIRED / NOT COMPLETE`
+- student hub — structured current + upcoming opportunity rebuild: `PARTIAL`
+- student hub phase 1 foundation commit: `7845d42b64868b9c313efb79050ebaecccaf3c94`
 - exact production files changed:
   - `75f4dd1850c720ce94015c5beb4bbff98f34b40c` -> ownership/profile/media + organization runtime closure
   - `ddeb5f20591669d4d8832f27d4f31b0ba13fd3c1` -> challenge runtime closure

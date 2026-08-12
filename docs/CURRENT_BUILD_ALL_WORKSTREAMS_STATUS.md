@@ -2,7 +2,7 @@
 
 ## Compact checkpoint — 2026-08-12
 
-- LATEST VERIFIED RUNTIME HEAD: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
+- LATEST VERIFIED RUNTIME HEAD: `7845d42b64868b9c313efb79050ebaecccaf3c94`
 - PUBLIC UX RECONCILIATION COMMITS PRESENT:
   - `4cc163a7a955d38fd3403680bc5ceaa0cd3c6c1e`
   - `53d023a535437a4e848e575ac7b4310584916b05`
@@ -43,13 +43,15 @@
 
 ## Student Hub — structured current + upcoming opportunity rebuild
 
-- **Status:** REQUIRED / NOT COMPLETE
+- **Status:** PARTIAL
 - **Primary audience:** Black students
 - **Access:** open to all students
 - **HBCU resources:** included as part of the hub
 - **HBCU focus of entire hub:** no
 - **Current baseline:** 27 hardcoded opportunity records, 27 stale/unverified, 27 missing structured dates, 4 duplicate URL groups / 8 duplicate raw entries, 1 confirmed broken link, dead/unsupported feed hooks, no canonical opportunity model, no freshness automation, no Student Hub admin maintenance surface
-- **Required outcome:** structured opportunity data, source verification, current + legitimate upcoming opportunities, date-derived lifecycle states, stale/broken-link review, duplicate control, and maintainability through existing BWE admin architecture
+- **Phase 1 now committed:** canonical Student Hub catalog (`src/lib/studentHub/catalog.ts`), structured lifecycle/status fields, official-source metadata fields, `/api/student-hub/opportunities`, `/api/opportunities/latest`, and real feed endpoints for internships/scholarships replacing dead hooks
+- **Current verified foundation:** 20 canonical records consolidated from the legacy Hub, Black-student-centered copy preserved, open-to-all-students positioning added on the hub landing page, official-source verification captured for core leads including UNCF, TMCF, MLT, NIH SIP, Pell, FSEOG, and TEACH
+- **Remaining required outcome:** full verified record migration for all legacy entries, date-complete lifecycle coverage, broken-link cleanup, duplicate consolidation, freshness automation, and maintainability through existing BWE admin architecture
 
 Status labels allowed:
 

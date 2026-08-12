@@ -4,7 +4,7 @@ _Last updated: 2026-08-12 America/Los_Angeles_
 
 ## Compact checkpoint — 2026-08-12
 
-- LATEST VERIFIED RUNTIME HEAD: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
+- LATEST VERIFIED RUNTIME HEAD: `7845d42b64868b9c313efb79050ebaecccaf3c94`
 - PUBLIC UX RECONCILIATION COMMITS PRESENT: `4cc163a`, `53d023a`, `5fa3db9`, `7322e18`, `dea50fb`
 - RUNTIME RECONCILIATION COMMIT: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
 - LIVE ROOT RUNTIME DIRTY COUNT: `0` tracked runtime diffs
@@ -52,7 +52,7 @@ _Last updated: 2026-08-12 America/Los_Angeles_
   - `BWE-13` second-machine auth/runtime parity proof
 - Current non-blocked execution target:
   - `OWNER ACCEPTANCE TESTING` — Thomas walkthrough of the new-business verification flow before any broader engineering lane resumes
-  - `STUDENT HUB — STRUCTURED CURRENT + UPCOMING OPPORTUNITY REBUILD` — REQUIRED / NOT COMPLETE after runtime closure
+  - `STUDENT HUB — STRUCTURED CURRENT + UPCOMING OPPORTUNITY REBUILD` — PARTIAL after Phase 1 canonical catalog foundation commit `7845d42b64868b9c313efb79050ebaecccaf3c94`
 - Standing future/scaling lane:
   - `AUTOMATIC OWNERSHIP ACTIVATION` — DEFERRED (real-world evidence gate not met)
 - Current preserved public state:
