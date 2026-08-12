@@ -2,7 +2,7 @@
 
 ## Compact checkpoint — 2026-08-12
 
-- LATEST VERIFIED RUNTIME HEAD: `7845d42b64868b9c313efb79050ebaecccaf3c94`
+- LATEST VERIFIED RUNTIME HEAD: `38d1681bd31c75ea86eb3453ea617b04e0558c46`
 - PUBLIC UX RECONCILIATION COMMITS PRESENT:
   - `4cc163a7a955d38fd3403680bc5ceaa0cd3c6c1e`
   - `53d023a535437a4e848e575ac7b4310584916b05`
@@ -48,10 +48,13 @@
 - **Access:** open to all students
 - **HBCU resources:** included as part of the hub
 - **HBCU focus of entire hub:** no
-- **Current baseline:** 27 hardcoded opportunity records, 27 stale/unverified, 27 missing structured dates, 4 duplicate URL groups / 8 duplicate raw entries, 1 confirmed broken link, dead/unsupported feed hooks, no canonical opportunity model, no freshness automation, no Student Hub admin maintenance surface
+- **Legacy baseline preserved:** 27 legacy raw records, 23 unique canonical opportunities after dedupe, 4 duplicate raw records, and HBCU resources included inside the broader Black-student-centered hub
 - **Phase 1 now committed:** canonical Student Hub catalog (`src/lib/studentHub/catalog.ts`), structured lifecycle/status fields, official-source metadata fields, `/api/student-hub/opportunities`, `/api/opportunities/latest`, and real feed endpoints for internships/scholarships replacing dead hooks
-- **Current verified foundation:** 20 canonical records consolidated from the legacy Hub, Black-student-centered copy preserved, open-to-all-students positioning added on the hub landing page, official-source verification captured for core leads including UNCF, TMCF, MLT, NIH SIP, Pell, FSEOG, and TEACH
-- **Remaining required outcome:** full verified record migration for all legacy entries, date-complete lifecycle coverage, broken-link cleanup, duplicate consolidation, freshness automation, and maintainability through existing BWE admin architecture
+- **Phase 2 now committed:** legacy-to-canonical reconciliation helpers, lifecycle derivation helper, authoritative-source refresh across the canonical catalog, current public scholarships/grants/internships/mentorship routes sourced from the canonical catalog, and authenticated Student Hub admin review endpoints/pages
+- **Current verified foundation:** 23 canonical records consolidated from the legacy Hub, Black-student-centered copy preserved, open-to-all-students positioning preserved, official-source verification captured for UNCF, TMCF, INROADS, MLT, NSBE, NABA, Scholarship America, NSF REU, Ron Brown, Pell, FSEOG, TEACH, UNCF ESA, USAJOBS Pathways, NIH SIP, Google student internships, HBCUConnect, SEO Career, and the Posse nomination pathway
+- **Current lifecycle accounting:** 18 open, 1 closing soon, 1 upcoming, 1 closed, 2 needs review, 0 stale, 0 broken links in the canonical catalog
+- **Admin maintenance foundation:** `/api/admin/student-hub` + `/admin/student-hub` now provide authenticated review of open/upcoming/closing-soon/closed/needs-review, stale, broken-link, and duplicate states inside existing BWE admin architecture
+- **Remaining required outcome:** complete the two remaining `needs_review` records with tighter official cycle proof where available, add authenticated add/edit/archive/mark-verified mutations, and broaden verified catalog coverage beyond the initial 23 reconciled legacy opportunities
 
 Status labels allowed:
 
