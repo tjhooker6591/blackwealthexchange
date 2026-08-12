@@ -2,7 +2,7 @@
 
 ## COMPACT CHECKPOINT — 2026-08-12
 
-- LATEST VERIFIED RUNTIME HEAD: `7845d42b64868b9c313efb79050ebaecccaf3c94`
+- LATEST VERIFIED RUNTIME HEAD: `a49dbc055081ffbc50c7bef50a9b8b21e2966cf7`
 - PUBLIC UX RECONCILIATION COMMITS PRESENT: `4cc163a`, `53d023a`, `5fa3db9`, `7322e18`, `dea50fb`
 - RUNTIME RECONCILIATION COMMIT: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
 - LIVE ROOT RUNTIME DIRTY COUNT: `0` tracked runtime diffs
@@ -41,21 +41,68 @@
 - program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - branch: `friday-release-candidate`
-- latest verified runtime head SHA: `38d1681bd31c75ea86eb3453ea617b04e0558c46`
-- current git HEAD verified before control-record update: `38d1681bd31c75ea86eb3453ea617b04e0558c46`
-- last completed workstream: `DA-13 automated verification + human ownership verification`
-- current active workstream: `STUDENT HUB — PHASE 2 DATA RECONCILIATION + FRESHNESS + ADMIN MAINTENANCE`
-- next accepted execution target: `STUDENT HUB — PHASE 3 VERIFIED CLOSEOUT + AUTHENTICATED WRITE MAINTENANCE`
+- latest verified runtime head SHA: `a49dbc055081ffbc50c7bef50a9b8b21e2966cf7`
+- current git HEAD verified before control-record closeout: `a49dbc055081ffbc50c7bef50a9b8b21e2966cf7`
+- last completed workstream: `STUDENT HUB — PHASE 3 ADMIN WRITE MAINTENANCE + REPOSITORY-BACKED PUBLIC/API CLOSEOUT`
+- current active workstream: `NONE — FORMAL CLEAN STOPPING POINT`
+- next accepted execution target: `NONE — WAIT FOR OWNER INSTRUCTION`
 - standing scaling lane: `automatic ownership activation — DEFERRED (real-world evidence gate not met)`
 - DA-01 current result: `COMPLETE`
 - BWE-02 current result: `COMPLETE`
-- last runtime commit SHA: `38d1681bd31c75ea86eb3453ea617b04e0558c46`
+- last runtime commit SHA: `a49dbc055081ffbc50c7bef50a9b8b21e2966cf7`
 - unresolved tracked root runtime application files: `0`
 - pre-existing untracked root public asset directories: `public/uploads/businesses/`
-- student hub — structured current + upcoming opportunity rebuild: `PARTIAL`
+- known untracked non-runtime items:
+  - `docs/audit-evidence/2026-08-05-sponsor-reconciliation.md`
+  - `public/uploads/businesses/`
+- preserved interrupted-work snapshot: `/Users/blackforge/workspace/bwe/snapshots/student-hub-phase3-recovery-2026-08-12`
+- preserved index stash: `stash@{0}: On friday-release-candidate: preserve-index-backlog-2026-08-12`
+- preserved stash purpose: preserve the former staged index backlog for owner review without polluting the live git index
+- unique canonical application work present only in preserved stash: `NO`
+- expected final disposition of preserved stash: `PRESERVE PENDING OWNER REVIEW`
+- student hub — structured current + upcoming opportunity rebuild: `COMPLETE`
 - student hub phase 1 foundation commit: `7845d42b64868b9c313efb79050ebaecccaf3c94`
 - student hub phase 2 catalog/public-route reconciliation commit: `8b3bf7e6bd9388f8f0f2365f32db96fca86ee8f0`
 - student hub phase 2 admin review surface commit: `38d1681bd31c75ea86eb3453ea617b04e0558c46`
+- student hub phase 3 runtime closeout commit: `a49dbc055081ffbc50c7bef50a9b8b21e2966cf7`
+- student hub phase 3 exact runtime files created:
+  - `src/lib/studentHub/public.ts`
+  - `src/lib/studentHub/repository.ts`
+  - `src/lib/studentHub/__tests__/repository-tests.mjs`
+  - `src/lib/studentHub/__tests__/lifecycle-tests.mjs`
+- student hub phase 3 exact runtime files modified/rebuilt:
+  - `src/pages/admin/student-hub.tsx`
+  - `src/pages/api/admin/student-hub.ts`
+  - `src/pages/api/feeds/internships.ts`
+  - `src/pages/api/feeds/scholarships.ts`
+  - `src/pages/api/opportunities/latest.ts`
+  - `src/pages/api/student-hub/opportunities.ts`
+  - `src/pages/black-student-opportunities/index.tsx`
+  - `src/pages/black-student-opportunities/scholarships.tsx`
+  - `src/pages/black-student-opportunities/internships.tsx`
+  - `src/pages/black-student-opportunities/grants.tsx`
+  - `src/pages/black-student-opportunities/mentorship.tsx`
+- student hub phase 3 validated results:
+  - `npm run typecheck` pass on Wednesday, August 12, 2026
+  - `npm run check:critical-paths` pass on Wednesday, August 12, 2026
+  - `node src/lib/studentHub/__tests__/repository-tests.mjs` pass on Wednesday, August 12, 2026
+  - `node src/lib/studentHub/__tests__/lifecycle-tests.mjs` pass on Wednesday, August 12, 2026
+  - `/black-student-opportunities`, `/black-student-opportunities/scholarships`, `/black-student-opportunities/internships`, `/black-student-opportunities/grants`, and `/black-student-opportunities/mentorship` return `200` on localhost:3000 on Wednesday, August 12, 2026
+  - `/api/student-hub/opportunities`, `/api/opportunities/latest`, `/api/feeds/internships`, and `/api/feeds/scholarships` return `200` on localhost:3000 on Wednesday, August 12, 2026
+  - `/admin/student-hub` returns `307` to `/login?redirect=%2Fadmin%2Fstudent-hub` and `/api/admin/student-hub` returns `401` unauthenticated on Wednesday, August 12, 2026
+- student hub current proven state:
+  - canonical runtime data path: repository-backed through `src/lib/studentHub/repository.ts`
+  - baseline catalog retained as verified seed/fallback only
+  - admin student hub page exists and is restored
+  - phase 2 baseline preserved at `23` canonical records
+  - current lifecycle counts preserved at `18 open / 1 closing soon / 1 upcoming / 1 closed / 2 needs review`
+  - black-student primary focus preserved
+  - open-to-all-students access preserved
+  - HBCU resources included without reorganizing the entire hub around HBCUs
+- exact remaining student hub work when execution resumes:
+  - broaden the verified catalog beyond the initial 23-record baseline only under a new authorized phase
+  - continue admin maintenance ergonomics and future catalog expansion only after explicit owner instruction
+- production deployment status: `NO DEPLOY THIS SESSION`
 - exact production files changed:
   - `75f4dd1850c720ce94015c5beb4bbff98f34b40c` -> ownership/profile/media + organization runtime closure
   - `ddeb5f20591669d4d8832f27d4f31b0ba13fd3c1` -> challenge runtime closure

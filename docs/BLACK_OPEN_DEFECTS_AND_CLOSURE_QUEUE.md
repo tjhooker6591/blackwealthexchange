@@ -42,19 +42,27 @@ _Last updated: 2026-08-12 America/Los_Angeles_
 - Program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Latest verified runtime head SHA: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
-- Current git HEAD verified before control-record update: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
-- Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
+- Latest verified runtime head SHA: `a49dbc055081ffbc50c7bef50a9b8b21e2966cf7`
+- Current git HEAD verified before control-record closeout: `a49dbc055081ffbc50c7bef50a9b8b21e2966cf7`
+- Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/student-hub-phase3-recovery-2026-08-12`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
 - Runtime application countdown: `0` unresolved runtime follow-through files remain from the DA-06/DA-08/DA-09/DA-07/DA-10 public-surface bundle
 - External validation dependencies only:
   - `BWE-10` owner-authorized final marketplace payment verification
   - `BWE-13` second-machine auth/runtime parity proof
 - Current non-blocked execution target:
-  - `STUDENT HUB — STRUCTURED CURRENT + UPCOMING OPPORTUNITY REBUILD` — PARTIAL after Phase 2 commits `8b3bf7e6bd9388f8f0f2365f32db96fca86ee8f0` and `38d1681bd31c75ea86eb3453ea617b04e0558c46`
-  - `OWNER ACCEPTANCE TESTING` — Thomas walkthrough of the preserved new-business verification flow remains available after Student Hub closure
+  - `NONE — WAIT FOR OWNER INSTRUCTION`
 - Standing future/scaling lane:
   - `AUTOMATIC OWNERSHIP ACTIVATION` — DEFERRED (real-world evidence gate not met)
+- Preserved recovery evidence:
+  - interrupted-work snapshot: `/Users/blackforge/workspace/bwe/snapshots/student-hub-phase3-recovery-2026-08-12`
+  - preserved stash: `stash@{0}: On friday-release-candidate: preserve-index-backlog-2026-08-12`
+  - preserved stash purpose: keep the former staged index backlog outside the live git index pending owner review
+  - unique canonical application work present only in preserved stash: `NO`
+  - expected final stash disposition: `PRESERVE PENDING OWNER REVIEW`
+- Known untracked non-runtime items:
+  - `docs/audit-evidence/2026-08-05-sponsor-reconciliation.md`
+  - `public/uploads/businesses/`
 - Current preserved public state:
   - `P1 directory fallback`: COMPLETE
   - `P1 marketplace product visibility`: COMPLETE
@@ -68,6 +76,56 @@ _Last updated: 2026-08-12 America/Los_Angeles_
   - `QA product`: EXCLUDED
   - `Change-impact audit`: COMPLETE — NO ADDITIONAL MAJOR REGRESSION FOUND
   - `Production auth/session audit`: `NOT YET VERIFIED` — historical code-path audit exists, but no fresh August 10 reproduction was run
+
+## Student Hub Phase 3 closeout — Wednesday, August 12, 2026
+
+- Status: COMPLETE
+- Runtime commit: `a49dbc055081ffbc50c7bef50a9b8b21e2966cf7`
+- Runtime scope completed:
+  - restored and rebuilt `src/pages/admin/student-hub.tsx`
+  - added canonical runtime access layer in `src/lib/studentHub/repository.ts`
+  - added public repository-backed mapper in `src/lib/studentHub/public.ts`
+  - unified `/api/student-hub/opportunities`, `/api/opportunities/latest`, `/api/feeds/internships`, and `/api/feeds/scholarships` on the repository contract
+  - moved public Student Hub routes to the same canonical repository-backed read path
+  - added focused repository and lifecycle tests
+- Exact files created:
+  - `src/lib/studentHub/public.ts`
+  - `src/lib/studentHub/repository.ts`
+  - `src/lib/studentHub/__tests__/repository-tests.mjs`
+  - `src/lib/studentHub/__tests__/lifecycle-tests.mjs`
+- Exact files modified/rebuilt:
+  - `src/pages/admin/student-hub.tsx`
+  - `src/pages/api/admin/student-hub.ts`
+  - `src/pages/api/feeds/internships.ts`
+  - `src/pages/api/feeds/scholarships.ts`
+  - `src/pages/api/opportunities/latest.ts`
+  - `src/pages/api/student-hub/opportunities.ts`
+  - `src/pages/black-student-opportunities/index.tsx`
+  - `src/pages/black-student-opportunities/scholarships.tsx`
+  - `src/pages/black-student-opportunities/internships.tsx`
+  - `src/pages/black-student-opportunities/grants.tsx`
+  - `src/pages/black-student-opportunities/mentorship.tsx`
+- Scope intentionally not advanced in Phase 3:
+  - no broad catalog expansion beyond the accepted 23-record baseline
+  - the 4 interrupted uncommitted additions remained preserved in recovery evidence and were not accepted into the canonical runtime catalog during this closeout
+- Current proven Student Hub state:
+  - canonical baseline remains `23` verified opportunities
+  - lifecycle counts remain `18 open / 1 closing soon / 1 upcoming / 1 closed / 2 needs review`
+  - Black students remain the primary audience
+  - all students remain welcome
+  - HBCU resources remain included
+  - the hub is not reorganized around HBCUs
+- Validation:
+  - `npm run typecheck` pass
+  - `npm run check:critical-paths` pass
+  - `node src/lib/studentHub/__tests__/repository-tests.mjs` pass
+  - `node src/lib/studentHub/__tests__/lifecycle-tests.mjs` pass
+  - localhost route proof pass on `/black-student-opportunities`, `/black-student-opportunities/scholarships`, `/black-student-opportunities/internships`, `/black-student-opportunities/grants`, `/black-student-opportunities/mentorship`
+  - localhost API proof pass on `/api/student-hub/opportunities`, `/api/opportunities/latest`, `/api/feeds/internships`, `/api/feeds/scholarships`
+  - admin auth gate proof pass: `/admin/student-hub` -> `307` login redirect, `/api/admin/student-hub` -> `401` unauthenticated
+- Production deployment status: `NO DEPLOY THIS SESSION`
+- Exact next action when work eventually resumes:
+  - no immediate workstream starts automatically; wait for explicit owner instruction before any new Student Hub expansion or another BWE lane
 
 ## Current ordered execution queue — reconciled 2026-08-10
 
