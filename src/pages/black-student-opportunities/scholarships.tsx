@@ -1,4 +1,5 @@
 // pages/black-student-opportunities/scholarships.tsx
+import type { GetServerSideProps } from "next";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,8 +15,10 @@ import {
   Bell,
   Sparkles,
 } from "lucide-react";
-import { getStudentHubRecords } from "@/lib/studentHub/catalog";
-import { getStudentHubStatusLabel } from "@/lib/studentHub/lifecycle";
+import {
+  getPublicStudentHubPageRecords,
+  type PublicStudentHubRecord,
+} from "@/lib/studentHub/public";
 
 type ScholarshipItem = {
   title: string;
@@ -130,15 +133,17 @@ function ScholarshipCard({ item }: { item: ScholarshipItem }) {
   );
 }
 
-export default function ScholarshipsPage() {
+export default function ScholarshipsPage({
+  initialScholarships,
+}: {
+  initialScholarships: PublicStudentHubRecord[];
+}) {
   const YEAR = 2026;
 
-  const scholarships: ScholarshipItem[] = getStudentHubRecords(
-    "scholarships",
-  ).map((record) => ({
+  const scholarships: ScholarshipItem[] = initialScholarships.map((record) => ({
     title: record.title,
     description: record.description,
-    statusNote: record.statusNote || getStudentHubStatusLabel(record.status),
+    statusNote: record.statusNote || record.statusLabel,
     whoItsFor: [record.eligibilitySummary],
     howToApply:
       record.howToApply && record.howToApply.length
@@ -147,7 +152,7 @@ export default function ScholarshipsPage() {
             "Review the official source and apply through the current program page.",
           ],
     link: record.applicationUrl,
-    tags: [...(record.tags || []), getStudentHubStatusLabel(record.status)],
+    tags: [...(record.tags || []), record.statusLabel],
   }));
 
   return (
@@ -253,7 +258,7 @@ export default function ScholarshipsPage() {
                 </div>
                 <p className="text-sm text-white/70">
                   Scholarship windows change. Bookmark official pages and check
-                  monthly. We can automate updates via feeds next.
+                  monthly so you are working from the latest official details.
                 </p>
               </div>
             </div>
@@ -320,9 +325,8 @@ export default function ScholarshipsPage() {
           <div className="mt-6">
             <SectionCard title="Live Updates (Feeds / Alerts)" icon={Bell}>
               <p className="text-sm text-white/70">
-                The leading-edge approach is to pull trusted sources into BWE so
-                this page stays current without manual edits. For now, these are
-                reliable official starting points:
+                These are reliable official starting points to keep in your
+                scholarship rotation throughout the year:
               </p>
 
               <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -401,12 +405,9 @@ export default function ScholarshipsPage() {
               </div>
 
               <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4 text-xs text-white/60">
-                Next step (optional): we can add an API route like{" "}
-                <span className="text-white/70 font-bold">
-                  /api/feeds/scholarships
-                </span>{" "}
-                that fetches 3–6 trusted sources on a schedule, caches results,
-                and renders “Latest Scholarship Updates” right here.
+                Keep a shortlist of trusted scholarship pages, revisit them
+                often, and confirm every deadline on the official source before
+                you submit.
               </div>
             </SectionCard>
           </div>
@@ -437,3 +438,12 @@ export default function ScholarshipsPage() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { records } = await getPublicStudentHubPageRecords("scholarships");
+  return {
+    props: {
+      initialScholarships: records,
+    },
+  };
+};

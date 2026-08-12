@@ -1,4 +1,5 @@
 // pages/black-student-opportunities/grants.tsx
+import type { GetServerSideProps } from "next";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,8 +13,10 @@ import {
   MapPin,
   ArrowLeft,
 } from "lucide-react";
-import { getStudentHubRecords } from "@/lib/studentHub/catalog";
-import { getStudentHubStatusLabel } from "@/lib/studentHub/lifecycle";
+import {
+  getPublicStudentHubPageRecords,
+  type PublicStudentHubRecord,
+} from "@/lib/studentHub/public";
 
 type GrantItem = {
   title: string;
@@ -119,10 +122,14 @@ function GrantCard({ item }: { item: GrantItem }) {
   );
 }
 
-const Grants = () => {
+const Grants = ({
+  initialGrants,
+}: {
+  initialGrants: PublicStudentHubRecord[];
+}) => {
   const YEAR = 2026;
 
-  const grants: GrantItem[] = getStudentHubRecords("grants").map((record) => ({
+  const grants: GrantItem[] = initialGrants.map((record) => ({
     title: record.title,
     description: record.description,
     whoItsFor: [record.eligibilitySummary],
@@ -133,7 +140,7 @@ const Grants = () => {
             "Review the official source and complete the current financial-aid or program application steps.",
           ],
     link: record.applicationUrl,
-    tags: [...(record.tags || []), getStudentHubStatusLabel(record.status)],
+    tags: [...(record.tags || []), record.statusLabel],
   }));
 
   return (
@@ -306,14 +313,12 @@ const Grants = () => {
             </SectionCard>
           </div>
 
-          {/* Live updates (RSS links only — safe, no new API required) */}
           <div className="mt-6">
             <SectionCard title="Live Updates (RSS / Feeds)" icon={BookOpen}>
               <p className="text-sm text-white/70">
-                If you want this page to stay “2026-current” automatically, we
-                can plug in RSS feeds behind an API route and render the latest
-                items here. For now, here are reliable feed sources to subscribe
-                to:
+                These official sources are worth revisiting when you are
+                checking grant deadlines, aid changes, and school-specific
+                funding updates:
               </p>
 
               <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -356,10 +361,9 @@ const Grants = () => {
               </div>
 
               <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4 text-xs text-white/60">
-                Recommended “leading-edge” approach for BWE: create one API
-                endpoint that fetches 2–4 trusted feeds nightly, normalizes
-                items, caches results, then this page renders “Latest updates”
-                with zero manual edits.
+                Grant and aid policies move fast. Use official financial-aid
+                pages as your source of truth before you apply or make a school
+                decision.
               </div>
             </SectionCard>
           </div>
@@ -392,3 +396,12 @@ const Grants = () => {
 };
 
 export default Grants;
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { records } = await getPublicStudentHubPageRecords("grants");
+  return {
+    props: {
+      initialGrants: records,
+    },
+  };
+};

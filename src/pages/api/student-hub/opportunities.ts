@@ -1,22 +1,26 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import {
-  getStudentHubRecords,
-  type StudentHubCategoryPage,
-} from "@/lib/studentHub/catalog";
+import { type StudentHubCategoryPage } from "@/lib/studentHub/catalog";
 import {
   deriveStudentHubLifecycle,
   getStudentHubStatusLabel,
 } from "@/lib/studentHub/lifecycle";
+import { getStudentHubResolvedCatalog } from "@/lib/studentHub/repository";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const page = typeof req.query.page === "string" ? req.query.page : undefined;
   const status =
     typeof req.query.status === "string" ? req.query.status : undefined;
 
-  const allRecords = getStudentHubRecords(
-    page as StudentHubCategoryPage | undefined,
-  ).map((record) => {
+  const { records: sourceRecords, storage } =
+    await getStudentHubResolvedCatalog({
+      page: page as StudentHubCategoryPage | undefined,
+    });
+
+  const allRecords = sourceRecords.map((record) => {
     const lifecycle = deriveStudentHubLifecycle(record);
     return {
       ...record,
@@ -57,5 +61,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   res.status(200).json({
     records,
     counts,
+    storage,
   });
 }

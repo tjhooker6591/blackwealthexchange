@@ -1,6 +1,7 @@
 // /pages/black-student-opportunities/internships.tsx
 "use client";
 
+import type { GetServerSideProps } from "next";
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,8 +14,10 @@ import {
   AlertTriangle,
   Rss,
 } from "lucide-react";
-import { getStudentHubRecords } from "@/lib/studentHub/catalog";
-import { getStudentHubStatusLabel } from "@/lib/studentHub/lifecycle";
+import {
+  getPublicStudentHubPageRecords,
+  type PublicStudentHubRecord,
+} from "@/lib/studentHub/public";
 
 type FeedItem = {
   title: string;
@@ -111,7 +114,11 @@ function ActionLink({
   );
 }
 
-export default function Internships() {
+export default function Internships({
+  initialPrograms,
+}: {
+  initialPrograms: PublicStudentHubRecord[];
+}) {
   const year = 2026;
 
   // Optional live feed
@@ -155,14 +162,14 @@ export default function Internships() {
 
   const featuredPrograms = useMemo(
     () =>
-      getStudentHubRecords("internships").map((record) => ({
+      initialPrograms.map((record) => ({
         title: record.title,
         desc: record.description,
         eligibility: record.eligibilitySummary,
         link: record.applicationUrl,
-        tags: [...(record.tags || []), getStudentHubStatusLabel(record.status)],
+        tags: [...(record.tags || []), record.statusLabel],
       })),
-    [],
+    [initialPrograms],
   );
 
   return (
@@ -343,20 +350,16 @@ export default function Internships() {
 
             {/* Right: Live feed + Safety + Navigation */}
             <div className="space-y-6">
-              <Card title="Live Internship Feed (Optional)" icon={Rss}>
+              <Card title="Latest Internship Updates" icon={Rss}>
                 <p className="text-sm text-white/70">
-                  This section can pull from RSS/feeds via{" "}
-                  <span className="font-bold text-white/80">
-                    /api/feeds/internships
-                  </span>
-                  . If you haven’t built it yet, no problem — the page stays
-                  clean.
+                  Use this section to scan current internship leads and then
+                  confirm the details on each official source before you apply.
                 </p>
 
                 <div className="mt-4 rounded-2xl border border-white/10 bg-black/30 p-4">
                   {feedStatus === "loading" && (
                     <div className="text-sm text-white/60">
-                      Loading live feed…
+                      Loading current updates…
                     </div>
                   )}
 
@@ -389,7 +392,8 @@ export default function Internships() {
 
                   {feedStatus === "error" && (
                     <div className="text-sm text-white/60">
-                      Live feed is not connected yet. (Optional upgrade)
+                      A live update list is not available right now. Start with
+                      these trusted sources instead.
                       <div className="mt-3 space-y-2">
                         <ActionLink
                           href="https://www.usajobs.gov/"
@@ -409,8 +413,8 @@ export default function Internships() {
                 </div>
 
                 <div className="mt-3 text-[11px] text-white/50">
-                  If you want, we’ll add an API route that aggregates trusted
-                  feeds and caches results so it stays fast in production.
+                  Prioritize official employer, government, and program pages
+                  when you build your internship list.
                 </div>
               </Card>
 
@@ -486,3 +490,12 @@ export default function Internships() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { records } = await getPublicStudentHubPageRecords("internships");
+  return {
+    props: {
+      initialPrograms: records,
+    },
+  };
+};

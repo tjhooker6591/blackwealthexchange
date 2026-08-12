@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { getStudentHubRecords } from "@/lib/studentHub/catalog";
+import { deriveStudentHubLifecycle } from "@/lib/studentHub/lifecycle";
+import { getStudentHubResolvedCatalog } from "@/lib/studentHub/repository";
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
@@ -11,13 +12,16 @@ export default function handler(
     ? Math.max(1, Math.min(rawLimit, 20))
     : 8;
 
-  const items = getStudentHubRecords("internships").slice(0, limit).map((record) => ({
+  const { records } = await getStudentHubResolvedCatalog({
+    page: "internships",
+  });
+  const items = records.slice(0, limit).map((record) => ({
     title: record.title,
     link: record.applicationUrl,
     source: record.organization,
     publishedAt: record.lastVerifiedAt || undefined,
     summary: record.statusNote || record.description,
-    status: record.status,
+    status: deriveStudentHubLifecycle(record).status,
   }));
 
   res.status(200).json({ items });

@@ -1,11 +1,12 @@
 // /src/pages/black-student-opportunities/index.tsx
+import type { GetServerSideProps } from "next";
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  getStudentHubRecords,
-  type StudentHubRecord,
-} from "@/lib/studentHub/catalog";
+  getPublicStudentHubPageRecords,
+  type PublicStudentHubRecord,
+} from "@/lib/studentHub/public";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -46,21 +47,9 @@ const TYPES = [
   "Career",
 ];
 
-const LEVELS = [
-  "All",
-  "High School",
-  "Undergrad",
-  "Graduate",
-  "Any",
-];
+const LEVELS = ["All", "High School", "Undergrad", "Graduate", "Any"];
 
-const MODES = [
-  "All",
-  "Remote",
-  "In-Person",
-  "Hybrid",
-  "Any",
-];
+const MODES = ["All", "Remote", "In-Person", "Hybrid", "Any"];
 
 const FIELDS = [
   "All",
@@ -71,7 +60,7 @@ const FIELDS = [
   "Public Service",
   "Finance",
   "Any",
- ] as const;
+] as const;
 
 type Opportunity = {
   id: string;
@@ -84,9 +73,10 @@ type Opportunity = {
   note: string;
   href: string;
   isFeatured?: boolean;
+  statusLabel: string;
 };
 
-function formatType(record: StudentHubRecord): Opportunity["type"] {
+function formatType(record: PublicStudentHubRecord): Opportunity["type"] {
   switch (record.opportunityType) {
     case "internship":
       return "Internship";
@@ -106,7 +96,7 @@ function formatType(record: StudentHubRecord): Opportunity["type"] {
   }
 }
 
-function formatLevel(record: StudentHubRecord): Opportunity["level"] {
+function formatLevel(record: PublicStudentHubRecord): Opportunity["level"] {
   switch (record.studentLevel) {
     case "high_school":
       return "High School";
@@ -119,7 +109,7 @@ function formatLevel(record: StudentHubRecord): Opportunity["level"] {
   }
 }
 
-function formatMode(record: StudentHubRecord): Opportunity["mode"] {
+function formatMode(record: PublicStudentHubRecord): Opportunity["mode"] {
   switch (record.attendanceMode) {
     case "remote":
       return "Remote";
@@ -132,17 +122,25 @@ function formatMode(record: StudentHubRecord): Opportunity["mode"] {
   }
 }
 
-function formatField(record: StudentHubRecord): Opportunity["field"] {
+function formatField(record: PublicStudentHubRecord): Opportunity["field"] {
   const discipline = (record.discipline || "").toLowerCase();
-  if (discipline.includes("stem") || discipline.includes("health")) return "STEM";
-  if (discipline.includes("finance") || discipline.includes("account")) return "Finance";
-  if (discipline.includes("business") || discipline.includes("consult")) return "Business";
-  if (discipline.includes("creative") || discipline.includes("design")) return "Creative";
+  if (discipline.includes("stem") || discipline.includes("health"))
+    return "STEM";
+  if (discipline.includes("finance") || discipline.includes("account"))
+    return "Finance";
+  if (discipline.includes("business") || discipline.includes("consult"))
+    return "Business";
+  if (discipline.includes("creative") || discipline.includes("design"))
+    return "Creative";
   if (discipline.includes("public")) return "Public Service";
   return "Any";
 }
 
-export default function StudentOpportunitiesHub() {
+export default function StudentOpportunitiesHub({
+  initialRecords,
+}: {
+  initialRecords: PublicStudentHubRecord[];
+}) {
   const [q, setQ] = useState("");
   const [type, setType] = useState<(typeof TYPES)[number]>("All");
   const [level, setLevel] = useState<(typeof LEVELS)[number]>("All");
@@ -150,7 +148,7 @@ export default function StudentOpportunitiesHub() {
   const [field, setField] = useState<(typeof FIELDS)[number]>("All");
 
   const data = useMemo(() => {
-    return getStudentHubRecords("hub").map(
+    return initialRecords.map(
       (record): Opportunity => ({
         id: record.id,
         title: record.title,
@@ -162,9 +160,10 @@ export default function StudentOpportunitiesHub() {
         note: record.statusNote || record.description,
         href: record.applicationUrl,
         isFeatured: Boolean(record.featured),
+        statusLabel: record.statusLabel,
       }),
     );
-  }, []);
+  }, [initialRecords]);
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
@@ -318,8 +317,8 @@ export default function StudentOpportunitiesHub() {
                   1) Opportunity Radar
                 </div>
                 <div className="text-sm text-gray-200 mt-2">
-                  Curated + (later) live feeds, so students stop missing
-                  deadlines and real openings.
+                  Curated opportunities and trusted sources, so students stop
+                  missing deadlines and real openings.
                 </div>
               </div>
               <div className="rounded-2xl bg-black/30 border border-white/10 p-5">
@@ -489,7 +488,7 @@ export default function StudentOpportunitiesHub() {
                   rel="noopener noreferrer"
                   className="shrink-0 px-3 py-2 rounded-full bg-gold text-black text-xs font-bold hover:bg-yellow-500 transition shadow"
                 >
-                  Open
+                  {o.statusLabel}
                 </a>
               </div>
 
@@ -587,9 +586,9 @@ export default function StudentOpportunitiesHub() {
                 </summary>
                 <div className="text-sm text-gray-300 mt-2">
                   This hub is built for 2026+ and focuses on trusted sources.
-                  Deadlines change, so we link directly to official pages. Next
-                  upgrade: live feeds (RSS/updates) pulled into “Latest
-                  Opportunities.”
+                  Deadlines change, so we link directly to official pages and
+                  encourage students to confirm the latest details before they
+                  apply.
                 </div>
               </details>
 
@@ -598,9 +597,9 @@ export default function StudentOpportunitiesHub() {
                   Can BWE send opportunity alerts?
                 </summary>
                 <div className="text-sm text-gray-300 mt-2">
-                  Yes—this is a strong “sticky” feature. Next step: student
-                  profiles + saved searches + email alerts. We can add a clean
-                  opt-in module on this hub.
+                  Yes. BWE can grow into a reliable place for students to track
+                  opportunities, save priorities, and stay connected to what
+                  fits their goals.
                 </div>
               </details>
 
@@ -650,3 +649,12 @@ export default function StudentOpportunitiesHub() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { records } = await getPublicStudentHubPageRecords("hub");
+  return {
+    props: {
+      initialRecords: records,
+    },
+  };
+};
