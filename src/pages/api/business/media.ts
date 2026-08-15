@@ -10,6 +10,11 @@ import {
   parseSessionIdentity,
   resolveVerifiedOwnership,
 } from "@/lib/directoryOwnership";
+import {
+  isMultipartFileTooLargeError,
+  moveUploadedFile,
+  validateUploadedImageFile,
+} from "@/lib/security/imageUploadValidation";
 
 export const config = {
   api: { bodyParser: false },
@@ -30,11 +35,6 @@ function normalizeSlot(value: string) {
     return slot;
   }
   return "";
-}
-
-function isAllowedMime(file?: File) {
-  const mime = String(file?.mimetype || "").toLowerCase();
-  return ["image/jpeg", "image/png", "image/webp", "image/gif"].includes(mime);
 }
 
 export default async function handler(
@@ -66,8 +66,15 @@ export default async function handler(
     });
   }).catch((error) => {
     console.error("[business/media] parse", error);
+    if (isMultipartFileTooLargeError(error)) {
+      return { fields: { __parseError: "file_too_large" }, files: {} } as any;
+    }
     return { fields: {}, files: {} } as any;
   });
+
+  if (fields.__parseError === "file_too_large") {
+    return res.status(400).json({ error: "file_too_large" });
+  }
 
   const businessId = String(
     first(fields.businessId as any) || req.query.businessId || "",
@@ -138,8 +145,14 @@ export default async function handler(
     if (!file) {
       return res.status(400).json({ error: "file_required" });
     }
-    if (!isAllowedMime(file)) {
-      return res.status(400).json({ error: "unsupported_media_type" });
+    const validation = await validateUploadedImageFile(file, 8 * 1024 * 1024);
+    if (!validation.ok) {
+      return res.status(400).json({
+        error:
+          validation.reason === "file_too_large"
+            ? "file_too_large"
+            : "unsupported_media_type",
+      });
     }
 
     const uploadDir = path.join(
@@ -149,10 +162,9 @@ export default async function handler(
       "businesses",
     );
     if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-    const ext = path.extname(file.originalFilename || "") || ".jpg";
-    const filename = `${uuidv4()}${ext}`;
+    const filename = `${uuidv4()}${validation.canonicalExtension}`;
     const destPath = path.join(uploadDir, filename);
-    await fs.promises.copyFile(file.filepath, destPath);
+    await moveUploadedFile(file.filepath, destPath);
     const fileUrl = `/uploads/businesses/${filename}`;
 
     const update: any = { $set: { updatedAt: new Date() } };
