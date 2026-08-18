@@ -493,3 +493,142 @@ Notes:
 - ROLLBACK: `delete seeded records only if explicitly approved`
 - APPLICATION FILE / COMMIT REQUIRING CHANGE: `src/lib/studentHub/catalog.ts -> src/lib/studentHub/repository.ts`
 - VALIDATION: `seeded from live fallback API, now 23 records`
+
+## 2026-08-18 release-stabilization/db-reconciliation follow-up
+
+DB CHANGE REQUIRED: YES
+DB CHANGE COMPLETED: YES
+DB PARITY: PARTIAL PASS
+
+Notes:
+
+- `savedJobs` exact duplicates were collapsed only where every duplicate row was semantically identical.
+- `applicants` email-based duplicates were left untouched because the remaining group was not exact.
+- A partial authenticated-applicant integrity index was added for the current `jobId + userId` path.
+- Sponsor reconciliation only backfilled the single unambiguous Pamfa business link.
+
+### 2026-08-18T07:08:59.000Z | savedJobs | DELETE_EXACT_DUPLICATES
+
+- WORKSTREAM: `release-stabilization/db-reconciliation`
+- ENVIRONMENT: `local`
+- DATABASE: `bwes-cluster`
+- COLLECTION: `savedJobs`
+- OPERATION: `DELETE_EXACT_DUPLICATES`
+- INDEX NAME: `N/A`
+- FIELDS: `{"userId":"682ad39825457afb5076f3d3","jobId":"68159df986eaf48025ca6fed"}`
+- COUNT BEFORE: `4`
+- COUNT AFTER: `1`
+- SEED/BACKFILL COUNT: `0`
+- FILTER/SCOPE: `kept 6994fb92e9b3ee0c3caf02ba`
+- DESTRUCTIVE: `YES`
+- ROLLBACK: `restore deleted duplicate docs from backup only if explicitly approved`
+- APPLICATION FILE / COMMIT REQUIRING CHANGE: `src/pages/api/user/save-job.ts`
+- VALIDATION: `3 redundant duplicates removed; one canonical row preserved`
+
+### 2026-08-18T07:09:00.000Z | savedJobs | DELETE_EXACT_DUPLICATES
+
+- WORKSTREAM: `release-stabilization/db-reconciliation`
+- ENVIRONMENT: `local`
+- DATABASE: `bwes-cluster`
+- COLLECTION: `savedJobs`
+- OPERATION: `DELETE_EXACT_DUPLICATES`
+- INDEX NAME: `N/A`
+- FIELDS: `{"userId":"680c1e52770af2064fe4c7ad","jobId":"68159df986eaf48025ca6fed"}`
+- COUNT BEFORE: `4`
+- COUNT AFTER: `1`
+- SEED/BACKFILL COUNT: `0`
+- FILTER/SCOPE: `kept 682d131bfe1900af8587df36`
+- DESTRUCTIVE: `YES`
+- ROLLBACK: `restore deleted duplicate docs from backup only if explicitly approved`
+- APPLICATION FILE / COMMIT REQUIRING CHANGE: `src/pages/api/user/save-job.ts`
+- VALIDATION: `3 redundant duplicates removed; one canonical row preserved`
+
+### 2026-08-18T07:09:01.000Z | savedJobs | DELETE_EXACT_DUPLICATES
+
+- WORKSTREAM: `release-stabilization/db-reconciliation`
+- ENVIRONMENT: `local`
+- DATABASE: `bwes-cluster`
+- COLLECTION: `savedJobs`
+- OPERATION: `DELETE_EXACT_DUPLICATES`
+- INDEX NAME: `N/A`
+- FIELDS: `{"userId":"680c1e52770af2064fe4c7ad","jobId":"6811986f50d6301ce5d3bece"}`
+- COUNT BEFORE: `2`
+- COUNT AFTER: `1`
+- SEED/BACKFILL COUNT: `0`
+- FILTER/SCOPE: `kept 682d1335fe1900af8587df37`
+- DESTRUCTIVE: `YES`
+- ROLLBACK: `restore deleted duplicate docs from backup only if explicitly approved`
+- APPLICATION FILE / COMMIT REQUIRING CHANGE: `src/pages/api/user/save-job.ts`
+- VALIDATION: `1 redundant duplicate removed; one canonical row preserved`
+
+### 2026-08-18T07:09:02.000Z | savedJobs | CREATE_INDEX
+
+- WORKSTREAM: `release-stabilization/db-reconciliation`
+- ENVIRONMENT: `local`
+- DATABASE: `bwes-cluster`
+- COLLECTION: `savedJobs`
+- OPERATION: `CREATE_INDEX`
+- INDEX NAME: `uniq_savedJobs_userId_jobId`
+- FIELDS: `{"userId":1,"jobId":1}`
+- COUNT BEFORE: `5`
+- COUNT AFTER: `5`
+- SEED/BACKFILL COUNT: `0`
+- FILTER/SCOPE: `all savedJobs documents`
+- DESTRUCTIVE: `NO`
+- ROLLBACK: `drop index only if explicitly approved`
+- APPLICATION FILE / COMMIT REQUIRING CHANGE: `src/pages/api/user/save-job.ts`
+- VALIDATION: `index present after createIndex`
+
+### 2026-08-18T07:09:55.475Z | applicants | CREATE_INDEX
+
+- WORKSTREAM: `release-stabilization/db-reconciliation`
+- ENVIRONMENT: `local`
+- DATABASE: `bwes-cluster`
+- COLLECTION: `applicants`
+- OPERATION: `CREATE_INDEX`
+- INDEX NAME: `uniq_applicants_jobId_userId_authenticated`
+- FIELDS: `{"jobId":1,"userId":1}`
+- COUNT BEFORE: `4`
+- COUNT AFTER: `4`
+- SEED/BACKFILL COUNT: `0`
+- FILTER/SCOPE: `partialFilterExpression userId type objectId`
+- DESTRUCTIVE: `NO`
+- ROLLBACK: `drop index only if explicitly approved`
+- APPLICATION FILE / COMMIT REQUIRING CHANGE: `src/pages/api/applicants/create.ts`
+- VALIDATION: `index present after createIndex`
+
+### 2026-08-18T07:09:55.737Z | featured_sponsor_schedule | SET_BUSINESS_ID
+
+- WORKSTREAM: `release-stabilization/db-reconciliation`
+- ENVIRONMENT: `local`
+- DATABASE: `bwes-cluster`
+- COLLECTION: `featured_sponsor_schedule`
+- OPERATION: `SET_BUSINESS_ID`
+- INDEX NAME: `N/A`
+- FIELDS: `{"businessId":"6a45de2d3278d888ed5d0730"}`
+- COUNT BEFORE: `0`
+- COUNT AFTER: `1`
+- SEED/BACKFILL COUNT: `1`
+- FILTER/SCOPE: `_id=69b0a034e20098b911fdff02`
+- DESTRUCTIVE: `NO`
+- ROLLBACK: `unset businessId only if explicitly approved`
+- APPLICATION FILE / COMMIT REQUIRING CHANGE: `src/pages/api/sponsored-businesses.ts`
+- VALIDATION: `businessId now 6a45de2d3278d888ed5d0730`
+
+### 2026-08-18T07:09:55.986Z | advertising_requests | SET_BUSINESS_ID
+
+- WORKSTREAM: `release-stabilization/db-reconciliation`
+- ENVIRONMENT: `local`
+- DATABASE: `bwes-cluster`
+- COLLECTION: `advertising_requests`
+- OPERATION: `SET_BUSINESS_ID`
+- INDEX NAME: `N/A`
+- FIELDS: `{"businessId":"6a45de2d3278d888ed5d0730"}`
+- COUNT BEFORE: `0`
+- COUNT AFTER: `1`
+- SEED/BACKFILL COUNT: `1`
+- FILTER/SCOPE: `_id=69b09f2e378b7c3d1bf17d1c`
+- DESTRUCTIVE: `NO`
+- ROLLBACK: `unset businessId only if explicitly approved`
+- APPLICATION FILE / COMMIT REQUIRING CHANGE: `featured sponsor request linkage rules`
+- VALIDATION: `businessId now 6a45de2d3278d888ed5d0730`
