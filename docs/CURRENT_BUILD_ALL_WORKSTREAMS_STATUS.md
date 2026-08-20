@@ -1,5 +1,34 @@
 # Current Build — Canonical All-Workstreams Status
 
+## PRE-MOVE STOPPING POINT — 2026-08-20
+
+- PROGRAM PHASE: `PRE-MOVE STOPPING POINT / ENGINEERING PAUSED`
+- CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
+- CANONICAL BRANCH: `friday-release-candidate`
+- LATEST RUNTIME HEAD: `55b539cd0c927c4700b54d2de20d3d6afd0c4414`
+- CURRENT DATABASE: `bwes-cluster`
+- LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
+- DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
+- SAFE DETERMINISTIC DB WORK REMAINING: `NO`
+- OPEN OWNER-DATA DECISIONS:
+  - applicants duplicate email-group disposition for one three-row legacy/public-apply cluster
+  - sponsor/business linkage remains unproven for historical featured-sponsor fallback records without canonical business IDs
+- DB TRACKING LEDGER: `docs/81426-1453_DB_TRACKING.md`
+- RUNNING FILE LEDGER: `docs/BWE_RUNNING_APPLICATION_FILE_CHANGES_2026-08-06_FORWARD.md`
+- UNIQUE APPLICATION FILES SINCE 2026-08-06: `146`
+- UNIQUE APPLICATION FILES SINCE 81426-1453: `15`
+- ADMIN PROOF STATUS: `NOT STARTED`
+- PAYMENT PROOF STATUS: `PENDING`
+- AUTH/ENV PARITY STATUS: `PENDING`
+- CROSS-MACHINE PARITY STATUS: `PENDING`
+- EXACT RESUME ACTION:
+  - recover this pre-move stopping point
+  - verify repo, branch, and HEAD
+  - verify localhost on `127.0.0.1:3000`
+  - confirm owner-data decisions are still unresolved
+  - begin the targeted admin proof pass only after that recovery
+- ENGINEERING RULE: `STOP ALL ENGINEERING AFTER THIS CHECKPOINT`
+
 ## Compact checkpoint — 2026-08-12
 
 - LATEST VERIFIED RUNTIME HEAD: `38d1681bd31c75ea86eb3453ea617b04e0558c46`
