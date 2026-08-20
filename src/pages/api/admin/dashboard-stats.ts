@@ -85,7 +85,7 @@ export default async function handler(
     const products = db.collection("products");
     const users = db.collection("users");
     const internApps = db.collection("intern_applications");
-    const consultingInterests = db.collection("consulting_interests");
+    const consultingInterests = db.collection("consulting_interest");
 
     // ---- Directory / Payments ----
     const directoryListings = db.collection("directory_listings");

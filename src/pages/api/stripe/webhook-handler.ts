@@ -265,14 +265,14 @@ function resolveCanonicalAdItemId(meta: SessionMetadata) {
 
 function inferCanonicalAdItemIdFromCampaignContext(input: {
   legacyCampaign?: any;
-  adminCampaign?: any;
+  requestCampaign?: any;
 }) {
   const candidates: unknown[] = [
-    input.adminCampaign?.option,
-    input.adminCampaign?.itemId,
-    input.adminCampaign?.metadata?.itemId,
-    input.adminCampaign?.metadata?.option,
-    input.adminCampaign?.placement,
+    input.requestCampaign?.option,
+    input.requestCampaign?.itemId,
+    input.requestCampaign?.metadata?.itemId,
+    input.requestCampaign?.metadata?.option,
+    input.requestCampaign?.placement,
     input.legacyCampaign?.name,
     input.legacyCampaign?.banner,
   ];
@@ -1050,16 +1050,16 @@ export default async function webhookHandler(
       const legacyCampaign = await getCampaignById(campaignId).catch(
         () => null,
       );
-      const adminCampaign = ObjectId.isValid(campaignId)
+      const requestCampaign = ObjectId.isValid(campaignId)
         ? await db
-            .collection("advertising_campaigns")
+            .collection("advertising_requests")
             .findOne({ _id: new ObjectId(campaignId) })
             .catch(() => null)
         : null;
 
       const inferred = inferCanonicalAdItemIdFromCampaignContext({
         legacyCampaign,
-        adminCampaign,
+        requestCampaign,
       });
       if (inferred) {
         normalizedItemId = inferred;
@@ -1371,37 +1371,6 @@ export default async function webhookHandler(
       } else {
         console.log(
           `ℹ️ Campaign ${campaignId} already paid or missing; skipping`,
-        );
-      }
-
-      const adminCampaignFilter = ObjectId.isValid(campaignId)
-        ? {
-            $or: [
-              { _id: new ObjectId(campaignId) },
-              { stripeSessionId },
-              { "metadata.campaignId": campaignId },
-            ],
-          }
-        : {
-            $or: [{ stripeSessionId }, { "metadata.campaignId": campaignId }],
-          };
-
-      const adminCampaignUpdate = await db
-        .collection("advertising_campaigns")
-        .updateOne(adminCampaignFilter, {
-          $set: {
-            status: "paid",
-            paymentStatus: "paid",
-            paidAt,
-            stripeSessionId,
-            stripePaymentIntentId: paymentIntentId || null,
-            updatedAt: now,
-          },
-        });
-
-      if (adminCampaignUpdate.matchedCount > 0) {
-        console.log(
-          `✅ advertising_campaigns marked paid campaignId=${campaignId} session=${stripeSessionId}`,
         );
       }
     }
