@@ -13,7 +13,7 @@ Last updated: 2026-08-25
 ## Current baseline summary
 
 - CURRENT MASTER PLAN PHASE: `PHASE 0 — RELEASE STABILIZATION`
-- CURRENT RELEASE COMPLETION: `64%`
+- CURRENT RELEASE COMPLETION: `67%`
 - CURRENT WORLD-CLASS INDEX: `313 / 1000`
 - WORLD-CLASS CLASSIFICATION: `FOUNDATION STAGE — trusted operational base forming, but far from world-class breadth`
 
@@ -29,6 +29,34 @@ Status weighting used for the baseline:
 - PENDING = `0%`
 - BLOCKED = `0%`
 - EXTERNAL PROOF PENDING = `60%`
+
+Approved Phase 0 release item denominator:
+
+- `P0-01`
+- `P0-02`
+- `P0-03`
+- `P0-04`
+- `P0-05`
+- `P0-06`
+- `P0-07`
+- `P0-08`
+- `P0-09`
+
+Current release completion calculation after the 2026-08-25 auth/env workstream:
+
+- complete items: `4`
+- in-progress items: `2`
+- ready items: `0`
+- pending items: `0`
+- blocked items: `1`
+- external proof pending items: `2`
+- formula: `((4 * 1.0) + (2 * 0.4) + (0 * 0.15) + (1 * 0.0) + (2 * 0.6)) / 9`
+- result: `6.0 / 9 = 66.67%`, rounded to `67%`
+
+Baseline release completion calculation before this workstream:
+
+- formula: `((4 * 1.0) + (1 * 0.4) + (1 * 0.15) + (1 * 0.0) + (2 * 0.6)) / 9`
+- result: `5.75 / 9 = 63.89%`, rounded to `64%`
 
 ## Domain score baseline
 

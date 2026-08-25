@@ -6,8 +6,8 @@ Last updated: 2026-08-25
 
 - TOTAL PROGRAM ITEMS: `26`
 - COMPLETE: `4`
-- IN PROGRESS: `1`
-- READY: `3`
+- IN PROGRESS: `2`
+- READY: `2`
 - PENDING: `3`
 - BLOCKED: `1`
 - EXTERNAL PROOF PENDING: `2`
@@ -77,19 +77,19 @@ Last updated: 2026-08-25
 
 ### P0-04 — Auth / environment parity
 
-- STATE: `READY`
+- STATE: `IN PROGRESS`
 - PHASE: `PHASE 0`
 - DOMAIN: `Identity & Accounts`
 - WORK TYPE: `PLATFORM / ENGINEERING`, `SECURITY`, `EXTERNAL PROOF`
 - RELEASE SCOPE: `YES`
 - WORLD-CLASS SCOPE: `NO`
 - DEPENDENCIES: `current localhost recovery and admin proof baseline`
-- BLOCKERS: `none`
-- NEXT ACTION: `run the approved Auth / Environment Parity workstream`
+- BLOCKERS: `preview/production actual env values are not safely verifiable from this machine; second-machine proof still pending`
+- NEXT ACTION: `preserve the fixed business-session role behavior and close cross-machine / deploy-target parity evidence`
 - OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `50`
 - POINTS EARNED: `0`
-- EVIDENCE: `current build status marks this as next release workstream`
+- EVIDENCE: `guest and role-gated route/API proof executed locally on 2026-08-25; business-session role drift fixed in src/pages/api/auth/me.ts at c7ecbc31c52387d6a4601f1b86cab35e481355e6`
 
 ### P0-05 — Cross-machine parity
 

@@ -1,6 +1,6 @@
 # BWE RUNNING APPLICATION FILE CHANGES 2026-08-06 FORWARD
 
-Generated from Git history on 2026-08-20. Canonical repo: `/Users/blackforge/workspace/bwe/repos/repo_clean`.
+Generated from Git history on 2026-08-25. Canonical repo: `/Users/blackforge/workspace/bwe/repos/repo_clean`.
 
 ## APPLICATION FILES
 
@@ -62,6 +62,7 @@ Generated from Git history on 2026-08-20. Canonical repo: `/Users/blackforge/wor
 - PATH: `src/pages/api/admin/student-hub.ts` | FIRST CHANGE DATE: 2026-08-12 | LAST CHANGE DATE: 2026-08-12 | ACTION(S): MODIFIED | WORKSTREAM: General runtime stabilization | COMMIT SHA(S): 38d1681, a49dbc0 | CURRENTLY EXISTS: YES | CURRENT CANONICAL: YES | DB CHANGE ASSOCIATED: NO
 - PATH: `src/pages/api/admin/support.ts` | FIRST CHANGE DATE: 2026-08-06 | LAST CHANGE DATE: 2026-08-06 | ACTION(S): MODIFIED | WORKSTREAM: Support/release surface alignment | COMMIT SHA(S): 0e6995d | CURRENTLY EXISTS: YES | CURRENT CANONICAL: YES | DB CHANGE ASSOCIATED: YES
 - PATH: `src/pages/api/admin/support/[id].ts` | FIRST CHANGE DATE: 2026-08-06 | LAST CHANGE DATE: 2026-08-06 | ACTION(S): MODIFIED | WORKSTREAM: Support/release surface alignment | COMMIT SHA(S): 0e6995d | CURRENTLY EXISTS: YES | CURRENT CANONICAL: YES | DB CHANGE ASSOCIATED: YES
+- PATH: `src/pages/api/auth/me.ts` | FIRST CHANGE DATE: 2026-08-25 | LAST CHANGE DATE: 2026-08-25 | ACTION(S): MODIFIED | WORKSTREAM: Auth / Environment Parity | COMMIT SHA(S): c7ecbc3 | CURRENTLY EXISTS: YES | CURRENT CANONICAL: YES | DB CHANGE ASSOCIATED: NO
 - PATH: `src/pages/api/auth/signup.ts` | FIRST CHANGE DATE: 2026-08-08 | LAST CHANGE DATE: 2026-08-08 | ACTION(S): MODIFIED | WORKSTREAM: General runtime stabilization | COMMIT SHA(S): fffec5d | CURRENTLY EXISTS: YES | CURRENT CANONICAL: YES | DB CHANGE ASSOCIATED: YES
 - PATH: `src/pages/api/black-card/digital-request.ts` | FIRST CHANGE DATE: 2026-08-06 | LAST CHANGE DATE: 2026-08-06 | ACTION(S): MODIFIED | WORKSTREAM: Black Card runtime bundle | COMMIT SHA(S): 84968bb | CURRENTLY EXISTS: YES | CURRENT CANONICAL: YES | DB CHANGE ASSOCIATED: NO
 - PATH: `src/pages/api/black-card/member-summary.ts` | FIRST CHANGE DATE: 2026-08-06 | LAST CHANGE DATE: 2026-08-06 | ACTION(S): MODIFIED | WORKSTREAM: Black Card runtime bundle | COMMIT SHA(S): 84968bb | CURRENTLY EXISTS: YES | CURRENT CANONICAL: YES | DB CHANGE ASSOCIATED: NO
@@ -178,10 +179,11 @@ Generated from Git history on 2026-08-20. Canonical repo: `/Users/blackforge/wor
 
 ## 81426-1453 CUMULATIVE UNIQUE APPLICATION FILES
 
-- UNIQUE APPLICATION FILES SINCE 81426-1453 CHECKPOINT: 15
+- UNIQUE APPLICATION FILES SINCE 81426-1453 CHECKPOINT: 16
 - PRE-MOVE BASE UNIQUE COUNT BEFORE FINAL CLOSEOUT: 13
 - NEW UNIQUE FILES FROM FINAL CLOSEOUT: 2
 - DUPLICATE / ALREADY-COUNTED FILES FROM FINAL CLOSEOUT: 0
+- NEW UNIQUE FILES FROM AUTH / ENVIRONMENT PARITY: 1
 
 - PATH: `src/pages/api/marketplace/create.ts` | FIRST COMMIT AFTER CHECKPOINT: `421de3e36cf2abcb8f5002a3e7b3a17deff2d232` | ACTION: MODIFIED | WORKSTREAM: Legacy write-route hardening | CURRENTLY EXISTS: YES
 - PATH: `src/pages/api/messages/send.ts` | FIRST COMMIT AFTER CHECKPOINT: `421de3e36cf2abcb8f5002a3e7b3a17deff2d232` | ACTION: MODIFIED | WORKSTREAM: Legacy write-route hardening | CURRENTLY EXISTS: YES
@@ -198,3 +200,4 @@ Generated from Git history on 2026-08-20. Canonical repo: `/Users/blackforge/wor
 - PATH: `src/instrumentation.ts` | FIRST COMMIT AFTER CHECKPOINT: `5cec09e9d8bb77a286e6d9c4678a42406d01b512` | ACTION: ADDED | WORKSTREAM: Sharp runtime defense | CURRENTLY EXISTS: YES
 - PATH: `src/pages/api/admin/dashboard-stats.ts` | FIRST COMMIT AFTER CHECKPOINT: `55b539c979ac7c737f2c40bb82fa4f1c095b6a8d` | ACTION: MODIFIED | WORKSTREAM: DB drift closeout | CURRENTLY EXISTS: YES
 - PATH: `src/pages/api/stripe/webhook-handler.ts` | FIRST COMMIT AFTER CHECKPOINT: `55b539c979ac7c737f2c40bb82fa4f1c095b6a8d` | ACTION: MODIFIED | WORKSTREAM: DB drift closeout | CURRENTLY EXISTS: YES
+- PATH: `src/pages/api/auth/me.ts` | FIRST COMMIT AFTER CHECKPOINT: `c7ecbc31c52387d6a4601f1b86cab35e481355e6` | ACTION: MODIFIED | WORKSTREAM: Auth / Environment Parity | CURRENTLY EXISTS: YES

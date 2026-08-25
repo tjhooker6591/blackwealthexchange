@@ -5,7 +5,7 @@
 - PROGRAM PHASE: `PRE-MOVE STOPPING POINT / ENGINEERING PAUSED`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- LATEST RUNTIME HEAD: `b91b90c6488ca6fb36813dd41c36bb3a4f7f9861`
+- LATEST RUNTIME HEAD: `c7ecbc31c52387d6a4601f1b86cab35e481355e6`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -21,11 +21,11 @@
 - WORLD-CLASS GAP REGISTER: `docs/BWE_WORLD_CLASS_GAP_REGISTER.md`
 - WORLD-CLASS MEASUREMENT HISTORY: `docs/BWE_WORLD_CLASS_MEASUREMENT_HISTORY.md`
 - WORLD-CLASS DECISION LOG: `docs/BWE_WORLD_CLASS_DECISION_LOG.md`
-- UNIQUE APPLICATION FILES SINCE 2026-08-06: `146`
-- UNIQUE APPLICATION FILES SINCE 81426-1453: `15`
+- UNIQUE APPLICATION FILES SINCE 2026-08-06: `147`
+- UNIQUE APPLICATION FILES SINCE 81426-1453: `16`
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
 - PAYMENT PROOF STATUS: `PENDING`
-- AUTH/ENV PARITY STATUS: `PENDING`
+- AUTH/ENV PARITY STATUS: `IN PROGRESS — local auth parity audited; business-session role drift fixed; production-safe config parity remains partial`
 - CROSS-MACHINE PARITY STATUS: `PENDING`
 - EXACT RESUME ACTION:
   - recover this pre-move stopping point
@@ -122,8 +122,8 @@ Interpret all workstream activity through that directive and its Revenue Gate be
 - **Status:** PARTIAL
 - **Entry point:** `/login`
 - **Expected final outcome:** valid login establishes session; `/api/auth/session` + `/api/auth/me` behave correctly; protected routes guard/redirect correctly on both local systems.
-- **Current actual outcome:** verified on Mac mini; cross-machine proof on main dev machine not yet fully captured in this session.
-- **Exact blocker:** off-session runtime parity evidence pending.
+- **Current actual outcome:** local runtime on the current machine now proves guest boundary redirects, role-gated route/API behavior for user, seller, employer, business, and admin, and the business-session role drift in `/api/auth/me` has been fixed at runtime commit `c7ecbc31c52387d6a4601f1b86cab35e481355e6`. `/api/auth/session` remains a parallel NextAuth endpoint and does not currently resolve the live custom `session_token` session model.
+- **Exact blocker:** cross-machine proof still pending, and production/preview env values are not safely verifiable from this machine.
 - **Files/routes/endpoints involved:** `src/pages/login.tsx`, `src/pages/api/auth/login.ts`, `src/pages/api/auth/me.ts`, `/api/auth/session`, protected route guards.
 - **Exact closure condition:** same commit/env contract proves successful login/session/protected-route behavior on both Mac mini + main dev with no auth/env regressions.
 

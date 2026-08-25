@@ -11,17 +11,17 @@ Last updated: 2026-08-25
 ### GAP-001
 
 - SUBJECT: `Auth / environment parity`
-- STATE: `READY`
+- STATE: `IN PROGRESS`
 - PHASE: `PHASE 0`
 - DOMAIN: `Identity & Accounts`
 - WORK TYPE: `PLATFORM / ENGINEERING`, `SECURITY`, `EXTERNAL PROOF`
 - RELEASE SCOPE: `YES`
 - WORLD-CLASS SCOPE: `NO`
 - DEPENDENCIES: `current local admin proof baseline`
-- BLOCKERS: `none in the canonical repo; proof still needs execution`
-- NEXT ACTION: `run the approved Auth / Environment Parity workstream`
+- BLOCKERS: `preview/production actual env values are not safely verifiable from this machine; second-machine evidence is still outstanding`
+- NEXT ACTION: `close cross-machine proof and deploy-target env parity evidence`
 - OWNER DECISION REQUIRED: `NO`
-- EVIDENCE: `current build status identifies this as next`
+- EVIDENCE: `local guest/role/API proof completed on 2026-08-25 and business-session role drift fixed in runtime commit c7ecbc31c52387d6a4601f1b86cab35e481355e6`
 
 ### GAP-002
 
