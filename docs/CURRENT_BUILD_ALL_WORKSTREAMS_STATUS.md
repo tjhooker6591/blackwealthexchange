@@ -27,11 +27,12 @@
 - PAYMENT PROOF STATUS: `PENDING`
 - AUTH/ENV PARITY STATUS: `IN PROGRESS — local auth parity audited; business-session role drift fixed; production-safe config parity remains partial`
 - CROSS-MACHINE PARITY STATUS: `EXTERNAL PROOF PENDING`
+- CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
 - EXACT RESUME ACTION:
   - preserve the accepted auth/env parity result at `c7ecbc31c52387d6a4601f1b86cab35e481355e6`
   - preserve the accepted control/docs checkpoint at `3d953882e4839aa87b390883279170306854a584`
   - restore and verify localhost on `127.0.0.1:3000`
-  - continue `CROSS-MACHINE PARITY / BWE-13`
+  - when a genuinely separate machine is available, execute `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
   - do not begin `BWE-10` without explicit owner authorization
 - ENGINEERING RULE: `PHASE 0 CONTINUES — CROSS-MACHINE PARITY NEXT`
 

@@ -161,11 +161,11 @@ Every major project should report:
 - WORLD-CLASS SCOPE: `NO`
 - DEPENDENCIES: `P0-04`
 - BLOCKERS: `same-commit same-env proof on the other machine not yet captured`
-- NEXT ACTION: `execute the parity checklist after auth/env parity`
+- NEXT ACTION: `execute the durable second-machine checklist in docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md when a genuinely separate machine becomes available`
 - OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `35`
 - POINTS EARNED: `0`
-- EVIDENCE: `current build status still carries parity gap`
+- EVIDENCE: `current build status still carries parity gap; durable parity procedure documented in docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
 
 ### P0-06 — Paid fulfillment proof
 

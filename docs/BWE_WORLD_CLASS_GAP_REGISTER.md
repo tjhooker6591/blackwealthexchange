@@ -34,9 +34,9 @@ Last updated: 2026-08-25
 - WORLD-CLASS SCOPE: `NO`
 - DEPENDENCIES: `Auth / Environment Parity`
 - BLOCKERS: `same-commit proof on the other machine is not yet captured`
-- NEXT ACTION: `close auth/env parity, then execute parity checklist on both machines`
+- NEXT ACTION: `execute docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md when a genuinely separate machine becomes available`
 - OWNER DECISION REQUIRED: `NO`
-- EVIDENCE: `current build status marks cross-machine parity pending/blocking proof`
+- EVIDENCE: `current build status marks cross-machine parity pending/blocking proof; durable checklist now exists in docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
 
 ### GAP-003
 

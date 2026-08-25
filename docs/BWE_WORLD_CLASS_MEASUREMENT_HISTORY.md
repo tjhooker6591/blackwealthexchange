@@ -77,3 +77,29 @@ Last updated: 2026-08-25
   - this workstream adds permanent Business Independence and BMEV accounting controls
   - this workstream does not claim collected revenue, BMEV, or world-class point movement
   - cross-machine parity remains the next engineering lane in Phase 0
+
+## Entry 2026-08-25 — BWE-13 parity procedure preparation
+
+- WORKSTREAM: `BWE-13 second-machine parity procedure preparation`
+- SCORE BEFORE: `313 / 1000`
+- SCORE AFTER: `313 / 1000`
+- POINTS EARNED: `0`
+- RELEASE COMPLETION BEFORE: `67%`
+- RELEASE COMPLETION AFTER: `67%`
+- GAPS CLOSED: `0`
+- GAPS CREATED: `0`
+- PROGRAM ITEMS COMPLETED: `0`
+- NEW PROGRAM ITEMS IDENTIFIED: `0`
+- DEPENDENCIES CLOSED: `0`
+- ENGINEERING GAIN: `0`
+- EVIDENCE GAIN: `0`
+- METHODOLOGY ADJUSTMENT: `0`
+- REVENUE GAIN: `0`
+- REVENUE ENABLEMENT: `0`
+- REVENUE PROTECTION: `YES`
+- EVIDENCE:
+  - `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
+  - no visible genuinely separate machine was available from the current session scope
+- NOTES:
+  - BWE-13 remains `EXTERNAL PROOF PENDING`
+  - this workstream prepared the reusable capture procedure without manufacturing parity closure
