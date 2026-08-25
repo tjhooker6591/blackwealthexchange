@@ -31,6 +31,16 @@ North Star platform loop:
 
 `DISCOVER -> TRUST -> SUPPORT -> TRANSACT -> GROW -> MEASURE IMPACT -> BUILD WEALTH -> RETURN`
 
+Permanent economic-circulation objective:
+
+- BWE aims to facilitate, process, originate, or verifiably influence `1% to 5%` of Black American annual buying power through the BWE ecosystem over the long term.
+- working benchmark year: `2026`
+- working benchmark: approximately `$2.1 trillion`
+- working scale targets:
+  - `1%` ≈ `$21 billion` annual BWE-mediated economic volume
+  - `5%` ≈ `$105 billion` annual BWE-mediated economic volume
+- the percentage target is the durable strategic North Star; dollar thresholds must be benchmark-adjusted as the authoritative buying-power benchmark changes.
+
 ## Target Users
 
 - consumers who want to discover and support trusted Black-owned businesses
@@ -70,6 +80,10 @@ More trusted supply -> better consumer outcomes -> higher conversion -> more mon
 ### Impact flywheel
 
 Better platform data -> clearer economic attribution -> stronger proof of value -> stronger adoption -> more measurable impact
+
+### Economic-circulation flywheel
+
+Trusted supply -> meaningful demand -> completed economic activity -> attributable BMEV -> stronger business outcomes -> stronger repeat usage -> larger share of Black economic activity mediated through BWE
 
 ## Target Experience
 
@@ -291,6 +305,133 @@ Capabilities:
 - API platform
 - scale / observability
 
+## Business Independence Model
+
+Business Independence is a permanent planning dimension separate from both release completion and the world-class index.
+
+Business Independence asks:
+
+- can BWE sustain itself as a real company
+- can BWE support sustainable owner income without sacrificing trust, quality, or long-term architecture
+
+Business Independence does not authorize unsafe short-term revenue shortcuts and does not replace Phase 0 release gates.
+
+### Business-Independence stages
+
+- `BI-0` — Platform pre-revenue / unproven
+- `BI-1` — Transaction proven
+- `BI-2` — Repeatable revenue
+- `BI-3` — Multi-stream revenue
+- `BI-4` — Operating break-even
+- `BI-5` — Owner-income capable
+- `BI-6` — Corporate-income replacement ready
+
+Stage movement requires real evidence only. Test payments, fake accounts, projections, and uncollected value do not qualify.
+
+### Business-Independence evidence metrics
+
+- monthly collected revenue
+- monthly recurring revenue
+- marketplace GMV
+- BWE marketplace net revenue
+- active paying businesses
+- advertising / sponsor revenue
+- Black Card / membership revenue
+- wealth builder revenue
+- recruiting / consulting revenue
+- other verified revenue
+- active sellers
+- active buyers
+- paying members
+- conversion rate
+- repeat-customer rate
+- customer acquisition cost
+- gross margin
+- monthly operating cost
+- operating break-even gap
+- owner-income capacity
+
+If a metric is not currently measurable, report `NOT YET INSTRUMENTED`.
+
+## BWE Economic Circulation Model
+
+### BMEV definition
+
+`BMEV` means `BWE Mediated Economic Volume`.
+
+Definition:
+
+Verified legitimate economic activity that BWE processed, originated, facilitated, or can reliably attribute to the BWE ecosystem.
+
+BMEV must be evidence-based.
+
+Do not count as BMEV unless defensible attribution proves actual economic value:
+
+- page views
+- search impressions
+- website clicks
+- unverified leads
+- estimated spending
+- potential transaction value
+- marketing claims
+
+### Double-counting control
+
+Each underlying economic transaction counts only once toward total unique BMEV, even when it touches multiple BWE surfaces.
+
+Maintain for every attributable economic record:
+
+- unique BMEV
+- source
+- business line
+- attribution method
+- confidence / proof level
+
+### Metric separation rules
+
+Never combine or report as interchangeable:
+
+- BMEV
+- marketplace GMV
+- BWE gross revenue
+- BWE net / contribution revenue
+- business revenue generated
+- customer savings
+- economic impact estimates
+
+BMEV is not BWE revenue. GMV is not automatically BWE revenue. Business revenue generated is not automatically BWE revenue.
+
+### Economic scale ladder
+
+- `ES-0` — first verified economic transaction
+- `ES-1` — `$1M` annualized BMEV
+- `ES-2` — `$10M`
+- `ES-3` — `$100M`
+- `ES-4` — `$1B`
+- `ES-5` — `0.1%` of current Black buying-power benchmark
+- `ES-6` — `0.5%`
+- `ES-7` — `1%`
+- `ES-8` — `2.5%`
+- `ES-9` — `5%`
+
+At the current 2026 working benchmark of approximately `$2.1T`:
+
+- `ES-5` ≈ `$2.1B`
+- `ES-6` ≈ `$10.5B`
+- `ES-7` ≈ `$21B`
+- `ES-8` ≈ `$52.5B`
+- `ES-9` ≈ `$105B`
+
+When the external benchmark changes, update the percentage-derived dollar thresholds without rewriting historical actual BMEV.
+
+### Economic-share KPI
+
+Top-level KPI:
+
+`BWE ECONOMIC SHARE = verified annualized BMEV / current authoritative Black buying-power benchmark`
+
+Current value remains `UNVERIFIED / NOT YET INSTRUMENTED` unless evidence supports an actual result.
+
 ## Dependencies
 
 ### Critical program dependencies
@@ -304,8 +445,7 @@ Capabilities:
 
 ### Immediate next dependencies
 
-- next release workstream: `AUTH / ENVIRONMENT PARITY`
-- then `CROSS-MACHINE PARITY` as required
+- next release workstream: `CROSS-MACHINE PARITY / BWE-13`
 - then `PAID FULFILLMENT PROOF` only with explicit owner authorization for a real transaction
 - then `RELEASE CLOSURE`
 
@@ -365,6 +505,11 @@ Long-term revenue model:
 - creator tools and promotion
 - intelligence and growth tools
 
+Permanent prioritization rule:
+
+- work that improves customer value, revenue enablement, retention, and world-class maturity together should usually outrank cosmetic work with weak economic effect
+- security, legal/compliance, payment integrity, data integrity, and critical reliability may outrank revenue work where risk demands it
+
 ## Mobile Strategy
 
 - Phase 1 requires world-class mobile web standards first
@@ -391,6 +536,17 @@ Track separately:
 - gaps closed and created
 - dependencies closed and created
 - proof status for release-critical flows
+- business-independence stage and evidence metrics
+- BMEV, economic-share readiness, and economic-scale stage
+
+Progress accounting must separate:
+
+- engineering gain
+- evidence gain
+- methodology adjustment
+- revenue gain
+- revenue enablement
+- revenue protection
 
 Evidence rules:
 
@@ -414,6 +570,56 @@ Supporting authoritative ledgers:
 - `docs/BWE_RUNNING_APPLICATION_FILE_CHANGES_2026-08-06_FORWARD.md`
 - `docs/81426-1453_DB_TRACKING.md`
 
+## Revenue Stream and Economic Rail Map
+
+Current permanent revenue/economic rails to assess in future workstreams:
+
+- marketplace
+- directory / business discovery
+- advertising / sponsorship
+- Black Card / membership
+- wealth builder
+- recruiting / consulting
+- jobs
+- courses / education
+- affiliate
+- creator / music
+- real estate
+- professional services
+- other future economic rails
+
+For each rail, future reporting should distinguish:
+
+- implemented state
+- transaction-ready state
+- real revenue proven state
+- recurring revenue potential
+- BMEV measurability
+- current blocker
+- missing capability
+- nearest revenue milestone
+- nearest economic milestone
+
+## World-Class and Economic Alignment
+
+The 1%-5% economic-circulation objective must be evaluated against the world-class roadmap.
+
+Every major roadmap review should answer:
+
+- what prevents BWE from reaching `0.01%`
+- what prevents `0.1%`
+- what prevents `1%`
+- what prevents `5%`
+- highest-leverage economic rail
+- supply-side growth required
+- consumer-side growth required
+- trust infrastructure required
+- transaction infrastructure required
+- data / attribution infrastructure required
+- roadmap changes recommended, if any
+
+This strategic objective does not change the current phase. Phase 0 release stabilization remains the active gate.
+
 ## Owner Decision Gates
 
 Owner approval is required before:
@@ -429,15 +635,18 @@ Owner approval is required before:
 ## Current Baseline
 
 - current master plan phase: `PHASE 0 — RELEASE STABILIZATION`
-- next release workstream: `AUTH / ENVIRONMENT PARITY`
+- next release workstream: `CROSS-MACHINE PARITY / BWE-13`
 - current verified anchors preserved:
   - targeted admin proof: `PASS`
   - admin routes: `7/7 PASS`
   - scoped admin defects remaining: `0`
   - DB operations: `33`
-  - application files since 2026-08-06: `146`
-  - application files since 81426-1453: `15`
-  - localhost: `PASS`
+  - application files since 2026-08-06: `147`
+  - application files since 81426-1453: `16`
+  - localhost: `REQUIRES LIVE RE-CHECK AFTER ANY CHANGE`
+  - release completion: `67%`
+  - world-class index: `313 / 1000`
+  - BWE-13: `EXTERNAL PROOF PENDING`
 
 ## Roadmap Recommendation Policy
 

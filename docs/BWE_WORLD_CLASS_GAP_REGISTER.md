@@ -161,3 +161,29 @@ Last updated: 2026-08-25
 ## Proposed additions
 
 New recommendations discovered in future workstreams should enter this register as `PROPOSED` until owner review.
+
+## Strategic overlays
+
+### Business Independence overlay
+
+- CURRENT STAGE: `BI-0 — PLATFORM PRE-REVENUE / UNPROVEN`
+- PRIMARY EVIDENCE GAP: `collected-revenue instrumentation and proven payment-to-fulfillment truth remain incomplete`
+- PRIMARY RELEASE DEPENDENCIES:
+  - `GAP-001`
+  - `GAP-002`
+  - `GAP-003`
+
+### Economic-circulation overlay
+
+- PERMANENT NORTH STAR: `1% to 5% of Black American annual buying power mediated through BWE`
+- BMEV STATUS: `UNVERIFIED / NOT YET INSTRUMENTED`
+- ECONOMIC SCALE STATUS: `PRE-ES-0`
+- CURRENT BENCHMARK: `2026 working benchmark ~ $2.1T`
+
+### Scale blocker map by tier
+
+- `0.001%`: blocked by unproven paid fulfillment truth, incomplete attribution, and insufficient release-proof closure
+- `0.01%`: blocked by the same plus weak cross-domain discovery, fragmented identity/data, and limited repeat loops
+- `0.1%`: blocked by lack of robust attribution, scale observability, stronger payment/reliability proof, and mobile/network effects
+- `1%`: blocked by all prior gaps plus missing multi-domain search, personalization, large-scale support operations, and fraud/trust infrastructure
+- `5%`: blocked by all prior gaps plus platform-scale supply growth, demand growth, native mobile, AI-assisted discovery, and enterprise-grade operations

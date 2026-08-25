@@ -96,3 +96,41 @@ Last updated: 2026-08-25
 - OWNER APPROVAL STATUS: `APPROVED`
 - SUPERSEDES: `none`
 - SUPERSEDED BY: `none`
+
+### 2026-08-25 | BWE-WC-006
+
+- SUBJECT: `Business Independence becomes a permanent planning axis`
+- DECISION: BWE planning, measurement, and prioritization must track Business Independence / revenue readiness separately from release completion and world-class maturity.
+- WHY: BWE is intended to become a real operating company and long-term owner income source, but short-term revenue pressure must not override safety, trust, or architecture.
+- ALTERNATIVES:
+  - treat revenue as implied by world-class progress
+  - optimize only for product maturity without company-readiness controls
+- DEPENDENCIES:
+  - master plan
+  - program board
+  - measurement history
+- IMPACT:
+  - future workstreams must report business-independence stage and evidence metrics
+  - revenue claims now require explicit evidence discipline
+- OWNER APPROVAL STATUS: `APPROVED`
+- SUPERSEDES: `none`
+- SUPERSEDED BY: `none`
+
+### 2026-08-25 | BWE-WC-007
+
+- SUBJECT: `1%-5% Black economic-circulation North Star and BMEV`
+- DECISION: BWE adopts a permanent long-term objective of facilitating, processing, originating, or verifiably influencing `1% to 5%` of Black American annual buying power through the BWE ecosystem, measured through BMEV without double counting.
+- WHY: The platform mission is not merely feature completion or company revenue; it is durable economic circulation at meaningful scale.
+- ALTERNATIVES:
+  - use only platform revenue as the long-term success metric
+  - treat economic-impact claims without a formal accounting model
+- DEPENDENCIES:
+  - economic-attribution design
+  - payment truth
+  - event/data foundation
+- IMPACT:
+  - future strategic prioritization must include BMEV enablement
+  - BMEV, GMV, collected revenue, and impact estimates must remain separate
+- OWNER APPROVAL STATUS: `APPROVED`
+- SUPERSEDES: `none`
+- SUPERSEDED BY: `none`

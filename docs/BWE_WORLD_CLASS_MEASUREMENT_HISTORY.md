@@ -47,3 +47,33 @@ Last updated: 2026-08-25
   - engineering gain improved release-item progress and removed a current business-session defect
   - no world-class score gain awarded because the broader auth/env parity rubric remains unclosed
   - gap register was already populated at baseline; `GAPS CREATED: 0` means zero net-new gaps beyond baseline seeding
+
+## Entry 2026-08-25 — Business Independence and BMEV control baseline
+
+- WORKSTREAM: `Business Independence + BWE economic-circulation control integration`
+- SCORE BEFORE: `313 / 1000`
+- SCORE AFTER: `313 / 1000`
+- POINTS EARNED: `0`
+- RELEASE COMPLETION BEFORE: `67%`
+- RELEASE COMPLETION AFTER: `67%`
+- GAPS CLOSED: `0`
+- GAPS CREATED: `0`
+- PROGRAM ITEMS COMPLETED: `0`
+- NEW PROGRAM ITEMS IDENTIFIED: `0`
+- DEPENDENCIES CLOSED: `0`
+- ENGINEERING GAIN: `0`
+- EVIDENCE GAIN: `0`
+- METHODOLOGY ADJUSTMENT: `0`
+- REVENUE GAIN: `0`
+- REVENUE ENABLEMENT: `CONTROL-SYSTEM ONLY`
+- REVENUE PROTECTION: `YES — preserves evidence rules separating collected revenue, GMV, and BMEV`
+- EVIDENCE:
+  - `docs/BWE_WORLD_CLASS_PLATFORM_MASTER_PLAN.md`
+  - `docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md`
+  - `docs/BWE_WORLD_CLASS_GAP_REGISTER.md`
+  - `docs/BWE_WORLD_CLASS_MEASUREMENT_HISTORY.md`
+  - `docs/BWE_WORLD_CLASS_DECISION_LOG.md`
+- NOTES:
+  - this workstream adds permanent Business Independence and BMEV accounting controls
+  - this workstream does not claim collected revenue, BMEV, or world-class point movement
+  - cross-machine parity remains the next engineering lane in Phase 0

@@ -26,14 +26,28 @@
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
 - PAYMENT PROOF STATUS: `PENDING`
 - AUTH/ENV PARITY STATUS: `IN PROGRESS — local auth parity audited; business-session role drift fixed; production-safe config parity remains partial`
-- CROSS-MACHINE PARITY STATUS: `PENDING`
+- CROSS-MACHINE PARITY STATUS: `EXTERNAL PROOF PENDING`
 - EXACT RESUME ACTION:
-  - recover this pre-move stopping point
-  - verify repo, branch, and HEAD
-  - verify localhost on `127.0.0.1:3000`
-  - confirm owner-data decisions are still unresolved
-  - begin the targeted admin proof pass only after that recovery
-- ENGINEERING RULE: `STOP ALL ENGINEERING AFTER THIS CHECKPOINT`
+  - preserve the accepted auth/env parity result at `c7ecbc31c52387d6a4601f1b86cab35e481355e6`
+  - preserve the accepted control/docs checkpoint at `3d953882e4839aa87b390883279170306854a584`
+  - restore and verify localhost on `127.0.0.1:3000`
+  - continue `CROSS-MACHINE PARITY / BWE-13`
+  - do not begin `BWE-10` without explicit owner authorization
+- ENGINEERING RULE: `PHASE 0 CONTINUES — CROSS-MACHINE PARITY NEXT`
+
+## Master program anchors — 2026-08-25
+
+- CURRENT RELEASE COMPLETION: `67%`
+- CURRENT WORLD-CLASS INDEX: `313 / 1000`
+- PROGRAM ITEMS: `26`
+- WORLD-CLASS GAPS: `10`
+- OPEN P0: `0`
+- OPEN P1: `0`
+- OPEN P2: `0`
+- OPEN P3: `0`
+- BWE-13: `EXTERNAL PROOF PENDING`
+- BUSINESS INDEPENDENCE: `BI-0 — PLATFORM PRE-REVENUE / UNPROVEN`
+- BMEV: `UNVERIFIED / NOT YET INSTRUMENTED`
 
 ## Compact checkpoint — 2026-08-12
 
