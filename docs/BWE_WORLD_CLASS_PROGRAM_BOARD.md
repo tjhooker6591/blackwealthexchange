@@ -1,0 +1,444 @@
+# BWE World-Class Program Board
+
+Last updated: 2026-08-25
+
+## Program state summary
+
+- TOTAL PROGRAM ITEMS: `26`
+- COMPLETE: `4`
+- IN PROGRESS: `1`
+- READY: `3`
+- PENDING: `3`
+- BLOCKED: `1`
+- EXTERNAL PROOF PENDING: `2`
+- FUTURE: `12`
+
+## Scope summary
+
+- CURRENT RELEASE SCOPE ITEMS: `9`
+- WORLD-CLASS EXPANSION SCOPE ITEMS: `17`
+- DESIGN SCOPE ITEMS: `9`
+- FUNCTIONAL SCOPE ITEMS: `16`
+- PLATFORM / ENGINEERING SCOPE ITEMS: `17`
+- DATA SCOPE ITEMS: `12`
+- SECURITY SCOPE ITEMS: `4`
+- OPERATIONS SCOPE ITEMS: `8`
+- EXTERNAL PROOF SCOPE ITEMS: `4`
+
+## Program items
+
+### P0-01 — Release blocker inventory and canonical control baselines
+
+- STATE: `COMPLETE`
+- PHASE: `PHASE 0`
+- DOMAIN: `Operations`
+- WORK TYPE: `OPERATIONS`, `PLATFORM / ENGINEERING`
+- RELEASE SCOPE: `YES`
+- WORLD-CLASS SCOPE: `NO`
+- DEPENDENCIES: `none`
+- BLOCKERS: `none`
+- NEXT ACTION: `maintain baseline accuracy while Phase 0 closes`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `20`
+- POINTS EARNED: `20`
+- EVIDENCE: `current build status, running file ledger, DB tracking ledger, master-program baseline docs`
+
+### P0-02 — Current data integrity and DB parity
+
+- STATE: `COMPLETE`
+- PHASE: `PHASE 0`
+- DOMAIN: `Data / Admin / Operations`
+- WORK TYPE: `DATA`, `OPERATIONS`
+- RELEASE SCOPE: `YES`
+- WORLD-CLASS SCOPE: `NO`
+- DEPENDENCIES: `canonical DB verification`
+- BLOCKERS: `owner data decisions remain outside safe deterministic closure but do not block the deterministic lane`
+- NEXT ACTION: `preserve DB operation count at 33 unless new proof authorizes more`
+- OWNER DECISION REQUIRED: `YES` for unresolved owner-truth decisions only
+- POINTS AVAILABLE: `35`
+- POINTS EARNED: `28`
+- EVIDENCE: `docs/81426-1453_DB_TRACKING.md`, canonical DB verified as bwes-cluster`
+
+### P0-03 — Targeted admin proof pass
+
+- STATE: `COMPLETE`
+- PHASE: `PHASE 0`
+- DOMAIN: `Trust & Verification`
+- WORK TYPE: `FUNCTIONAL`, `PLATFORM / ENGINEERING`, `SECURITY`, `EXTERNAL PROOF`
+- RELEASE SCOPE: `YES`
+- WORLD-CLASS SCOPE: `NO`
+- DEPENDENCIES: `stable localhost`, `canonical admin session`
+- BLOCKERS: `none`
+- NEXT ACTION: `preserve this proof unless new evidence appears`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `40`
+- POINTS EARNED: `40`
+- EVIDENCE: `7/7 targeted admin routes passed on localhost on 2026-08-25`
+
+### P0-04 — Auth / environment parity
+
+- STATE: `READY`
+- PHASE: `PHASE 0`
+- DOMAIN: `Identity & Accounts`
+- WORK TYPE: `PLATFORM / ENGINEERING`, `SECURITY`, `EXTERNAL PROOF`
+- RELEASE SCOPE: `YES`
+- WORLD-CLASS SCOPE: `NO`
+- DEPENDENCIES: `current localhost recovery and admin proof baseline`
+- BLOCKERS: `none`
+- NEXT ACTION: `run the approved Auth / Environment Parity workstream`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `50`
+- POINTS EARNED: `0`
+- EVIDENCE: `current build status marks this as next release workstream`
+
+### P0-05 — Cross-machine parity
+
+- STATE: `BLOCKED`
+- PHASE: `PHASE 0`
+- DOMAIN: `Performance & Reliability`
+- WORK TYPE: `PLATFORM / ENGINEERING`, `OPERATIONS`, `EXTERNAL PROOF`
+- RELEASE SCOPE: `YES`
+- WORLD-CLASS SCOPE: `NO`
+- DEPENDENCIES: `P0-04`
+- BLOCKERS: `same-commit same-env proof on the other machine not yet captured`
+- NEXT ACTION: `execute the parity checklist after auth/env parity`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `35`
+- POINTS EARNED: `0`
+- EVIDENCE: `current build status still carries parity gap`
+
+### P0-06 — Paid fulfillment proof
+
+- STATE: `EXTERNAL PROOF PENDING`
+- PHASE: `PHASE 0`
+- DOMAIN: `Marketplace & Conversion`
+- WORK TYPE: `FUNCTIONAL`, `OPERATIONS`, `EXTERNAL PROOF`
+- RELEASE SCOPE: `YES`
+- WORLD-CLASS SCOPE: `NO`
+- DEPENDENCIES: `owner approval for real payment activity`
+- BLOCKERS: `cannot complete without explicit owner authorization`
+- NEXT ACTION: `prepare exact proof script, then wait`
+- OWNER DECISION REQUIRED: `YES`
+- POINTS AVAILABLE: `60`
+- POINTS EARNED: `0`
+- EVIDENCE: `checkout-init paths exist; fulfilled paid-state proof is not yet canonical`
+
+### P0-07 — Runtime security hardening and trust protections
+
+- STATE: `COMPLETE`
+- PHASE: `PHASE 0`
+- DOMAIN: `Security & Privacy`
+- WORK TYPE: `SECURITY`, `PLATFORM / ENGINEERING`
+- RELEASE SCOPE: `YES`
+- WORLD-CLASS SCOPE: `NO`
+- DEPENDENCIES: `runtime hardening workstreams`
+- BLOCKERS: `none for the current accepted lane`
+- NEXT ACTION: `preserve unless new evidence appears`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `40`
+- POINTS EARNED: `34`
+- EVIDENCE: `legacy write-route hardening, image upload validation, sharp runtime defense, admin gating improvements`
+
+### P0-08 — Production readiness and release closure
+
+- STATE: `IN PROGRESS`
+- PHASE: `PHASE 0`
+- DOMAIN: `Operations`
+- WORK TYPE: `OPERATIONS`, `PLATFORM / ENGINEERING`, `FUNCTIONAL`
+- RELEASE SCOPE: `YES`
+- WORLD-CLASS SCOPE: `NO`
+- DEPENDENCIES: `P0-04`, `P0-05`, `P0-06`
+- BLOCKERS: `release-closing proofs are still open`
+- NEXT ACTION: `close parity and paid proof gates`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `50`
+- POINTS EARNED: `20`
+- EVIDENCE: `release remains active and not yet closed`
+
+### P0-09 — Owner data decisions preservation
+
+- STATE: `EXTERNAL PROOF PENDING`
+- PHASE: `PHASE 0`
+- DOMAIN: `Trust & Verification`
+- WORK TYPE: `DATA`, `SECURITY`, `OPERATIONS`
+- RELEASE SCOPE: `YES`
+- WORLD-CLASS SCOPE: `NO`
+- DEPENDENCIES: `owner review`
+- BLOCKERS: `truth requires owner decision, not autonomous mutation`
+- NEXT ACTION: `preserve unresolved applicants and sponsor linkage decisions`
+- OWNER DECISION REQUIRED: `YES`
+- POINTS AVAILABLE: `20`
+- POINTS EARNED: `0`
+- EVIDENCE: `current build status and DB ledger preserve both unresolved decisions`
+
+### P1-01 — Master design system
+
+- STATE: `READY`
+- PHASE: `PHASE 1`
+- DOMAIN: `Brand & Visual Authority`
+- WORK TYPE: `DESIGN`, `PLATFORM / ENGINEERING`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `Phase 0 closure`
+- BLOCKERS: `Phase 0 gate`
+- NEXT ACTION: `define tokens, typography, spacing, buttons, forms, cards, states`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `80`
+- POINTS EARNED: `0`
+- EVIDENCE: `called out explicitly by owner as expected initial Phase 1 scope`
+
+### P1-02 — Global platform navigation and shell
+
+- STATE: `READY`
+- PHASE: `PHASE 1`
+- DOMAIN: `Information Architecture & Navigation`
+- WORK TYPE: `DESIGN`, `FUNCTIONAL`, `PLATFORM / ENGINEERING`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P1-01`
+- BLOCKERS: `Phase 0 gate`
+- NEXT ACTION: `define global nav, platform shell, route hierarchy, persistent action model`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `75`
+- POINTS EARNED: `0`
+- EVIDENCE: `owner requested this as early major program scope`
+
+### P1-03 — Responsive and mobile web standards
+
+- STATE: `PENDING`
+- PHASE: `PHASE 1`
+- DOMAIN: `Mobile Experience`
+- WORK TYPE: `DESIGN`, `PLATFORM / ENGINEERING`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P1-01`, `P1-02`
+- BLOCKERS: `Phase 0 gate`
+- NEXT ACTION: `define responsive layout, spacing, and interaction standards`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `60`
+- POINTS EARNED: `0`
+- EVIDENCE: `mobile standardization is not yet systematic`
+
+### P1-04 — Homepage, search, and consumer experience reset
+
+- STATE: `PENDING`
+- PHASE: `PHASE 1`
+- DOMAIN: `Search & Discovery`
+- WORK TYPE: `DESIGN`, `FUNCTIONAL`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P1-01`, `P1-02`
+- BLOCKERS: `Phase 0 gate`
+- NEXT ACTION: `sequence homepage experience, search experience, and consumer flow redesign`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `70`
+- POINTS EARNED: `0`
+- EVIDENCE: `owner identified homepage and search experience as expected initial scope`
+
+### P1-05 — Dashboard visual language
+
+- STATE: `FUTURE`
+- PHASE: `PHASE 1`
+- DOMAIN: `Data / Admin / Operations`
+- WORK TYPE: `DESIGN`, `FUNCTIONAL`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P1-01`
+- BLOCKERS: `Phase sequencing`
+- NEXT ACTION: `unify analytics, command-center, and admin/operator presentation language`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `35`
+- POINTS EARNED: `0`
+- EVIDENCE: `called out in Phase 1 scope`
+
+### P2-01 — Person 360 and Business 360
+
+- STATE: `FUTURE`
+- PHASE: `PHASE 2`
+- DOMAIN: `Data / Admin / Operations`
+- WORK TYPE: `DATA`, `PLATFORM / ENGINEERING`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `Phase 1 completion`
+- BLOCKERS: `canonical model not yet defined`
+- NEXT ACTION: `map person, business, membership, transaction, and opportunity relationships`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `90`
+- POINTS EARNED: `0`
+- EVIDENCE: `owner-defined Phase 2 core`
+
+### P2-02 — Canonical identity relationships and unified event system
+
+- STATE: `PENDING`
+- PHASE: `PHASE 2`
+- DOMAIN: `Identity & Accounts`
+- WORK TYPE: `DATA`, `PLATFORM / ENGINEERING`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P2-01`
+- BLOCKERS: `entity model not yet stabilized`
+- NEXT ACTION: `define canonical relationships and event taxonomy`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `80`
+- POINTS EARNED: `0`
+- EVIDENCE: `identity and activity are still fragmented across systems`
+
+### P3-01 — Universal BWE search
+
+- STATE: `FUTURE`
+- PHASE: `PHASE 3`
+- DOMAIN: `Search & Discovery`
+- WORK TYPE: `FUNCTIONAL`, `DATA`, `PLATFORM / ENGINEERING`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `Phase 1`, `Phase 2`
+- BLOCKERS: `no unified discovery index yet`
+- NEXT ACTION: `design universal search after entity and event foundations land`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `100`
+- POINTS EARNED: `0`
+- EVIDENCE: `owner-defined Phase 3 core`
+
+### P3-02 — Multi-domain discovery and trust-rich result experiences
+
+- STATE: `FUTURE`
+- PHASE: `PHASE 3`
+- DOMAIN: `Search & Discovery`
+- WORK TYPE: `DESIGN`, `FUNCTIONAL`, `DATA`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P3-01`
+- BLOCKERS: `Phase sequencing`
+- NEXT ACTION: `design domain-specific result ranking and trust signals`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `70`
+- POINTS EARNED: `0`
+- EVIDENCE: `directory, marketplace, jobs, student, services, and creator discovery need convergence`
+
+### P3-03 — World-class marketplace experience
+
+- STATE: `FUTURE`
+- PHASE: `PHASE 3`
+- DOMAIN: `Marketplace & Conversion`
+- WORK TYPE: `FUNCTIONAL`, `DESIGN`, `PLATFORM / ENGINEERING`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P0-06`, `P3-01`
+- BLOCKERS: `fulfillment proof and discovery foundation are incomplete`
+- NEXT ACTION: `upgrade product detail, seller trust, reorder, reviews, and fulfillment visibility`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `90`
+- POINTS EARNED: `0`
+- EVIDENCE: `Phase 3 owner scope plus current marketplace maturity gap`
+
+### P4-01 — Personalized home and consumer economic dashboard
+
+- STATE: `FUTURE`
+- PHASE: `PHASE 4`
+- DOMAIN: `Personalization & Intelligence`
+- WORK TYPE: `FUNCTIONAL`, `DATA`, `DESIGN`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `Phase 2`, `Phase 3`
+- BLOCKERS: `identity and recommendation foundation not ready`
+- NEXT ACTION: `define user goals, signals, and personalized entry logic`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `75`
+- POINTS EARNED: `0`
+- EVIDENCE: `owner-defined Phase 4 scope`
+
+### P4-02 — Business growth command center
+
+- STATE: `FUTURE`
+- PHASE: `PHASE 4`
+- DOMAIN: `Personalization & Intelligence`
+- WORK TYPE: `FUNCTIONAL`, `DATA`, `DESIGN`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P2-01`, `P2-02`, `P3-03`
+- BLOCKERS: `no unified attribution and business analytics core yet`
+- NEXT ACTION: `define business 360 metrics and growth workflows`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `70`
+- POINTS EARNED: `0`
+- EVIDENCE: `owner identified this as expected early post-Phase-0 major program scope`
+
+### P5-01 — Save/follow/alerts/inbox network loops
+
+- STATE: `FUTURE`
+- PHASE: `PHASE 5`
+- DOMAIN: `Network Effects & Engagement`
+- WORK TYPE: `FUNCTIONAL`, `PLATFORM / ENGINEERING`, `DATA`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `Phase 4`
+- BLOCKERS: `identity state and preference systems are not unified`
+- NEXT ACTION: `prioritize saved state, notifications, and inbox primitives`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `90`
+- POINTS EARNED: `0`
+- EVIDENCE: `owner-defined Phase 5 scope`
+
+### P5-02 — Reviews, referrals, and collections
+
+- STATE: `FUTURE`
+- PHASE: `PHASE 5`
+- DOMAIN: `Network Effects & Engagement`
+- WORK TYPE: `FUNCTIONAL`, `DATA`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P5-01`, `P3-03`
+- BLOCKERS: `network primitives not yet established`
+- NEXT ACTION: `layer social proof and referral loops on top of trusted commerce`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `65`
+- POINTS EARNED: `0`
+- EVIDENCE: `return loops remain immature`
+
+### P6-01 — Economic impact engine
+
+- STATE: `FUTURE`
+- PHASE: `PHASE 6`
+- DOMAIN: `Economic Intelligence`
+- WORK TYPE: `DATA`, `FUNCTIONAL`, `PLATFORM / ENGINEERING`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `Phase 2`, `Phase 3`, `Phase 4`, `Phase 5`
+- BLOCKERS: `platform attribution is not yet trustworthy enough`
+- NEXT ACTION: `design measurable wealth circulation and community impact models`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `100`
+- POINTS EARNED: `0`
+- EVIDENCE: `core mission requires measurement beyond page analytics`
+
+### P7-01 — BWE AI mode and natural-language discovery
+
+- STATE: `FUTURE`
+- PHASE: `PHASE 7`
+- DOMAIN: `Personalization & Intelligence`
+- WORK TYPE: `FUNCTIONAL`, `DATA`, `PLATFORM / ENGINEERING`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `Phase 2`, `Phase 6`
+- BLOCKERS: `data quality and platform intelligence are not mature enough yet`
+- NEXT ACTION: `define AI use cases only after trustworthy data and intent systems exist`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `75`
+- POINTS EARNED: `0`
+- EVIDENCE: `owner-defined Phase 7 scope`
+
+### P7-02 — Native mobile, wallet, API platform, and scale/observability
+
+- STATE: `FUTURE`
+- PHASE: `PHASE 7`
+- DOMAIN: `Mobile Experience`
+- WORK TYPE: `PLATFORM / ENGINEERING`, `FUNCTIONAL`, `OPERATIONS`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `Phase 1` through `Phase 6`
+- BLOCKERS: `premature before platform core and intelligence layers mature`
+- NEXT ACTION: `sequence native mobile and owner command-center support after stronger web foundation exists`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `100`
+- POINTS EARNED: `0`
+- EVIDENCE: `owner-defined Phase 7 scope and future owner command-center requirement`
