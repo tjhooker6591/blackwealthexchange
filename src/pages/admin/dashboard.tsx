@@ -350,7 +350,7 @@ const AdminDashboard = ({
     Record<string, string>
   >({});
   const [hideQaTestLikeConsulting, setHideQaTestLikeConsulting] =
-    useState<boolean>(false);
+    useState<boolean>(initialRecentJoinHideTests);
 
   // 4) Admin filter state (applies to consulting table below)
   const DEFAULT_FILTERS: AdminFilters = {
