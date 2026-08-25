@@ -176,8 +176,24 @@ Generated from Git history on 2026-08-20. Canonical repo: `/Users/blackforge/wor
 
 - PATH: `public/uploads/businesses/` | FIRST CHANGE DATE: 2026-08-20 | LAST CHANGE DATE: 2026-08-20 | ACTION(S): UPDATED | WORKSTREAM: General runtime stabilization | COMMIT SHA(S): UNCOMMITTED | CURRENTLY EXISTS: YES | CURRENT CANONICAL: YES | DB CHANGE ASSOCIATED: NO
 
-## 81426-1453 DELTA
+## 81426-1453 CUMULATIVE UNIQUE APPLICATION FILES
 
-- UNIQUE APPLICATION FILES SINCE 81426-1453 CHECKPOINT: 2
-- `src/pages/api/admin/dashboard-stats.ts`
-- `src/pages/api/stripe/webhook-handler.ts`
+- UNIQUE APPLICATION FILES SINCE 81426-1453 CHECKPOINT: 14
+- PRE-MOVE BASE UNIQUE COUNT BEFORE FINAL CLOSEOUT: 12
+- NEW UNIQUE FILES FROM FINAL CLOSEOUT: 2
+- DUPLICATE / ALREADY-COUNTED FILES FROM FINAL CLOSEOUT: 0
+
+- PATH: `src/pages/api/marketplace/create.ts` | FIRST COMMIT AFTER CHECKPOINT: `421de3e36cf2abcb8f5002a3e7b3a17deff2d232` | ACTION: MODIFIED | WORKSTREAM: Legacy write-route hardening | CURRENTLY EXISTS: YES
+- PATH: `src/pages/api/messages/send.ts` | FIRST COMMIT AFTER CHECKPOINT: `421de3e36cf2abcb8f5002a3e7b3a17deff2d232` | ACTION: MODIFIED | WORKSTREAM: Legacy write-route hardening | CURRENTLY EXISTS: YES
+- PATH: `src/pages/api/certificates/generate.ts` | FIRST COMMIT AFTER CHECKPOINT: `c7ea4fff7451348d801bc969e3c8126c7f8738e9` | ACTION: MODIFIED | WORKSTREAM: Legacy write-route hardening | CURRENTLY EXISTS: YES
+- PATH: `src/pages/api/courses/enroll.ts` | FIRST COMMIT AFTER CHECKPOINT: `c7ea4fff7451348d801bc969e3c8126c7f8738e9` | ACTION: MODIFIED | WORKSTREAM: Legacy write-route hardening | CURRENTLY EXISTS: YES
+- PATH: `src/pages/api/savedjobs/add.ts` | FIRST COMMIT AFTER CHECKPOINT: `2512a12bc2796711c748ed0f7a015a333cc23c6d` | ACTION: MODIFIED | WORKSTREAM: Legacy write-route hardening | CURRENTLY EXISTS: YES
+- PATH: `src/pages/api/support/create.ts` | FIRST COMMIT AFTER CHECKPOINT: `2512a12bc2796711c748ed0f7a015a333cc23c6d` | ACTION: MODIFIED | WORKSTREAM: Legacy write-route hardening | CURRENTLY EXISTS: YES
+- PATH: `src/lib/firebase.ts` | FIRST COMMIT AFTER CHECKPOINT: `b614b91112582f597ffcc9969633db263de16cd7` | ACTION: DELETED | WORKSTREAM: Runtime dependency cleanup | CURRENTLY EXISTS: NO
+- PATH: `src/lib/security/imageUploadValidation.ts` | FIRST COMMIT AFTER CHECKPOINT: `ea474652aafd5583a99ca77ac00db8226c447e87` | ACTION: ADDED | WORKSTREAM: Image upload runtime hardening | CURRENTLY EXISTS: YES
+- PATH: `src/pages/api/business/media.ts` | FIRST COMMIT AFTER CHECKPOINT: `ea474652aafd5583a99ca77ac00db8226c447e87` | ACTION: MODIFIED | WORKSTREAM: Image upload runtime hardening | CURRENTLY EXISTS: YES
+- PATH: `src/pages/api/marketplace/add-product.ts` | FIRST COMMIT AFTER CHECKPOINT: `ea474652aafd5583a99ca77ac00db8226c447e87` | ACTION: MODIFIED | WORKSTREAM: Image upload runtime hardening | CURRENTLY EXISTS: YES
+- PATH: `src/pages/api/profile/avatar.ts` | FIRST COMMIT AFTER CHECKPOINT: `ea474652aafd5583a99ca77ac00db8226c447e87` | ACTION: MODIFIED | WORKSTREAM: Image upload runtime hardening | CURRENTLY EXISTS: YES
+- PATH: `src/instrumentation.ts` | FIRST COMMIT AFTER CHECKPOINT: `5cec09e9d8bb77a286e6d9c4678a42406d01b512` | ACTION: ADDED | WORKSTREAM: Sharp runtime defense | CURRENTLY EXISTS: YES
+- PATH: `src/pages/api/admin/dashboard-stats.ts` | FIRST COMMIT AFTER CHECKPOINT: `55b539c979ac7c737f2c40bb82fa4f1c095b6a8d` | ACTION: MODIFIED | WORKSTREAM: DB drift closeout | CURRENTLY EXISTS: YES
+- PATH: `src/pages/api/stripe/webhook-handler.ts` | FIRST COMMIT AFTER CHECKPOINT: `55b539c979ac7c737f2c40bb82fa4f1c095b6a8d` | ACTION: MODIFIED | WORKSTREAM: DB drift closeout | CURRENTLY EXISTS: YES
