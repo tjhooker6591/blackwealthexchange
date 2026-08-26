@@ -168,3 +168,34 @@ Last updated: 2026-08-25
   - current Pamfa seller-to-business linkage is still ambiguous in canonical data, so owner transaction readiness remains blocked on data truth rather than Stripe architecture replacement
   - missing local Stripe secrets remain an owner-controlled local proof limitation, not a proven production defect
   - BI-1 and ES-0 remain unachieved until an owner-executed legitimate transaction completes and is verified
+
+## Entry 2026-08-26 — Phase 1 consumer foundation block
+
+- WORKSTREAM: `P1-01 / P1-02 Experience 2.0 foundation + first consumer surfaces`
+- SCORE BEFORE: `313 / 1000`
+- SCORE AFTER: `341 / 1000`
+- POINTS EARNED: `28`
+- RELEASE COMPLETION BEFORE: `67%`
+- RELEASE COMPLETION AFTER: `67%`
+- GAPS CLOSED: `0`
+- GAPS CREATED: `0`
+- PROGRAM ITEMS COMPLETED: `0`
+- NEW PROGRAM ITEMS IDENTIFIED: `0`
+- DEPENDENCIES CLOSED: `0`
+- ENGINEERING GAIN: `YES — reusable design tokens, shell primitives, CTA/form/card states, nav/footer foundation, and four upgraded public surfaces are implemented in runtime code`
+- EVIDENCE GAIN: `YES — desktop and mobile browser proof now exists for home, start-here, marketplace, and the Pamfa product detail`
+- METHODOLOGY ADJUSTMENT: `0`
+- REVENUE GAIN: `0`
+- REVENUE ENABLEMENT: `YES — the marketplace buying path now presents clearer seller/business trust context without changing Stripe architecture`
+- REVENUE PROTECTION: `YES — checkout entry, server-side pricing path, and owner-only live proof boundaries remain preserved`
+- EVIDENCE:
+  - runtime commit `ceeb5957132d575d7b91458de9eb06d147413839`
+  - `src/styles/globals.css`
+  - `src/pages/index.tsx`
+  - `src/pages/start-here.tsx`
+  - `src/pages/marketplace/index.tsx`
+  - `src/pages/marketplace/product/[id].tsx`
+  - browser proof in `tmp/phase1-ui-proof-20260826/`
+- NOTES:
+  - release completion does not move because this work is Phase 1 experience implementation, not unresolved Phase 0 release-scope closure
+  - BI-1 and ES-0 remain blocked on owner live proof rather than UI readiness

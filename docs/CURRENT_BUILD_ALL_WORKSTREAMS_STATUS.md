@@ -6,7 +6,7 @@
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
 - CURRENT CONTROL HEAD: `1ec2aaa1931ca9a64f929d639b24394db99ec9ee`
-- LATEST RUNTIME HEAD: `665a1193d180d9c3c2bc79dda6bba8310d477416`
+- LATEST RUNTIME HEAD: `ceeb5957132d575d7b91458de9eb06d147413839`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -22,8 +22,8 @@
 - WORLD-CLASS GAP REGISTER: `docs/BWE_WORLD_CLASS_GAP_REGISTER.md`
 - WORLD-CLASS MEASUREMENT HISTORY: `docs/BWE_WORLD_CLASS_MEASUREMENT_HISTORY.md`
 - WORLD-CLASS DECISION LOG: `docs/BWE_WORLD_CLASS_DECISION_LOG.md`
-- UNIQUE APPLICATION FILES SINCE 2026-08-06: `155`
-- UNIQUE APPLICATION FILES SINCE 81426-1453: `27`
+- UNIQUE APPLICATION FILES SINCE 2026-08-06: `157`
+- UNIQUE APPLICATION FILES SINCE 81426-1453: `29`
 - DB OPERATIONS: `35`
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
 - AUTH/ENV PARITY STATUS: `LOCAL PROOF COMPLETED — business-session role drift fixed; production-safe config parity remains partial`
@@ -35,8 +35,8 @@
 - CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
 - INTERNAL PHASE 0: `COMPLETE`
 - EXTERNAL / OWNER PROOFS: `PENDING`
-- CURRENT BLOCKER: `external owner-only BWE-10 live proof plus BWE-13 second-machine proof`
-- CURRENT NEXT WORK: `P1-01 / P1-02 Experience 2.0 foundation shell while BWE-10 owner action remains pending`
+- CURRENT BLOCKER: `no internal Phase 1 blocker; external owner-only BWE-10 live proof plus BWE-13 second-machine proof remain pending outside the current UI lane`
+- CURRENT NEXT WORK: `P1-03 / P1-04 Experience 2.0 expansion into business-directory and jobs/discovery surfaces after the first consumer foundation block`
 - BWE-10 OWNER ACTION: `PENDING — Pamfa hoodies owner-only live proof`
 - STRIPE STATUS: `existing architecture preserved`
 - REAL TRANSACTION RULE: `OWNER ONLY`
@@ -47,6 +47,7 @@
   - preserve the accepted BWE-10 control/docs checkpoint at `1ec2aaa1931ca9a64f929d639b24394db99ec9ee`
   - restore and verify localhost on `127.0.0.1:3000`
   - preserve runtime payment checkpoint `665a1193d180d9c3c2bc79dda6bba8310d477416`
+  - preserve the current Phase 1 consumer foundation runtime checkpoint `ceeb5957132d575d7b91458de9eb06d147413839`
   - preserve the existing Stripe checkout and webhook path
   - preserve the approved deterministic Pamfa attribution links:
     - `sellers/67fd9ed3acdef9011c60ff99 -> businessId 6a45de2d3278d888ed5d0730`
@@ -58,7 +59,7 @@
 ## Master program anchors — 2026-08-25
 
 - CURRENT RELEASE COMPLETION: `67%`
-- CURRENT WORLD-CLASS INDEX: `313 / 1000`
+- CURRENT WORLD-CLASS INDEX: `341 / 1000`
 - PROGRAM ITEMS: `26`
 - WORLD-CLASS GAPS: `10`
 - OPEN P0: `0`
