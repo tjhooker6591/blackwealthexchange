@@ -231,6 +231,37 @@ Last updated: 2026-08-26
   - accepted owner feedback required calmer typography, lower density, and fewer equally weighted containers before broader rollout
   - this checkpoint improves implementation quality but does not justify additional world-class points under the current rubric
 
+## Entry 2026-08-26 — Phase 1 pricing and Black Card experience checkpoint
+
+- WORKSTREAM: `P1-03 / P1-04 Experience 2.0 pricing + Black Card`
+- SCORE BEFORE: `347 / 1000`
+- SCORE AFTER: `353 / 1000`
+- POINTS EARNED: `6`
+- RELEASE COMPLETION BEFORE: `67%`
+- RELEASE COMPLETION AFTER: `67%`
+- GAPS CLOSED: `0`
+- GAPS CREATED: `0`
+- PROGRAM ITEMS COMPLETED: `0`
+- NEW PROGRAM ITEMS IDENTIFIED: `0`
+- DEPENDENCIES CLOSED: `0`
+- ENGINEERING GAIN: `YES — pricing and Black Card now use the calmer Experience 2.0 system with clearer plan mapping, cleaner checkout entry, and preserved commercial truth`
+- EVIDENCE GAIN: `YES — desktop/mobile browser proof plus route checks now cover pricing and Black Card surfaces`
+- METHODOLOGY ADJUSTMENT: `0`
+- REVENUE GAIN: `0`
+- REVENUE ENABLEMENT: `YES — membership upgrade and Black Card understanding are clearer, while live payment proof remains owner-pending`
+- REVENUE PROTECTION: `YES — prices, billing cadence, tier rules, plan mapping, and Stripe path were preserved`
+- EVIDENCE:
+  - runtime commit `fad902f66bdcfe6109e9e2cb2a5c85e0e958969b`
+  - `src/pages/pricing.tsx`
+  - `src/pages/black-card/index.tsx`
+  - `tmp/phase1-ui-proof-20260826-pricing-blackcard/`
+  - `npm run typecheck`
+  - `node scripts/runtime-check.mjs`
+  - `node scripts/check-critical-paths.mjs`
+- NOTES:
+  - this checkpoint improves commercial clarity and cross-surface cohesion without changing the underlying membership contract
+  - BWE-10 owner transaction remains pending and is not blocked by this Experience 2.0 lane
+
 ## Entry 2026-08-26 — Phase 1 discovery and opportunity expansion checkpoint
 
 - WORKSTREAM: `P1-03 / P1-04 homepage wayfinding + jobs/discovery expansion + Student Hub Experience 2.0`

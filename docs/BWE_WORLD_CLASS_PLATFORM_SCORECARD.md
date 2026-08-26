@@ -14,7 +14,7 @@ Last updated: 2026-08-26
 
 - CURRENT MASTER PLAN PHASE: `PHASE 1 — BWE EXPERIENCE 2.0`
 - CURRENT RELEASE COMPLETION: `67%`
-- CURRENT WORLD-CLASS INDEX: `347 / 1000`
+- CURRENT WORLD-CLASS INDEX: `353 / 1000`
 - WORLD-CLASS CLASSIFICATION: `FOUNDATION STAGE — trusted operational base forming, but far from world-class breadth`
 - REFINEMENT RULE: `2026-08-26 accepted hierarchy/density refinement does not add points by itself; keep the index at 341 unless new rubric evidence justifies movement`
 
@@ -61,18 +61,20 @@ Baseline release completion calculation before this workstream:
 
 ## Domain score baseline
 
-### Brand & Visual Authority — 30 / 80
+### Brand & Visual Authority — 31 / 80
 
 - Evidence:
   - shared visual language now spans the homepage, start-here, marketplace, product detail, nav, and footer
+  - pricing and Black Card now follow the calmer Experience 2.0 visual system instead of the older heavier promotional treatment
   - premium dark/gold shell, typography, and trust cues are materially more cohesive
   - broader route-by-route adoption is still incomplete
 
-### Information Architecture & Navigation — 38 / 80
+### Information Architecture & Navigation — 39 / 80
 
 - Evidence:
   - global platform shell and reusable navigation are now in place across key public routes
   - homepage, /start-here, business directory, jobs, and Student Hub now present clearer buyer, business, seller, and opportunity pathways with less internal-facing language
+  - pricing and Black Card now present clearer plan-to-tier mapping and cleaner decision paths into checkout and member destinations
   - deeper route hierarchy and cross-surface consistency remain incomplete
 
 ### Search & Discovery — 26 / 100
@@ -82,10 +84,11 @@ Baseline release completion calculation before this workstream:
   - Student Hub now presents a calmer, filter-driven opportunity discovery surface instead of a campaign-style landing page
   - discovery is still fragmented and not powered by a unified search model
 
-### Marketplace & Conversion — 39 / 100
+### Marketplace & Conversion — 41 / 100
 
 - Evidence:
   - marketplace browse, product detail, and checkout entry now surface clearer pricing, availability, and seller/business trust context
+  - pricing and Black Card now make membership selection, card mapping, and checkout entry materially clearer without changing prices or Stripe behavior
   - paid fulfillment truth is still pending owner live proof
   - post-purchase trust and reorder/review loops are still incomplete
 
@@ -102,18 +105,20 @@ Baseline release completion calculation before this workstream:
   - limited dashboard and admin metrics exist
   - no true personalized home, recommendation system, or user-goal orchestration yet
 
-### Trust & Verification — 44 / 80
+### Trust & Verification — 45 / 80
 
 - Evidence:
   - claim/ownership and admin proof lanes are functioning
   - Black-owned verification rules are explicit and safeguarded
+  - membership surfaces now explain Black Card access behavior and plan mapping more clearly, reducing ambiguity without changing the underlying contract
   - trust signals are now materially stronger across the first Experience 2.0 consumer surfaces, but not yet consistent platform-wide
 
-### Mobile Experience — 18 / 70
+### Mobile Experience — 19 / 70
 
 - Evidence:
   - the first Experience 2.0 consumer block now renders with responsive navigation, stacked CTA hierarchy, and mobile-safe product purchase layout
   - a reusable responsive standard is now present on the first high-value public surfaces, including the compact homepage wayfinding block and Student Hub discovery surface
+  - pricing and Black Card now use compact mobile plan/tier cards without horizontal overflow
   - no native mobile capability
 
 ### Performance & Reliability — 26 / 80
@@ -145,7 +150,7 @@ Baseline release completion calculation before this workstream:
 
 ## Total
 
-- TOTAL SCORE: `347 / 1000`
+- TOTAL SCORE: `353 / 1000`
 
 ## Evidence anchors used for this baseline
 
@@ -155,6 +160,7 @@ Baseline release completion calculation before this workstream:
 - authenticated admin proof pass completed on 2026-08-25 with 7/7 targeted routes passing
 - refinement browser proof exists at `tmp/phase1-ui-proof-20260826-refined/`, but does not change the canonical score
 - additional browser proof exists at `tmp/phase1-ui-proof-20260826-student-home-v2/`, which supports the limited navigation/discovery/mobile increase above
+- pricing + Black Card browser proof exists at `tmp/phase1-ui-proof-20260826-pricing-blackcard/`
 
 ## No-score items
 
