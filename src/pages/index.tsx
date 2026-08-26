@@ -306,6 +306,39 @@ const HOME_SCOPE_CONFIG: Record<
   },
 };
 
+const HOME_PATHWAYS = [
+  {
+    title: "Discover businesses",
+    subtitle: "Directory",
+    href: "/business-directory",
+  },
+  {
+    title: "Shop",
+    subtitle: "Marketplace",
+    href: "/marketplace",
+  },
+  {
+    title: "Find jobs",
+    subtitle: "Job listings",
+    href: "/job-listings",
+  },
+  {
+    title: "Student opportunities",
+    subtitle: "Student Hub",
+    href: "/black-student-opportunities",
+  },
+  {
+    title: "Build wealth",
+    subtitle: "Learn",
+    href: "/economic-freedom",
+  },
+  {
+    title: "Grow a business",
+    subtitle: "Start here",
+    href: "/start-here",
+  },
+] as const;
+
 function HeroScopeTab({
   id,
   active,
@@ -901,89 +934,57 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mx-auto mt-4 grid w-full max-w-5xl gap-4 border-t border-white/8 pt-4 text-left lg:grid-cols-[1fr_auto] lg:items-end">
-              <div className="grid gap-3 sm:grid-cols-4">
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
-                    Founder
-                  </div>
-                  <div className="mt-2 text-sm text-white/84">
+            <div className="mx-auto mt-4 flex w-full max-w-5xl flex-col gap-3 border-t border-white/8 pt-4 text-left lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+                <div className="text-sm text-white/78">
+                  Founded by{" "}
+                  <span className="font-semibold text-white">
                     Thomas James Hooker Sr.
-                  </div>
+                  </span>
                 </div>
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
-                    Platform
-                  </div>
-                  <div className="mt-2 text-sm text-white/84">
-                    Discovery, commerce, and growth
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
-                    Primary action
-                  </div>
-                  <div className="mt-2 text-sm text-white/84">
-                    Search first, then continue
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
-                    Quiet next step
-                  </div>
-                  <div className="mt-2 flex flex-wrap gap-3 text-sm text-white/84">
-                    <Link
-                      href="/founding-membership"
-                      className="bwe-open-link bwe-focus-ring"
-                    >
-                      Founding membership
-                    </Link>
-                    <Link
-                      href="/business-directory/add-business"
-                      className="bwe-open-link bwe-focus-ring"
-                    >
-                      Add a listing
-                    </Link>
-                  </div>
+                <div className="hidden h-4 w-px bg-white/10 sm:block" />
+                <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-white/58">
+                  <Link
+                    href="/founding-membership"
+                    className="bwe-open-link bwe-focus-ring text-sm"
+                  >
+                    Founding membership
+                  </Link>
+                  <Link
+                    href="/business-directory/add-business"
+                    className="bwe-open-link bwe-focus-ring text-sm"
+                  >
+                    Add a listing
+                  </Link>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <div className="rounded-xl border border-white/8 bg-white/[0.02] px-3 py-2">
-                  <div className="text-[10px] uppercase tracking-[0.14em] text-white/42">
-                    Businesses
-                  </div>
-                  <div className="mt-1 text-lg font-semibold text-white sm:text-xl">
+
+              <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-white/60 sm:justify-end">
+                <span>
+                  <span className="font-semibold text-white">
                     {formatStat(trustStats.businesses)}
-                  </div>
-                </div>
-                <div className="rounded-xl border border-white/8 bg-white/[0.02] px-3 py-2">
-                  <div className="text-[10px] uppercase tracking-[0.14em] text-white/42">
-                    Organizations
-                  </div>
-                  <div className="mt-1 text-lg font-semibold text-white sm:text-xl">
+                  </span>{" "}
+                  Businesses
+                </span>
+                <span>
+                  <span className="font-semibold text-white">
                     {formatStat(trustStats.organizations)}
-                  </div>
-                </div>
-                <div className="rounded-xl border border-white/8 bg-white/[0.02] px-3 py-2">
-                  <div className="text-[10px] uppercase tracking-[0.14em] text-white/42">
-                    Opportunities
-                  </div>
-                  <div className="mt-1 text-lg font-semibold text-white sm:text-xl">
+                  </span>{" "}
+                  Organizations
+                </span>
+                <span>
+                  <span className="font-semibold text-white">
                     {formatStat(trustStats.opportunities)}
-                  </div>
-                </div>
-                <div className="rounded-xl border border-white/8 bg-white/[0.02] px-3 py-2">
-                  <div className="text-[10px] uppercase tracking-[0.14em] text-white/42">
-                    Products
-                  </div>
-                  <div className="mt-1 text-lg font-semibold text-white sm:text-xl">
+                  </span>{" "}
+                  Opportunities
+                </span>
+                <span>
+                  <span className="font-semibold text-white">
                     {formatStat(trustStats.products)}
-                  </div>
-                </div>
+                  </span>{" "}
+                  Products
+                </span>
               </div>
-            </div>
-            <div className="mx-auto mt-1 max-w-5xl text-left text-[11px] text-white/45">
-              Live platform inventory snapshot.
             </div>
           </div>
 
@@ -1020,68 +1021,35 @@ export default function Home() {
           <section id="search-dominant" className="mt-7 scroll-mt-24">
             <div className="mx-auto max-w-4xl">
               <div className="mb-3 text-left">
-                <div className="bwe-eyebrow">Start here</div>
+                <div className="bwe-eyebrow">Explore BWE</div>
                 <h2 className="bwe-section-title mt-2">
-                  Choose the path that fits after search.
+                  What do you want to do?
                 </h2>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-white/62 sm:text-[15px]">
-                  The homepage handles the primary search entry. This section is
-                  for quick intent selection when you already know what kind of
-                  action you want next.
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-white/58 sm:text-[15px]">
+                  Move directly into the part of the platform that fits your
+                  goal.
                 </p>
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {[
-                  {
-                    title: "Discover businesses",
-                    copy: "Search the directory, compare trust signals, and move into contact or claim paths.",
-                    href: "/business-directory",
-                    cta: "Open Directory",
-                  },
-                  {
-                    title: "Shop",
-                    copy: "Browse products, inspect seller and business context, and continue into checkout.",
-                    href: "/marketplace",
-                    cta: "Open Marketplace",
-                  },
-                  {
-                    title: "Find jobs",
-                    copy: "Move into active roles, structured hiring workflows, and professional opportunity.",
-                    href: "/job-listings",
-                    cta: "Open Jobs",
-                  },
-                  {
-                    title: "Student opportunities",
-                    copy: "Explore scholarships, internships, grants, and mentorship routes in one hub.",
-                    href: "/black-student-opportunities",
-                    cta: "Open Student Hub",
-                  },
-                  {
-                    title: "Build wealth",
-                    copy: "Learn the circulation, ownership, and economic foundation behind the platform.",
-                    href: "/economic-freedom",
-                    cta: "Learn More",
-                  },
-                  {
-                    title: "Grow a business",
-                    copy: "Claim a listing, review founding membership, or add your business to the network.",
-                    href: "/start-here",
-                    cta: "Start Here",
-                  },
-                ].map((path) => (
-                  <article key={path.title} className="bwe-soft-tile p-4">
-                    <h3 className="bwe-card-title">{path.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-white/62">
-                      {path.copy}
-                    </p>
-                    <Link
-                      href={path.href}
-                      className="bwe-open-link bwe-focus-ring mt-3 text-[var(--accent)]"
-                    >
-                      {path.cta}
-                    </Link>
-                  </article>
+              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+                {HOME_PATHWAYS.map((path) => (
+                  <Link
+                    key={path.title}
+                    href={path.href}
+                    className="bwe-soft-tile bwe-focus-ring flex min-h-24 flex-col justify-between p-3.5 hover:bg-white/[0.04]"
+                  >
+                    <div>
+                      <div className="bwe-card-title text-[0.98rem]">
+                        {path.title}
+                      </div>
+                      <div className="mt-1 text-xs uppercase tracking-[0.12em] text-white/42">
+                        {path.subtitle}
+                      </div>
+                    </div>
+                    <span className="mt-3 inline-flex items-center text-sm font-semibold text-[var(--accent)]">
+                      Open
+                    </span>
+                  </Link>
                 ))}
               </div>
             </div>
