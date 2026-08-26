@@ -87,6 +87,17 @@ export default function JobListingsPage({
   }, [initialFeaturedCap, initialJobs]);
 
   useEffect(() => {
+    if (!router.isReady) return;
+    const queryValue =
+      typeof router.query.q === "string"
+        ? router.query.q
+        : typeof router.query.search === "string"
+          ? router.query.search
+          : "";
+    if (queryValue) setQ(queryValue);
+  }, [router.isReady, router.query.q, router.query.search]);
+
+  useEffect(() => {
     if (!didUseInitialDataRef.current && initialJobs.length > 0) {
       didUseInitialDataRef.current = true;
       setLoading(false);

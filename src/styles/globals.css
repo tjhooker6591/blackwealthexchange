@@ -28,10 +28,10 @@
   --font-sans: var(--font-platform-sans), "Avenir Next", "Segoe UI", sans-serif;
   --font-serif:
     var(--font-platform-serif), "Iowan Old Style", "Book Antiqua", serif;
-  --step-hero: clamp(2.25rem, 4.8vw, 3.45rem);
-  --step-section: clamp(1.8rem, 3vw, 2.2rem);
-  --step-card: clamp(1.05rem, 1.4vw, 1.2rem);
-  --step-body: clamp(0.95rem, 1.1vw, 1.02rem);
+  --step-hero: clamp(2rem, 4vw, 3.1rem);
+  --step-section: clamp(1.65rem, 2.5vw, 2rem);
+  --step-card: clamp(1rem, 1.25vw, 1.15rem);
+  --step-body: clamp(0.95rem, 1vw, 1rem);
 }
 
 html {
@@ -138,17 +138,17 @@ h4 {
 
 .bwe-display-title {
   font-size: var(--step-hero);
-  font-weight: 800;
-  letter-spacing: -0.065em;
-  line-height: 0.98;
+  font-weight: 780;
+  letter-spacing: -0.058em;
+  line-height: 1;
   color: var(--foreground);
 }
 
 .bwe-section-title {
   font-size: var(--step-section);
   font-weight: 800;
-  letter-spacing: -0.05em;
-  line-height: 1.02;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
   color: var(--foreground);
 }
 

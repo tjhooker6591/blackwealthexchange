@@ -3,6 +3,7 @@ import type { GetServerSideProps } from "next";
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import {
   getPublicStudentHubPageRecords,
   type PublicStudentHubRecord,
@@ -141,11 +142,23 @@ export default function StudentOpportunitiesHub({
 }: {
   initialRecords: PublicStudentHubRecord[];
 }) {
+  const router = useRouter();
   const [q, setQ] = useState("");
   const [type, setType] = useState<(typeof TYPES)[number]>("All");
   const [level, setLevel] = useState<(typeof LEVELS)[number]>("All");
   const [mode, setMode] = useState<(typeof MODES)[number]>("All");
   const [field, setField] = useState<(typeof FIELDS)[number]>("All");
+
+  React.useEffect(() => {
+    if (!router.isReady) return;
+    const queryValue =
+      typeof router.query.q === "string"
+        ? router.query.q
+        : typeof router.query.search === "string"
+          ? router.query.search
+          : "";
+    if (queryValue) setQ(queryValue);
+  }, [router.isReady, router.query.q, router.query.search]);
 
   const data = useMemo(() => {
     return initialRecords.map(

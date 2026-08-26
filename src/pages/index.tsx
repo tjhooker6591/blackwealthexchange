@@ -1,160 +1,23 @@
 "use client";
 
-import {
-  useEffect,
-  useMemo,
-  useState,
-  type FormEvent,
-  type ComponentType,
-} from "react";
+import { useEffect, useMemo, useState, type FormEvent, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Head from "next/head";
 import { canonicalUrl, getBaseUrl, truncateMeta } from "@/lib/seo";
 import {
-  Sparkles,
   Search,
   ShoppingBag,
-  Newspaper,
-  SlidersHorizontal,
+  BriefcaseBusiness,
+  GraduationCap,
 } from "lucide-react";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
-import { normalizeScope } from "@/lib/directory/queryState";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import { FEATURED_SPONSOR_RAIL_CAP } from "@/lib/advertising/placementDefinitions";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
-}
-
-function SearchToolsInlinePanel({
-  verifiedOnly,
-  onVerifiedOnly,
-  sponsoredFirst,
-  onSponsoredFirst,
-  stateFilter,
-  onStateFilter,
-  sort,
-  onSort,
-  category,
-  onCategory,
-}: {
-  verifiedOnly: boolean;
-  onVerifiedOnly: (v: boolean) => void;
-  sponsoredFirst: boolean;
-  onSponsoredFirst: (v: boolean) => void;
-  stateFilter: string;
-  onStateFilter: (v: string) => void;
-  sort: "relevance" | "newest" | "completeness";
-  onSort: (v: "relevance" | "newest" | "completeness") => void;
-  category: string;
-  onCategory: (v: string) => void;
-}) {
-  return (
-    <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-      <div className="mb-3 flex items-center justify-between">
-        <div className="text-xs font-extrabold tracking-wide text-white/70">
-          Filters
-        </div>
-        <div className="text-[11px] text-white/45">Applies to Directory</div>
-      </div>
-
-      <div className="grid gap-3 sm:grid-cols-2">
-        <label className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm">
-          <span className="font-semibold text-white/80">Verified only</span>
-          <button
-            type="button"
-            onClick={() => onVerifiedOnly(!verifiedOnly)}
-            className={cx(
-              "relative h-6 w-11 rounded-full border transition",
-              verifiedOnly
-                ? "border-emerald-400/40 bg-emerald-400/20"
-                : "border-white/10 bg-black/30",
-            )}
-            aria-pressed={verifiedOnly}
-            title="Show verified listings only"
-          >
-            <span
-              className={cx(
-                "absolute top-0.5 h-5 w-5 rounded-full transition",
-                verifiedOnly ? "left-5 bg-emerald-300" : "left-0.5 bg-white/60",
-              )}
-            />
-          </button>
-        </label>
-
-        <label className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm">
-          <span className="font-semibold text-white/80">Sponsored first</span>
-          <button
-            type="button"
-            onClick={() => onSponsoredFirst(!sponsoredFirst)}
-            className={cx(
-              "relative h-6 w-11 rounded-full border transition",
-              sponsoredFirst
-                ? "border-[#D4AF37]/50 bg-[#D4AF37]/15"
-                : "border-white/10 bg-black/30",
-            )}
-            aria-pressed={sponsoredFirst}
-            title="Boost sponsored listings"
-          >
-            <span
-              className={cx(
-                "absolute top-0.5 h-5 w-5 rounded-full transition",
-                sponsoredFirst ? "left-5 bg-[#D4AF37]" : "left-0.5 bg-white/60",
-              )}
-            />
-          </button>
-        </label>
-
-        <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-          <div className="text-[11px] font-bold text-white/55">
-            State (optional)
-          </div>
-          <input
-            value={stateFilter}
-            onChange={(e) =>
-              onStateFilter(e.target.value.toUpperCase().slice(0, 2))
-            }
-            placeholder="CA"
-            className="mt-1 w-full bg-transparent text-sm text-white placeholder:text-white/35 outline-none"
-          />
-        </div>
-
-        <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-          <div className="text-[11px] font-bold text-white/55">Sort</div>
-          <select
-            value={sort}
-            onChange={(e) =>
-              onSort(e.target.value as "relevance" | "newest" | "completeness")
-            }
-            className="mt-1 w-full bg-transparent text-sm text-white outline-none"
-          >
-            <option value="relevance">Relevance (best match)</option>
-            <option value="newest">Newest</option>
-            <option value="completeness">Completeness</option>
-          </select>
-        </div>
-
-        <div className="sm:col-span-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-          <div className="text-[11px] font-bold text-white/55">
-            Category (optional)
-          </div>
-          <input
-            value={category}
-            onChange={(e) => onCategory(e.target.value)}
-            placeholder='e.g. "Barbershop", "Restaurant", "Church"'
-            className="mt-1 w-full bg-transparent text-sm text-white placeholder:text-white/35 outline-none"
-          />
-        </div>
-      </div>
-
-      <div className="mt-3 text-[11px] text-white/45">
-        Tip: Filters are optional. Use them only when you want to narrow
-        results.
-      </div>
-    </div>
-  );
 }
 
 function ConsultingInterestModal({
@@ -258,32 +121,14 @@ function ConsultingInterestModal({
 }
 
 const EconomicImpactSimulator = () => {
-  const annualEstimate = 2_100_000_000_000;
-  const historicalBaseline = 300_000_000_000;
-  const dailySpend = annualEstimate / 365;
-  const recapturePct = 5;
-  const dailySpendRoundedPublic = "Approximately $5.75 billion per day";
-  const recaptureValue = annualEstimate * (recapturePct / 100);
-  const durationMs = 180_000;
-
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    let raf = 0;
-    let startTs: number | null = null;
-
-    const tick = (ts: number) => {
-      if (startTs === null) startTs = ts;
-      const elapsed = ts - startTs;
-      const raw = Math.min(elapsed / durationMs, 1);
-      const eased = 1 - Math.pow(1 - raw, 3);
-      setProgress(eased);
-      if (raw < 1) raf = requestAnimationFrame(tick);
-    };
-
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
+  const annualBenchmark2026 = 2_100_000_000_000;
+  const historicalReference2010 = 300_000_000_000;
+  const challengePct = 0.5;
+  const challengeValue = annualBenchmark2026 * (challengePct / 100);
+  const northStarLowPct = 1;
+  const northStarHighPct = 5;
+  const northStarLowValue = annualBenchmark2026 * (northStarLowPct / 100);
+  const northStarHighValue = annualBenchmark2026 * (northStarHighPct / 100);
 
   const formatCurrency = (num: number) =>
     num.toLocaleString("en-US", {
@@ -292,9 +137,6 @@ const EconomicImpactSimulator = () => {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     });
-
-  const currentValue =
-    historicalBaseline + (annualEstimate - historicalBaseline) * progress;
 
   return (
     <section className="relative overflow-hidden py-1 sm:py-1.5">
@@ -318,35 +160,48 @@ const EconomicImpactSimulator = () => {
             to stay in the community.
           </p>
 
-          <div
-            className="mt-3 text-[1.7rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-[2.1rem] lg:text-[2.3rem]"
-            data-counter-value={Math.floor(currentValue)}
-          >
-            {formatCurrency(Math.floor(currentValue))}
+          <div className="mt-4 text-[1.85rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-[2.2rem] lg:text-[2.4rem]">
+            {formatCurrency(annualBenchmark2026)}
           </div>
           <p className="text-[10px] uppercase tracking-[0.08em] text-white/65 sm:text-xs">
-            PROJECTED ANNUAL BUYING POWER
+            WORKING 2026 BLACK BUYING-POWER BENCHMARK
+          </p>
+          <p className="mt-2 max-w-xl text-xs leading-5 text-white/58 sm:text-sm">
+            This public benchmark is the current strategic context BWE is using
+            for 2026. Historical references and challenge percentages are shown
+            below with separate labels so they do not compete with the current
+            benchmark.
           </p>
 
-          <div className="mt-3 grid gap-2 text-[11px] text-white/80 sm:grid-cols-3 sm:text-[12px]">
+          <div className="mt-4 grid gap-2 text-[11px] text-white/80 sm:grid-cols-3 sm:text-[12px]">
             <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
               <div className="font-semibold text-white">
-                Historical baseline
+                2010 reference estimate
               </div>
-              <div>{formatCurrency(historicalBaseline)} in 2010</div>
+              <div>{formatCurrency(historicalReference2010)}</div>
+              <div className="mt-1 text-[10px] text-white/52">
+                Historical comparison point
+              </div>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
               <div className="font-semibold text-white">
-                Projected annual scale
+                0.5% public challenge
               </div>
-              <div>{formatCurrency(annualEstimate)} in 2026</div>
+              <div>{formatCurrency(challengeValue)}</div>
+              <div className="mt-1 text-[10px] text-white/52">
+                Habit-building public campaign
+              </div>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
               <div className="font-semibold text-white">
-                Illustrative daily spend
+                1%-5% BWE north star
               </div>
               <div>
-                {formatCurrency(dailySpend)} per day ({dailySpendRoundedPublic})
+                {formatCurrency(northStarLowValue)} -{" "}
+                {formatCurrency(northStarHighValue)}
+              </div>
+              <div className="mt-1 text-[10px] text-white/52">
+                Long-term circulation objective
               </div>
             </div>
           </div>
@@ -355,24 +210,26 @@ const EconomicImpactSimulator = () => {
         <div className="min-w-0 md:flex md:h-full md:flex-col md:justify-center md:gap-3">
           <div className="rounded-xl border border-[#D4AF37]/40 bg-[#151309]/72 p-4">
             <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-white/75">
-              Recapture example
+              Why both percentages appear
             </p>
             <p className="mt-2 text-sm leading-relaxed text-white/82">
-              If just <span className="font-extrabold text-[#D4AF37]">5%</span>{" "}
-              of projected annual buying power is intentionally redirected
-              through Black-owned businesses and tools that strengthen
-              circulation, that represents:
+              The <span className="font-extrabold text-[#D4AF37]">0.5%</span>{" "}
+              Challenge is the public behavior campaign: search Black first,
+              buy, review, refer, repeat. The{" "}
+              <span className="font-extrabold text-[#D4AF37]">1%-5%</span> range
+              is the longer-term BWE circulation objective.
             </p>
             <p className="mt-3 break-words text-[1.35rem] font-black leading-tight tracking-tight text-[#D4AF37]">
-              {formatCurrency(recaptureValue)}
+              0.5% = {formatCurrency(challengeValue)} • 5% ={" "}
+              {formatCurrency(northStarHighValue)}
             </p>
             <p className="mt-1 text-[11px] text-white/70">
-              This is a simple recapture example, not a claim that BWE controls
-              the full market.
+              These are benchmark-based examples, not a claim that BWE already
+              captures that volume.
             </p>
           </div>
 
-          <div className="flex flex-col gap-2 md:flex-row md:justify-end">
+          <div className="flex flex-col gap-2 md:flex-row md:justify-end md:items-center">
             <Link
               href="/1.8trillionimpact"
               className="group inline-flex items-center justify-center gap-2 rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/14 px-3 py-2 shadow-sm transition hover:border-[#D4AF37]/80"
@@ -385,11 +242,9 @@ const EconomicImpactSimulator = () => {
 
             <Link
               href="/economic-freedom"
-              className="group inline-flex items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/5 px-3 py-2 transition hover:border-white/40"
+              className="bwe-open-link bwe-focus-ring justify-center text-[var(--accent)]"
             >
-              <span className="text-xs leading-tight text-white/85 lg:text-sm">
-                Learn more <span className="text-[#D4AF37]">→</span>
-              </span>
+              Learn more
             </Link>
           </div>
         </div>
@@ -398,30 +253,90 @@ const EconomicImpactSimulator = () => {
   );
 };
 
-type VerticalKey = "all" | "shopping" | "news";
+type HomeSearchScope = "directory" | "marketplace" | "jobs" | "students";
 
-function TabButton({
+const HOME_SCOPE_CONFIG: Record<
+  HomeSearchScope,
+  {
+    label: string;
+    placeholder: string;
+    href: string;
+    queryBuilder: (q: string) => Record<string, string>;
+    icon: typeof Search;
+    destinationLabel: string;
+  }
+> = {
+  directory: {
+    label: "Directory",
+    placeholder: "Search Black-owned businesses...",
+    href: "/business-directory",
+    queryBuilder: (q) => ({
+      q,
+      search: q,
+      scope: "businesses",
+      type: "businesses",
+      tab: "businesses",
+    }),
+    icon: Search,
+    destinationLabel: "Open directory",
+  },
+  marketplace: {
+    label: "Marketplace",
+    placeholder: "Search products...",
+    href: "/marketplace",
+    queryBuilder: (q) => ({ q }),
+    icon: ShoppingBag,
+    destinationLabel: "Open marketplace",
+  },
+  jobs: {
+    label: "Jobs",
+    placeholder: "Search jobs...",
+    href: "/job-listings",
+    queryBuilder: (q) => ({ q }),
+    icon: BriefcaseBusiness,
+    destinationLabel: "Open jobs",
+  },
+  students: {
+    label: "Student Opportunities",
+    placeholder: "Search scholarships, internships, grants...",
+    href: "/black-student-opportunities",
+    queryBuilder: (q) => ({ q }),
+    icon: GraduationCap,
+    destinationLabel: "Open student hub",
+  },
+};
+
+function HeroScopeTab({
+  id,
   active,
   onClick,
   icon: Icon,
   label,
-  title,
+  onKeyDown,
+  buttonRef,
 }: {
+  id: string;
   active: boolean;
   onClick: () => void;
-  icon: ComponentType<{ className?: string }>;
+  icon: typeof Search;
   label: string;
-  title?: string;
+  onKeyDown: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
+  buttonRef?: (node: HTMLButtonElement | null) => void;
 }) {
   return (
     <button
+      ref={buttonRef}
       type="button"
-      title={title}
+      id={id}
+      role="tab"
+      aria-selected={active}
+      tabIndex={active ? 0 : -1}
       onClick={onClick}
+      onKeyDown={onKeyDown}
       className={cx(
-        "inline-flex w-full sm:w-auto items-center justify-center gap-1 rounded-lg sm:rounded-xl border px-2 py-2 sm:px-3 sm:py-2 text-[10px] sm:text-[12px] font-extrabold tracking-wide transition",
+        "inline-flex min-h-10 items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-[11px] font-semibold transition sm:px-4 sm:text-[12px]",
         active
-          ? "border-[#D4AF37]/50 bg-[#D4AF37]/15 text-[#D4AF37]"
+          ? "border-[#D4AF37]/60 bg-[#D4AF37]/18 text-[#F2CD57]"
           : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
       )}
     >
@@ -439,23 +354,8 @@ function TabButton({
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-
-  const [aiMode, setAiMode] = useState(false);
-  const [toolsOpen, setToolsOpen] = useState(false);
-
-  const [vertical, setVertical] = useState<VerticalKey>("all");
-
-  const [leftScope, setLeftScope] = useState<"businesses" | "organizations">(
-    "businesses",
-  );
-
-  const [verifiedOnly, setVerifiedOnly] = useState(false);
-  const [sponsoredFirst, setSponsoredFirst] = useState(true);
-  const [stateFilter, setStateFilter] = useState("");
-  const [sort, setSort] = useState<"relevance" | "newest" | "completeness">(
-    "relevance",
-  );
-  const [category, setCategory] = useState("");
+  const [activeScope, setActiveScope] = useState<HomeSearchScope>("directory");
+  const scopeTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const router = useRouter();
   const { user } = useAuth();
@@ -475,92 +375,29 @@ export default function Home() {
     });
   };
 
-  const placeholder =
-    vertical !== "all"
-      ? vertical === "shopping"
-        ? "Search products…"
-        : "Search news…"
-      : leftScope === "organizations"
-        ? "Search churches, nonprofits, orgs…"
-        : "Search Black-owned businesses…";
+  const activeScopeConfig = HOME_SCOPE_CONFIG[activeScope];
 
-  const runSearch = (opts?: {
-    verticalOverride?: VerticalKey;
-    aiOverride?: boolean;
-    scopeOverride?: "businesses" | "organizations";
-    queryOverride?: string;
-  }) => {
-    const v = opts?.verticalOverride ?? vertical;
-    const ai = opts?.aiOverride ?? aiMode;
-    const scope = normalizeScope(opts?.scopeOverride ?? leftScope) as
-      | "businesses"
-      | "organizations";
-    const q = (opts?.queryOverride ?? searchQuery).trim();
-
-    if (v === "shopping") {
-      return router.push({
-        pathname: "/marketplace",
-        query: q
-          ? { q, search: q, ai: ai ? "1" : "0" }
-          : { ai: ai ? "1" : "0" },
-      });
-    }
-
-    if (v === "news") {
-      return router.push({
-        pathname: "/news",
-        query: q ? { q, ai: ai ? "1" : "0" } : { ai: ai ? "1" : "0" },
-      });
-    }
-
-    if (!q) {
-      return router.push({
-        pathname: "/business-directory",
-        query: {
-          q: "",
-          search: "",
-          scope,
-          type: scope,
-          tab: scope,
-          verifiedOnly: verifiedOnly ? "1" : "0",
-          sponsoredFirst: sponsoredFirst ? "1" : "0",
-          sort,
-          state: stateFilter.trim().toUpperCase(),
-          ...(category.trim() ? { category: category.trim() } : {}),
-          ai: ai ? "1" : "0",
-        },
-      });
-    }
-
+  const runSearch = (
+    scopeOverride?: HomeSearchScope,
+    queryOverride?: string,
+  ) => {
+    const scope = scopeOverride ?? activeScope;
+    const scopeConfig = HOME_SCOPE_CONFIG[scope];
+    const q = (queryOverride ?? searchQuery).trim();
     return router.push({
-      pathname: "/business-directory",
-      query: {
-        q,
-        search: q,
-        scope,
-        type: scope,
-        tab: scope,
-        verifiedOnly: verifiedOnly ? "1" : "0",
-        sponsoredFirst: sponsoredFirst ? "1" : "0",
-        sort,
-        state: stateFilter.trim().toUpperCase(),
-        ...(category.trim() ? { category: category.trim() } : {}),
-        ai: ai ? "1" : "0",
-      },
+      pathname: scopeConfig.href,
+      query: q ? scopeConfig.queryBuilder(q) : {},
     });
   };
 
   const submitHomepageSearch = (
     trigger: string,
     queryOverride?: string,
-    opts?: {
-      verticalOverride?: VerticalKey;
-      scopeOverride?: "businesses" | "organizations";
-    },
+    scopeOverride?: HomeSearchScope,
   ) => {
     const q = (queryOverride ?? searchQuery).trim();
-    const trackedVertical = opts?.verticalOverride ?? vertical;
-    const trackedScope = opts?.scopeOverride ?? leftScope;
+    const scope = scopeOverride ?? activeScope;
+    const scopeConfig = HOME_SCOPE_CONFIG[scope];
 
     trackHomepageEvent("homepage_search_submitted", {
       section: "hero_search",
@@ -568,28 +405,45 @@ export default function Home() {
       query: q,
       ctaId: "homepage_search_submit",
       ctaLabel: trigger,
-      destination:
-        trackedVertical === "shopping"
-          ? "/marketplace"
-          : trackedVertical === "news"
-            ? "/news"
-            : "/business-directory",
-      vertical: trackedVertical,
-      aiMode,
-      scope: trackedScope,
+      destination: scopeConfig.href,
+      scope,
     });
 
-    runSearch({
-      queryOverride: queryOverride ?? searchQuery,
-      verticalOverride: opts?.verticalOverride,
-      scopeOverride: opts?.scopeOverride,
-    });
+    runSearch(scope, queryOverride);
   };
 
-  const onToggleAi = () => {
-    const next = !aiMode;
-    setAiMode(next);
-    runSearch({ aiOverride: next });
+  const handleScopeKeyDown = (
+    currentIndex: number,
+    event: React.KeyboardEvent<HTMLButtonElement>,
+  ) => {
+    const scopes = Object.keys(HOME_SCOPE_CONFIG) as HomeSearchScope[];
+    if (
+      ![
+        "ArrowRight",
+        "ArrowLeft",
+        "ArrowDown",
+        "ArrowUp",
+        "Home",
+        "End",
+      ].includes(event.key)
+    )
+      return;
+
+    event.preventDefault();
+    let nextIndex = currentIndex;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (currentIndex + 1) % scopes.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex = (currentIndex - 1 + scopes.length) % scopes.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = scopes.length - 1;
+    }
+
+    const nextScope = scopes[nextIndex];
+    setActiveScope(nextScope);
+    scopeTabRefs.current[nextIndex]?.focus();
   };
 
   const stableSponsorFallback = useMemo(() => [], []);
@@ -916,41 +770,67 @@ export default function Home() {
                   Black-owned business discovery and commerce
                 </div>
 
-                <h1 className="bwe-display-title mx-auto mt-3 max-w-3xl">
+                <h1 className="bwe-display-title mx-auto mt-3 max-w-[16ch]">
                   Search Black-owned businesses and move into trusted economic
                   action.
                 </h1>
 
-                <p className="bwe-lead mx-auto mt-4 max-w-2xl">
-                  Find businesses, shop products, discover opportunities, and
-                  choose the next step that matches your goal without sorting
-                  through a crowded homepage first.
+                <p className="bwe-lead mx-auto mt-4 max-w-xl">
+                  One search entry. Four live scopes. Existing directory,
+                  marketplace, jobs, and student-opportunity systems stay intact
+                  underneath it.
                 </p>
               </div>
 
-              <div className="mx-auto mt-6 flex w-full max-w-3xl flex-col gap-3 sm:items-center">
+              <div className="mx-auto mt-6 flex w-full max-w-3xl flex-col gap-4 sm:items-center">
                 <div className="w-full rounded-[24px] border border-white/10 bg-black/28 p-2 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.03)]">
-                  <div className="mb-2 flex flex-wrap gap-2 text-left text-[11px] text-white/58">
-                    <span className="bwe-badge" data-tone="accent">
-                      Directory
-                    </span>
-                    <span className="bwe-badge">Marketplace</span>
-                    <span className="bwe-badge">Jobs</span>
-                    <span className="bwe-badge">Student opportunities</span>
+                  <div
+                    role="tablist"
+                    aria-label="Homepage search scopes"
+                    className="mb-2 grid grid-cols-2 gap-2 text-left sm:grid-cols-4"
+                  >
+                    {(
+                      Object.entries(HOME_SCOPE_CONFIG) as Array<
+                        [
+                          HomeSearchScope,
+                          (typeof HOME_SCOPE_CONFIG)[HomeSearchScope],
+                        ]
+                      >
+                    ).map(([scopeKey, scopeConfig], index) => (
+                      <HeroScopeTab
+                        key={scopeKey}
+                        id={`homepage-scope-${scopeKey}`}
+                        active={activeScope === scopeKey}
+                        onClick={() => {
+                          setActiveScope(scopeKey);
+                          trackHomepageEvent("homepage_scope_selected", {
+                            section: "hero_search",
+                            scope: scopeKey,
+                            destination: scopeConfig.href,
+                          });
+                        }}
+                        onKeyDown={(event) => handleScopeKeyDown(index, event)}
+                        icon={scopeConfig.icon}
+                        label={scopeConfig.label}
+                        buttonRef={(node) => {
+                          scopeTabRefs.current[index] = node;
+                        }}
+                      />
+                    ))}
                   </div>
                   <div className="flex w-full items-stretch overflow-hidden rounded-full border border-white/10 bg-white/[0.03]">
                     <input
                       type="search"
                       enterKeyHint="search"
                       inputMode="search"
-                      placeholder="Search businesses, products, organizations, or opportunities"
+                      aria-label={`${activeScopeConfig.label} search`}
+                      placeholder={activeScopeConfig.placeholder}
                       value={searchQuery}
-                      onClick={() =>
+                      onFocus={() =>
                         trackHomepageEvent("homepage_search_focused", {
                           section: "hero_search",
                           source: "homepage_search_box",
-                          vertical,
-                          scope: leftScope,
+                          scope: activeScope,
                         })
                       }
                       onChange={(e) => setSearchQuery(e.target.value)}
@@ -970,143 +850,133 @@ export default function Home() {
                       Search
                     </button>
                   </div>
+                  <div className="mt-2 flex items-center justify-between gap-3 text-[11px] text-white/48">
+                    <span>
+                      Active scope:{" "}
+                      <span className="font-semibold text-white/78">
+                        {activeScopeConfig.label}
+                      </span>
+                    </span>
+                    <span className="hidden sm:inline">
+                      Query is preserved when you continue into that
+                      destination.
+                    </span>
+                  </div>
                 </div>
 
-                <div className="grid w-full gap-3 sm:grid-cols-2">
+                <div className="grid w-full gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
                   <Link
-                    href="/business-directory"
+                    href={activeScopeConfig.href}
                     className="w-full"
                     onClick={() =>
                       trackHomepageEvent("homepage_cta_clicked", {
                         section: "hero",
-                        ctaId: "hero_search_directory",
-                        ctaLabel: "Search Directory",
-                        destination: "/business-directory",
+                        ctaId: `hero_open_${activeScope}`,
+                        ctaLabel: activeScopeConfig.destinationLabel,
+                        destination: activeScopeConfig.href,
                       })
                     }
                   >
                     <button className="bwe-cta-primary bwe-focus-ring h-12 w-full px-6">
-                      Search directory
+                      {activeScopeConfig.destinationLabel}
                     </button>
                   </Link>
                   <Link
-                    href="/marketplace"
-                    className="w-full"
+                    href="/start-here"
+                    className="w-full sm:w-auto"
                     onClick={() =>
                       trackHomepageEvent("homepage_cta_clicked", {
                         section: "hero",
-                        ctaId: "hero_shop_marketplace",
-                        ctaLabel: "Shop Marketplace",
-                        destination: "/marketplace",
+                        ctaId: "hero_start_here",
+                        ctaLabel: "Start Here",
+                        destination: "/start-here",
                       })
                     }
                   >
                     <button className="bwe-cta-secondary bwe-focus-ring h-12 w-full px-5 text-sm font-semibold text-white/88">
-                      Shop Marketplace
+                      Start here
                     </button>
                   </Link>
-                </div>
-                <div className="mx-auto w-full max-w-3xl text-left">
-                  <div className="bwe-divider" />
-                  <div className="mt-4 grid gap-3 sm:grid-cols-[0.88fr_1.12fr] sm:items-start">
-                    <div>
-                      <p className="text-sm text-white/66">
-                        Founded by Thomas James Hooker Sr.
-                      </p>
-                      <p className="mt-2 max-w-md text-sm leading-6 text-white/56">
-                        A founder-led, mission-driven platform connecting
-                        discovery, commerce, ownership workflows, and growth.
-                      </p>
-                    </div>
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      <div className="bwe-soft-tile px-4 py-3 text-left">
-                        <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
-                          What this is
-                        </div>
-                        <p className="mt-2 text-sm text-white/82">
-                          A Black-owned business discovery, commerce, and
-                          opportunity platform.
-                        </p>
-                      </div>
-                      <div className="bwe-soft-tile px-4 py-3 text-left">
-                        <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
-                          Quiet next steps
-                        </div>
-                        <div className="mt-2 flex flex-wrap gap-3">
-                          <Link
-                            href="/founding-membership"
-                            className="bwe-open-link bwe-focus-ring"
-                          >
-                            Founding membership
-                          </Link>
-                          <Link
-                            href="/business-directory/add-business"
-                            className="bwe-open-link bwe-focus-ring"
-                          >
-                            Add a listing
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="mx-auto mt-5 grid w-full max-w-5xl gap-5 text-left lg:grid-cols-[0.95fr_1.05fr]">
-              <div className="grid gap-3 sm:grid-cols-3">
+            <div className="mx-auto mt-4 grid w-full max-w-5xl gap-4 border-t border-white/8 pt-4 text-left lg:grid-cols-[1fr_auto] lg:items-end">
+              <div className="grid gap-3 sm:grid-cols-4">
                 <div>
                   <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
-                    Primary paths
-                  </div>
-                  <div className="mt-2 text-sm text-white/84">Directory</div>
-                </div>
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
-                    Commerce
-                  </div>
-                  <div className="mt-2 text-sm text-white/84">Marketplace</div>
-                </div>
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
-                    Opportunity
+                    Founder
                   </div>
                   <div className="mt-2 text-sm text-white/84">
-                    Jobs and student paths
+                    Thomas James Hooker Sr.
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                    Platform
+                  </div>
+                  <div className="mt-2 text-sm text-white/84">
+                    Discovery, commerce, and growth
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                    Primary action
+                  </div>
+                  <div className="mt-2 text-sm text-white/84">
+                    Search first, then continue
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                    Quiet next step
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-3 text-sm text-white/84">
+                    <Link
+                      href="/founding-membership"
+                      className="bwe-open-link bwe-focus-ring"
+                    >
+                      Founding membership
+                    </Link>
+                    <Link
+                      href="/business-directory/add-business"
+                      className="bwe-open-link bwe-focus-ring"
+                    >
+                      Add a listing
+                    </Link>
                   </div>
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div className="rounded-xl border border-white/8 bg-white/[0.02] px-3 py-2">
+                  <div className="text-[10px] uppercase tracking-[0.14em] text-white/42">
                     Businesses
                   </div>
-                  <div className="mt-2 text-2xl font-semibold text-white">
+                  <div className="mt-1 text-lg font-semibold text-white sm:text-xl">
                     {formatStat(trustStats.businesses)}
                   </div>
                 </div>
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                <div className="rounded-xl border border-white/8 bg-white/[0.02] px-3 py-2">
+                  <div className="text-[10px] uppercase tracking-[0.14em] text-white/42">
                     Organizations
                   </div>
-                  <div className="mt-2 text-2xl font-semibold text-white">
+                  <div className="mt-1 text-lg font-semibold text-white sm:text-xl">
                     {formatStat(trustStats.organizations)}
                   </div>
                 </div>
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                <div className="rounded-xl border border-white/8 bg-white/[0.02] px-3 py-2">
+                  <div className="text-[10px] uppercase tracking-[0.14em] text-white/42">
                     Opportunities
                   </div>
-                  <div className="mt-2 text-2xl font-semibold text-white">
+                  <div className="mt-1 text-lg font-semibold text-white sm:text-xl">
                     {formatStat(trustStats.opportunities)}
                   </div>
                 </div>
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                <div className="rounded-xl border border-white/8 bg-white/[0.02] px-3 py-2">
+                  <div className="text-[10px] uppercase tracking-[0.14em] text-white/42">
                     Products
                   </div>
-                  <div className="mt-2 text-2xl font-semibold text-white">
+                  <div className="mt-1 text-lg font-semibold text-white sm:text-xl">
                     {formatStat(trustStats.products)}
                   </div>
                 </div>
@@ -1152,221 +1022,67 @@ export default function Home() {
               <div className="mb-3 text-left">
                 <div className="bwe-eyebrow">Start here</div>
                 <h2 className="bwe-section-title mt-2">
-                  Search first, then move into the path that fits.
+                  Choose the path that fits after search.
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-white/62 sm:text-[15px]">
-                  Directory, marketplace, and discovery remain unified here, but
-                  the interface is now quieter about it.
+                  The homepage handles the primary search entry. This section is
+                  for quick intent selection when you already know what kind of
+                  action you want next.
                 </p>
               </div>
 
-              <div>
-                <div className="bwe-shell-panel relative overflow-hidden rounded-[28px] p-3 sm:p-4">
-                  <div className="pointer-events-none absolute -top-20 left-1/2 h-40 w-[30rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/6 blur-3xl" />
-
-                  <div className="relative">
-                    <div className="mb-3 grid grid-cols-4 gap-1.5 sm:flex sm:items-center sm:gap-2">
-                      <TabButton
-                        active={vertical === "news"}
-                        onClick={() => {
-                          setVertical("news");
-                          setToolsOpen(false);
-                          runSearch({ verticalOverride: "news" });
-                        }}
-                        icon={Newspaper}
-                        label="News"
-                        title="News search"
-                      />
-
-                      <TabButton
-                        active={vertical === "all"}
-                        onClick={() => {
-                          setVertical("all");
-                          setToolsOpen(false);
-                          runSearch({ verticalOverride: "all" });
-                        }}
-                        icon={Search}
-                        label="Directory"
-                        title="Directory search"
-                      />
-
-                      <TabButton
-                        active={vertical === "shopping"}
-                        onClick={() => {
-                          setVertical("shopping");
-                          setToolsOpen(false);
-                          runSearch({ verticalOverride: "shopping" });
-                        }}
-                        icon={ShoppingBag}
-                        label="Shopping"
-                        title="Marketplace search"
-                      />
-
-                      <button
-                        type="button"
-                        onClick={onToggleAi}
-                        className={cx(
-                          "inline-flex w-full sm:w-auto items-center justify-center gap-1 rounded-lg sm:rounded-xl border px-2 py-2 sm:px-3 sm:py-2 text-[10px] sm:text-[12px] font-extrabold tracking-wide transition",
-                          aiMode
-                            ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
-                            : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
-                        )}
-                        title="Toggle AI Mode"
-                      >
-                        <Sparkles
-                          className={cx(
-                            "h-3.5 w-3.5 sm:h-4 sm:w-4",
-                            aiMode ? "text-[#D4AF37]" : "text-white/70",
-                          )}
-                        />
-                        <span className="truncate">AI Mode</span>
-                      </button>
-
-                      {vertical === "all" && (
-                        <button
-                          type="button"
-                          onClick={() => setToolsOpen((v) => !v)}
-                          className={cx(
-                            "hidden sm:inline-flex shrink-0 items-center gap-2 rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
-                            toolsOpen
-                              ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
-                              : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
-                          )}
-                          title="Open filters"
-                        >
-                          <SlidersHorizontal className="h-4 w-4" />
-                          Tools
-                        </button>
-                      )}
-                    </div>
-
-                    <div className="mt-2 flex w-full items-stretch overflow-hidden rounded-2xl border border-white/10 bg-black/30 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)] focus-within:border-[#D4AF37]/40 focus-within:ring-2 focus-within:ring-[#D4AF37]/20">
-                      {vertical === "all" && (
-                        <div className="flex items-center gap-1 border-r border-white/10 p-1">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setLeftScope("businesses");
-                              if (searchQuery.trim()) {
-                                runSearch({ scopeOverride: "businesses" });
-                              }
-                            }}
-                            className={cx(
-                              "rounded-lg px-2 py-1.5 sm:rounded-xl sm:px-3 sm:py-2 text-[10px] sm:text-[12px] font-extrabold transition",
-                              leftScope === "businesses"
-                                ? "bg-[#D4AF37] text-black shadow"
-                                : "bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
-                            )}
-                          >
-                            <span className="sm:hidden">Biz</span>
-                            <span className="hidden sm:inline">Businesses</span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setLeftScope("organizations");
-                              if (searchQuery.trim()) {
-                                runSearch({ scopeOverride: "organizations" });
-                              }
-                            }}
-                            className={cx(
-                              "rounded-lg px-2 py-1.5 sm:rounded-xl sm:px-3 sm:py-2 text-[10px] sm:text-[12px] font-extrabold transition",
-                              leftScope === "organizations"
-                                ? "bg-[#D4AF37] text-black shadow"
-                                : "bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
-                            )}
-                          >
-                            <span className="sm:hidden">Orgs</span>
-                            <span className="hidden sm:inline">
-                              Organizations
-                            </span>
-                          </button>
-                        </div>
-                      )}
-
-                      <input
-                        type="search"
-                        enterKeyHint="search"
-                        inputMode="search"
-                        placeholder={placeholder}
-                        value={searchQuery}
-                        onFocus={() =>
-                          trackHomepageEvent("homepage_search_focused", {
-                            section: "hero_search",
-                            source: "homepage_search_box",
-                            vertical,
-                            scope: leftScope,
-                          })
-                        }
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter")
-                            submitHomepageSearch("search_input_enter");
-                        }}
-                        className="min-w-0 flex-1 bg-transparent px-3 py-3 text-[13px] text-white placeholder:text-white/35 outline-none sm:px-5 sm:py-4 sm:text-[15px]"
-                      />
-
-                      {vertical === "all" && (
-                        <button
-                          type="button"
-                          onClick={() => setToolsOpen((v) => !v)}
-                          className={cx(
-                            "sm:hidden shrink-0 border-l border-white/10 px-2.5 transition",
-                            toolsOpen ? "bg-[#D4AF37]/15" : "bg-white/[0.03]",
-                          )}
-                          aria-label="Filters"
-                          title="Filters"
-                        >
-                          <SlidersHorizontal
-                            className={cx(
-                              "h-4 w-4",
-                              toolsOpen ? "text-[#D4AF37]" : "text-white/75",
-                            )}
-                          />
-                        </button>
-                      )}
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          submitHomepageSearch("search_button_click")
-                        }
-                        aria-label="Search"
-                        className="shrink-0 bg-[#D4AF37] px-3 text-[13px] font-extrabold text-black transition hover:bg-yellow-500 sm:px-8 sm:text-[14px]"
-                      >
-                        <Search className="h-4 w-4 sm:hidden" />
-                        <span className="hidden sm:inline">Search</span>
-                      </button>
-                    </div>
-
-                    {toolsOpen && vertical === "all" && (
-                      <SearchToolsInlinePanel
-                        verifiedOnly={verifiedOnly}
-                        onVerifiedOnly={setVerifiedOnly}
-                        sponsoredFirst={sponsoredFirst}
-                        onSponsoredFirst={setSponsoredFirst}
-                        stateFilter={stateFilter}
-                        onStateFilter={setStateFilter}
-                        sort={sort}
-                        onSort={setSort}
-                        category={category}
-                        onCategory={setCategory}
-                      />
-                    )}
-
-                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/48 sm:text-[12px]">
-                      <span>
-                        Real listings and direct next steps. Filters are
-                        optional.
-                      </span>
-
-                      <span className="text-[10px] text-white/38 sm:text-[11px]">
-                        Full results keep filters and scope controls.
-                      </span>
-                    </div>
-                  </div>
-                </div>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {[
+                  {
+                    title: "Discover businesses",
+                    copy: "Search the directory, compare trust signals, and move into contact or claim paths.",
+                    href: "/business-directory",
+                    cta: "Open Directory",
+                  },
+                  {
+                    title: "Shop",
+                    copy: "Browse products, inspect seller and business context, and continue into checkout.",
+                    href: "/marketplace",
+                    cta: "Open Marketplace",
+                  },
+                  {
+                    title: "Find jobs",
+                    copy: "Move into active roles, structured hiring workflows, and professional opportunity.",
+                    href: "/job-listings",
+                    cta: "Open Jobs",
+                  },
+                  {
+                    title: "Student opportunities",
+                    copy: "Explore scholarships, internships, grants, and mentorship routes in one hub.",
+                    href: "/black-student-opportunities",
+                    cta: "Open Student Hub",
+                  },
+                  {
+                    title: "Build wealth",
+                    copy: "Learn the circulation, ownership, and economic foundation behind the platform.",
+                    href: "/economic-freedom",
+                    cta: "Learn More",
+                  },
+                  {
+                    title: "Grow a business",
+                    copy: "Claim a listing, review founding membership, or add your business to the network.",
+                    href: "/start-here",
+                    cta: "Start Here",
+                  },
+                ].map((path) => (
+                  <article key={path.title} className="bwe-soft-tile p-4">
+                    <h3 className="bwe-card-title">{path.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-white/62">
+                      {path.copy}
+                    </p>
+                    <Link
+                      href={path.href}
+                      className="bwe-open-link bwe-focus-ring mt-3 text-[var(--accent)]"
+                    >
+                      {path.cta}
+                    </Link>
+                  </article>
+                ))}
               </div>
             </div>
           </section>
@@ -1486,7 +1202,8 @@ export default function Home() {
               <div className="text-left">
                 <p className="bwe-eyebrow">0.5% Challenge</p>
                 <p className="text-sm text-white/68">
-                  Search Black first. Buy, review, refer, repeat.
+                  The 0.5% Challenge is the public habit campaign. The broader
+                  BWE circulation north star remains 1%-5%.
                 </p>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">

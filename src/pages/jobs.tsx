@@ -1,9 +1,17 @@
-// src/pages/jobs.tsx
-import Link from "next/link";
 import Head from "next/head";
+import Link from "next/link";
 import { useEffect } from "react";
+import type { ReactNode } from "react";
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  Building2,
+  ShieldCheck,
+} from "lucide-react";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+
+type HubCardTone = "accent" | "neutral" | "success";
 
 export default function JobsHubPage() {
   useEffect(() => {
@@ -32,7 +40,7 @@ export default function JobsHubPage() {
 
   const title = "Jobs Hub | Black Wealth Exchange";
   const description = truncateMeta(
-    "Jobs navigation hub for candidates and employers. For indexable job listings, use the main Job Listings page.",
+    "Professional opportunity hub for candidates, employers, internships, and structured hiring workflows on Black Wealth Exchange.",
   );
 
   return (
@@ -43,140 +51,170 @@ export default function JobsHubPage() {
         <link rel="canonical" href={canonicalUrl("/job-listings")} />
         <meta name="robots" content="noindex,follow" />
       </Head>
-      <div className="min-h-screen bg-gray-950 px-6 py-10 text-white">
-        <div className="pointer-events-none fixed inset-0 opacity-40">
-          <div className="absolute -left-40 -top-40 h-[520px] w-[520px] rounded-full bg-yellow-500/20 blur-3xl" />
-          <div className="absolute right-[-120px] top-24 h-[420px] w-[420px] rounded-full bg-yellow-400/10 blur-3xl" />
-        </div>
 
-        <div className="relative mx-auto max-w-6xl space-y-8 rounded-2xl border border-gray-800 bg-gray-900/70 p-8 shadow-xl backdrop-blur">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-extrabold tracking-tight">
-                Jobs & Careers <span className="text-yellow-400">Hub</span>
-              </h1>
-              <p className="mt-2 max-w-2xl text-gray-300">
-                Find opportunities or hire through a structured candidate review
-                workflow with automated role-match checks, readiness indicators,
-                and human hiring decisions.
+      <div className="relative min-h-screen overflow-x-hidden bg-neutral-950 text-white">
+        <div className="pointer-events-none absolute -top-40 left-1/2 h-[760px] w-[760px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-52 right-[-10rem] h-[460px] w-[460px] rounded-full bg-sky-500/[0.05] blur-3xl" />
+
+        <div className="bwe-section-wrap relative z-10 py-8 sm:py-10">
+          <section className="bwe-hero-panel relative overflow-hidden rounded-[30px] px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.12),transparent_34%),radial-gradient(circle_at_84%_28%,rgba(90,160,255,0.12),transparent_28%)]" />
+
+            <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end">
+              <div className="max-w-3xl">
+                <div className="bwe-eyebrow">Professional opportunity</div>
+                <h1 className="bwe-display-title mt-3 max-w-[12ch]">
+                  Find roles, hire talent, and keep the process clear.
+                </h1>
+                <p className="bwe-lead mt-4 max-w-2xl">
+                  BWE keeps candidate discovery, employer posting, internships,
+                  and structured review in one calmer opportunity hub without
+                  obscuring the real job-listings flow underneath it.
+                </p>
+
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  <Link
+                    href="/job-listings"
+                    className="bwe-cta-primary bwe-focus-ring px-6"
+                  >
+                    Browse job listings
+                  </Link>
+                  <Link
+                    href="/post-job"
+                    onClick={() =>
+                      trackJobEntry(
+                        "jobs_hub_post_job_hero",
+                        "Post a Job",
+                        "/post-job",
+                      )
+                    }
+                    className="bwe-cta-secondary bwe-focus-ring px-6"
+                  >
+                    Post a job
+                  </Link>
+                </div>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+                <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                    Candidate path
+                  </div>
+                  <div className="mt-1 text-sm font-semibold text-white/86">
+                    Search live roles and continue into applications.
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                    Employer path
+                  </div>
+                  <div className="mt-1 text-sm font-semibold text-white/86">
+                    Post roles and review applicants with structured signals.
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                    Growth path
+                  </div>
+                  <div className="mt-1 text-sm font-semibold text-white/86">
+                    Move into internships, freelance work, and mentorship lanes.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)]">
+            <div className="border-t border-white/8 pt-5 text-left">
+              <div className="bwe-eyebrow">How hiring works here</div>
+              <h2 className="bwe-section-title mt-2 max-w-2xl">
+                Structured review stays visible, but human judgment still owns
+                the decision.
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-white/62 sm:text-[15px]">
+                Employers can use readiness and role-match signals to help sort
+                applications, then continue through real applicant review. The
+                automation assists hiring decisions without pretending to
+                replace them.
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href="/job-listings"
-                className="rounded bg-yellow-400 px-4 py-2 font-semibold text-black transition hover:bg-yellow-300"
-              >
-                Browse Jobs
-              </Link>
-              <Link
-                href="/post-job"
-                onClick={() =>
-                  trackJobEntry(
-                    "jobs_hub_post_job_header",
-                    "Post a Job",
-                    "/post-job",
-                  )
-                }
-                className="rounded border border-gray-700 px-4 py-2 text-gray-100 transition hover:bg-gray-900"
-              >
-                Post a Job
-              </Link>
+            <div className="bwe-soft-tile p-4 sm:p-5">
+              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-200">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Employer trust workflow
+              </div>
+              <ul className="mt-4 space-y-2 text-sm leading-6 text-white/72">
+                <li>
+                  Applications receive first-pass readiness and role-match
+                  screening.
+                </li>
+                <li>
+                  Employers see pipeline context before making a human decision.
+                </li>
+                <li>Manual override stays available with reason logging.</li>
+              </ul>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Link
+                  href="/post-job"
+                  onClick={() =>
+                    trackJobEntry(
+                      "jobs_hub_post_job_workflow",
+                      "Start structured hiring",
+                      "/post-job",
+                    )
+                  }
+                  className="bwe-cta-primary bwe-focus-ring px-4 py-2.5 text-sm"
+                >
+                  Start structured hiring
+                </Link>
+                <Link
+                  href="/employer/applicants"
+                  className="bwe-open-link bwe-focus-ring text-[var(--accent)]"
+                >
+                  View applicant pipeline
+                </Link>
+              </div>
             </div>
-          </div>
+          </section>
 
-          <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4">
-            <div className="text-xs uppercase tracking-[0.14em] text-emerald-300">
-              Employer Trust Workflow
+          <section className="mt-8">
+            <div className="bwe-eyebrow">Choose your lane</div>
+            <div className="mt-3 grid gap-3 md:grid-cols-3">
+              <LaneCard
+                tone="accent"
+                title="Candidate lane"
+                copy="Search live roles, compare employer context, and move into applications without losing your place."
+              />
+              <LaneCard
+                tone="neutral"
+                title="Employer lane"
+                copy="Publish a role, review applicants, and keep the hiring path organized around actual decisions."
+              />
+              <LaneCard
+                tone="success"
+                title="Growth lane"
+                copy="Use internships, project work, and mentorship to widen access beyond one kind of role."
+              />
             </div>
-            <div className="mt-1 text-lg font-bold">
-              Structured review, not hype
-            </div>
-            <ul className="mt-2 list-disc pl-5 text-sm text-gray-200 space-y-1">
-              <li>
-                Applications get first-pass screening for readiness and
-                role-match signals.
-              </li>
-              <li>
-                Employers see quality status, match band, and screening summary
-                in the applicant pipeline.
-              </li>
-              <li>
-                Automated screening assists review, it does not replace hiring
-                judgment.
-              </li>
-              <li>Manual override remains available with reason logging.</li>
-            </ul>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Link
-                href="/post-job"
-                onClick={() =>
-                  trackJobEntry(
-                    "jobs_hub_post_job_trust",
-                    "Post a Job (Trust block)",
-                    "/post-job",
-                  )
-                }
-                className="rounded bg-emerald-400 px-3 py-1.5 text-sm font-semibold text-black hover:bg-emerald-300"
-              >
-                Start structured hiring
-              </Link>
-              <Link
-                href="/employer/applicants"
-                className="rounded border border-emerald-300/40 px-3 py-1.5 text-sm text-emerald-100 hover:bg-emerald-500/10"
-              >
-                View applicant pipeline
-              </Link>
-            </div>
-          </div>
+          </section>
 
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4">
-              <div className="text-xs uppercase tracking-[0.14em] text-yellow-300">
-                Candidate Lane
-              </div>
-              <div className="mt-1 text-lg font-bold">Find your next role</div>
-              <div className="mt-1 text-sm text-gray-200">
-                Search open roles and apply with a profile that travels with
-                you.
-              </div>
-            </div>
-            <div className="rounded-xl border border-blue-500/30 bg-blue-500/10 p-4">
-              <div className="text-xs uppercase tracking-[0.14em] text-blue-300">
-                Employer Lane
-              </div>
-              <div className="mt-1 text-lg font-bold">Hire with confidence</div>
-              <div className="mt-1 text-sm text-gray-200">
-                Publish jobs and review applicants from a focused talent
-                pipeline.
-              </div>
-            </div>
-            <div className="rounded-xl border border-purple-500/30 bg-purple-500/10 p-4">
-              <div className="text-xs uppercase tracking-[0.14em] text-purple-300">
-                Growth Lane
-              </div>
-              <div className="mt-1 text-lg font-bold">Expand your options</div>
-              <div className="mt-1 text-sm text-gray-200">
-                Explore internships, freelance work, and mentorship pathways.
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <section className="mt-8 grid gap-4 md:grid-cols-2">
             <HubCard
-              title="Find a Job"
-              description="Browse active roles from Black-owned businesses and inclusive employers."
+              tone="accent"
+              title="Find a job"
+              description="Browse current listings from Black-owned businesses and aligned employers through the main listings route."
               href="/job-listings"
-              buttonLabel="Explore Jobs"
-              variant="gold"
+              buttonLabel="Explore jobs"
+              icon={<BriefcaseBusiness className="h-4 w-4" />}
             />
-
             <HubCard
-              title="Hire Black Talent"
-              description="Post a role and start reviewing candidates through the employer workflow."
+              tone="neutral"
+              title="Hire Black talent"
+              description="Start the employer workflow, publish a role, and review candidates through the structured pipeline."
               href="/post-job"
-              buttonLabel="Start Hiring"
-              variant="blue"
+              buttonLabel="Start hiring"
+              icon={<Building2 className="h-4 w-4" />}
               onClick={() =>
                 trackJobEntry(
                   "jobs_hub_post_job_card",
@@ -185,121 +223,149 @@ export default function JobsHubPage() {
                 )
               }
             />
-
             <HubCard
-              title="Internship Opportunities"
-              description="Access internship listings and early-career opportunities in one focused lane."
+              tone="success"
+              title="Internships and early career"
+              description="Move into internship and early-career pathways without forcing them to compete with every other jobs action."
               href="/internships"
-              buttonLabel="View Internships"
-              variant="green"
+              buttonLabel="View internships"
+              icon={<ArrowRight className="h-4 w-4" />}
             />
-
             <HubCard
-              title="Freelance & Gig Work"
-              description="Find flexible project-based opportunities and independent work options."
+              tone="neutral"
+              title="Freelance and gig work"
+              description="Browse project-based work and flexible options where independent work is a better fit than a standard role."
               href="/freelance"
-              buttonLabel="Explore Gigs"
-              variant="red"
+              buttonLabel="Explore gigs"
+              icon={<ArrowRight className="h-4 w-4" />}
             />
-          </div>
+          </section>
 
-          <div className="grid gap-6 md:grid-cols-2">
-            <div className="rounded-2xl border border-gray-800 bg-black/40 p-6">
-              <h2 className="text-xl font-bold text-yellow-400">Mentorship</h2>
-              <p className="mt-2 text-sm text-gray-300">
-                Connect with experienced professionals for guidance, strategy,
-                and long-term growth.
+          <section className="mt-8 grid gap-4 md:grid-cols-2">
+            <article className="bwe-soft-tile p-4 sm:p-5">
+              <div className="bwe-eyebrow">Mentorship</div>
+              <h3 className="bwe-card-title mt-2">
+                Keep opportunity tied to guidance.
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-white/64">
+                Connect with experienced professionals for perspective,
+                preparation, and long-term career growth beyond one application.
               </p>
               <Link
                 href="/mentorship"
-                className="mt-4 inline-flex rounded border border-yellow-500/30 px-4 py-2 text-sm font-semibold text-yellow-200 hover:bg-yellow-500/10"
+                className="bwe-open-link bwe-focus-ring mt-4 text-[var(--accent)]"
               >
-                Explore Mentorship
+                Explore mentorship
               </Link>
-            </div>
+            </article>
 
-            <div className="rounded-2xl border border-gray-800 bg-black/40 p-6">
-              <h2 className="text-xl font-bold text-yellow-400">
-                Profile Advantage
-              </h2>
-              <p className="mt-2 text-sm text-gray-300">
-                Build your profile once, apply faster, and keep your
-                opportunities organized across the platform.
+            <article className="bwe-soft-tile p-4 sm:p-5">
+              <div className="bwe-eyebrow">Profile advantage</div>
+              <h3 className="bwe-card-title mt-2">
+                Build your profile once and move faster across roles.
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-white/64">
+                Create an account, keep your opportunity context organized, and
+                return to listings without restarting your setup every time.
               </p>
-              <div className="mt-4 flex flex-wrap gap-3">
+              <div className="mt-4 flex flex-wrap gap-2">
                 <Link
                   href="/signup"
-                  className="rounded bg-yellow-400 px-4 py-2 font-semibold text-black hover:bg-yellow-300"
+                  className="bwe-cta-primary bwe-focus-ring px-4 py-2.5 text-sm"
                 >
-                  Create Profile
+                  Create profile
                 </Link>
                 <Link
                   href="/login"
-                  className="rounded border border-gray-700 px-4 py-2 text-gray-100 hover:bg-gray-900"
+                  className="bwe-cta-secondary bwe-focus-ring px-4 py-2.5 text-sm"
                 >
-                  Login
+                  Log in
                 </Link>
               </div>
-            </div>
-          </div>
+            </article>
+          </section>
         </div>
       </div>
     </>
   );
 }
 
+function LaneCard({
+  tone,
+  title,
+  copy,
+}: {
+  tone: HubCardTone;
+  title: string;
+  copy: string;
+}) {
+  const accentClass =
+    tone === "accent"
+      ? "text-[var(--accent)]"
+      : tone === "success"
+        ? "text-emerald-200"
+        : "text-white/82";
+
+  return (
+    <article className="bwe-soft-tile p-4">
+      <div className="text-[11px] uppercase tracking-[0.14em] text-white/40">
+        {title}
+      </div>
+      <p className={`mt-2 text-sm font-semibold leading-6 ${accentClass}`}>
+        {copy}
+      </p>
+    </article>
+  );
+}
+
 function HubCard({
+  tone,
   title,
   description,
   href,
   buttonLabel,
-  variant,
+  icon,
   onClick,
 }: {
+  tone: HubCardTone;
   title: string;
   description: string;
   href: string;
   buttonLabel: string;
-  variant: "gold" | "blue" | "green" | "red";
+  icon: ReactNode;
   onClick?: () => void;
 }) {
-  const styles =
-    variant === "gold"
-      ? "border-yellow-400/30 hover:border-yellow-400/60"
-      : variant === "blue"
-        ? "border-blue-500/30 hover:border-blue-500/60"
-        : variant === "green"
-          ? "border-green-500/30 hover:border-green-500/60"
-          : "border-red-500/30 hover:border-red-500/60";
-
-  const badge =
-    variant === "gold"
-      ? "bg-yellow-400/15 text-yellow-300"
-      : variant === "blue"
-        ? "bg-blue-500/15 text-blue-300"
-        : variant === "green"
-          ? "bg-green-500/15 text-green-300"
-          : "bg-red-500/15 text-red-300";
+  const badgeTone =
+    tone === "accent" ? "accent" : tone === "success" ? "success" : undefined;
 
   return (
-    <div
-      className={[
-        "rounded-2xl border bg-gray-950/40 p-6 shadow-lg transition",
-        styles,
-      ].join(" ")}
-    >
-      <div className="flex items-center justify-between gap-3">
-        <h3 className="text-xl font-bold">{title}</h3>
-        <span className={["rounded px-2 py-1 text-xs", badge].join(" ")}>
+    <article className="bwe-soft-tile p-4 sm:p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2">
+            <span
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white/80"
+              aria-hidden="true"
+            >
+              {icon}
+            </span>
+            <h3 className="bwe-card-title">{title}</h3>
+          </div>
+          <p className="mt-3 text-sm leading-6 text-white/64">{description}</p>
+        </div>
+        <span className="bwe-badge" data-tone={badgeTone}>
           Hub
         </span>
       </div>
-      <p className="mt-2 text-sm text-gray-300">{description}</p>
-      <Link href={href} onClick={onClick}>
-        <button className="mt-4 rounded bg-yellow-400 px-5 py-2 font-semibold text-black transition hover:bg-yellow-300">
-          {buttonLabel}
-        </button>
+
+      <Link
+        href={href}
+        onClick={onClick}
+        className="bwe-open-link bwe-focus-ring mt-4 text-[var(--accent)]"
+      >
+        {buttonLabel}
+        <ArrowRight className="h-4 w-4" />
       </Link>
-    </div>
+    </article>
   );
 }
