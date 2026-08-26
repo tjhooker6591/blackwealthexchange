@@ -28,6 +28,10 @@
   --font-sans: var(--font-platform-sans), "Avenir Next", "Segoe UI", sans-serif;
   --font-serif:
     var(--font-platform-serif), "Iowan Old Style", "Book Antiqua", serif;
+  --step-hero: clamp(2.25rem, 4.8vw, 3.45rem);
+  --step-section: clamp(1.8rem, 3vw, 2.2rem);
+  --step-card: clamp(1.05rem, 1.4vw, 1.2rem);
+  --step-body: clamp(0.95rem, 1.1vw, 1.02rem);
 }
 
 html {
@@ -84,28 +88,30 @@ h4 {
 }
 
 .bwe-shell-panel {
-  border: 1px solid var(--border-soft);
+  border: 1px solid rgba(212, 175, 55, 0.12);
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.025)
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0.018)
   );
-  box-shadow: var(--shadow-panel);
+  box-shadow:
+    0 18px 54px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(18px);
 }
 
 .bwe-hero-panel {
-  border: 1px solid rgba(212, 175, 55, 0.24);
+  border: 1px solid rgba(212, 175, 55, 0.16);
   background:
     radial-gradient(
       circle at top,
-      rgba(212, 175, 55, 0.12),
+      rgba(212, 175, 55, 0.08),
       rgba(255, 255, 255, 0.02) 28%,
       rgba(255, 255, 255, 0.01) 100%
     ),
     linear-gradient(180deg, rgba(12, 15, 23, 0.94), rgba(7, 9, 14, 0.94));
   box-shadow:
-    0 26px 90px rgba(0, 0, 0, 0.45),
+    0 24px 72px rgba(0, 0, 0, 0.36),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px);
 }
@@ -128,6 +134,52 @@ h4 {
 
 .bwe-shell-copy {
   color: var(--muted);
+}
+
+.bwe-display-title {
+  font-size: var(--step-hero);
+  font-weight: 800;
+  letter-spacing: -0.065em;
+  line-height: 0.98;
+  color: var(--foreground);
+}
+
+.bwe-section-title {
+  font-size: var(--step-section);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1.02;
+  color: var(--foreground);
+}
+
+.bwe-card-title {
+  font-size: var(--step-card);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--foreground);
+}
+
+.bwe-lead {
+  font-size: var(--step-body);
+  line-height: 1.65;
+  color: var(--muted-strong);
+}
+
+.bwe-supporting-copy {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.bwe-divider {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
 }
 
 .bwe-section-wrap {
@@ -185,12 +237,12 @@ h4 {
   align-items: center;
   gap: 0.45rem;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-  padding: 0.45rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--muted-strong);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.38rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
 }
 
 .bwe-badge[data-tone="accent"] {
@@ -286,10 +338,9 @@ h4 {
   border-radius: 999px;
   padding: 0.8rem 1.25rem;
   text-align: center;
-  font-size: 0.86rem;
+  font-size: 0.9rem;
   font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0.05em;
   transition:
     transform 180ms ease,
     background-color 180ms ease,
@@ -302,7 +353,7 @@ h4 {
   border: 1px solid rgba(212, 175, 55, 0.38);
   background: var(--accent);
   color: var(--accent-ink);
-  box-shadow: 0 14px 34px rgba(212, 175, 55, 0.2);
+  box-shadow: 0 12px 28px rgba(212, 175, 55, 0.16);
 }
 
 .bwe-cta-primary:hover {
@@ -324,9 +375,28 @@ h4 {
 
 .bwe-grid-card {
   border-radius: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(6, 9, 14, 0.62);
-  box-shadow: var(--shadow-panel);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 11, 17, 0.52);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
+}
+
+.bwe-soft-tile {
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.bwe-open-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--foreground);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.bwe-open-link:hover {
+  color: var(--accent);
 }
 
 .bwe-focus-ring:focus-visible {

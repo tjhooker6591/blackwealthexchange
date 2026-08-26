@@ -885,7 +885,7 @@ export default function Home() {
       <header className="relative z-10 pb-5 pt-8 sm:pb-7 sm:pt-11">
         <div className="bwe-section-wrap relative z-10 max-w-6xl">
           <div className="text-center">
-            <div className="mx-auto inline-flex items-center justify-center gap-2 rounded-full border border-[#D4AF37]/20 bg-[#D4AF37]/8 px-3 py-1.5 text-[11px] text-[#EFD27A] sm:px-3.5 sm:text-xs">
+            <div className="mx-auto inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] text-white/68 sm:px-3.5 sm:text-xs">
               <Image
                 src="/black-wealth-future.png"
                 alt="Black Wealth"
@@ -894,7 +894,7 @@ export default function Home() {
                 className="inline-block sm:h-[34px] sm:w-[34px]"
                 priority
               />
-              <span className="font-extrabold tracking-wide">
+              <span className="font-semibold tracking-[0.14em] text-[var(--accent)]">
                 BLACK WEALTH EXCHANGE
               </span>
             </div>
@@ -911,57 +911,82 @@ export default function Home() {
               <div className="pointer-events-none absolute inset-0 -z-10 bg-black/76" />
               <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-black/30 via-black/10 to-transparent" />
 
-              <div className="mx-auto max-w-2xl">
-                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/70 sm:text-[11px]">
-                  Founded by Thomas James Hooker Sr.
-                </div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#D4AF37] sm:text-[11px]">
-                  Discover. Claim. Strengthen. Buy. Grow.
+              <div className="mx-auto max-w-3xl">
+                <div className="bwe-eyebrow text-white/56">
+                  Black-owned business discovery and commerce
                 </div>
 
-                <h1 className="mt-3 flex flex-col gap-1 text-3xl font-black leading-[1.14] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.45rem]">
-                  <span>Discover Black-owned businesses.</span>
-                  <span>Move into commerce with confidence.</span>
-                  <span>Build durable economic momentum.</span>
+                <h1 className="bwe-display-title mx-auto mt-3 max-w-3xl">
+                  Search Black-owned businesses and move into trusted economic
+                  action.
                 </h1>
 
-                <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-white/84 sm:text-base sm:leading-7">
-                  Search the directory, shop the marketplace, find jobs, and
-                  grow your business from one BWE entry point built for trust,
-                  visibility, and action.
+                <p className="bwe-lead mx-auto mt-4 max-w-2xl">
+                  Find businesses, shop products, discover opportunities, and
+                  choose the next step that matches your goal without sorting
+                  through a crowded homepage first.
                 </p>
-                <p className="mx-auto mt-3 max-w-2xl text-xs leading-5 text-white/70 sm:text-sm sm:leading-6">
-                  Black Wealth Exchange is a founder-led, mission-driven
-                  for-profit platform built to connect Black-owned business
-                  discovery, ownership workflows, commerce, and growth.
-                </p>
-                <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-                  <span className="bwe-badge" data-tone="accent">
-                    Directory
-                  </span>
-                  <span className="bwe-badge">Marketplace</span>
-                  <span className="bwe-badge">Jobs</span>
-                  <span className="bwe-badge">Student opportunities</span>
-                  <span className="bwe-badge">Wealth tools</span>
-                </div>
               </div>
 
-              <div className="mx-auto mt-5 flex w-full max-w-2xl flex-col gap-3 sm:items-center">
+              <div className="mx-auto mt-6 flex w-full max-w-3xl flex-col gap-3 sm:items-center">
+                <div className="w-full rounded-[24px] border border-white/10 bg-black/28 p-2 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.03)]">
+                  <div className="mb-2 flex flex-wrap gap-2 text-left text-[11px] text-white/58">
+                    <span className="bwe-badge" data-tone="accent">
+                      Directory
+                    </span>
+                    <span className="bwe-badge">Marketplace</span>
+                    <span className="bwe-badge">Jobs</span>
+                    <span className="bwe-badge">Student opportunities</span>
+                  </div>
+                  <div className="flex w-full items-stretch overflow-hidden rounded-full border border-white/10 bg-white/[0.03]">
+                    <input
+                      type="search"
+                      enterKeyHint="search"
+                      inputMode="search"
+                      placeholder="Search businesses, products, organizations, or opportunities"
+                      value={searchQuery}
+                      onClick={() =>
+                        trackHomepageEvent("homepage_search_focused", {
+                          section: "hero_search",
+                          source: "homepage_search_box",
+                          vertical,
+                          scope: leftScope,
+                        })
+                      }
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter")
+                          submitHomepageSearch("search_input_enter");
+                      }}
+                      className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm text-white/76 outline-none placeholder:text-white/34"
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        submitHomepageSearch("search_button_click")
+                      }
+                      className="shrink-0 bg-[var(--accent)] px-5 text-sm font-semibold text-black hover:bg-[var(--accent-strong)]"
+                    >
+                      Search
+                    </button>
+                  </div>
+                </div>
+
                 <div className="grid w-full gap-3 sm:grid-cols-2">
                   <Link
-                    href="/business-directory?mode=claim"
+                    href="/business-directory"
                     className="w-full"
                     onClick={() =>
                       trackHomepageEvent("homepage_cta_clicked", {
                         section: "hero",
-                        ctaId: "hero_claim_business",
-                        ctaLabel: "Claim Your Listing",
-                        destination: "/business-directory?mode=claim",
+                        ctaId: "hero_search_directory",
+                        ctaLabel: "Search Directory",
+                        destination: "/business-directory",
                       })
                     }
                   >
                     <button className="bwe-cta-primary bwe-focus-ring h-12 w-full px-6">
-                      Search Black-owned businesses
+                      Search directory
                     </button>
                   </Link>
                   <Link
@@ -981,109 +1006,113 @@ export default function Home() {
                     </button>
                   </Link>
                 </div>
-                <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
-                  <Link
-                    href="/founding-membership"
-                    className="text-sm text-white/74 underline underline-offset-4 hover:text-[#F1D57A]"
-                    onClick={() =>
-                      trackHomepageEvent("homepage_cta_clicked", {
-                        section: "hero",
-                        ctaId: "hero_review_membership",
-                        ctaLabel: "See Membership Details",
-                        destination: "/founding-membership",
-                      })
-                    }
-                  >
-                    Explore Founding Membership
-                  </Link>
-                  <Link
-                    href="/business-directory/add-business"
-                    className="text-sm text-white/74 underline underline-offset-4 hover:text-[#F1D57A]"
-                    onClick={() =>
-                      trackHomepageEvent("homepage_cta_clicked", {
-                        section: "hero",
-                        ctaId: "hero_list_business",
-                        ctaLabel: "Don’t see your listing yet? Create it here.",
-                        destination: "/business-directory/add-business",
-                      })
-                    }
-                  >
-                    Don’t see your listing yet? Create it here.
-                  </Link>
+                <div className="mx-auto w-full max-w-3xl text-left">
+                  <div className="bwe-divider" />
+                  <div className="mt-4 grid gap-3 sm:grid-cols-[0.88fr_1.12fr] sm:items-start">
+                    <div>
+                      <p className="text-sm text-white/66">
+                        Founded by Thomas James Hooker Sr.
+                      </p>
+                      <p className="mt-2 max-w-md text-sm leading-6 text-white/56">
+                        A founder-led, mission-driven platform connecting
+                        discovery, commerce, ownership workflows, and growth.
+                      </p>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="bwe-soft-tile px-4 py-3 text-left">
+                        <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                          What this is
+                        </div>
+                        <p className="mt-2 text-sm text-white/82">
+                          A Black-owned business discovery, commerce, and
+                          opportunity platform.
+                        </p>
+                      </div>
+                      <div className="bwe-soft-tile px-4 py-3 text-left">
+                        <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                          Quiet next steps
+                        </div>
+                        <div className="mt-2 flex flex-wrap gap-3">
+                          <Link
+                            href="/founding-membership"
+                            className="bwe-open-link bwe-focus-ring"
+                          >
+                            Founding membership
+                          </Link>
+                          <Link
+                            href="/business-directory/add-business"
+                            className="bwe-open-link bwe-focus-ring"
+                          >
+                            Add a listing
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="mx-auto mt-4 grid w-full max-w-5xl gap-2 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="bwe-shell-panel rounded-[24px] px-4 py-3 text-left">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
-                  Trust signal
+            <div className="mx-auto mt-5 grid w-full max-w-5xl gap-5 text-left lg:grid-cols-[0.95fr_1.05fr]">
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div>
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                    Primary paths
+                  </div>
+                  <div className="mt-2 text-sm text-white/84">Directory</div>
                 </div>
-                <div className="mt-1 text-sm font-semibold text-white/90">
-                  Black-owned business discovery
+                <div>
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                    Commerce
+                  </div>
+                  <div className="mt-2 text-sm text-white/84">Marketplace</div>
                 </div>
-              </div>
-              <div className="bwe-shell-panel rounded-[24px] px-4 py-3 text-left">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
-                  Trust signal
-                </div>
-                <div className="mt-1 text-sm font-semibold text-white/90">
-                  Community-powered economic support
-                </div>
-              </div>
-              <div className="bwe-shell-panel rounded-[24px] px-4 py-3 text-left">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
-                  Trust signal
-                </div>
-                <div className="mt-1 text-sm font-semibold text-white/90">
-                  Listings, jobs, marketplace, and wealth tools
+                <div>
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                    Opportunity
+                  </div>
+                  <div className="mt-2 text-sm text-white/84">
+                    Jobs and student paths
+                  </div>
                 </div>
               </div>
-              <div className="bwe-shell-panel rounded-[24px] px-4 py-3 text-left">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
-                  Trust signal
-                </div>
-                <div className="mt-1 text-sm font-semibold text-white/90">
-                  Built to help dollars circulate longer
-                </div>
-              </div>
-            </div>
 
-            <div className="mx-auto mt-3 grid w-full max-w-4xl grid-cols-2 gap-2 text-left sm:grid-cols-4">
-              <div className="bwe-shell-panel rounded-[20px] px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
-                  Businesses
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <div>
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                    Businesses
+                  </div>
+                  <div className="mt-2 text-2xl font-semibold text-white">
+                    {formatStat(trustStats.businesses)}
+                  </div>
                 </div>
-                <div className="mt-0.5 text-sm font-extrabold text-white">
-                  {formatStat(trustStats.businesses)}
+                <div>
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                    Organizations
+                  </div>
+                  <div className="mt-2 text-2xl font-semibold text-white">
+                    {formatStat(trustStats.organizations)}
+                  </div>
                 </div>
-              </div>
-              <div className="bwe-shell-panel rounded-[20px] px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
-                  Organizations
+                <div>
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                    Opportunities
+                  </div>
+                  <div className="mt-2 text-2xl font-semibold text-white">
+                    {formatStat(trustStats.opportunities)}
+                  </div>
                 </div>
-                <div className="mt-0.5 text-sm font-extrabold text-white">
-                  {formatStat(trustStats.organizations)}
-                </div>
-              </div>
-              <div className="bwe-shell-panel rounded-[20px] px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
-                  Opportunities
-                </div>
-                <div className="mt-0.5 text-sm font-extrabold text-white">
-                  {formatStat(trustStats.opportunities)}
-                </div>
-              </div>
-              <div className="bwe-shell-panel rounded-[20px] px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
-                  Products
-                </div>
-                <div className="mt-0.5 text-sm font-extrabold text-white">
-                  {formatStat(trustStats.products)}
+                <div>
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                    Products
+                  </div>
+                  <div className="mt-2 text-2xl font-semibold text-white">
+                    {formatStat(trustStats.products)}
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="mx-auto mt-1 max-w-4xl text-left text-[11px] text-white/50">
+            <div className="mx-auto mt-1 max-w-5xl text-left text-[11px] text-white/45">
               Live platform inventory snapshot.
             </div>
           </div>
@@ -1118,17 +1147,21 @@ export default function Home() {
             </section>
           ) : null}
 
-          <section id="search-dominant" className="mt-5 sm:mt-6 scroll-mt-24">
+          <section id="search-dominant" className="mt-7 scroll-mt-24">
             <div className="mx-auto max-w-4xl">
-              <div className="mb-2.5">
+              <div className="mb-3 text-left">
                 <div className="bwe-eyebrow">Start here</div>
-                <div className="text-sm font-semibold text-white/88 sm:text-[15px]">
-                  Search first, then take the next best action
-                </div>
+                <h2 className="bwe-section-title mt-2">
+                  Search first, then move into the path that fits.
+                </h2>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-white/62 sm:text-[15px]">
+                  Directory, marketplace, and discovery remain unified here, but
+                  the interface is now quieter about it.
+                </p>
               </div>
 
               <div>
-                <div className="bwe-shell-panel relative overflow-hidden rounded-[28px] p-2.5 sm:p-3.5">
+                <div className="bwe-shell-panel relative overflow-hidden rounded-[28px] p-3 sm:p-4">
                   <div className="pointer-events-none absolute -top-20 left-1/2 h-40 w-[30rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/6 blur-3xl" />
 
                   <div className="relative">
@@ -1322,18 +1355,14 @@ export default function Home() {
                       />
                     )}
 
-                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/55 sm:text-[12px]">
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/48 sm:text-[12px]">
                       <span>
-                        Real listings, clear trust labels, and direct next
-                        steps.
-                        <span className="text-white/40">
-                          {" "}
-                          Filters are optional.
-                        </span>
+                        Real listings and direct next steps. Filters are
+                        optional.
                       </span>
 
-                      <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] sm:text-[11px]">
-                        Opens full results with filters and scope controls
+                      <span className="text-[10px] text-white/38 sm:text-[11px]">
+                        Full results keep filters and scope controls.
                       </span>
                     </div>
                   </div>
@@ -1342,48 +1371,42 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="bwe-shell-panel mx-auto mt-5 max-w-5xl rounded-[28px] p-4 sm:p-5">
-            <div className="mb-3 text-left">
+          <section className="mx-auto mt-10 max-w-5xl">
+            <div className="mb-4 text-left">
               <div className="bwe-eyebrow">How BWE works</div>
-              <div className="mt-1 text-sm text-white/75 sm:text-base">
+              <div className="mt-2 max-w-2xl text-sm text-white/62 sm:text-base">
                 A simpler path to finding, supporting, and growing Black-owned
                 businesses.
               </div>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <article className="bwe-grid-card p-4 text-left">
+            <div className="grid gap-4 border-y border-white/8 py-5 sm:grid-cols-2 lg:grid-cols-4">
+              <article className="pr-2 text-left lg:border-r lg:border-white/8 lg:pr-5">
                 <div className="bwe-eyebrow">1</div>
-                <h3 className="mt-1 text-sm font-extrabold text-white">
-                  Search
-                </h3>
-                <p className="mt-1 text-xs text-white/70">
+                <h3 className="bwe-card-title mt-2">Search</h3>
+                <p className="mt-2 text-sm text-white/62">
                   Find Black-owned businesses, organizations, products, and
                   opportunities.
                 </p>
               </article>
-              <article className="bwe-grid-card p-4 text-left">
+              <article className="pr-2 text-left lg:border-r lg:border-white/8 lg:pr-5">
                 <div className="bwe-eyebrow">2</div>
-                <h3 className="mt-1 text-sm font-extrabold text-white">
-                  Support
-                </h3>
-                <p className="mt-1 text-xs text-white/70">
+                <h3 className="bwe-card-title mt-2">Support</h3>
+                <p className="mt-2 text-sm text-white/62">
                   Buy, book, hire, share, and direct more spending toward
                   businesses you want to see grow.
                 </p>
               </article>
-              <article className="bwe-grid-card p-4 text-left">
+              <article className="pr-2 text-left lg:border-r lg:border-white/8 lg:pr-5">
                 <div className="bwe-eyebrow">3</div>
-                <h3 className="mt-1 text-sm font-extrabold text-white">List</h3>
-                <p className="mt-1 text-xs text-white/70">
+                <h3 className="bwe-card-title mt-2">List</h3>
+                <p className="mt-2 text-sm text-white/62">
                   Create a listing and make your business easier to discover.
                 </p>
               </article>
-              <article className="bwe-grid-card p-4 text-left">
+              <article className="pr-2 text-left">
                 <div className="bwe-eyebrow">4</div>
-                <h3 className="mt-1 text-sm font-extrabold text-white">
-                  Build Wealth
-                </h3>
-                <p className="mt-1 text-xs text-white/70">
+                <h3 className="bwe-card-title mt-2">Build Wealth</h3>
+                <p className="mt-2 text-sm text-white/62">
                   Use BWE tools that help dollars circulate longer and compound
                   impact.
                 </p>
@@ -1391,32 +1414,28 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="bwe-hero-panel mx-auto mt-5 max-w-5xl rounded-[28px] p-4 sm:p-5">
-            <div className="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center">
+          <section className="mx-auto mt-10 max-w-5xl">
+            <div className="grid gap-5 border-t border-white/8 pt-6 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:items-start">
               <div className="text-left">
                 <p className="bwe-eyebrow">Claim your existing listing</p>
-                <h3 className="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
-                  Find your public BWE listing, start the claim process, and
-                  move into monthly growth support.
+                <h3 className="bwe-section-title mt-2 max-w-2xl">
+                  Claim your listing and move into the ownership and growth
+                  path.
                 </h3>
-                <p className="mt-2 text-sm text-white/75">
-                  This path is for an existing BWE listing. Membership and claim
-                  processing begin after payment, while ownership verification
-                  is handled separately.
+                <p className="mt-3 max-w-xl text-sm leading-6 text-white/62">
+                  Preserve the existing business path, but give it less visual
+                  competition with the main discovery experience above.
                 </p>
               </div>
-              <div className="bwe-shell-panel rounded-[24px] p-4 text-left">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
+              <div className="bwe-soft-tile p-4 text-left">
+                <div className="text-[10px] uppercase tracking-[0.12em] text-white/40">
                   Founding membership path
                 </div>
-                <ul className="mt-2 space-y-2 text-sm text-white/80">
+                <ul className="mt-3 space-y-2 text-sm text-white/72">
                   <li>• Find your existing listing in the directory</li>
                   <li>• Claim the listing and start ownership review</li>
                   <li>• Activate the $49/month founding membership</li>
-                  <li>
-                    • Move into profile review, baseline setup, and monthly
-                    reporting
-                  </li>
+                  <li>• Move into baseline setup and monthly growth support</li>
                 </ul>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Link
@@ -1427,7 +1446,7 @@ export default function Home() {
                   </Link>
                   <Link
                     href="/founding-membership"
-                    className="bwe-cta-secondary bwe-focus-ring inline-flex px-4 py-2.5 text-sm font-bold text-[#F1D57A]"
+                    className="bwe-open-link bwe-focus-ring text-[var(--accent)]"
                   >
                     Review Membership
                   </Link>
@@ -1436,11 +1455,11 @@ export default function Home() {
             </div>
           </section>
 
-          <div className="bwe-shell-panel mx-auto mt-5 max-w-4xl rounded-[24px] p-3 sm:p-3.5">
+          <div className="mx-auto mt-8 max-w-5xl border-t border-white/8 pt-5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="text-left">
                 <div className="bwe-eyebrow">Black Card Membership</div>
-                <div className="mt-0.5 text-xs text-white/85 sm:text-sm">
+                <div className="mt-1 text-sm text-white/62">
                   Explore Black Card benefits, member access, and premium
                   ecosystem advantages in a clearly separate path from Join BWE.
                 </div>
@@ -1455,31 +1474,31 @@ export default function Home() {
                     destination: "/pricing",
                   })
                 }
-                className="bwe-cta-secondary bwe-focus-ring inline-flex w-full justify-center px-4 py-2 text-xs font-semibold text-yellow-200 sm:w-auto"
+                className="bwe-open-link bwe-focus-ring inline-flex w-full justify-center text-[var(--accent)] sm:w-auto"
               >
                 Explore Black Card
               </Link>
             </div>
           </div>
 
-          <section className="bwe-shell-panel mt-4 rounded-[24px] p-4">
+          <section className="mt-6">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="text-left">
                 <p className="bwe-eyebrow">0.5% Challenge</p>
-                <p className="text-sm text-white">
+                <p className="text-sm text-white/68">
                   Search Black first. Buy, review, refer, repeat.
                 </p>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
                 <Link
                   href="/challenge"
-                  className="bwe-cta-primary bwe-focus-ring text-center text-xs"
+                  className="bwe-cta-primary bwe-focus-ring text-center text-sm"
                 >
                   Join the Challenge
                 </Link>
                 <Link
                   href="/business-directory"
-                  className="bwe-cta-secondary bwe-focus-ring text-center text-xs font-bold text-[#F1D57A]"
+                  className="bwe-open-link bwe-focus-ring justify-center text-[var(--accent)]"
                 >
                   Search Black-Owned Businesses
                 </Link>
@@ -1496,7 +1515,7 @@ export default function Home() {
       <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
           {featuredJobs.length ? (
-            <div className="bwe-shell-panel mb-4 rounded-[28px] p-4 sm:p-5">
+            <div className="mb-6 border-t border-white/8 pt-5">
               <div className="mb-3 flex items-center justify-between gap-2">
                 <div>
                   <div className="bwe-eyebrow">Jobs</div>
@@ -1516,7 +1535,7 @@ export default function Home() {
                   <Link
                     key={job._id}
                     href={`/job/${job._id}`}
-                    className="bwe-grid-card p-3 hover:bg-black/45"
+                    className="bwe-soft-tile p-3 hover:bg-white/[0.04]"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <p className="truncate font-bold text-white">
@@ -1535,54 +1554,50 @@ export default function Home() {
             </div>
           ) : null}
 
-          <div className="bwe-shell-panel rounded-[28px] p-4 sm:p-5">
-            <div className="mb-2 bwe-eyebrow">Supporting ecosystem paths</div>
-            <p className="mb-3 text-xs text-white/65">
-              Once the core action is clear, you can go deeper into the rest of
-              the platform.
-            </p>
-            <div className="grid gap-3 md:grid-cols-3">
-              <article className="bwe-grid-card p-4">
-                <h3 className="text-sm font-extrabold text-white">
-                  Marketplace
-                </h3>
-                <p className="mt-1 text-xs text-white/70">
+          <div className="mt-10 border-t border-white/8 pt-6">
+            <div className="mb-3">
+              <div className="bwe-eyebrow">Primary economic paths</div>
+              <p className="mt-2 text-sm text-white/62">
+                These are the highest-value platform actions after the main
+                homepage entry.
+              </p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-3">
+              <article className="bwe-soft-tile p-4">
+                <h3 className="bwe-card-title">Marketplace</h3>
+                <p className="mt-2 text-sm text-white/62">
                   Open the live marketplace, check the current public catalog
                   state, and support commerce directly when listings are active.
                 </p>
                 <Link
                   href="/marketplace"
-                  className="bwe-cta-secondary bwe-focus-ring mt-3 inline-flex px-3 py-2 text-xs font-bold text-[#F1D57A]"
+                  className="bwe-open-link bwe-focus-ring mt-3 text-[var(--accent)]"
                 >
                   Shop Marketplace
                 </Link>
               </article>
-              <article className="bwe-grid-card p-4">
-                <h3 className="text-sm font-extrabold text-white">
-                  Student Opportunities
-                </h3>
-                <p className="mt-1 text-xs text-white/70">
+              <article className="bwe-soft-tile p-4">
+                <h3 className="bwe-card-title">Student Opportunities</h3>
+                <p className="mt-2 text-sm text-white/62">
                   Explore internships, scholarships, grants, and mentorship
                   pathways.
                 </p>
                 <Link
                   href="/black-student-opportunities"
-                  className="bwe-cta-secondary bwe-focus-ring mt-3 inline-flex px-3 py-2 text-xs font-bold text-emerald-200"
+                  className="bwe-open-link bwe-focus-ring mt-3 text-emerald-200"
                 >
                   Explore Student Hub
                 </Link>
               </article>
-              <article className="bwe-grid-card p-4">
-                <h3 className="text-sm font-extrabold text-white">
-                  Advertising
-                </h3>
-                <p className="mt-1 text-xs text-white/70">
+              <article className="bwe-soft-tile p-4">
+                <h3 className="bwe-card-title">Advertising</h3>
+                <p className="mt-2 text-sm text-white/62">
                   Premium placements for brands that want more visibility inside
                   the BWE ecosystem.
                 </p>
                 <Link
                   href="/advertise-with-us"
-                  className="bwe-cta-secondary bwe-focus-ring mt-3 inline-flex px-3 py-2 text-xs font-bold text-white/85"
+                  className="bwe-open-link bwe-focus-ring mt-3 text-white/84"
                 >
                   Advertise with BWE
                 </Link>
@@ -1593,13 +1608,13 @@ export default function Home() {
       </section>
 
       <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0">
-        <section className="bwe-hero-panel mb-5 overflow-hidden rounded-[28px] p-3.5 sm:p-4">
+        <section className="mb-8 border-t border-white/8 pt-6">
           <div className="mb-2.5 flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-extrabold tracking-tight text-[#D4AF37] sm:text-base">
+              <h3 className="text-sm font-semibold tracking-[0.12em] text-[var(--accent)] sm:text-base">
                 Featured Sponsors
               </h3>
-              <p className="text-[11px] text-white/55">
+              <p className="mt-1 text-[12px] text-white/52">
                 {sponsorFeedLoaded
                   ? sponsorRail.length
                     ? "Current sponsor placements supporting discovery and visibility"
@@ -1607,12 +1622,12 @@ export default function Home() {
                   : "Loading current sponsor placements"}
               </p>
             </div>
-            <span className="rounded border border-white/15 px-2 py-1 text-[10px] text-white/55">
+            <span className="rounded-full border border-white/10 px-3 py-1 text-[10px] text-white/45">
               Weekly slots · max {FEATURED_SPONSOR_RAIL_CAP}
             </span>
           </div>
 
-          <div className="relative h-20 w-full overflow-hidden rounded-xl border border-white/10 bg-black/25 sm:h-24">
+          <div className="relative h-28 w-full overflow-hidden rounded-[24px] border border-white/10 bg-black/20 sm:h-36">
             {!sponsorFeedLoaded ? (
               <div className="absolute inset-0 flex items-center justify-center text-[11px] text-white/55">
                 Loading live sponsors...
@@ -1622,17 +1637,17 @@ export default function Home() {
             <div className="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-black/70 to-transparent" />
 
             {sponsorRail.length ? (
-              <div className="animate-scroll absolute flex space-x-3 px-3 py-3 sm:space-x-4">
+              <div className="animate-scroll absolute flex space-x-4 px-4 py-4 sm:space-x-5">
                 {[...sponsorRail, ...sponsorRail].map((sponsor, index) => {
                   const card = (
-                    <div className="relative h-14 w-24 overflow-hidden rounded-lg border border-white/10 shadow sm:h-16 sm:w-32">
+                    <div className="relative h-20 w-36 overflow-hidden rounded-[18px] border border-white/10 shadow sm:h-24 sm:w-44">
                       <img
                         src={sponsor.img}
                         alt={sponsor.name}
                         className="h-full w-full object-cover"
                         loading={index < 4 ? "eager" : "lazy"}
                       />
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-1.5 py-1 text-center text-[9px] font-semibold text-[#F1D57A] sm:text-[10px]">
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/82 to-transparent px-2 py-1.5 text-left text-[10px] font-semibold text-white sm:text-[11px]">
                         {sponsor.name}
                       </div>
                     </div>
@@ -1673,65 +1688,65 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="bwe-shell-panel mb-5 rounded-[28px] p-4 sm:p-5">
-          <p className="bwe-eyebrow text-white/65">More from the ecosystem</p>
-          <h3 className="mt-1 text-lg font-extrabold tracking-tight text-[#D4AF37] sm:text-xl">
+        <section className="mb-6 border-t border-white/8 pt-6">
+          <p className="bwe-eyebrow text-white/58">
+            Supporting ecosystem paths
+          </p>
+          <h3 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-[2rem]">
             Explore the broader BWE platform
           </h3>
 
-          <div className="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-            <article className="bwe-grid-card p-4">
-              <h4 className="text-sm font-extrabold text-white">Music</h4>
-              <p className="mt-1 text-xs text-white/70">
+          <div className="mt-4 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            <article className="border-b border-white/8 pb-4 lg:border-b-0 lg:border-r lg:border-white/8 lg:pb-0 lg:pr-4">
+              <h4 className="bwe-card-title">Music</h4>
+              <p className="mt-2 text-sm text-white/62">
                 Support artists, creators, and music commerce.
               </p>
               <Link
                 href="/music"
-                className="bwe-cta-secondary bwe-focus-ring mt-3 inline-flex px-3 py-2 text-xs font-bold text-[#F1D57A]"
+                className="bwe-open-link bwe-focus-ring mt-3 text-[var(--accent)]"
               >
                 Explore Music
               </Link>
             </article>
 
-            <article className="bwe-grid-card p-4">
-              <h4 className="text-sm font-extrabold text-white">Real Estate</h4>
-              <p className="mt-1 text-xs text-white/70">
+            <article className="border-b border-white/8 pb-4 lg:border-b-0 lg:border-r lg:border-white/8 lg:pb-0 lg:pr-4">
+              <h4 className="bwe-card-title">Real Estate</h4>
+              <p className="mt-2 text-sm text-white/62">
                 Explore ownership and investment pathways.
               </p>
               <Link
                 href="/real-estate-investment"
-                className="bwe-cta-secondary bwe-focus-ring mt-3 inline-flex px-3 py-2 text-xs font-bold text-white/85"
+                className="bwe-open-link bwe-focus-ring mt-3 text-white/84"
               >
                 Explore Real Estate
               </Link>
             </article>
 
-            <article className="bwe-grid-card p-4">
-              <h4 className="text-sm font-extrabold text-white">
-                Recruiting & Consulting
-              </h4>
-              <p className="mt-1 text-xs text-white/70">
+            <article className="border-b border-white/8 pb-4 md:border-b-0 lg:border-r lg:border-white/8 lg:pb-0 lg:pr-4">
+              <h4 className="bwe-card-title">Recruiting & Consulting</h4>
+              <p className="mt-2 text-sm text-white/62">
                 Connect employers with talent pathways and consulting support.
               </p>
               <Link
                 href="/recruiting-consulting?type=employer"
-                className="bwe-cta-secondary bwe-focus-ring mt-3 inline-flex px-3 py-2 text-xs font-bold text-[#F1D57A]"
+                className="bwe-open-link bwe-focus-ring mt-3 text-[var(--accent)]"
               >
                 Open Recruiting
               </Link>
             </article>
 
-            <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-              <h4 className="text-sm font-extrabold text-white">
+            <article>
+              <h4 className="bwe-card-title">
                 Join Creator or Consulting Waitlist
               </h4>
-              <p className="mt-1 text-xs text-white/70">
+              <p className="mt-2 text-sm text-white/62">
                 Get updates when new creator and consulting opportunities open.
               </p>
               <button
                 type="button"
                 onClick={() => setModalOpen(true)}
-                className="mt-3 inline-flex rounded-lg border border-yellow-400/35 bg-black/35 px-3 py-2 text-xs font-semibold text-yellow-200 hover:bg-black/55"
+                className="bwe-open-link bwe-focus-ring mt-3 text-[var(--accent)]"
               >
                 Notify Me
               </button>

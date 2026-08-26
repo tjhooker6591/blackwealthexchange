@@ -371,25 +371,25 @@ export default function Marketplace({
       <div ref={topRef} />
 
       {/* Header */}
-      <section className="bwe-section-wrap relative py-8 text-center sm:py-10">
+      <section className="bwe-section-wrap relative py-8 sm:py-10">
         <div className="bwe-hero-panel mx-auto max-w-6xl rounded-[32px] px-5 py-6 sm:px-8 sm:py-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-yellow-500/30 bg-white/5 px-3 py-2 text-xs text-gray-200 sm:px-4 sm:text-sm">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] text-white/66 sm:px-4 sm:text-xs">
             <Sparkles className="h-4 w-4 text-yellow-400" />
             Curated marketplace • Clear product details • Shop Black-owned
             brands
           </div>
 
-          <h1 className="mt-5 text-4xl font-black tracking-[-0.05em] text-gold md:text-6xl">
+          <h1 className="bwe-display-title mt-5 max-w-4xl text-left">
             Shop with clearer trust, pricing, and seller context.
           </h1>
-          <p className="mx-auto mt-3 max-w-3xl text-base text-gray-300 sm:text-lg">
+          <p className="bwe-lead mt-4 max-w-3xl text-left">
             Discover products, compare availability, verify the seller path, and
             move into checkout with a cleaner marketplace experience.
           </p>
 
-          <div className="mt-6 grid gap-3 lg:grid-cols-[minmax(0,1fr)_18rem]">
-            <div className="bwe-shell-panel rounded-[28px] p-4 sm:p-5">
-              <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 shadow-lg">
+          <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
+            <div className="rounded-[28px] border border-white/10 bg-black/22 p-4 sm:p-5">
+              <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
                 <Search className="h-5 w-5 text-gray-300" />
                 <input
                   value={q}
@@ -425,8 +425,8 @@ export default function Marketplace({
               </div>
             </div>
 
-            <div className="bwe-shell-panel rounded-[28px] p-4">
-              <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 shadow-lg">
+            <div className="bwe-soft-tile p-4">
+              <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
                 <SlidersHorizontal className="h-5 w-5 text-gray-300" />
                 <select
                   value={sort}
@@ -452,7 +452,7 @@ export default function Marketplace({
                 </select>
               </div>
               <div className="mt-4 text-left">
-                <div className="bwe-shell-label">Live catalog status</div>
+                <div className="bwe-eyebrow">Live catalog status</div>
                 <div className="mt-2 text-sm text-white/82">{resultLabel}</div>
                 <p className="mt-2 text-xs text-white/55">
                   Each listing surfaces current pricing, availability, and
@@ -462,22 +462,22 @@ export default function Marketplace({
             </div>
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
+          <div className="mt-5 flex flex-wrap items-center gap-3 text-xs text-white/62">
             <Link
               href="/marketplace/dashboard"
-              className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-gray-100 hover:bg-white/10"
+              className="bwe-open-link bwe-focus-ring"
             >
               Open Seller Dashboard
             </Link>
             <Link
               href="/marketplace/become-a-seller"
-              className="rounded-full border border-yellow-500/30 bg-yellow-500/10 px-3 py-1.5 text-yellow-200 hover:bg-yellow-500/20"
+              className="bwe-open-link bwe-focus-ring text-[var(--accent)]"
             >
               Start Selling
             </Link>
             <Link
               href="/legal/marketplace"
-              className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-gray-100 hover:bg-white/10"
+              className="bwe-open-link bwe-focus-ring"
             >
               Marketplace Terms
             </Link>
@@ -487,10 +487,8 @@ export default function Marketplace({
 
       {/* Buyer trust strip */}
       <section className="bwe-section-wrap relative mb-4 sm:mb-6">
-        <div className="bwe-shell-panel rounded-[28px] p-4 sm:p-5">
-          <h2 className="text-base font-bold text-gold sm:text-lg">
-            Shop with confidence on BWE
-          </h2>
+        <div className="border-y border-white/8 py-4 sm:py-5">
+          <h2 className="bwe-card-title">Shop with confidence on BWE</h2>
           <div className="mt-2 grid gap-2 text-xs text-white/80 sm:grid-cols-3 sm:text-sm">
             <p>
               1) Open product details and confirm availability, delivery
@@ -502,19 +500,19 @@ export default function Marketplace({
           <div className="mt-3 flex flex-wrap gap-2 text-xs">
             <Link
               href="/marketplace/my-orders"
-              className="rounded-full border border-white/20 px-3 py-1.5 text-white/90 hover:bg-white/10"
+              className="bwe-open-link bwe-focus-ring"
             >
               My Orders
             </Link>
             <Link
               href="/support/marketplace"
-              className="rounded-full border border-white/20 px-3 py-1.5 text-white/90 hover:bg-white/10"
+              className="bwe-open-link bwe-focus-ring"
             >
               Marketplace Support
             </Link>
             <Link
               href="/legal/marketplace"
-              className="rounded-full border border-white/20 px-3 py-1.5 text-white/90 hover:bg-white/10"
+              className="bwe-open-link bwe-focus-ring"
             >
               Buyer terms
             </Link>
@@ -524,17 +522,15 @@ export default function Marketplace({
 
       {/* Compact seller CTA (secondary) */}
       <section className="bwe-section-wrap relative mb-6 sm:mb-8">
-        <div className="overflow-hidden rounded-2xl border border-yellow-500/20 bg-gradient-to-r from-yellow-500/15 via-white/5 to-white/0 shadow-xl">
+        <div className="overflow-hidden rounded-[28px] border border-white/10 bg-gradient-to-r from-white/[0.04] via-transparent to-transparent">
           <div className="flex flex-col gap-4 p-4 sm:p-5 md:flex-row md:items-center md:justify-between md:p-6">
             <div className="flex items-start gap-3">
-              <div className="mt-0.5 rounded-xl border border-yellow-500/20 bg-yellow-500/15 p-2.5 sm:p-3">
+              <div className="mt-0.5 rounded-xl border border-white/10 bg-white/[0.04] p-2.5 sm:p-3">
                 <Store className="h-5 w-5 text-yellow-300" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gold sm:text-2xl">
-                  Selling on BWE
-                </h3>
-                <p className="max-w-xl text-sm text-gray-200/90 sm:text-base">
+                <h3 className="bwe-card-title">Selling on BWE</h3>
+                <p className="max-w-xl text-sm text-gray-200/80 sm:text-base">
                   Join the marketplace and manage your products from one place.
                 </p>
               </div>
@@ -543,13 +539,13 @@ export default function Marketplace({
             <div className="grid w-full grid-cols-2 gap-3 md:w-auto">
               <button
                 onClick={handleBecomeSeller}
-                className="rounded-2xl border border-yellow-500/30 bg-black px-4 py-3 text-center text-sm font-semibold text-gold shadow transition hover:bg-white/5"
+                className="bwe-cta-primary bwe-focus-ring px-4 py-3 text-center text-sm"
               >
                 Become a Seller
               </button>
               <Link
                 href="/marketplace/dashboard"
-                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center text-sm font-semibold text-gray-100 transition hover:bg-white/10"
+                className="bwe-cta-secondary bwe-focus-ring inline-flex items-center justify-center px-4 py-3 text-center text-sm text-gray-100"
               >
                 Seller Dashboard
               </Link>
@@ -561,9 +557,7 @@ export default function Marketplace({
       {/* Categories + page summary */}
       <section className="bwe-section-wrap relative max-w-[88rem]">
         <div className="mb-3 flex items-center justify-between gap-3">
-          <h3 className="text-2xl font-bold text-gold sm:text-3xl">
-            {selectedCategory} Products
-          </h3>
+          <h3 className="bwe-section-title">{selectedCategory} Products</h3>
           <div className="hidden text-sm text-gray-400 md:block">
             Page{" "}
             <span className="font-medium text-gray-200">{currentPage}</span> of{" "}
@@ -607,10 +601,7 @@ export default function Marketplace({
         {loading ? (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 xl:grid-cols-5 lg:gap-6">
             {Array.from({ length: itemsPerPage }).map((_, i) => (
-              <div
-                key={i}
-                className="bwe-shell-panel rounded-[24px] p-3 sm:p-4"
-              >
+              <div key={i} className="bwe-soft-tile p-3 sm:p-4">
                 <div className="bwe-loading-block mb-3 h-28 sm:mb-4 sm:h-40" />
                 <div className="bwe-loading-block mb-2 h-4 w-3/4" />
                 <div className="bwe-loading-block h-3 w-1/3" />
@@ -694,7 +685,7 @@ export default function Marketplace({
                   <div
                     key={product._id}
                     className={cx(
-                      "bwe-shell-panel group rounded-[26px] p-2.5 transition hover:-translate-y-1 hover:shadow-[0_28px_70px_rgba(0,0,0,0.45)] sm:p-4",
+                      "bwe-soft-tile group p-2.5 transition hover:-translate-y-1 hover:bg-white/[0.05] sm:p-4",
                       isTopPick
                         ? "border-gold/40 ring-1 ring-gold/25"
                         : "border-white/10",
@@ -724,7 +715,7 @@ export default function Marketplace({
                       </div>
 
                       <div className="mt-3 flex items-start justify-between gap-2">
-                        <h4 className="line-clamp-2 min-w-0 text-sm font-semibold leading-tight text-gold sm:text-base">
+                        <h4 className="line-clamp-2 min-w-0 text-sm font-semibold leading-tight text-white sm:text-base">
                           {productName}
                         </h4>
                         <p
@@ -812,7 +803,7 @@ export default function Marketplace({
                         onClick={() =>
                           router.push(`/marketplace/product/${product._id}`)
                         }
-                        className="w-full rounded-xl border border-white/20 px-3 py-2 text-sm font-semibold text-gray-100 transition hover:bg-white/10"
+                        className="bwe-focus-ring w-full rounded-xl border border-white/20 px-3 py-2 text-sm font-semibold text-gray-100 transition hover:bg-white/10"
                       >
                         View Details
                       </button>
@@ -884,7 +875,7 @@ export default function Marketplace({
         <button
           type="button"
           onClick={() => setLegalOpen((v) => !v)}
-          className="mx-auto inline-flex items-center gap-2 rounded-full border border-yellow-500/25 bg-white/5 px-4 py-2 text-sm font-semibold text-gold transition hover:bg-white/10"
+          className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.03] px-4 py-2 text-sm font-semibold text-white/84 transition hover:bg-white/[0.06]"
           aria-expanded={legalOpen}
         >
           Legal Disclaimer

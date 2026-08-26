@@ -320,13 +320,13 @@ const ProductDetailPage = ({
         <div className="bwe-section-wrap max-w-6xl">
           <Link
             href="/marketplace"
-            className="bwe-link-pill bwe-focus-ring inline-flex items-center"
+            className="bwe-open-link bwe-focus-ring inline-flex items-center"
           >
             Back to Marketplace
           </Link>
 
-          <div className="mt-4 grid grid-cols-1 gap-6 rounded-[32px] border border-gold/30 bg-[linear-gradient(180deg,rgba(14,17,25,0.96),rgba(9,11,17,0.96))] p-5 shadow-[0_28px_80px_rgba(0,0,0,0.45)] md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:p-8">
-            <div className="relative h-72 w-full overflow-hidden rounded-[24px] border border-white/10 bg-black/40 md:h-[540px]">
+          <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:items-start">
+            <div className="relative h-72 w-full overflow-hidden rounded-[28px] border border-white/10 bg-black/40 md:h-[540px]">
               <Image
                 src={product.imageUrl || "/placeholder.png"}
                 alt={productName}
@@ -350,16 +350,16 @@ const ProductDetailPage = ({
               </div>
 
               <div className="mt-4">
-                <div className="bwe-shell-label">Marketplace listing</div>
-                <h1 className="mt-2 text-3xl font-black tracking-[-0.05em] text-gold sm:text-4xl">
+                <div className="bwe-eyebrow">Marketplace listing</div>
+                <h1 className="bwe-section-title mt-2 max-w-xl">
                   {productName}
                 </h1>
-                <p className="mt-2 text-3xl font-bold text-white">
+                <p className="mt-3 text-2xl font-semibold text-white sm:text-3xl">
                   ${Number(product.price || 0).toFixed(2)}
                 </p>
               </div>
 
-              <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4">
+              <div className="mt-4 border-l border-white/10 pl-4">
                 <p className="text-sm leading-6 text-gray-200">
                   {product.description ||
                     "Review the listing image, price, and checkout options for the current purchase details."}
@@ -367,13 +367,13 @@ const ProductDetailPage = ({
               </div>
 
               <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                <div className="bwe-shell-panel rounded-[24px] p-3">
+                <div className="bwe-soft-tile p-3">
                   <p className="text-gray-400">Views</p>
                   <p className="font-semibold text-white">
                     {Number(product.views || 0).toLocaleString()}
                   </p>
                 </div>
-                <div className="bwe-shell-panel rounded-[24px] p-3">
+                <div className="bwe-soft-tile p-3">
                   <p className="text-gray-400">Availability</p>
                   <p className="font-semibold text-white">
                     {availability}
@@ -389,15 +389,15 @@ const ProductDetailPage = ({
               </div>
 
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <div className="bwe-shell-panel rounded-[24px] p-4 text-sm text-gray-200">
-                  <p className="bwe-shell-label">Seller</p>
+                <div className="bwe-soft-tile p-4 text-sm text-gray-200">
+                  <p className="bwe-eyebrow">Seller</p>
                   <p className="mt-2 text-base font-bold text-white">
                     {sellerName}
                   </p>
                   <p className="mt-1 text-sm text-white/68">{sellerTrust}</p>
                 </div>
-                <div className="bwe-shell-panel rounded-[24px] p-4 text-sm text-gray-200">
-                  <p className="bwe-shell-label">Business attribution</p>
+                <div className="bwe-soft-tile p-4 text-sm text-gray-200">
+                  <p className="bwe-eyebrow">Business attribution</p>
                   <p className="mt-2 text-base font-bold text-white">
                     {businessName}
                   </p>
@@ -408,7 +408,7 @@ const ProductDetailPage = ({
                 </div>
               </div>
 
-              <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-gray-200">
+              <div className="mt-4 border-y border-white/8 py-4 text-sm text-gray-200">
                 <p>
                   <span className="font-semibold text-white">Listing:</span>{" "}
                   {listingStatusLabel}
@@ -426,8 +426,10 @@ const ProductDetailPage = ({
                 for fit, shipping, or product questions.
               </p>
 
-              <div className="mt-4 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-gray-100">
-                <p className="font-semibold text-gold">How ordering works</p>
+              <div className="mt-4 rounded-[24px] border border-white/10 bg-white/[0.03] p-4 text-sm text-gray-100">
+                <p className="bwe-eyebrow text-[var(--accent)]">
+                  How ordering works
+                </p>
                 <ul className="mt-2 list-disc space-y-1 pl-5 text-gray-200">
                   <li>
                     Black Wealth Exchange is the marketplace intermediary for
@@ -452,72 +454,77 @@ const ProductDetailPage = ({
                 </ul>
               </div>
 
-              <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-gray-200">
-                <p>
-                  <span className="font-semibold text-white">
-                    What this is:
-                  </span>{" "}
-                  {productName}
-                </p>
-                <p className="mt-1">
-                  <span className="font-semibold text-white">
-                    Who is selling:
-                  </span>{" "}
-                  {sellerName}
-                </p>
-                <p className="mt-1">
-                  <span className="font-semibold text-white">Business:</span>{" "}
-                  {businessName}
-                </p>
-                <p className="mt-1">
-                  <span className="font-semibold text-white">
-                    What to do next:
-                  </span>{" "}
-                  Buy now to checkout, or ask seller a question first.
-                </p>
+              <div className="mt-4 grid gap-2 text-xs text-gray-200 sm:grid-cols-2">
+                <div className="bwe-soft-tile p-3">
+                  <p>
+                    <span className="font-semibold text-white">
+                      What this is:
+                    </span>{" "}
+                    {productName}
+                  </p>
+                  <p className="mt-1">
+                    <span className="font-semibold text-white">
+                      Who is selling:
+                    </span>{" "}
+                    {sellerName}
+                  </p>
+                </div>
+                <div className="bwe-soft-tile p-3">
+                  <p>
+                    <span className="font-semibold text-white">Business:</span>{" "}
+                    {businessName}
+                  </p>
+                  <p className="mt-1">
+                    <span className="font-semibold text-white">
+                      What to do next:
+                    </span>{" "}
+                    Buy now to checkout, or ask seller a question first.
+                  </p>
+                </div>
               </div>
 
-              <div className="mt-4 space-y-2">
-                <BuyNowButton
-                  itemId={product._id}
-                  amount={product.price}
-                  type="product"
-                  label="Buy now"
-                  className="w-full rounded-full px-4 py-3 text-base font-black uppercase tracking-[0.12em]"
-                />
-                <Link
-                  href={`/checkout?type=product&source=marketplace&itemId=${encodeURIComponent(product._id)}&productName=${encodeURIComponent(productName)}&amount=${encodeURIComponent(String(product.price || 0))}`}
-                  className="bwe-focus-ring block w-full rounded-full border border-gold px-4 py-3 text-center text-sm font-semibold text-gold transition hover:bg-gold hover:text-black"
-                >
-                  Add to cart (review order)
-                </Link>
-                <button
-                  type="button"
-                  onClick={() =>
-                    document
-                      .getElementById("contact-seller")
-                      ?.scrollIntoView({ behavior: "smooth", block: "start" })
-                  }
-                  disabled={!canContactSeller}
-                  className="bwe-focus-ring w-full rounded-full border border-white/30 px-4 py-3 text-sm font-semibold text-white/90 transition enabled:hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  Contact seller
-                </button>
-                <Link
-                  href="/marketplace/my-orders"
-                  className="bwe-focus-ring block w-full rounded-full border border-white/20 px-4 py-3 text-center text-sm font-semibold text-gray-200 hover:bg-white/10 transition"
-                >
-                  Track My Orders
-                </Link>
+              <div className="mt-5 space-y-2">
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <BuyNowButton
+                    itemId={product._id}
+                    amount={product.price}
+                    type="product"
+                    label="Buy now"
+                    className="w-full rounded-full px-4 py-3 text-base font-black uppercase tracking-[0.12em]"
+                  />
+                  <Link
+                    href={`/checkout?type=product&source=marketplace&itemId=${encodeURIComponent(product._id)}&productName=${encodeURIComponent(productName)}&amount=${encodeURIComponent(String(product.price || 0))}`}
+                    className="bwe-cta-secondary bwe-focus-ring inline-flex w-full items-center justify-center px-4 py-3 text-center text-sm text-white/92"
+                  >
+                    Review order
+                  </Link>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      document
+                        .getElementById("contact-seller")
+                        ?.scrollIntoView({ behavior: "smooth", block: "start" })
+                    }
+                    disabled={!canContactSeller}
+                    className="bwe-focus-ring w-full rounded-full border border-white/30 px-4 py-3 text-sm font-semibold text-white/90 transition enabled:hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    Contact seller
+                  </button>
+                  <Link
+                    href="/marketplace/my-orders"
+                    className="bwe-focus-ring inline-flex w-full items-center justify-center rounded-full border border-white/20 px-4 py-3 text-center text-sm font-semibold text-gray-200 transition hover:bg-white/10"
+                  >
+                    Track My Orders
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
 
-          <div
-            id="contact-seller"
-            className="bwe-shell-panel mt-6 rounded-[28px] p-4"
-          >
-            <label className="block text-sm font-semibold text-gold mb-2">
+          <div id="contact-seller" className="bwe-soft-tile mt-6 p-4">
+            <label className="mb-2 block text-sm font-semibold text-white">
               Message seller
             </label>
             <textarea
@@ -548,15 +555,13 @@ const ProductDetailPage = ({
 
         {relatedProducts.length > 0 && (
           <div className="mx-auto mt-12 max-w-6xl">
-            <h2 className="text-2xl font-bold text-gold mb-5">
-              You may also like
-            </h2>
+            <h2 className="bwe-section-title mb-5">You may also like</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {relatedProducts.map((item) => (
                 <Link
                   key={item._id}
                   href={`/marketplace/product/${item._id}`}
-                  className="bwe-shell-panel overflow-hidden rounded-[24px] hover:border-gold/50 transition"
+                  className="bwe-soft-tile overflow-hidden transition hover:bg-white/[0.05]"
                 >
                   <div className="relative w-full h-36 md:h-44">
                     <Image

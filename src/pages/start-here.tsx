@@ -112,90 +112,84 @@ export default function StartHerePage() {
         <link rel="canonical" href={canonical} />
       </Head>
 
-      <div className="bwe-section-wrap space-y-6">
+      <div className="bwe-section-wrap space-y-8">
         <header className="bwe-hero-panel overflow-hidden rounded-[32px] px-5 py-6 sm:px-8 sm:py-8">
-          <div className="max-w-4xl">
-            <div className="bwe-shell-label">Orientation</div>
-            <h1 className="mt-3 text-3xl font-black tracking-[-0.05em] text-white sm:text-4xl lg:text-5xl">
-              Start with the intent that fits your economic goal.
+          <div className="mx-auto max-w-4xl">
+            <div className="bwe-eyebrow">Orientation</div>
+            <h1 className="bwe-display-title mt-3 max-w-3xl">
+              Choose the BWE path that matches what you want to do next.
             </h1>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-white/78 sm:text-base sm:leading-7">
-              BWE is built for discovery, commerce, opportunity, and ownership.
-              Choose the path that matches what you want to do right now, then
-              move directly into the working product flow.
+            <p className="bwe-lead mt-4 max-w-2xl">
+              Discover businesses, shop products, build a business presence,
+              sell, hire, or find opportunities without hunting through the full
+              platform first.
             </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <span className="bwe-badge" data-tone="accent">
-                Discover
-              </span>
-              <span className="bwe-badge">Shop</span>
-              <span className="bwe-badge">Build wealth</span>
-              <span className="bwe-badge">Find opportunities</span>
-              <span className="bwe-badge">Grow a business</span>
-              <span className="bwe-badge">Sell</span>
-              <span className="bwe-badge">Hire</span>
-            </div>
-          </div>
 
-          <div className="mt-6 grid gap-4 lg:grid-cols-[1.35fr_0.85fr]">
-            <div className="bwe-shell-panel rounded-[28px] p-5">
-              <div className="bwe-shell-label">Fastest next step</div>
-              <div className="mt-2 text-xl font-extrabold text-white">
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href={roleResume.href}
+                onClick={() =>
+                  trackFlowEvent({
+                    eventType: "start_here_role_selected",
+                    source: "start-here-header",
+                    path: roleResume.href,
+                  })
+                }
+                className="bwe-cta-primary bwe-focus-ring inline-flex min-h-12 items-center justify-center px-6 text-sm"
+              >
                 {roleResume.label}
-              </div>
-              <p className="mt-2 text-sm leading-6 text-white/72">
-                Resume the most relevant destination for the current account
-                state, or choose a new path below if your goal has changed.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-3">
-                <Link
-                  href={roleResume.href}
-                  onClick={() =>
-                    trackFlowEvent({
-                      eventType: "start_here_role_selected",
-                      source: "start-here-header",
-                      path: roleResume.href,
-                    })
-                  }
-                  className="bwe-focus-ring inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 text-sm font-extrabold uppercase tracking-[0.12em] text-black hover:bg-[var(--accent-strong)]"
-                >
-                  {roleResume.label}
-                </Link>
-                <Link
-                  href="/terms-of-service"
-                  className="bwe-link-pill bwe-focus-ring"
-                >
-                  Review trust standards
-                </Link>
-              </div>
+              </Link>
+              <Link
+                href="/marketplace"
+                className="bwe-cta-secondary bwe-focus-ring inline-flex min-h-12 items-center justify-center px-5 text-sm text-white/88"
+              >
+                Browse live marketplace
+              </Link>
             </div>
 
-            <div className="bwe-shell-panel rounded-[28px] p-5">
-              <div className="bwe-shell-label">What BWE helps you do</div>
-              <ul className="mt-3 space-y-3 text-sm text-white/78">
-                <li>Find Black-owned businesses and products faster.</li>
-                <li>Move from discovery into trusted commerce pathways.</li>
-                <li>Get into jobs, opportunities, hiring, and growth flows.</li>
-                <li>
-                  Keep navigation clear whether you are buying or building.
-                </li>
-              </ul>
+            <div className="bwe-divider mt-6" />
+
+            <div className="mt-4 grid gap-4 sm:grid-cols-[1.1fr_0.9fr]">
+              <div>
+                <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                  What BWE helps you do
+                </div>
+                <p className="mt-2 max-w-xl text-sm leading-6 text-white/62">
+                  Move into trusted discovery, commerce, opportunity, and
+                  ownership flows with clearer navigation and fewer wrong turns.
+                </p>
+              </div>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <div className="bwe-soft-tile px-4 py-3 text-sm text-white/78">
+                  Discover, shop, and support Black-owned businesses.
+                </div>
+                <div className="bwe-soft-tile px-4 py-3 text-sm text-white/78">
+                  List, sell, hire, and keep moving into growth paths.
+                </div>
+              </div>
             </div>
           </div>
         </header>
 
+        <section className="border-y border-white/8 py-4">
+          <div className="grid gap-2 text-sm text-white/68 sm:grid-cols-3 lg:grid-cols-7">
+            <div>Discover</div>
+            <div>Shop</div>
+            <div>Build wealth</div>
+            <div>Find opportunities</div>
+            <div>Grow a business</div>
+            <div>Sell</div>
+            <div>Hire</div>
+          </div>
+        </section>
+
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {ROLES.map((role) => (
-            <article
-              key={role.title}
-              className="bwe-shell-panel rounded-[28px] p-5 sm:p-6"
-            >
-              <div className="bwe-shell-label">
+            <article key={role.title} className="bwe-soft-tile p-5 sm:p-6">
+              <div className="bwe-eyebrow">
                 {role.intent.replace(/-/g, " ")}
               </div>
-              <h2 className="mt-2 text-xl font-extrabold tracking-[-0.03em] text-white">
-                {role.title}
-              </h2>
+              <h2 className="bwe-card-title mt-2">{role.title}</h2>
               <p className="mt-3 min-h-[4.5rem] text-sm leading-6 text-white/74">
                 {role.summary}
               </p>
@@ -210,7 +204,7 @@ export default function StartHerePage() {
                       path: role.primary.href,
                     })
                   }
-                  className="bwe-focus-ring inline-flex min-h-11 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-4 text-sm font-extrabold text-black hover:bg-[var(--accent-strong)]"
+                  className="bwe-cta-primary bwe-focus-ring inline-flex min-h-11 items-center justify-center px-4 text-sm"
                 >
                   {role.primary.label}
                 </Link>
@@ -239,7 +233,7 @@ export default function StartHerePage() {
                       category: role.title,
                     })
                   }
-                  className="text-sm font-semibold text-[var(--accent)] underline underline-offset-4"
+                  className="bwe-open-link bwe-focus-ring text-[var(--accent)]"
                 >
                   Join now for this path
                 </Link>
@@ -248,9 +242,9 @@ export default function StartHerePage() {
           ))}
         </section>
 
-        <section className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="bwe-shell-panel rounded-[28px] p-6 text-sm text-white/75">
-            <div className="bwe-shell-label">Why join now</div>
+        <section className="grid gap-4 border-t border-white/8 pt-6 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="bwe-soft-tile p-6 text-sm text-white/75">
+            <div className="bwe-eyebrow">Why join now</div>
             <ul className="mt-3 space-y-2 text-sm leading-6 text-white/82">
               <li>Save opportunities and continue where you left off.</li>
               <li>
@@ -261,12 +255,12 @@ export default function StartHerePage() {
             </ul>
           </div>
 
-          <div className="bwe-shell-panel rounded-[28px] p-6 text-sm text-white/75">
-            <div className="bwe-shell-label">Account access</div>
+          <div className="bwe-soft-tile p-6 text-sm text-white/75">
+            <div className="bwe-eyebrow">Account access</div>
             <div className="mt-3 space-y-3">
               <p>
                 Already have an account?{" "}
-                <Link href="/login" className="text-[var(--accent)] underline">
+                <Link href="/login" className="bwe-open-link bwe-focus-ring">
                   Log in
                 </Link>
               </p>
@@ -280,7 +274,7 @@ export default function StartHerePage() {
                       source: "start-here-footer",
                     })
                   }
-                  className="text-[var(--accent)] underline"
+                  className="bwe-open-link bwe-focus-ring"
                 >
                   Create an account
                 </Link>
