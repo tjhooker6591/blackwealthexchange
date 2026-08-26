@@ -883,7 +883,7 @@ export default function Home() {
       <div className="pointer-events-none absolute -bottom-56 right-[-10rem] h-[560px] w-[560px] rounded-full bg-emerald-500/[0.05] blur-3xl" />
 
       <header className="relative z-10 pb-5 pt-8 sm:pb-7 sm:pt-11">
-        <div className="container relative z-10 mx-auto max-w-6xl px-4">
+        <div className="bwe-section-wrap relative z-10 max-w-6xl">
           <div className="text-center">
             <div className="mx-auto inline-flex items-center justify-center gap-2 rounded-full border border-[#D4AF37]/20 bg-[#D4AF37]/8 px-3 py-1.5 text-[11px] text-[#EFD27A] sm:px-3.5 sm:text-xs">
               <Image
@@ -899,7 +899,7 @@ export default function Home() {
               </span>
             </div>
 
-            <div className="relative isolate mx-auto mt-4 max-w-4xl overflow-hidden rounded-[28px] border border-white/10 px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-7">
+            <div className="bwe-hero-panel relative isolate mx-auto mt-4 max-w-5xl overflow-hidden rounded-[32px] px-4 py-5 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
               <div
                 className="pointer-events-none absolute inset-0 -z-10 opacity-[0.22]"
                 style={{
@@ -916,79 +916,106 @@ export default function Home() {
                   Founded by Thomas James Hooker Sr.
                 </div>
                 <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#D4AF37] sm:text-[11px]">
-                  CLAIM. STRENGTHEN. TRACK.
+                  Discover. Claim. Strengthen. Buy. Grow.
                 </div>
 
                 <h1 className="mt-3 flex flex-col gap-1 text-3xl font-black leading-[1.14] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.45rem]">
-                  <span>Claim your listing.</span>
-                  <span>Strengthen your profile.</span>
-                  <span>Track your visibility.</span>
+                  <span>Discover Black-owned businesses.</span>
+                  <span>Move into commerce with confidence.</span>
+                  <span>Build durable economic momentum.</span>
                 </h1>
 
                 <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-white/84 sm:text-base sm:leading-7">
-                  Join the $49/month Founding Membership to begin ownership
-                  review for your listing, improve your BWE profile, and receive
-                  monthly performance reporting.
+                  Search the directory, shop the marketplace, find jobs, and
+                  grow your business from one BWE entry point built for trust,
+                  visibility, and action.
                 </p>
                 <p className="mx-auto mt-3 max-w-2xl text-xs leading-5 text-white/70 sm:text-sm sm:leading-6">
                   Black Wealth Exchange is a founder-led, mission-driven
                   for-profit platform built to connect Black-owned business
                   discovery, ownership workflows, commerce, and growth.
                 </p>
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                  <span className="bwe-badge" data-tone="accent">
+                    Directory
+                  </span>
+                  <span className="bwe-badge">Marketplace</span>
+                  <span className="bwe-badge">Jobs</span>
+                  <span className="bwe-badge">Student opportunities</span>
+                  <span className="bwe-badge">Wealth tools</span>
+                </div>
               </div>
 
-              <div className="mx-auto mt-5 flex w-full max-w-md flex-col gap-3 sm:items-center">
-                <Link
-                  href="/business-directory?mode=claim"
-                  className="w-full sm:w-auto"
-                  onClick={() =>
-                    trackHomepageEvent("homepage_cta_clicked", {
-                      section: "hero",
-                      ctaId: "hero_claim_business",
-                      ctaLabel: "Claim Your Listing",
-                      destination: "/business-directory?mode=claim",
-                    })
-                  }
-                >
-                  <button className="h-12 w-full rounded-xl bg-[#D4AF37] px-6 text-sm font-extrabold text-black transition hover:-translate-y-0.5 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:min-w-[220px]">
-                    Claim Your Listing
-                  </button>
-                </Link>
-                <Link
-                  href="/founding-membership"
-                  className="w-full sm:w-auto"
-                  onClick={() =>
-                    trackHomepageEvent("homepage_cta_clicked", {
-                      section: "hero",
-                      ctaId: "hero_review_membership",
-                      ctaLabel: "See Membership Details",
-                      destination: "/founding-membership",
-                    })
-                  }
-                >
-                  <button className="h-11 w-full rounded-xl border border-white/25 bg-white/[0.03] px-5 text-sm font-semibold text-white/88 transition hover:bg-white/8 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 sm:min-w-[220px]">
-                    See Membership Details
-                  </button>
-                </Link>
-                <Link
-                  href="/business-directory/add-business"
-                  className="text-sm text-white/74 underline underline-offset-4 hover:text-[#F1D57A]"
-                  onClick={() =>
-                    trackHomepageEvent("homepage_cta_clicked", {
-                      section: "hero",
-                      ctaId: "hero_list_business",
-                      ctaLabel: "Don’t see your listing yet? Create it here.",
-                      destination: "/business-directory/add-business",
-                    })
-                  }
-                >
-                  Don’t see your listing yet? Create it here.
-                </Link>
+              <div className="mx-auto mt-5 flex w-full max-w-2xl flex-col gap-3 sm:items-center">
+                <div className="grid w-full gap-3 sm:grid-cols-2">
+                  <Link
+                    href="/business-directory?mode=claim"
+                    className="w-full"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "hero",
+                        ctaId: "hero_claim_business",
+                        ctaLabel: "Claim Your Listing",
+                        destination: "/business-directory?mode=claim",
+                      })
+                    }
+                  >
+                    <button className="bwe-cta-primary bwe-focus-ring h-12 w-full px-6">
+                      Search Black-owned businesses
+                    </button>
+                  </Link>
+                  <Link
+                    href="/marketplace"
+                    className="w-full"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "hero",
+                        ctaId: "hero_shop_marketplace",
+                        ctaLabel: "Shop Marketplace",
+                        destination: "/marketplace",
+                      })
+                    }
+                  >
+                    <button className="bwe-cta-secondary bwe-focus-ring h-12 w-full px-5 text-sm font-semibold text-white/88">
+                      Shop Marketplace
+                    </button>
+                  </Link>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
+                  <Link
+                    href="/founding-membership"
+                    className="text-sm text-white/74 underline underline-offset-4 hover:text-[#F1D57A]"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "hero",
+                        ctaId: "hero_review_membership",
+                        ctaLabel: "See Membership Details",
+                        destination: "/founding-membership",
+                      })
+                    }
+                  >
+                    Explore Founding Membership
+                  </Link>
+                  <Link
+                    href="/business-directory/add-business"
+                    className="text-sm text-white/74 underline underline-offset-4 hover:text-[#F1D57A]"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "hero",
+                        ctaId: "hero_list_business",
+                        ctaLabel: "Don’t see your listing yet? Create it here.",
+                        destination: "/business-directory/add-business",
+                      })
+                    }
+                  >
+                    Don’t see your listing yet? Create it here.
+                  </Link>
+                </div>
               </div>
             </div>
 
             <div className="mx-auto mt-4 grid w-full max-w-5xl gap-2 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left">
+              <div className="bwe-shell-panel rounded-[24px] px-4 py-3 text-left">
                 <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
                   Trust signal
                 </div>
@@ -996,7 +1023,7 @@ export default function Home() {
                   Black-owned business discovery
                 </div>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left">
+              <div className="bwe-shell-panel rounded-[24px] px-4 py-3 text-left">
                 <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
                   Trust signal
                 </div>
@@ -1004,7 +1031,7 @@ export default function Home() {
                   Community-powered economic support
                 </div>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left">
+              <div className="bwe-shell-panel rounded-[24px] px-4 py-3 text-left">
                 <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
                   Trust signal
                 </div>
@@ -1012,7 +1039,7 @@ export default function Home() {
                   Listings, jobs, marketplace, and wealth tools
                 </div>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left">
+              <div className="bwe-shell-panel rounded-[24px] px-4 py-3 text-left">
                 <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
                   Trust signal
                 </div>
@@ -1023,7 +1050,7 @@ export default function Home() {
             </div>
 
             <div className="mx-auto mt-3 grid w-full max-w-4xl grid-cols-2 gap-2 text-left sm:grid-cols-4">
-              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+              <div className="bwe-shell-panel rounded-[20px] px-3 py-2">
                 <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
                   Businesses
                 </div>
@@ -1031,7 +1058,7 @@ export default function Home() {
                   {formatStat(trustStats.businesses)}
                 </div>
               </div>
-              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+              <div className="bwe-shell-panel rounded-[20px] px-3 py-2">
                 <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
                   Organizations
                 </div>
@@ -1039,7 +1066,7 @@ export default function Home() {
                   {formatStat(trustStats.organizations)}
                 </div>
               </div>
-              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+              <div className="bwe-shell-panel rounded-[20px] px-3 py-2">
                 <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
                   Opportunities
                 </div>
@@ -1047,7 +1074,7 @@ export default function Home() {
                   {formatStat(trustStats.opportunities)}
                 </div>
               </div>
-              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+              <div className="bwe-shell-panel rounded-[20px] px-3 py-2">
                 <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
                   Products
                 </div>
@@ -1062,7 +1089,7 @@ export default function Home() {
           </div>
 
           {showHomepageBanner ? (
-            <section className="mx-auto mt-4 max-w-5xl overflow-hidden rounded-2xl border border-[#D4AF37]/30 bg-black/35 p-3 shadow-[0_0_0_1px_rgba(212,175,55,0.2)]">
+            <section className="bwe-shell-panel mx-auto mt-4 max-w-5xl overflow-hidden rounded-[28px] p-3 shadow-[0_0_0_1px_rgba(212,175,55,0.12)]">
               <a
                 href={homepageBanner!.targetUrl}
                 target="_blank"
@@ -1094,16 +1121,14 @@ export default function Home() {
           <section id="search-dominant" className="mt-5 sm:mt-6 scroll-mt-24">
             <div className="mx-auto max-w-4xl">
               <div className="mb-2.5">
-                <div className="text-[10px] font-bold tracking-[0.08em] text-[#D4AF37] uppercase">
-                  Start here
-                </div>
+                <div className="bwe-eyebrow">Start here</div>
                 <div className="text-sm font-semibold text-white/88 sm:text-[15px]">
                   Search first, then take the next best action
                 </div>
               </div>
 
               <div>
-                <div className="relative overflow-hidden rounded-2xl border border-white/12 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-2.5 sm:p-3.5 shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_18px_48px_rgba(0,0,0,0.42)] backdrop-blur-xl">
+                <div className="bwe-shell-panel relative overflow-hidden rounded-[28px] p-2.5 sm:p-3.5">
                   <div className="pointer-events-none absolute -top-20 left-1/2 h-40 w-[30rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/6 blur-3xl" />
 
                   <div className="relative">
@@ -1317,21 +1342,17 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="mx-auto mt-5 max-w-5xl rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+          <section className="bwe-shell-panel mx-auto mt-5 max-w-5xl rounded-[28px] p-4 sm:p-5">
             <div className="mb-3 text-left">
-              <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#D4AF37]">
-                How BWE works
-              </div>
+              <div className="bwe-eyebrow">How BWE works</div>
               <div className="mt-1 text-sm text-white/75 sm:text-base">
                 A simpler path to finding, supporting, and growing Black-owned
                 businesses.
               </div>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">
-                  1
-                </div>
+              <article className="bwe-grid-card p-4 text-left">
+                <div className="bwe-eyebrow">1</div>
                 <h3 className="mt-1 text-sm font-extrabold text-white">
                   Search
                 </h3>
@@ -1340,10 +1361,8 @@ export default function Home() {
                   opportunities.
                 </p>
               </article>
-              <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">
-                  2
-                </div>
+              <article className="bwe-grid-card p-4 text-left">
+                <div className="bwe-eyebrow">2</div>
                 <h3 className="mt-1 text-sm font-extrabold text-white">
                   Support
                 </h3>
@@ -1352,19 +1371,15 @@ export default function Home() {
                   businesses you want to see grow.
                 </p>
               </article>
-              <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">
-                  3
-                </div>
+              <article className="bwe-grid-card p-4 text-left">
+                <div className="bwe-eyebrow">3</div>
                 <h3 className="mt-1 text-sm font-extrabold text-white">List</h3>
                 <p className="mt-1 text-xs text-white/70">
                   Create a listing and make your business easier to discover.
                 </p>
               </article>
-              <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">
-                  4
-                </div>
+              <article className="bwe-grid-card p-4 text-left">
+                <div className="bwe-eyebrow">4</div>
                 <h3 className="mt-1 text-sm font-extrabold text-white">
                   Build Wealth
                 </h3>
@@ -1376,12 +1391,10 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="mx-auto mt-5 max-w-5xl rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-r from-black via-[#121212] to-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(212,175,55,0.14)]">
+          <section className="bwe-hero-panel mx-auto mt-5 max-w-5xl rounded-[28px] p-4 sm:p-5">
             <div className="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center">
               <div className="text-left">
-                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-                  Claim your existing listing
-                </p>
+                <p className="bwe-eyebrow">Claim your existing listing</p>
                 <h3 className="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
                   Find your public BWE listing, start the claim process, and
                   move into monthly growth support.
@@ -1392,7 +1405,7 @@ export default function Home() {
                   is handled separately.
                 </p>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-left">
+              <div className="bwe-shell-panel rounded-[24px] p-4 text-left">
                 <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
                   Founding membership path
                 </div>
@@ -1408,13 +1421,13 @@ export default function Home() {
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Link
                     href="/business-directory"
-                    className="inline-flex rounded-lg bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black hover:bg-yellow-500"
+                    className="bwe-cta-primary bwe-focus-ring inline-flex px-4 py-2.5 text-sm"
                   >
                     Find Existing Listing
                   </Link>
                   <Link
                     href="/founding-membership"
-                    className="inline-flex rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-4 py-2.5 text-sm font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
+                    className="bwe-cta-secondary bwe-focus-ring inline-flex px-4 py-2.5 text-sm font-bold text-[#F1D57A]"
                   >
                     Review Membership
                   </Link>
@@ -1423,12 +1436,10 @@ export default function Home() {
             </div>
           </section>
 
-          <div className="mx-auto mt-5 max-w-4xl rounded-xl border border-yellow-500/20 bg-yellow-500/8 p-3 sm:p-3.5">
+          <div className="bwe-shell-panel mx-auto mt-5 max-w-4xl rounded-[24px] p-3 sm:p-3.5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-yellow-300">
-                  Black Card Membership
-                </div>
+                <div className="bwe-eyebrow">Black Card Membership</div>
                 <div className="mt-0.5 text-xs text-white/85 sm:text-sm">
                   Explore Black Card benefits, member access, and premium
                   ecosystem advantages in a clearly separate path from Join BWE.
@@ -1444,19 +1455,17 @@ export default function Home() {
                     destination: "/pricing",
                   })
                 }
-                className="inline-flex w-full justify-center rounded-lg border border-yellow-400/35 bg-black/35 px-4 py-2 text-xs font-semibold text-yellow-200 hover:bg-black/55 sm:w-auto"
+                className="bwe-cta-secondary bwe-focus-ring inline-flex w-full justify-center px-4 py-2 text-xs font-semibold text-yellow-200 sm:w-auto"
               >
                 Explore Black Card
               </Link>
             </div>
           </div>
 
-          <section className="mt-4 rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/10 p-4">
+          <section className="bwe-shell-panel mt-4 rounded-[24px] p-4">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="text-left">
-                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-                  0.5% Challenge
-                </p>
+                <p className="bwe-eyebrow">0.5% Challenge</p>
                 <p className="text-sm text-white">
                   Search Black first. Buy, review, refer, repeat.
                 </p>
@@ -1464,13 +1473,13 @@ export default function Home() {
               <div className="flex flex-col gap-2 sm:flex-row">
                 <Link
                   href="/challenge"
-                  className="rounded-lg bg-[#D4AF37] px-3 py-2 text-center text-xs font-extrabold text-black"
+                  className="bwe-cta-primary bwe-focus-ring text-center text-xs"
                 >
                   Join the Challenge
                 </Link>
                 <Link
                   href="/business-directory"
-                  className="rounded-lg border border-[#D4AF37]/50 px-3 py-2 text-center text-xs font-bold text-[#F1D57A]"
+                  className="bwe-cta-secondary bwe-focus-ring text-center text-xs font-bold text-[#F1D57A]"
                 >
                   Search Black-Owned Businesses
                 </Link>
@@ -1487,12 +1496,10 @@ export default function Home() {
       <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
           {featuredJobs.length ? (
-            <div className="mb-4 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 sm:p-5">
+            <div className="bwe-shell-panel mb-4 rounded-[28px] p-4 sm:p-5">
               <div className="mb-3 flex items-center justify-between gap-2">
                 <div>
-                  <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-yellow-300">
-                    Jobs
-                  </div>
+                  <div className="bwe-eyebrow">Jobs</div>
                   <div className="text-sm font-semibold text-white">
                     Featured opportunities from active employers
                   </div>
@@ -1509,7 +1516,7 @@ export default function Home() {
                   <Link
                     key={job._id}
                     href={`/job/${job._id}`}
-                    className="rounded-xl border border-yellow-400/30 bg-black/30 p-3 hover:bg-black/45"
+                    className="bwe-grid-card p-3 hover:bg-black/45"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <p className="truncate font-bold text-white">
@@ -1528,16 +1535,14 @@ export default function Home() {
             </div>
           ) : null}
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-            <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-              Supporting ecosystem paths
-            </div>
+          <div className="bwe-shell-panel rounded-[28px] p-4 sm:p-5">
+            <div className="mb-2 bwe-eyebrow">Supporting ecosystem paths</div>
             <p className="mb-3 text-xs text-white/65">
               Once the core action is clear, you can go deeper into the rest of
               the platform.
             </p>
             <div className="grid gap-3 md:grid-cols-3">
-              <article className="rounded-xl border border-white/10 bg-black/30 p-4">
+              <article className="bwe-grid-card p-4">
                 <h3 className="text-sm font-extrabold text-white">
                   Marketplace
                 </h3>
@@ -1547,12 +1552,12 @@ export default function Home() {
                 </p>
                 <Link
                   href="/marketplace"
-                  className="mt-3 inline-flex rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-2 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
+                  className="bwe-cta-secondary bwe-focus-ring mt-3 inline-flex px-3 py-2 text-xs font-bold text-[#F1D57A]"
                 >
                   Shop Marketplace
                 </Link>
               </article>
-              <article className="rounded-xl border border-white/10 bg-black/30 p-4">
+              <article className="bwe-grid-card p-4">
                 <h3 className="text-sm font-extrabold text-white">
                   Student Opportunities
                 </h3>
@@ -1562,12 +1567,12 @@ export default function Home() {
                 </p>
                 <Link
                   href="/black-student-opportunities"
-                  className="mt-3 inline-flex rounded-lg border border-emerald-300/35 bg-emerald-400/10 px-3 py-2 text-xs font-bold text-emerald-200 hover:bg-emerald-400/15"
+                  className="bwe-cta-secondary bwe-focus-ring mt-3 inline-flex px-3 py-2 text-xs font-bold text-emerald-200"
                 >
                   Explore Student Hub
                 </Link>
               </article>
-              <article className="rounded-xl border border-white/10 bg-black/30 p-4">
+              <article className="bwe-grid-card p-4">
                 <h3 className="text-sm font-extrabold text-white">
                   Advertising
                 </h3>
@@ -1577,7 +1582,7 @@ export default function Home() {
                 </p>
                 <Link
                   href="/advertise-with-us"
-                  className="mt-3 inline-flex rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-xs font-bold text-white/85 hover:bg-white/10"
+                  className="bwe-cta-secondary bwe-focus-ring mt-3 inline-flex px-3 py-2 text-xs font-bold text-white/85"
                 >
                   Advertise with BWE
                 </Link>
@@ -1588,7 +1593,7 @@ export default function Home() {
       </section>
 
       <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0">
-        <section className="mb-5 overflow-hidden rounded-2xl border border-[#D4AF37]/20 bg-gradient-to-r from-black via-[#0f0f0f] to-black p-3.5 sm:p-4 shadow-[0_0_0_1px_rgba(212,175,55,0.15)]">
+        <section className="bwe-hero-panel mb-5 overflow-hidden rounded-[28px] p-3.5 sm:p-4">
           <div className="mb-2.5 flex items-center justify-between">
             <div>
               <h3 className="text-sm font-extrabold tracking-tight text-[#D4AF37] sm:text-base">
@@ -1668,42 +1673,40 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-          <p className="text-xs font-bold uppercase tracking-[0.08em] text-white/65">
-            More from the ecosystem
-          </p>
+        <section className="bwe-shell-panel mb-5 rounded-[28px] p-4 sm:p-5">
+          <p className="bwe-eyebrow text-white/65">More from the ecosystem</p>
           <h3 className="mt-1 text-lg font-extrabold tracking-tight text-[#D4AF37] sm:text-xl">
             Explore the broader BWE platform
           </h3>
 
           <div className="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-            <article className="rounded-xl border border-white/10 bg-black/30 p-4">
+            <article className="bwe-grid-card p-4">
               <h4 className="text-sm font-extrabold text-white">Music</h4>
               <p className="mt-1 text-xs text-white/70">
                 Support artists, creators, and music commerce.
               </p>
               <Link
                 href="/music"
-                className="mt-3 inline-flex rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-2 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
+                className="bwe-cta-secondary bwe-focus-ring mt-3 inline-flex px-3 py-2 text-xs font-bold text-[#F1D57A]"
               >
                 Explore Music
               </Link>
             </article>
 
-            <article className="rounded-xl border border-white/10 bg-black/30 p-4">
+            <article className="bwe-grid-card p-4">
               <h4 className="text-sm font-extrabold text-white">Real Estate</h4>
               <p className="mt-1 text-xs text-white/70">
                 Explore ownership and investment pathways.
               </p>
               <Link
                 href="/real-estate-investment"
-                className="mt-3 inline-flex rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-xs font-bold text-white/85 hover:bg-white/10"
+                className="bwe-cta-secondary bwe-focus-ring mt-3 inline-flex px-3 py-2 text-xs font-bold text-white/85"
               >
                 Explore Real Estate
               </Link>
             </article>
 
-            <article className="rounded-xl border border-white/10 bg-black/30 p-4">
+            <article className="bwe-grid-card p-4">
               <h4 className="text-sm font-extrabold text-white">
                 Recruiting & Consulting
               </h4>
@@ -1712,7 +1715,7 @@ export default function Home() {
               </p>
               <Link
                 href="/recruiting-consulting?type=employer"
-                className="mt-3 inline-flex rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-2 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
+                className="bwe-cta-secondary bwe-focus-ring mt-3 inline-flex px-3 py-2 text-xs font-bold text-[#F1D57A]"
               >
                 Open Recruiting
               </Link>

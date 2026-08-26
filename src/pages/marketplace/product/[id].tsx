@@ -22,15 +22,15 @@ import { canonicalUrl, truncateMeta } from "@/lib/seo";
 interface Product {
   _id: string;
   name: string;
-  description?: string;
+  description?: string | null;
   price: number;
   category: string;
-  imageUrl?: string;
+  imageUrl?: string | null;
   stockQuantity?: number;
   views?: number;
-  availability?: string;
-  condition?: string;
-  status?: string;
+  availability?: string | null;
+  condition?: string | null;
+  status?: string | null;
   isFeatured?: boolean;
   recentlyAdded?: boolean;
   activeListing?: boolean;
@@ -39,6 +39,8 @@ interface Product {
     name?: string | null;
     joinedAt?: string | null;
     profileComplete?: boolean | null;
+    businessId?: string | null;
+    businessName?: string | null;
   } | null;
 }
 
@@ -156,6 +158,8 @@ const ProductDetailPage = ({
         ? "Low stock"
         : "In stock");
   const sellerName = product?.seller?.name || "Independent BWE seller";
+  const businessName =
+    product?.seller?.businessName || "Business attribution preserved";
   const sellerTrust = product?.seller?.profileComplete
     ? "Active seller profile on file"
     : "Seller storefront details are limited on this listing";
@@ -218,34 +222,46 @@ const ProductDetailPage = ({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black text-white text-center py-20">
-        Loading...
+      <div className="min-h-screen bg-[var(--surface-0)] px-4 py-20 text-white">
+        <div className="bwe-section-wrap">
+          <div className="bwe-state-panel">
+            <p className="bwe-state-title">Loading listing</p>
+            <p className="bwe-state-copy">
+              Pulling the current product, seller, and purchase details now.
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-black text-white px-4 py-20">
-        <div className="mx-auto max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-6 text-center">
-          <h1 className="text-2xl font-bold text-gold">Listing unavailable</h1>
-          <p className="mt-2 text-sm text-white/80">
-            This item is currently unavailable or was removed. You can continue
-            shopping or contact support for help finding a replacement.
-          </p>
-          <div className="mt-5 flex flex-wrap justify-center gap-3">
-            <Link
-              href="/marketplace"
-              className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-black"
-            >
-              Continue shopping
-            </Link>
-            <Link
-              href="/support/marketplace"
-              className="rounded-lg border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 hover:bg-white/10"
-            >
-              Marketplace support
-            </Link>
+      <div className="min-h-screen bg-[var(--surface-0)] px-4 py-20 text-white">
+        <div className="bwe-section-wrap">
+          <div className="mx-auto max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-6 text-center">
+            <h1 className="text-2xl font-bold text-gold">
+              Listing unavailable
+            </h1>
+            <p className="mt-2 text-sm text-white/80">
+              This item is currently unavailable or was removed. You can
+              continue shopping or contact support for help finding a
+              replacement.
+            </p>
+            <div className="mt-5 flex flex-wrap justify-center gap-3">
+              <Link
+                href="/marketplace"
+                className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-black"
+              >
+                Continue shopping
+              </Link>
+              <Link
+                href="/support/marketplace"
+                className="rounded-lg border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 hover:bg-white/10"
+              >
+                Marketplace support
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -300,17 +316,17 @@ const ProductDetailPage = ({
       <script type="application/ld+json">
         {JSON.stringify(productSchema)}
       </script>
-      <div className="min-h-screen bg-black text-white px-4 py-8">
-        <div className="max-w-6xl mx-auto">
+      <div className="min-h-screen bg-[var(--surface-0)] py-8 text-white">
+        <div className="bwe-section-wrap max-w-6xl">
           <Link
             href="/marketplace"
-            className="inline-flex items-center rounded-lg border border-gold px-4 py-2 text-sm font-semibold text-gold hover:bg-gold hover:text-black transition"
+            className="bwe-link-pill bwe-focus-ring inline-flex items-center"
           >
             Back to Marketplace
           </Link>
 
-          <div className="mt-4 grid grid-cols-1 gap-6 rounded-2xl border border-gold/30 bg-gray-900 p-5 shadow-xl md:grid-cols-2 md:p-8">
-            <div className="relative w-full h-72 md:h-[540px] overflow-hidden rounded-xl border border-white/10 bg-black/40">
+          <div className="mt-4 grid grid-cols-1 gap-6 rounded-[32px] border border-gold/30 bg-[linear-gradient(180deg,rgba(14,17,25,0.96),rgba(9,11,17,0.96))] p-5 shadow-[0_28px_80px_rgba(0,0,0,0.45)] md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:p-8">
+            <div className="relative h-72 w-full overflow-hidden rounded-[24px] border border-white/10 bg-black/40 md:h-[540px]">
               <Image
                 src={product.imageUrl || "/placeholder.png"}
                 alt={productName}
@@ -323,25 +339,25 @@ const ProductDetailPage = ({
 
             <div>
               <div className="flex flex-wrap items-center gap-2 text-xs">
-                <span className="rounded-full border border-white/20 bg-white/5 px-2.5 py-1 text-gray-200">
-                  {product.category || "Other"}
-                </span>
+                <span className="bwe-badge">{product.category || "Other"}</span>
                 <span
                   className={`rounded-full border px-2.5 py-1 ${availabilityClass}`}
                 >
                   {availability}
                 </span>
-                <span className="rounded-full border border-white/20 bg-white/5 px-2.5 py-1 text-gray-200">
-                  {product.condition || "New"}
-                </span>
+                <span className="bwe-badge">{product.condition || "New"}</span>
+                <span className="bwe-badge">Secure BWE checkout path</span>
               </div>
 
-              <h1 className="mt-3 text-3xl font-extrabold text-gold">
-                {productName}
-              </h1>
-              <p className="mt-2 text-3xl font-bold text-white">
-                ${Number(product.price || 0).toFixed(2)}
-              </p>
+              <div className="mt-4">
+                <div className="bwe-shell-label">Marketplace listing</div>
+                <h1 className="mt-2 text-3xl font-black tracking-[-0.05em] text-gold sm:text-4xl">
+                  {productName}
+                </h1>
+                <p className="mt-2 text-3xl font-bold text-white">
+                  ${Number(product.price || 0).toFixed(2)}
+                </p>
+              </div>
 
               <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4">
                 <p className="text-sm leading-6 text-gray-200">
@@ -351,13 +367,13 @@ const ProductDetailPage = ({
               </div>
 
               <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                <div className="bwe-shell-panel rounded-[24px] p-3">
                   <p className="text-gray-400">Views</p>
                   <p className="font-semibold text-white">
                     {Number(product.views || 0).toLocaleString()}
                   </p>
                 </div>
-                <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                <div className="bwe-shell-panel rounded-[24px] p-3">
                   <p className="text-gray-400">Availability</p>
                   <p className="font-semibold text-white">
                     {availability}
@@ -372,18 +388,28 @@ const ProductDetailPage = ({
                 </div>
               </div>
 
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="bwe-shell-panel rounded-[24px] p-4 text-sm text-gray-200">
+                  <p className="bwe-shell-label">Seller</p>
+                  <p className="mt-2 text-base font-bold text-white">
+                    {sellerName}
+                  </p>
+                  <p className="mt-1 text-sm text-white/68">{sellerTrust}</p>
+                </div>
+                <div className="bwe-shell-panel rounded-[24px] p-4 text-sm text-gray-200">
+                  <p className="bwe-shell-label">Business attribution</p>
+                  <p className="mt-2 text-base font-bold text-white">
+                    {businessName}
+                  </p>
+                  <p className="mt-1 text-sm text-white/68">
+                    Canonical product and seller attribution are preserved for
+                    this listing.
+                  </p>
+                </div>
+              </div>
+
               <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-gray-200">
                 <p>
-                  <span className="font-semibold text-white">Seller:</span>{" "}
-                  {sellerName}
-                </p>
-                <p className="mt-1">
-                  <span className="font-semibold text-white">
-                    Seller profile:
-                  </span>{" "}
-                  {sellerTrust}
-                </p>
-                <p className="mt-1">
                   <span className="font-semibold text-white">Listing:</span>{" "}
                   {listingStatusLabel}
                   {product?.recentlyAdded ? " • Recently added" : ""}
@@ -401,7 +427,7 @@ const ProductDetailPage = ({
               </p>
 
               <div className="mt-4 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-gray-100">
-                <p className="font-semibold text-gold">How purchasing works</p>
+                <p className="font-semibold text-gold">How ordering works</p>
                 <ul className="mt-2 list-disc space-y-1 pl-5 text-gray-200">
                   <li>
                     Black Wealth Exchange is the marketplace intermediary for
@@ -440,6 +466,10 @@ const ProductDetailPage = ({
                   {sellerName}
                 </p>
                 <p className="mt-1">
+                  <span className="font-semibold text-white">Business:</span>{" "}
+                  {businessName}
+                </p>
+                <p className="mt-1">
                   <span className="font-semibold text-white">
                     What to do next:
                   </span>{" "}
@@ -453,11 +483,11 @@ const ProductDetailPage = ({
                   amount={product.price}
                   type="product"
                   label="Buy now"
-                  className="w-full rounded-xl bg-gold px-4 py-3 text-base font-bold text-black shadow-md transition hover:bg-yellow-400"
+                  className="w-full rounded-full px-4 py-3 text-base font-black uppercase tracking-[0.12em]"
                 />
                 <Link
                   href={`/checkout?type=product&source=marketplace&itemId=${encodeURIComponent(product._id)}&productName=${encodeURIComponent(productName)}&amount=${encodeURIComponent(String(product.price || 0))}`}
-                  className="block w-full rounded-xl border border-gold px-4 py-3 text-center text-sm font-semibold text-gold transition hover:bg-gold hover:text-black"
+                  className="bwe-focus-ring block w-full rounded-full border border-gold px-4 py-3 text-center text-sm font-semibold text-gold transition hover:bg-gold hover:text-black"
                 >
                   Add to cart (review order)
                 </Link>
@@ -469,13 +499,13 @@ const ProductDetailPage = ({
                       ?.scrollIntoView({ behavior: "smooth", block: "start" })
                   }
                   disabled={!canContactSeller}
-                  className="w-full rounded-xl border border-white/30 px-4 py-3 text-sm font-semibold text-white/90 transition enabled:hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="bwe-focus-ring w-full rounded-full border border-white/30 px-4 py-3 text-sm font-semibold text-white/90 transition enabled:hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   Contact seller
                 </button>
                 <Link
                   href="/marketplace/my-orders"
-                  className="block w-full rounded-xl border border-white/20 px-4 py-3 text-center text-sm font-semibold text-gray-200 hover:bg-white/10 transition"
+                  className="bwe-focus-ring block w-full rounded-full border border-white/20 px-4 py-3 text-center text-sm font-semibold text-gray-200 hover:bg-white/10 transition"
                 >
                   Track My Orders
                 </Link>
@@ -485,7 +515,7 @@ const ProductDetailPage = ({
 
           <div
             id="contact-seller"
-            className="mt-6 rounded-xl border border-white/10 bg-gray-900 p-4"
+            className="bwe-shell-panel mt-6 rounded-[28px] p-4"
           >
             <label className="block text-sm font-semibold text-gold mb-2">
               Message seller
@@ -495,13 +525,13 @@ const ProductDetailPage = ({
               onChange={(e) => setMessageText(e.target.value)}
               rows={3}
               placeholder="Ask about shipping, materials, fit, or delivery timing"
-              className="w-full rounded-lg border border-white/20 bg-black/40 p-2 text-sm text-white focus:outline-none focus:border-gold"
+              className="bwe-textarea"
             />
             <button
               type="button"
               onClick={handleContactSeller}
               disabled={sendingMessage || !canContactSeller}
-              className="mt-3 w-full rounded-lg border border-gold px-3 py-2 text-sm font-semibold text-gold transition enabled:hover:bg-gold enabled:hover:text-black disabled:cursor-not-allowed disabled:opacity-60"
+              className="bwe-focus-ring mt-3 w-full rounded-full border border-gold px-3 py-3 text-sm font-semibold text-gold transition enabled:hover:bg-gold enabled:hover:text-black disabled:cursor-not-allowed disabled:opacity-60"
             >
               {sendingMessage ? "Sending..." : "Send Message"}
             </button>
@@ -517,7 +547,7 @@ const ProductDetailPage = ({
         </div>
 
         {relatedProducts.length > 0 && (
-          <div className="max-w-6xl mx-auto mt-12">
+          <div className="mx-auto mt-12 max-w-6xl">
             <h2 className="text-2xl font-bold text-gold mb-5">
               You may also like
             </h2>
@@ -526,7 +556,7 @@ const ProductDetailPage = ({
                 <Link
                   key={item._id}
                   href={`/marketplace/product/${item._id}`}
-                  className="rounded-xl border border-white/10 bg-gray-900 overflow-hidden hover:border-gold/50 transition"
+                  className="bwe-shell-panel overflow-hidden rounded-[24px] hover:border-gold/50 transition"
                 >
                   <div className="relative w-full h-36 md:h-44">
                     <Image
@@ -610,14 +640,27 @@ function normalizeProductDocument(doc: any): Product | null {
               : sellerDoc?.createdAt instanceof Date
                 ? sellerDoc.createdAt.toISOString()
                 : null,
-          profileComplete: isPublicMarketplaceSellerProfileComplete(sellerDoc),
+          profileComplete:
+            isPublicMarketplaceSellerProfileComplete(sellerDoc) ?? null,
+          businessId:
+            typeof sellerDoc?.businessId === "string"
+              ? sellerDoc.businessId
+              : null,
+          businessName:
+            typeof sellerDoc?.businessName === "string"
+              ? sellerDoc.businessName
+              : null,
         }
       : typeof doc?.sellerId === "string" || typeof doc?.sellerName === "string"
         ? {
             id: typeof doc?.sellerId === "string" ? doc.sellerId : null,
             name: typeof doc?.sellerName === "string" ? doc.sellerName : null,
             joinedAt: null,
-            profileComplete: undefined,
+            profileComplete: null,
+            businessId:
+              typeof doc?.businessId === "string" ? doc.businessId : null,
+            businessName:
+              typeof doc?.businessName === "string" ? doc.businessName : null,
           }
         : null,
   };
@@ -643,6 +686,7 @@ export const getServerSideProps: GetServerSideProps<
     const db = client.db(getMarketplaceDbName());
     const products = db.collection("products");
     const sellers = db.collection("sellers");
+    const businesses = db.collection("businesses");
     const now = new Date();
 
     const orFilters: any[] = [{ _id: requestedId }, { slug: requestedId }];
@@ -664,7 +708,9 @@ export const getServerSideProps: GetServerSideProps<
     }
 
     let sellerDoc = null;
+    let businessDoc = null;
     const sellerId = String(doc?.sellerId || "").trim();
+    const businessId = String(doc?.businessId || "").trim();
     if (sellerId) {
       const sellerObjectIds = ObjectId.isValid(sellerId)
         ? [new ObjectId(sellerId)]
@@ -678,6 +724,16 @@ export const getServerSideProps: GetServerSideProps<
         ],
       });
     }
+    if (businessId) {
+      const businessObjectIds = ObjectId.isValid(businessId)
+        ? [new ObjectId(businessId)]
+        : [];
+      if (businessObjectIds.length) {
+        businessDoc = await businesses.findOne({
+          _id: { $in: businessObjectIds },
+        });
+      }
+    }
 
     const initialProduct = normalizeProductDocument({
       ...doc,
@@ -688,10 +744,26 @@ export const getServerSideProps: GetServerSideProps<
               typeof sellerDoc?._id?.toString === "function"
                 ? sellerDoc._id.toString()
                 : sellerDoc?._id,
+            businessId,
+            businessName:
+              String(
+                businessDoc?.businessName ||
+                  businessDoc?.business_name ||
+                  businessDoc?.name ||
+                  "",
+              ).trim() || null,
           }
         : {
             id: sellerId || null,
             name: typeof doc?.sellerName === "string" ? doc.sellerName : null,
+            businessId: businessId || null,
+            businessName:
+              String(
+                businessDoc?.businessName ||
+                  businessDoc?.business_name ||
+                  businessDoc?.name ||
+                  "",
+              ).trim() || null,
           },
     });
 

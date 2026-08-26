@@ -43,6 +43,7 @@ type Product = {
   seller?: {
     id?: string | null;
     name?: string;
+    businessName?: string | null;
     profileComplete?: boolean;
   };
 };
@@ -337,7 +338,7 @@ export default function Marketplace({
     Boolean(q.trim()) || selectedCategory !== "All";
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[var(--surface-0)] text-white">
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -370,25 +371,24 @@ export default function Marketplace({
       <div ref={topRef} />
 
       {/* Header */}
-      <section className="relative px-4 py-8 text-center sm:py-10">
-        <div className="mx-auto max-w-5xl">
+      <section className="bwe-section-wrap relative py-8 text-center sm:py-10">
+        <div className="bwe-hero-panel mx-auto max-w-6xl rounded-[32px] px-5 py-6 sm:px-8 sm:py-8">
           <div className="inline-flex items-center gap-2 rounded-full border border-yellow-500/30 bg-white/5 px-3 py-2 text-xs text-gray-200 sm:px-4 sm:text-sm">
             <Sparkles className="h-4 w-4 text-yellow-400" />
             Curated marketplace • Clear product details • Shop Black-owned
             brands
           </div>
 
-          <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-gold md:text-5xl">
-            Marketplace
+          <h1 className="mt-5 text-4xl font-black tracking-[-0.05em] text-gold md:text-6xl">
+            Shop with clearer trust, pricing, and seller context.
           </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-base text-gray-300 sm:text-lg">
-            Discover and support Black-owned businesses with a cleaner, faster
-            shopping experience.
+          <p className="mx-auto mt-3 max-w-3xl text-base text-gray-300 sm:text-lg">
+            Discover products, compare availability, verify the seller path, and
+            move into checkout with a cleaner marketplace experience.
           </p>
 
-          {/* Search + Sort */}
-          <div className="mt-6 flex flex-col items-stretch gap-3 md:mt-7 md:flex-row md:justify-center">
-            <div className="max-w-2xl flex-1">
+          <div className="mt-6 grid gap-3 lg:grid-cols-[minmax(0,1fr)_18rem]">
+            <div className="bwe-shell-panel rounded-[28px] p-4 sm:p-5">
               <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 shadow-lg">
                 <Search className="h-5 w-5 text-gray-300" />
                 <input
@@ -414,9 +414,18 @@ export default function Marketplace({
                   </button>
                 ) : null}
               </div>
+              <div className="mt-3 flex flex-wrap gap-2 text-left text-xs text-white/70">
+                <span className="bwe-badge" data-tone="success">
+                  Checkout path preserved
+                </span>
+                <span className="bwe-badge">Pricing verified server-side</span>
+                <span className="bwe-badge">
+                  Seller support available where listed
+                </span>
+              </div>
             </div>
 
-            <div className="w-full md:w-64">
+            <div className="bwe-shell-panel rounded-[28px] p-4">
               <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 shadow-lg">
                 <SlidersHorizontal className="h-5 w-5 text-gray-300" />
                 <select
@@ -442,14 +451,16 @@ export default function Marketplace({
                   </option>
                 </select>
               </div>
+              <div className="mt-4 text-left">
+                <div className="bwe-shell-label">Live catalog status</div>
+                <div className="mt-2 text-sm text-white/82">{resultLabel}</div>
+                <p className="mt-2 text-xs text-white/55">
+                  Each listing surfaces current pricing, availability, and
+                  checkout entry before you open details.
+                </p>
+              </div>
             </div>
           </div>
-
-          <div className="mt-3 text-sm text-gray-400">{resultLabel}</div>
-          <p className="mt-1 text-xs text-gray-500">
-            Each listing shows current pricing, availability, and support paths
-            before you open details.
-          </p>
 
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
             <Link
@@ -475,8 +486,8 @@ export default function Marketplace({
       </section>
 
       {/* Buyer trust strip */}
-      <section className="relative mx-auto mb-4 max-w-6xl px-4 sm:mb-6">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-5">
+      <section className="bwe-section-wrap relative mb-4 sm:mb-6">
+        <div className="bwe-shell-panel rounded-[28px] p-4 sm:p-5">
           <h2 className="text-base font-bold text-gold sm:text-lg">
             Shop with confidence on BWE
           </h2>
@@ -512,7 +523,7 @@ export default function Marketplace({
       </section>
 
       {/* Compact seller CTA (secondary) */}
-      <section className="relative mx-auto mb-6 max-w-6xl px-4 sm:mb-8">
+      <section className="bwe-section-wrap relative mb-6 sm:mb-8">
         <div className="overflow-hidden rounded-2xl border border-yellow-500/20 bg-gradient-to-r from-yellow-500/15 via-white/5 to-white/0 shadow-xl">
           <div className="flex flex-col gap-4 p-4 sm:p-5 md:flex-row md:items-center md:justify-between md:p-6">
             <div className="flex items-start gap-3">
@@ -548,7 +559,7 @@ export default function Marketplace({
       </section>
 
       {/* Categories + page summary */}
-      <section className="relative mx-auto max-w-7xl px-4">
+      <section className="bwe-section-wrap relative max-w-[88rem]">
         <div className="mb-3 flex items-center justify-between gap-3">
           <h3 className="text-2xl font-bold text-gold sm:text-3xl">
             {selectedCategory} Products
@@ -578,8 +589,11 @@ export default function Marketplace({
         </div>
 
         {errorMsg ? (
-          <div className="mb-6 rounded-2xl border border-red-500/30 bg-red-500/10 p-4">
-            <p className="text-sm text-red-200">{errorMsg}</p>
+          <div className="bwe-state-panel mb-6 border-red-500/30 bg-red-500/10 p-4">
+            <p className="bwe-state-title text-red-100">
+              Marketplace data could not load
+            </p>
+            <p className="mt-2 text-sm text-red-200">{errorMsg}</p>
             <button
               onClick={() => setCurrentPage((p) => p)}
               className="mt-3 inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm transition hover:bg-white/10"
@@ -595,22 +609,22 @@ export default function Marketplace({
             {Array.from({ length: itemsPerPage }).map((_, i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-white/10 bg-white/5 p-3 animate-pulse sm:p-4"
+                className="bwe-shell-panel rounded-[24px] p-3 sm:p-4"
               >
-                <div className="mb-3 h-28 rounded-xl bg-white/10 sm:mb-4 sm:h-40" />
-                <div className="mb-2 h-4 w-3/4 rounded bg-white/10" />
-                <div className="h-3 w-1/3 rounded bg-white/10" />
+                <div className="bwe-loading-block mb-3 h-28 sm:mb-4 sm:h-40" />
+                <div className="bwe-loading-block mb-2 h-4 w-3/4" />
+                <div className="bwe-loading-block h-3 w-1/3" />
               </div>
             ))}
           </div>
         ) : products.length === 0 ? (
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-10 text-center">
-            <p className="font-semibold text-gray-200">
+          <div className="bwe-state-panel">
+            <p className="bwe-state-title">
               {hasActiveCatalogFilters
                 ? "No products match the current search and filter settings."
                 : "No active marketplace listings are available right now."}
             </p>
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="bwe-state-copy">
               {hasActiveCatalogFilters
                 ? "Try a broader search, switch categories, or clear filters to view the live public catalog."
                 : "The public marketplace is temporarily between active listings. Check back soon, become a seller, or contact support if you need help with an existing order."}
@@ -663,6 +677,11 @@ export default function Marketplace({
 
                 const sellerName =
                   product?.seller?.name || "Independent BWE seller";
+                const sellerBusinessName =
+                  product?.seller?.businessName &&
+                  product.seller.businessName !== sellerName
+                    ? product.seller.businessName
+                    : null;
                 const sellerTrustLabel = product?.seller?.profileComplete
                   ? "Active seller profile"
                   : "Seller storefront details are limited on this listing";
@@ -675,7 +694,7 @@ export default function Marketplace({
                   <div
                     key={product._id}
                     className={cx(
-                      "group rounded-2xl border bg-white/5 p-2.5 shadow-lg transition hover:shadow-2xl sm:p-4",
+                      "bwe-shell-panel group rounded-[26px] p-2.5 transition hover:-translate-y-1 hover:shadow-[0_28px_70px_rgba(0,0,0,0.45)] sm:p-4",
                       isTopPick
                         ? "border-gold/40 ring-1 ring-gold/25"
                         : "border-white/10",
@@ -752,6 +771,14 @@ export default function Marketplace({
                       <p className="mt-0.5 text-[11px] text-gray-400 sm:text-xs">
                         {sellerTrustLabel}
                       </p>
+                      {sellerBusinessName ? (
+                        <p className="mt-1 text-[11px] text-gray-400 sm:text-xs">
+                          Business:{" "}
+                          <span className="text-gray-200">
+                            {sellerBusinessName}
+                          </span>
+                        </p>
+                      ) : null}
 
                       {product.description ? (
                         <p className="mt-2 line-clamp-2 text-xs text-gray-300 sm:text-sm">
@@ -1034,6 +1061,10 @@ export const getServerSideProps: GetServerSideProps<
           seller: {
             id: sellerKey || null,
             name: getPublicMarketplaceSellerName(seller),
+            businessName:
+              typeof seller?.businessName === "string"
+                ? seller.businessName
+                : null,
             profileComplete: isPublicMarketplaceSellerProfileComplete(seller),
           },
         }),

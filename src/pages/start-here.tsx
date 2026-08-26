@@ -105,40 +105,82 @@ export default function StartHerePage() {
               };
 
   return (
-    <main className="min-h-screen bg-black px-4 py-8 text-white">
+    <main className="min-h-screen bg-[var(--surface-0)] py-8 text-white sm:py-10">
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonical} />
       </Head>
 
-      <div className="mx-auto max-w-6xl space-y-6">
-        <header className="rounded-2xl border border-white/10 bg-white/5 p-6">
-          <h1 className="text-3xl font-extrabold text-[#D4AF37]">Start Here</h1>
-          <p className="mt-2 max-w-3xl text-white/80">
-            Choose the path that matches your goal. Each flow is designed to get
-            you to value quickly with clear next steps.
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <Link
-              href={roleResume.href}
-              onClick={() =>
-                trackFlowEvent({
-                  eventType: "start_here_role_selected",
-                  source: "start-here-header",
-                  path: roleResume.href,
-                })
-              }
-              className="rounded-lg bg-[#D4AF37] px-3 py-2 text-xs font-extrabold text-black hover:bg-yellow-400"
-            >
-              {roleResume.label}
-            </Link>
-            <Link
-              href="/terms-of-service"
-              className="rounded-lg border border-white/20 px-3 py-2 text-xs font-semibold text-white hover:bg-white/10"
-            >
-              Review trust standards
-            </Link>
+      <div className="bwe-section-wrap space-y-6">
+        <header className="bwe-hero-panel overflow-hidden rounded-[32px] px-5 py-6 sm:px-8 sm:py-8">
+          <div className="max-w-4xl">
+            <div className="bwe-shell-label">Orientation</div>
+            <h1 className="mt-3 text-3xl font-black tracking-[-0.05em] text-white sm:text-4xl lg:text-5xl">
+              Start with the intent that fits your economic goal.
+            </h1>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-white/78 sm:text-base sm:leading-7">
+              BWE is built for discovery, commerce, opportunity, and ownership.
+              Choose the path that matches what you want to do right now, then
+              move directly into the working product flow.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="bwe-badge" data-tone="accent">
+                Discover
+              </span>
+              <span className="bwe-badge">Shop</span>
+              <span className="bwe-badge">Build wealth</span>
+              <span className="bwe-badge">Find opportunities</span>
+              <span className="bwe-badge">Grow a business</span>
+              <span className="bwe-badge">Sell</span>
+              <span className="bwe-badge">Hire</span>
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-4 lg:grid-cols-[1.35fr_0.85fr]">
+            <div className="bwe-shell-panel rounded-[28px] p-5">
+              <div className="bwe-shell-label">Fastest next step</div>
+              <div className="mt-2 text-xl font-extrabold text-white">
+                {roleResume.label}
+              </div>
+              <p className="mt-2 text-sm leading-6 text-white/72">
+                Resume the most relevant destination for the current account
+                state, or choose a new path below if your goal has changed.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href={roleResume.href}
+                  onClick={() =>
+                    trackFlowEvent({
+                      eventType: "start_here_role_selected",
+                      source: "start-here-header",
+                      path: roleResume.href,
+                    })
+                  }
+                  className="bwe-focus-ring inline-flex min-h-12 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-5 text-sm font-extrabold uppercase tracking-[0.12em] text-black hover:bg-[var(--accent-strong)]"
+                >
+                  {roleResume.label}
+                </Link>
+                <Link
+                  href="/terms-of-service"
+                  className="bwe-link-pill bwe-focus-ring"
+                >
+                  Review trust standards
+                </Link>
+              </div>
+            </div>
+
+            <div className="bwe-shell-panel rounded-[28px] p-5">
+              <div className="bwe-shell-label">What BWE helps you do</div>
+              <ul className="mt-3 space-y-3 text-sm text-white/78">
+                <li>Find Black-owned businesses and products faster.</li>
+                <li>Move from discovery into trusted commerce pathways.</li>
+                <li>Get into jobs, opportunities, hiring, and growth flows.</li>
+                <li>
+                  Keep navigation clear whether you are buying or building.
+                </li>
+              </ul>
+            </div>
           </div>
         </header>
 
@@ -146,24 +188,18 @@ export default function StartHerePage() {
           {ROLES.map((role) => (
             <article
               key={role.title}
-              className="rounded-2xl border border-white/10 bg-white/5 p-5"
+              className="bwe-shell-panel rounded-[28px] p-5 sm:p-6"
             >
-              <h2 className="text-lg font-bold text-white">{role.title}</h2>
-              <p className="mt-2 text-sm text-white/75">{role.summary}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Link
-                  href={`/signup?accountType=${encodeURIComponent(role.key)}&intent=${encodeURIComponent(role.intent)}`}
-                  onClick={() =>
-                    trackFlowEvent({
-                      eventType: "signup_start",
-                      source: "start-here-role-card",
-                      category: role.title,
-                    })
-                  }
-                  className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2 text-sm font-bold text-[#D4AF37] hover:bg-[#D4AF37]/20"
-                >
-                  Join now for this path
-                </Link>
+              <div className="bwe-shell-label">
+                {role.intent.replace(/-/g, " ")}
+              </div>
+              <h2 className="mt-2 text-xl font-extrabold tracking-[-0.03em] text-white">
+                {role.title}
+              </h2>
+              <p className="mt-3 min-h-[4.5rem] text-sm leading-6 text-white/74">
+                {role.summary}
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
                 <Link
                   href={role.primary.href}
                   onClick={() =>
@@ -174,7 +210,7 @@ export default function StartHerePage() {
                       path: role.primary.href,
                     })
                   }
-                  className="rounded-lg bg-[#D4AF37] px-3 py-2 text-sm font-bold text-black hover:bg-yellow-400"
+                  className="bwe-focus-ring inline-flex min-h-11 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-4 text-sm font-extrabold text-black hover:bg-[var(--accent-strong)]"
                 >
                   {role.primary.label}
                 </Link>
@@ -188,44 +224,68 @@ export default function StartHerePage() {
                       path: role.secondary.href,
                     })
                   }
-                  className="rounded-lg border border-white/20 px-3 py-2 text-sm font-semibold text-white hover:bg-white/10"
+                  className="bwe-link-pill bwe-focus-ring"
                 >
                   {role.secondary.label}
+                </Link>
+              </div>
+              <div className="mt-3">
+                <Link
+                  href={`/signup?accountType=${encodeURIComponent(role.key)}&intent=${encodeURIComponent(role.intent)}`}
+                  onClick={() =>
+                    trackFlowEvent({
+                      eventType: "signup_start",
+                      source: "start-here-role-card",
+                      category: role.title,
+                    })
+                  }
+                  className="text-sm font-semibold text-[var(--accent)] underline underline-offset-4"
+                >
+                  Join now for this path
                 </Link>
               </div>
             </article>
           ))}
         </section>
 
-        <section className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-white/75">
-          <div className="font-semibold text-white">Why join now?</div>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-white/80">
-            <li>Save opportunities and continue where you left off.</li>
-            <li>
-              Unlock faster role-based onboarding (seller, employer, business
-              owner).
-            </li>
-            <li>Get a cleaner path to buying, hiring, and growth actions.</li>
-          </ul>
-          <div className="mt-3">
-            Already have an account?{" "}
-            <Link href="/login" className="text-[#D4AF37] underline">
-              Log in
-            </Link>
-            . New here?{" "}
-            <Link
-              href="/signup?intent=join-bwe"
-              onClick={() =>
-                trackFlowEvent({
-                  eventType: "signup_start",
-                  source: "start-here-footer",
-                })
-              }
-              className="text-[#D4AF37] underline"
-            >
-              Create an account
-            </Link>
-            .
+        <section className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="bwe-shell-panel rounded-[28px] p-6 text-sm text-white/75">
+            <div className="bwe-shell-label">Why join now</div>
+            <ul className="mt-3 space-y-2 text-sm leading-6 text-white/82">
+              <li>Save opportunities and continue where you left off.</li>
+              <li>
+                Unlock faster role-based onboarding for sellers, employers, and
+                businesses.
+              </li>
+              <li>Get a cleaner path to buying, hiring, and growth actions.</li>
+            </ul>
+          </div>
+
+          <div className="bwe-shell-panel rounded-[28px] p-6 text-sm text-white/75">
+            <div className="bwe-shell-label">Account access</div>
+            <div className="mt-3 space-y-3">
+              <p>
+                Already have an account?{" "}
+                <Link href="/login" className="text-[var(--accent)] underline">
+                  Log in
+                </Link>
+              </p>
+              <p>
+                New here?{" "}
+                <Link
+                  href="/signup?intent=join-bwe"
+                  onClick={() =>
+                    trackFlowEvent({
+                      eventType: "signup_start",
+                      source: "start-here-footer",
+                    })
+                  }
+                  className="text-[var(--accent)] underline"
+                >
+                  Create an account
+                </Link>
+              </p>
+            </div>
           </div>
         </section>
       </div>
