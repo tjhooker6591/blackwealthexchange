@@ -5,7 +5,7 @@
 - PROGRAM PHASE: `PRE-MOVE STOPPING POINT / ENGINEERING PAUSED`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- LATEST RUNTIME HEAD: `c7ecbc31c52387d6a4601f1b86cab35e481355e6`
+- LATEST RUNTIME HEAD: `665a1193d180d9c3c2bc79dda6bba8310d477416`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -21,10 +21,10 @@
 - WORLD-CLASS GAP REGISTER: `docs/BWE_WORLD_CLASS_GAP_REGISTER.md`
 - WORLD-CLASS MEASUREMENT HISTORY: `docs/BWE_WORLD_CLASS_MEASUREMENT_HISTORY.md`
 - WORLD-CLASS DECISION LOG: `docs/BWE_WORLD_CLASS_DECISION_LOG.md`
-- UNIQUE APPLICATION FILES SINCE 2026-08-06: `147`
-- UNIQUE APPLICATION FILES SINCE 81426-1453: `16`
+- UNIQUE APPLICATION FILES SINCE 2026-08-06: `150`
+- UNIQUE APPLICATION FILES SINCE 81426-1453: `22`
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
-- PAYMENT PROOF STATUS: `PENDING`
+- PAYMENT PROOF STATUS: `IN PROGRESS — preservation-first remediation committed; owner-only transaction still NO-GO pending deterministic business attribution and owner-controlled Stripe runtime proof`
 - AUTH/ENV PARITY STATUS: `IN PROGRESS — local auth parity audited; business-session role drift fixed; production-safe config parity remains partial`
 - CROSS-MACHINE PARITY STATUS: `EXTERNAL PROOF PENDING`
 - CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
@@ -33,7 +33,10 @@
   - preserve the accepted control/docs checkpoint at `3d953882e4839aa87b390883279170306854a584`
   - restore and verify localhost on `127.0.0.1:3000`
   - when a genuinely separate machine is available, execute `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
-  - do not begin `BWE-10` without explicit owner authorization
+  - preserve runtime payment checkpoint `665a1193d180d9c3c2bc79dda6bba8310d477416`
+  - preserve the existing Stripe checkout path and owner-only Stripe execution rule
+  - resolve only deterministic non-Stripe blockers around marketplace attribution and verification
+  - return owner-only transaction instructions only after software/data proof reaches GO
 - ENGINEERING RULE: `PHASE 0 CONTINUES — CROSS-MACHINE PARITY NEXT`
 
 ## Master program anchors — 2026-08-25
@@ -147,10 +150,10 @@ Interpret all workstream activity through that directive and its Revenue Gate be
 - **Status:** BLOCKED BY PAYMENT COMPLETION
 - **Entry point:** `/marketplace` Buy CTA
 - **Expected final outcome:** CTA -> checkout -> payment complete -> webhook -> DB fulfillment state persisted -> user-visible purchased state correct.
-- **Current actual outcome:** CTA + checkout session creation verified through the existing Stripe checkout flow; full paid webhook->fulfilled-state proof not completed for active canonical runs. Missing Stripe credentials in the current localhost runtime are treated as a local environment/proof limitation unless wider release evidence proves a configuration defect.
-- **Exact blocker:** owner-authorized paid completion + post-payment fulfillment verification pending.
-- **Files/routes/endpoints involved:** `src/components/BuyNowButton.tsx`, `src/pages/api/checkout/create-session.ts`, `src/pages/api/stripe/webhook-handler.ts`, `payments` + fulfillment records.
-- **Exact closure condition:** one canonical marketplace paid run shows payment complete, webhook processed, DB fulfilled state, and user-visible final state.
+- **Current actual outcome:** CTA + checkout session creation are preserved through the existing Stripe checkout flow, marketplace payment linkage now carries explicit deterministic `businessId` when canonically present, verified paid webhook processing can upsert a deduplicated marketplace BMEV record, and marketplace payment success can show buyer-scoped order details without exposing guest data. Missing Stripe credentials in the current localhost runtime remain a local environment/proof limitation, not a proven release defect by themselves.
+- **Exact blocker:** no owner-authorized real payment has been executed yet; the current Pamfa product path still has ambiguous seller->business linkage in canonical data; owner-controlled Stripe runtime proof is still required in the established environment.
+- **Files/routes/endpoints involved:** `src/components/BuyNowButton.tsx`, `src/pages/api/checkout/create-session.ts`, `src/pages/api/stripe/checkout.ts`, `src/lib/checkout/createProductCheckoutSession.ts`, `src/lib/marketplace/paymentLinkage.ts`, `src/lib/marketplace/businessAttribution.ts`, `src/lib/economics/marketplaceBmev.ts`, `src/pages/api/marketplace/order-confirmation.ts`, `src/pages/api/stripe/webhook-handler.ts`, `src/pages/payment-success.tsx`, `payments`, `orders`, `bmev_records`.
+- **Exact closure condition:** one owner-executed canonical marketplace paid run shows payment complete, webhook processed once, DB fulfilled state, user-visible final state, seller/admin visibility, marketplace fee treatment, and one-count BMEV capture with no duplicate economic attribution.
 
 ## 3) Seller onboarding
 

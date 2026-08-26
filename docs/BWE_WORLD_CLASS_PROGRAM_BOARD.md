@@ -197,7 +197,7 @@ Every major project should report:
 - OWNER DECISION REQUIRED: `YES`
 - POINTS AVAILABLE: `60`
 - POINTS EARNED: `0`
-- EVIDENCE: `checkout-init paths exist; fulfilled paid-state proof is not yet canonical; missing local Stripe credentials are classified as a local proof limitation unless release/runtime evidence proves a wider defect`
+- EVIDENCE: `checkout-init paths exist; runtime commit 665a1193d180d9c3c2bc79dda6bba8310d477416 preserves the existing Stripe flow while adding deterministic businessId pass-through, buyer-scoped marketplace confirmation, and webhook-backed BMEV hooks; fulfilled paid-state proof is still not canonical; missing local Stripe credentials remain a local proof limitation unless wider release/runtime evidence proves a wider defect`
 
 ### P0-07 — Runtime security hardening and trust protections
 

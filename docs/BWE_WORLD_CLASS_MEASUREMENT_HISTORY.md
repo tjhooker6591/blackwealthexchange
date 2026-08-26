@@ -134,3 +134,37 @@ Last updated: 2026-08-25
   - existing Stripe checkout and webhook functionality is preserved as the canonical flow
   - missing Stripe variables in the current local runtime are reclassified as a local environment/proof limitation unless broader runtime evidence proves a release defect
   - real Stripe transaction execution and confirmation remain owner-only
+
+## Entry 2026-08-26 — BWE-10 preservation-first remediation
+
+- WORKSTREAM: `BWE-10 NO-GO blocker remediation`
+- SCORE BEFORE: `313 / 1000`
+- SCORE AFTER: `313 / 1000`
+- POINTS EARNED: `0`
+- RELEASE COMPLETION BEFORE: `67%`
+- RELEASE COMPLETION AFTER: `67%`
+- GAPS CLOSED: `0`
+- GAPS CREATED: `0`
+- PROGRAM ITEMS COMPLETED: `0`
+- NEW PROGRAM ITEMS IDENTIFIED: `0`
+- DEPENDENCIES CLOSED: `0`
+- ENGINEERING GAIN: `YES — preserved Stripe flow while adding deterministic business attribution pass-through, webhook-backed marketplace BMEV capture, and buyer-scoped marketplace order confirmation`
+- EVIDENCE GAIN: `YES — sequential replay protection for marketplace BMEV is now directly exercised in focused tests`
+- METHODOLOGY ADJUSTMENT: `0`
+- REVENUE GAIN: `0`
+- REVENUE ENABLEMENT: `YES — owner-transaction proof path is narrower and better instrumented, but still NO-GO`
+- REVENUE PROTECTION: `YES — existing checkout, webhook, fee, and payout flow preserved`
+- EVIDENCE:
+  - runtime commit `665a1193d180d9c3c2bc79dda6bba8310d477416`
+  - `src/lib/checkout/createProductCheckoutSession.ts`
+  - `src/lib/marketplace/paymentLinkage.ts`
+  - `src/lib/marketplace/businessAttribution.ts`
+  - `src/lib/economics/marketplaceBmev.ts`
+  - `src/pages/api/marketplace/order-confirmation.ts`
+  - `src/pages/api/stripe/webhook-handler.ts`
+  - `src/pages/payment-success.tsx`
+  - `src/lib/marketplace/__tests__/package1-tests.ts`
+- NOTES:
+  - current Pamfa seller-to-business linkage is still ambiguous in canonical data, so owner transaction readiness remains blocked on data truth rather than Stripe architecture replacement
+  - missing local Stripe secrets remain an owner-controlled local proof limitation, not a proven production defect
+  - BI-1 and ES-0 remain unachieved until an owner-executed legitimate transaction completes and is verified
