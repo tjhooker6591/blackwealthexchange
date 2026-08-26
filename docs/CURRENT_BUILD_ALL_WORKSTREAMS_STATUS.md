@@ -1,10 +1,11 @@
 # Current Build — Canonical All-Workstreams Status
 
-## PRE-MOVE STOPPING POINT — 2026-08-20
+## CURRENT CHECKPOINT — 2026-08-26
 
-- PROGRAM PHASE: `PRE-MOVE STOPPING POINT / ENGINEERING PAUSED`
+- PROGRAM PHASE: `PHASE 0 — RELEASE STABILIZATION`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
+- CURRENT CONTROL HEAD: `1ec2aaa1931ca9a64f929d639b24394db99ec9ee`
 - LATEST RUNTIME HEAD: `665a1193d180d9c3c2bc79dda6bba8310d477416`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
@@ -12,7 +13,7 @@
 - SAFE DETERMINISTIC DB WORK REMAINING: `NO`
 - OPEN OWNER-DATA DECISIONS:
   - applicants duplicate email-group disposition for one three-row legacy/public-apply cluster
-  - sponsor/business linkage remains unproven for historical featured-sponsor fallback records without canonical business IDs
+  - Pamfa seller-to-business canonical attribution remains ambiguous for the current marketplace proof candidate and requires owner review
 - DB TRACKING LEDGER: `docs/81426-1453_DB_TRACKING.md`
 - RUNNING FILE LEDGER: `docs/BWE_RUNNING_APPLICATION_FILE_CHANGES_2026-08-06_FORWARD.md`
 - WORLD-CLASS MASTER PLAN: `docs/BWE_WORLD_CLASS_PLATFORM_MASTER_PLAN.md`
@@ -24,20 +25,30 @@
 - UNIQUE APPLICATION FILES SINCE 2026-08-06: `150`
 - UNIQUE APPLICATION FILES SINCE 81426-1453: `22`
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
-- PAYMENT PROOF STATUS: `IN PROGRESS — preservation-first remediation committed; owner-only transaction still NO-GO pending deterministic business attribution and owner-controlled Stripe runtime proof`
-- AUTH/ENV PARITY STATUS: `IN PROGRESS — local auth parity audited; business-session role drift fixed; production-safe config parity remains partial`
+- AUTH/ENV PARITY STATUS: `LOCAL PROOF COMPLETED — business-session role drift fixed; production-safe config parity remains partial`
+- BWE-10 STATUS: `NO-GO — existing Stripe architecture preserved; owner-only transaction remains blocked on canonical Pamfa attribution truth and owner-controlled proof`
+- PAYMENT PROOF STATUS: `NO-GO — preservation-first remediation committed; owner-only transaction still blocked on deterministic business attribution and owner-controlled Stripe runtime proof`
 - CROSS-MACHINE PARITY STATUS: `EXTERNAL PROOF PENDING`
 - CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
+- CURRENT BLOCKER: `Pamfa seller -> business canonical attribution ambiguity`
+- CURRENT NEXT WORK: `Pamfa seller -> business owner decision packet`
+- STRIPE STATUS: `existing architecture preserved`
+- REAL TRANSACTION RULE: `OWNER ONLY`
 - EXACT RESUME ACTION:
-  - preserve the accepted auth/env parity result at `c7ecbc31c52387d6a4601f1b86cab35e481355e6`
-  - preserve the accepted control/docs checkpoint at `3d953882e4839aa87b390883279170306854a584`
+  - preserve the accepted admin proof result at `d1380da1b34593ec605b4c8b589c1e608bd63714`
+  - preserve the accepted auth/env parity runtime fix at `c7ecbc31c52387d6a4601f1b86cab35e481355e6`
+  - preserve the accepted Stripe owner-only control checkpoint at `1754ca6dbf6f0176948c3a2c7fd756a1d15200f4`
+  - preserve the accepted BWE-10 control/docs checkpoint at `1ec2aaa1931ca9a64f929d639b24394db99ec9ee`
   - restore and verify localhost on `127.0.0.1:3000`
-  - when a genuinely separate machine is available, execute `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
   - preserve runtime payment checkpoint `665a1193d180d9c3c2bc79dda6bba8310d477416`
-  - preserve the existing Stripe checkout path and owner-only Stripe execution rule
-  - resolve only deterministic non-Stripe blockers around marketplace attribution and verification
-  - return owner-only transaction instructions only after software/data proof reaches GO
-- ENGINEERING RULE: `PHASE 0 CONTINUES — CROSS-MACHINE PARITY NEXT`
+  - preserve the existing Stripe checkout and webhook path
+  - assemble the read-only Pamfa seller -> business owner decision packet
+  - do not write `seller.businessId`
+  - do not write `product.businessId`
+  - do not mutate MongoDB
+  - do not execute Stripe transactions
+  - after owner decision resolves canonical attribution, return owner-only proof instructions if and only if readiness reaches GO
+- ENGINEERING RULE: `PHASE 0 CONTINUES — PAMFA ATTRIBUTION DECISION PACKET NEXT`
 
 ## Master program anchors — 2026-08-25
 
