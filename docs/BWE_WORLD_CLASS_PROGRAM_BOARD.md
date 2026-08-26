@@ -32,6 +32,22 @@ Last updated: 2026-08-25
 - No revenue metric may be treated as collected revenue without actual evidence.
 - Test payments, fake accounts, and estimated value do not qualify.
 
+### Existing-system preservation rules
+
+- before changing an existing system, identify the existing implementation, proven functionality, and current production dependencies
+- determine whether the observed difference is local, environmental, data-specific, or an actual code defect
+- assess regression risk before proposing change
+- preserve working functionality and make the smallest necessary change
+- validate old functionality plus new functionality after any change
+
+### Stripe owner-only rules
+
+- Stripe owner: `OWNER ONLY`
+- real transaction execution: `OWNER ONLY`
+- real payment confirmation: `OWNER ONLY`
+- production Stripe configuration changes: `OWNER ONLY unless explicitly delegated`
+- Black's role: `READINESS`, `CODE`, `VALIDATION`, `OBSERVATION`, `EVIDENCE`, `REPORTING`
+
 ### Business-Independence evidence fields
 
 - MONTHLY COLLECTED REVENUE: `NOT YET INSTRUMENTED`
@@ -176,12 +192,12 @@ Every major project should report:
 - RELEASE SCOPE: `YES`
 - WORLD-CLASS SCOPE: `NO`
 - DEPENDENCIES: `owner approval for real payment activity`
-- BLOCKERS: `cannot complete without explicit owner authorization`
-- NEXT ACTION: `prepare exact proof script, then wait`
+- BLOCKERS: `cannot complete without explicit owner authorization and owner-executed legitimate transaction evidence`
+- NEXT ACTION: `preserve the existing checkout/webhook flow, prove readiness around it, return exact owner-only transaction steps, then wait`
 - OWNER DECISION REQUIRED: `YES`
 - POINTS AVAILABLE: `60`
 - POINTS EARNED: `0`
-- EVIDENCE: `checkout-init paths exist; fulfilled paid-state proof is not yet canonical`
+- EVIDENCE: `checkout-init paths exist; fulfilled paid-state proof is not yet canonical; missing local Stripe credentials are classified as a local proof limitation unless release/runtime evidence proves a wider defect`
 
 ### P0-07 — Runtime security hardening and trust protections
 

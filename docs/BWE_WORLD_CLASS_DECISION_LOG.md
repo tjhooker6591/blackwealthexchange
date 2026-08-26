@@ -134,3 +134,41 @@ Last updated: 2026-08-25
 - OWNER APPROVAL STATUS: `APPROVED`
 - SUPERSEDES: `none`
 - SUPERSEDED BY: `none`
+
+### 2026-08-25 | BWE-WC-008
+
+- SUBJECT: `Preserve existing functionality before changing established systems`
+- DECISION: Before recommending or making a change to an existing system, identify the current implementation, proven functionality, production dependencies, likely scope of the observed difference, and regression risk; preserve the working path and make the smallest necessary change.
+- WHY: Local-only gaps, data-specific anomalies, or environment differences must not be mistaken for product defects that justify broad replacement.
+- ALTERNATIVES:
+  - redesign established systems when a cleaner architecture appears available
+  - treat local proof gaps as sufficient reason to modify production-critical flows
+- DEPENDENCIES:
+  - runtime/code inspection
+  - environment classification
+  - regression validation
+- IMPACT:
+  - protects existing working flows such as Stripe checkout/webhooks from unnecessary disruption
+  - forces local-vs-production classification before change proposals
+- OWNER APPROVAL STATUS: `APPROVED`
+- SUPERSEDES: `none`
+- SUPERSEDED BY: `none`
+
+### 2026-08-25 | BWE-WC-009
+
+- SUBJECT: `Stripe owner-only transaction control`
+- DECISION: Real Stripe transaction execution, real payment confirmation, and production Stripe configuration changes remain owner-only unless explicitly delegated. Black's role is readiness, code, validation, observation, evidence, and reporting.
+- WHY: Stripe governs real money, customer trust, and owner-controlled economics. Engineering readiness does not authorize acting as the owner.
+- ALTERNATIVES:
+  - allow engineering readiness to imply permission to execute live transactions
+  - allow autonomous Stripe configuration changes during proof work
+- DEPENDENCIES:
+  - BWE-10 paid-fulfillment readiness
+  - owner authorization gates
+  - evidence-only post-transaction verification
+- IMPACT:
+  - clarifies the correct BWE-10 execution model
+  - keeps real-payment authority with the owner while preserving engineering validation responsibilities
+- OWNER APPROVAL STATUS: `APPROVED`
+- SUPERSEDES: `none`
+- SUPERSEDED BY: `none`

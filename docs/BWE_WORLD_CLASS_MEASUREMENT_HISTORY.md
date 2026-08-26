@@ -103,3 +103,34 @@ Last updated: 2026-08-25
 - NOTES:
   - BWE-13 remains `EXTERNAL PROOF PENDING`
   - this workstream prepared the reusable capture procedure without manufacturing parity closure
+
+## Entry 2026-08-25 — BWE-10 control correction and Stripe owner-only preservation rule
+
+- WORKSTREAM: `BWE-10 control correction / preserve existing Stripe functionality`
+- SCORE BEFORE: `313 / 1000`
+- SCORE AFTER: `313 / 1000`
+- POINTS EARNED: `0`
+- RELEASE COMPLETION BEFORE: `67%`
+- RELEASE COMPLETION AFTER: `67%`
+- GAPS CLOSED: `0`
+- GAPS CREATED: `0`
+- PROGRAM ITEMS COMPLETED: `0`
+- NEW PROGRAM ITEMS IDENTIFIED: `0`
+- DEPENDENCIES CLOSED: `0`
+- ENGINEERING GAIN: `0`
+- EVIDENCE GAIN: `0`
+- METHODOLOGY ADJUSTMENT: `0`
+- REVENUE GAIN: `0`
+- REVENUE ENABLEMENT: `0`
+- REVENUE PROTECTION: `YES`
+- EVIDENCE:
+  - `src/pages/api/checkout/create-session.ts`
+  - `src/pages/api/stripe/checkout.ts`
+  - `src/pages/api/stripe/webhook-handler.ts`
+  - `docs/BWE_WORLD_CLASS_PLATFORM_MASTER_PLAN.md`
+  - `docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md`
+  - `docs/BWE_WORLD_CLASS_DECISION_LOG.md`
+- NOTES:
+  - existing Stripe checkout and webhook functionality is preserved as the canonical flow
+  - missing Stripe variables in the current local runtime are reclassified as a local environment/proof limitation unless broader runtime evidence proves a release defect
+  - real Stripe transaction execution and confirmation remain owner-only

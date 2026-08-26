@@ -147,8 +147,8 @@ Interpret all workstream activity through that directive and its Revenue Gate be
 - **Status:** BLOCKED BY PAYMENT COMPLETION
 - **Entry point:** `/marketplace` Buy CTA
 - **Expected final outcome:** CTA -> checkout -> payment complete -> webhook -> DB fulfillment state persisted -> user-visible purchased state correct.
-- **Current actual outcome:** CTA + checkout session creation verified; full paid webhook->fulfilled-state proof not completed for active canonical runs.
-- **Exact blocker:** payment completion + post-payment fulfillment verification pending.
+- **Current actual outcome:** CTA + checkout session creation verified through the existing Stripe checkout flow; full paid webhook->fulfilled-state proof not completed for active canonical runs. Missing Stripe credentials in the current localhost runtime are treated as a local environment/proof limitation unless wider release evidence proves a configuration defect.
+- **Exact blocker:** owner-authorized paid completion + post-payment fulfillment verification pending.
 - **Files/routes/endpoints involved:** `src/components/BuyNowButton.tsx`, `src/pages/api/checkout/create-session.ts`, `src/pages/api/stripe/webhook-handler.ts`, `payments` + fulfillment records.
 - **Exact closure condition:** one canonical marketplace paid run shows payment complete, webhook processed, DB fulfilled state, and user-visible final state.
 

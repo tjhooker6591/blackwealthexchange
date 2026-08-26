@@ -353,6 +353,32 @@ Stage movement requires real evidence only. Test payments, fake accounts, projec
 
 If a metric is not currently measurable, report `NOT YET INSTRUMENTED`.
 
+### Existing-functionality preservation rule
+
+Before recommending or making a change to an existing system:
+
+1. identify the existing implementation
+2. identify the existing proven functionality
+3. identify the current production dependencies
+4. determine whether the observed problem is local, environmental, data-specific, or an actual code defect
+5. assess regression risk
+6. preserve working functionality
+7. make the smallest change necessary
+8. validate old functionality plus new functionality
+
+Do not replace an existing working system merely because a cleaner architecture is possible.
+
+### Stripe owner-only rule
+
+Stripe is owner-controlled.
+
+- real transaction execution: owner only
+- real payment confirmation: owner only
+- production Stripe configuration changes: owner only unless explicitly delegated
+- Black's role: readiness, code, validation, observation, evidence, and reporting
+
+Black does not act as the owner in Stripe.
+
 ## BWE Economic Circulation Model
 
 ### BMEV definition
@@ -401,6 +427,8 @@ Never combine or report as interchangeable:
 
 BMEV is not BWE revenue. GMV is not automatically BWE revenue. Business revenue generated is not automatically BWE revenue.
 
+Existing Stripe/payment functionality must be preserved while BMEV and revenue-attribution controls are added around it. Attribution work should be additive unless a reproduced defect proves the existing payment path is insufficient.
+
 ### Economic scale ladder
 
 - `ES-0` — first verified economic transaction
@@ -446,7 +474,7 @@ Current value remains `UNVERIFIED / NOT YET INSTRUMENTED` unless evidence suppor
 ### Immediate next dependencies
 
 - next release workstream: `CROSS-MACHINE PARITY / BWE-13`
-- then `PAID FULFILLMENT PROOF` only with explicit owner authorization for a real transaction
+- then `PAID FULFILLMENT PROOF` only with explicit owner authorization for an owner-executed real transaction
 - then `RELEASE CLOSURE`
 
 ## Design Strategy
