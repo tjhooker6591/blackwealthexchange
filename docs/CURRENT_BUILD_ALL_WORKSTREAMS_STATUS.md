@@ -6,7 +6,7 @@
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
 - CURRENT CONTROL HEAD: `1ec2aaa1931ca9a64f929d639b24394db99ec9ee`
-- LATEST RUNTIME HEAD: `ac8831a69a5d510bb356aab3d0fd0490a135e6d6`
+- LATEST RUNTIME HEAD: `faff2cdfb6e556c8e8cbc5d35beececa74e16610`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -36,7 +36,7 @@
 - INTERNAL PHASE 0: `COMPLETE`
 - EXTERNAL / OWNER PROOFS: `PENDING`
 - CURRENT BLOCKER: `no internal Phase 1 blocker; external owner-only BWE-10 live proof plus BWE-13 second-machine proof remain pending outside the current UI lane`
-- CURRENT NEXT WORK: `P1-03 / P1-04 Experience 2.0 expansion into business-directory and jobs/discovery surfaces after the accepted consumer refinement block`
+- CURRENT NEXT WORK: `P1-03 / P1-04 Experience 2.0 expansion into Black Card / pricing and remaining consumer opportunity surfaces after the accepted Student Hub checkpoint`
 - BWE-10 OWNER ACTION: `PENDING — Pamfa hoodies owner-only live proof`
 - STRIPE STATUS: `existing architecture preserved`
 - REAL TRANSACTION RULE: `OWNER ONLY`
@@ -49,6 +49,8 @@
   - preserve runtime payment checkpoint `665a1193d180d9c3c2bc79dda6bba8310d477416`
   - preserve the accepted Phase 1 consumer foundation runtime checkpoint `ceeb5957132d575d7b91458de9eb06d147413839`
   - preserve the accepted Phase 1 consumer refinement runtime checkpoint `ac8831a69a5d510bb356aab3d0fd0490a135e6d6`
+  - preserve the accepted Phase 1 discovery/jobs runtime checkpoint `aec329ca6c15a053ede2f256cea686670d13afdc`
+  - preserve the accepted Phase 1 homepage pathway + Student Hub runtime checkpoint `faff2cdfb6e556c8e8cbc5d35beececa74e16610`
   - preserve the existing Stripe checkout and webhook path
   - preserve the approved deterministic Pamfa attribution links:
     - `sellers/67fd9ed3acdef9011c60ff99 -> businessId 6a45de2d3278d888ed5d0730`
@@ -56,12 +58,13 @@
   - return exact owner-only live transaction instructions; do not execute the transaction autonomously
   - continue independent approved engineering in Phase 1 while owner proof is pending
   - continue with P1-03 / P1-04 expansion after the accepted refinement checkpoint; do not propagate the pre-refinement density standard
+  - preserve the accepted compact homepage wayfinding treatment and Student Hub Experience 2.0 checkpoint
 - ENGINEERING RULE: `PHASE 1 ACTIVE — continue Experience 2.0 foundation work while BWE-10 owner proof and BWE-13 external proof remain pending`
 
 ## Master program anchors — 2026-08-25
 
 - CURRENT RELEASE COMPLETION: `67%`
-- CURRENT WORLD-CLASS INDEX: `341 / 1000`
+- CURRENT WORLD-CLASS INDEX: `347 / 1000`
 - PROGRAM ITEMS: `26`
 - WORLD-CLASS GAPS: `10`
 - OPEN P0: `0`

@@ -230,3 +230,36 @@ Last updated: 2026-08-26
 - NOTES:
   - accepted owner feedback required calmer typography, lower density, and fewer equally weighted containers before broader rollout
   - this checkpoint improves implementation quality but does not justify additional world-class points under the current rubric
+
+## Entry 2026-08-26 — Phase 1 discovery and opportunity expansion checkpoint
+
+- WORKSTREAM: `P1-03 / P1-04 homepage wayfinding + jobs/discovery expansion + Student Hub Experience 2.0`
+- SCORE BEFORE: `341 / 1000`
+- SCORE AFTER: `347 / 1000`
+- POINTS EARNED: `6`
+- RELEASE COMPLETION BEFORE: `67%`
+- RELEASE COMPLETION AFTER: `67%`
+- GAPS CLOSED: `0`
+- GAPS CREATED: `0`
+- PROGRAM ITEMS COMPLETED: `0`
+- NEW PROGRAM ITEMS IDENTIFIED: `0`
+- DEPENDENCIES CLOSED: `0`
+- ENGINEERING GAIN: `YES — homepage wayfinding is materially clearer, jobs/discovery surfaces are on the shared Experience 2.0 system, and Student Hub now presents a calmer filter-driven opportunity discovery experience`
+- EVIDENCE GAIN: `YES — refreshed browser proof now exists for the compact homepage pathway treatment and the rebuilt Student Hub on desktop and mobile`
+- METHODOLOGY ADJUSTMENT: `0`
+- REVENUE GAIN: `0`
+- REVENUE ENABLEMENT: `UNCHANGED — no payment architecture changed, but clearer opportunity discovery and platform navigation strengthen future conversion paths`
+- REVENUE PROTECTION: `YES — Stripe, auth, claims, attribution, and existing public route functionality remained preserved`
+- EVIDENCE:
+  - runtime commits `aec329ca6c15a053ede2f256cea686670d13afdc` and `faff2cdfb6e556c8e8cbc5d35beececa74e16610`
+  - `src/pages/index.tsx`
+  - `src/pages/business-directory.tsx`
+  - `src/pages/jobs.tsx`
+  - `src/pages/job-listings.tsx`
+  - `src/pages/black-student-opportunities/index.tsx`
+  - `src/styles/globals.css`
+  - browser proof in `tmp/phase1-ui-proof-20260826-resume/`
+  - browser proof in `tmp/phase1-ui-proof-20260826-student-home-v2/`
+- NOTES:
+  - score movement is intentionally limited to the areas directly supported by the new evidence: navigation clarity, discovery handoff, and mobile-safe public opportunity surfaces
+  - no score was awarded merely for calmer styling; the increase depends on implemented and proven public interaction improvement

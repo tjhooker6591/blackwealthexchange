@@ -14,7 +14,7 @@ Last updated: 2026-08-26
 
 - CURRENT MASTER PLAN PHASE: `PHASE 1 — BWE EXPERIENCE 2.0`
 - CURRENT RELEASE COMPLETION: `67%`
-- CURRENT WORLD-CLASS INDEX: `341 / 1000`
+- CURRENT WORLD-CLASS INDEX: `347 / 1000`
 - WORLD-CLASS CLASSIFICATION: `FOUNDATION STAGE — trusted operational base forming, but far from world-class breadth`
 - REFINEMENT RULE: `2026-08-26 accepted hierarchy/density refinement does not add points by itself; keep the index at 341 unless new rubric evidence justifies movement`
 
@@ -68,17 +68,18 @@ Baseline release completion calculation before this workstream:
   - premium dark/gold shell, typography, and trust cues are materially more cohesive
   - broader route-by-route adoption is still incomplete
 
-### Information Architecture & Navigation — 36 / 80
+### Information Architecture & Navigation — 38 / 80
 
 - Evidence:
   - global platform shell and reusable navigation are now in place across key public routes
-  - homepage and /start-here now present clearer buyer, business, seller, and opportunity pathways
+  - homepage, /start-here, business directory, jobs, and Student Hub now present clearer buyer, business, seller, and opportunity pathways with less internal-facing language
   - deeper route hierarchy and cross-surface consistency remain incomplete
 
-### Search & Discovery — 24 / 100
+### Search & Discovery — 26 / 100
 
 - Evidence:
-  - directory, marketplace, jobs, and student routes exist
+  - directory, marketplace, jobs, and student routes exist and the homepage now hands off into them with real scoped search behavior
+  - Student Hub now presents a calmer, filter-driven opportunity discovery surface instead of a campaign-style landing page
   - discovery is still fragmented and not powered by a unified search model
 
 ### Marketplace & Conversion — 39 / 100
@@ -108,11 +109,11 @@ Baseline release completion calculation before this workstream:
   - Black-owned verification rules are explicit and safeguarded
   - trust signals are now materially stronger across the first Experience 2.0 consumer surfaces, but not yet consistent platform-wide
 
-### Mobile Experience — 16 / 70
+### Mobile Experience — 18 / 70
 
 - Evidence:
   - the first Experience 2.0 consumer block now renders with responsive navigation, stacked CTA hierarchy, and mobile-safe product purchase layout
-  - a reusable responsive standard is now present on the first high-value public surfaces
+  - a reusable responsive standard is now present on the first high-value public surfaces, including the compact homepage wayfinding block and Student Hub discovery surface
   - no native mobile capability
 
 ### Performance & Reliability — 26 / 80
@@ -144,7 +145,7 @@ Baseline release completion calculation before this workstream:
 
 ## Total
 
-- TOTAL SCORE: `341 / 1000`
+- TOTAL SCORE: `347 / 1000`
 
 ## Evidence anchors used for this baseline
 
@@ -153,6 +154,7 @@ Baseline release completion calculation before this workstream:
 - `docs/81426-1453_DB_TRACKING.md`
 - authenticated admin proof pass completed on 2026-08-25 with 7/7 targeted routes passing
 - refinement browser proof exists at `tmp/phase1-ui-proof-20260826-refined/`, but does not change the canonical score
+- additional browser proof exists at `tmp/phase1-ui-proof-20260826-student-home-v2/`, which supports the limited navigation/discovery/mobile increase above
 
 ## No-score items
 
