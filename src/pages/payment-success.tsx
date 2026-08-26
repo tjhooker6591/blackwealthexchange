@@ -34,6 +34,17 @@ type MembershipStatus = {
   };
 };
 
+type MarketplaceOrderConfirmation = {
+  orderId: string;
+  sessionId: string;
+  productId: string;
+  productName: string;
+  paymentStatus: string;
+  fulfillmentStatus: string;
+  sellerName: string;
+  businessId: string | null;
+};
+
 function labelize(value?: string | null) {
   if (!value) return "Unknown";
   return value.replace(/[_-]/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
@@ -51,6 +62,8 @@ export default function PaymentSuccessPage() {
   const foundingMembership = context === "founding-membership";
   const [membershipStatus, setMembershipStatus] =
     useState<MembershipStatus | null>(null);
+  const [marketplaceOrder, setMarketplaceOrder] =
+    useState<MarketplaceOrderConfirmation | null>(null);
   const [statusState, setStatusState] = useState<
     "idle" | "processing" | "confirmed" | "unconfirmed" | "error"
   >(foundingMembership ? "processing" : "idle");
@@ -112,6 +125,36 @@ export default function PaymentSuccessPage() {
       cancelled = true;
     };
   }, [foundingMembership]);
+
+  useEffect(() => {
+    if (foundingMembership || !sessionId) return;
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/marketplace/order-confirmation?session_id=${encodeURIComponent(sessionId)}`,
+          {
+            credentials: "include",
+            cache: "no-store",
+          },
+        );
+
+        if (!res.ok) return;
+        const json = await res.json().catch(() => null);
+        if (cancelled) return;
+        setMarketplaceOrder(json?.order || null);
+      } catch {
+        if (cancelled) return;
+        setMarketplaceOrder(null);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [foundingMembership, sessionId]);
 
   const stateCopy = useMemo(() => {
     if (!foundingMembership) {
@@ -255,6 +298,60 @@ export default function PaymentSuccessPage() {
                 <p className="mt-1 text-xs text-white/70 break-all">
                   {sessionId}
                 </p>
+              </div>
+            ) : null}
+
+            {!foundingMembership && marketplaceOrder ? (
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <div className="text-xs uppercase tracking-wide text-white/50">
+                    Order reference
+                  </div>
+                  <div className="mt-1 font-semibold text-white break-all">
+                    {marketplaceOrder.orderId}
+                  </div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <div className="text-xs uppercase tracking-wide text-white/50">
+                    Product
+                  </div>
+                  <div className="mt-1 font-semibold text-white">
+                    {marketplaceOrder.productName}
+                  </div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <div className="text-xs uppercase tracking-wide text-white/50">
+                    Payment status
+                  </div>
+                  <div className="mt-1 font-semibold text-white">
+                    {labelize(marketplaceOrder.paymentStatus)}
+                  </div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <div className="text-xs uppercase tracking-wide text-white/50">
+                    Fulfillment
+                  </div>
+                  <div className="mt-1 font-semibold text-white">
+                    {labelize(marketplaceOrder.fulfillmentStatus)}
+                  </div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <div className="text-xs uppercase tracking-wide text-white/50">
+                    Seller
+                  </div>
+                  <div className="mt-1 font-semibold text-white">
+                    {marketplaceOrder.sellerName}
+                  </div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <div className="text-xs uppercase tracking-wide text-white/50">
+                    Next step
+                  </div>
+                  <div className="mt-1 text-sm text-white/75">
+                    Track this order in My Marketplace Orders or contact support
+                    if anything looks wrong.
+                  </div>
+                </div>
               </div>
             ) : null}
 

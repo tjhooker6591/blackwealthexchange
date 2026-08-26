@@ -17,6 +17,7 @@ import {
   MARKETPLACE_PAYOUT_STATUSES,
 } from "@/lib/marketplace/orderLifecycle";
 import { hasPublicMarketplaceVisibility } from "@/lib/marketplace/publicCatalog";
+import { resolveCanonicalMarketplaceBusinessId } from "@/lib/marketplace/businessAttribution";
 
 type OidLike = { $oid?: string; oid?: string; _id?: unknown } | any;
 type PayoutMode = "destination_charge" | "platform_hold";
@@ -362,6 +363,10 @@ export async function createProductCheckoutSessionCore({
 
   const split = buildMarketplaceProjectedAmounts(unitAmountCents);
   const applicationFee = split.applicationFee;
+  const businessAttribution = resolveCanonicalMarketplaceBusinessId({
+    product,
+    seller,
+  });
   const cartItems: CartItem[] = [
     {
       id: String(product._id),
@@ -414,6 +419,7 @@ export async function createProductCheckoutSessionCore({
         canonicalSchemaVersion: 1,
         productId: product._id,
         sellerId: seller._id,
+        businessId: businessAttribution.businessId,
         stripeAccountId,
         buyerUserId,
         buyerEmail,
@@ -459,6 +465,10 @@ export async function createProductCheckoutSessionCore({
     payoutMode: "destination_charge",
     orderId,
   });
+  if (businessAttribution.businessId) {
+    (baseParams.metadata as Record<string, string>).businessId =
+      businessAttribution.businessId;
+  }
 
   try {
     session = await stripe.checkout.sessions.create({
@@ -471,6 +481,9 @@ export async function createProductCheckoutSessionCore({
           orderId,
           productId: String(product._id),
           sellerId: String(seller._id),
+          ...(businessAttribution.businessId
+            ? { businessId: businessAttribution.businessId }
+            : {}),
           stripeAccountId,
           payoutMode: "destination_charge",
         },
@@ -511,6 +524,10 @@ export async function createProductCheckoutSessionCore({
       payoutMode: "platform_hold",
       orderId,
     });
+    if (businessAttribution.businessId) {
+      (fallbackParams.metadata as Record<string, string>).businessId =
+        businessAttribution.businessId;
+    }
 
     try {
       session = await stripe.checkout.sessions.create({
@@ -521,6 +538,9 @@ export async function createProductCheckoutSessionCore({
             orderId,
             productId: String(product._id),
             sellerId: String(seller._id),
+            ...(businessAttribution.businessId
+              ? { businessId: businessAttribution.businessId }
+              : {}),
             stripeAccountId,
             payoutMode: "platform_hold",
             transferBlocked: "1",
@@ -583,6 +603,7 @@ export async function createProductCheckoutSessionCore({
     entityId: String(product._id),
     entityType: "product",
     sellerId: String(seller._id),
+    businessId: businessAttribution.businessId,
     stripeSessionId: session.id,
     payoutMode,
     orderId,

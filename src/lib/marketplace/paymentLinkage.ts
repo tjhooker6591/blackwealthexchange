@@ -10,6 +10,7 @@ export type MarketplacePaymentUpsertArgs = {
   orderId: string;
   productId: string;
   sellerId: string;
+  businessId?: string | null;
   payoutMode: string | null;
   amountTotal: number;
   currency?: string | null;
@@ -42,6 +43,7 @@ export function buildMarketplacePaymentRecord(
       orderId: args.orderId,
       productId: args.productId,
       sellerId: args.sellerId,
+      businessId: args.businessId || null,
       payoutMode: args.payoutMode || null,
       grossAmount: split.grossAmount,
       bweFee: split.bweFee,
@@ -51,6 +53,7 @@ export function buildMarketplacePaymentRecord(
     orderId: args.orderId,
     productId: args.productId,
     sellerId: args.sellerId,
+    businessId: args.businessId || null,
     payoutMode: args.payoutMode || null,
     lastWebhookEventId: args.webhookEventId || null,
     lastWebhookEventType: args.webhookEventType || null,

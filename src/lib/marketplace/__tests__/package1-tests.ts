@@ -15,6 +15,11 @@ import {
   emitMarketplaceReconciliationException,
   upsertMarketplacePaymentRecord,
 } from "../paymentLinkage";
+import { resolveCanonicalMarketplaceBusinessId } from "../businessAttribution";
+import {
+  buildMarketplaceBmevRecord,
+  upsertMarketplaceBmevRecord,
+} from "@/lib/economics/marketplaceBmev";
 
 type MockDoc = Record<string, any>;
 
@@ -86,7 +91,8 @@ async function decrementInventoryForTest(product: MockDoc, orderState: string) {
   const products = new MockCollection([product]);
   const inventory = resolveMarketplaceInventory(product);
   const update = buildMarketplaceInventoryDecrementUpdate(inventory);
-  const needsStockDecrement = orderState !== MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED;
+  const needsStockDecrement =
+    orderState !== MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED;
 
   if (!needsStockDecrement) return { ok: true, replay: true, product };
   if (!inventory.purchasable || !update) return { ok: false, product };
@@ -141,18 +147,30 @@ function testInventoryResolution() {
 
 async function testFulfillmentReplayAndConcurrency() {
   const replayProduct = { _id: "p1", stock: 3 };
-  const first = await decrementInventoryForTest(replayProduct, MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING);
+  const first = await decrementInventoryForTest(
+    replayProduct,
+    MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING,
+  );
   assert.equal(first.ok, true);
   assert.equal(replayProduct.stock, 2);
 
-  const replay = await decrementInventoryForTest(replayProduct, MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED);
+  const replay = await decrementInventoryForTest(
+    replayProduct,
+    MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED,
+  );
   assert.equal(replay.ok, true);
   assert.equal(replay.replay, true);
   assert.equal(replayProduct.stock, 2);
 
   const finalUnit = { _id: "p2", stock: 1 };
-  const one = await decrementInventoryForTest(finalUnit, MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING);
-  const two = await decrementInventoryForTest(finalUnit, MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING);
+  const one = await decrementInventoryForTest(
+    finalUnit,
+    MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING,
+  );
+  const two = await decrementInventoryForTest(
+    finalUnit,
+    MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING,
+  );
   assert.equal(one.ok, true);
   assert.equal(two.ok, false);
   assert.equal(finalUnit.stock, 0);
@@ -185,11 +203,17 @@ function testOrderLifecycle() {
   assert.equal(notStalePaid, false);
 
   assert.equal(
-    isMarketplaceSellerLiabilityOrder({ paymentStatus: "pending", sellerPayout: 880 }),
+    isMarketplaceSellerLiabilityOrder({
+      paymentStatus: "pending",
+      sellerPayout: 880,
+    }),
     false,
   );
   assert.equal(
-    isMarketplaceSellerLiabilityOrder({ paymentStatus: "paid", sellerPayout: 880 }),
+    isMarketplaceSellerLiabilityOrder({
+      paymentStatus: "paid",
+      sellerPayout: 880,
+    }),
     true,
   );
 
@@ -206,6 +230,7 @@ async function testPaymentLinkage() {
     orderId: "order_1",
     productId: "prod_1",
     sellerId: "seller_1",
+    businessId: "business_1",
     payoutMode: "destination_charge",
     amountTotal: 2500,
     currency: "usd",
@@ -218,6 +243,7 @@ async function testPaymentLinkage() {
   assert.equal(payment.type, "product");
   assert.equal(payment.orderId, "order_1");
   assert.equal(payment.metadata.orderId, "order_1");
+  assert.equal(payment.metadata.businessId, "business_1");
   assert.equal(payment.bweFee, 300);
   assert.equal(payment.payout, 2200);
 
@@ -237,6 +263,7 @@ async function testPaymentLinkage() {
     orderId: "order_linked",
     productId: "prod_linked",
     sellerId: "seller_linked",
+    businessId: "business_linked",
     payoutMode: "destination_charge",
     amountTotal: 1000,
     currency: "usd",
@@ -253,6 +280,7 @@ async function testPaymentLinkage() {
     orderId: "order_linked",
     productId: "prod_linked",
     sellerId: "seller_linked",
+    businessId: "business_linked",
     payoutMode: "destination_charge",
     amountTotal: 1000,
     currency: "usd",
@@ -265,6 +293,7 @@ async function testPaymentLinkage() {
   const payments = db.collection("payments").docs;
   assert.equal(payments.length, 1);
   assert.equal(payments[0].metadata.orderId, "order_linked");
+  assert.equal(payments[0].businessId, "business_linked");
   assert.equal(payments[0].bweFee, 120);
   assert.equal(payments[0].payout, 880);
 
@@ -291,8 +320,136 @@ async function testPaymentLinkage() {
 
   const flowEvents = db.collection("flow_events").docs;
   assert.equal(flowEvents.length, 2);
-  assert.equal(flowEvents[0].eventType, "marketplace_order_missing_on_paid_webhook");
-  assert.equal(flowEvents[1].eventType, "marketplace_payment_order_link_missing");
+  assert.equal(
+    flowEvents[0].eventType,
+    "marketplace_order_missing_on_paid_webhook",
+  );
+  assert.equal(
+    flowEvents[1].eventType,
+    "marketplace_payment_order_link_missing",
+  );
+}
+
+function testBusinessAttributionResolution() {
+  const fromProduct = resolveCanonicalMarketplaceBusinessId({
+    product: { businessId: "biz_product" },
+    seller: { businessId: "biz_seller" },
+  });
+  assert.equal(fromProduct.businessId, null);
+  assert.equal(fromProduct.source, "conflict");
+  assert.equal(fromProduct.deterministic, false);
+
+  const exactProduct = resolveCanonicalMarketplaceBusinessId({
+    product: { businessId: "biz_product" },
+    seller: {},
+  });
+  assert.equal(exactProduct.businessId, "biz_product");
+  assert.equal(exactProduct.source, "product.businessId");
+  assert.equal(exactProduct.deterministic, true);
+
+  const exactSeller = resolveCanonicalMarketplaceBusinessId({
+    product: {},
+    seller: { businessId: "biz_seller" },
+  });
+  assert.equal(exactSeller.businessId, "biz_seller");
+  assert.equal(exactSeller.source, "seller.businessId");
+  assert.equal(exactSeller.deterministic, true);
+}
+
+async function testMarketplaceBmevDeduplication() {
+  const record = buildMarketplaceBmevRecord({
+    orderId: "order_bmev_1",
+    stripeSessionId: "cs_bmev_1",
+    paymentIntentId: "pi_bmev_1",
+    productId: "prod_bmev_1",
+    sellerId: "seller_bmev_1",
+    businessId: "business_bmev_1",
+    buyerUserId: "buyer_bmev_1",
+    buyerEmail: "buyer@example.com",
+    subtotalCents: 5000,
+    shippingCents: 1200,
+    currency: "usd",
+    occurredAt: new Date("2026-01-03T00:00:00.000Z"),
+    webhookEventId: "evt_bmev_1",
+    webhookEventType: "checkout.session.completed",
+    paymentRecordId: "pay_bmev_1",
+    bweFeeCents: 600,
+    sellerProceedsCents: 4400,
+  });
+  assert.equal(record.economicTransactionId, "marketplace:order_bmev_1");
+  assert.equal(record.bmevAmountCents, 5000);
+  assert.equal(record.shippingAmountCents, 1200);
+  assert.equal(record.bweFeeCents, 600);
+  assert.equal(record.sellerProceedsCents, 4400);
+
+  const db = new MockDb();
+  await upsertMarketplaceBmevRecord({
+    db: db as any,
+    orderId: "order_bmev_1",
+    stripeSessionId: "cs_bmev_1",
+    paymentIntentId: "pi_bmev_1",
+    productId: "prod_bmev_1",
+    sellerId: "seller_bmev_1",
+    businessId: "business_bmev_1",
+    buyerUserId: "buyer_bmev_1",
+    buyerEmail: "buyer@example.com",
+    subtotalCents: 5000,
+    shippingCents: 1200,
+    currency: "usd",
+    occurredAt: new Date("2026-01-03T00:00:00.000Z"),
+    webhookEventId: "evt_bmev_1",
+    webhookEventType: "checkout.session.completed",
+    paymentRecordId: "pay_bmev_1",
+    bweFeeCents: 600,
+    sellerProceedsCents: 4400,
+  });
+  await upsertMarketplaceBmevRecord({
+    db: db as any,
+    orderId: "order_bmev_1",
+    stripeSessionId: "cs_bmev_1",
+    paymentIntentId: "pi_bmev_1",
+    productId: "prod_bmev_1",
+    sellerId: "seller_bmev_1",
+    businessId: "business_bmev_1",
+    buyerUserId: "buyer_bmev_1",
+    buyerEmail: "buyer@example.com",
+    subtotalCents: 5000,
+    shippingCents: 1200,
+    currency: "usd",
+    occurredAt: new Date("2026-01-03T00:00:00.000Z"),
+    webhookEventId: "evt_bmev_2",
+    webhookEventType: "checkout.session.async_payment_succeeded",
+    paymentRecordId: "pay_bmev_1",
+    bweFeeCents: 600,
+    sellerProceedsCents: 4400,
+  });
+  await upsertMarketplaceBmevRecord({
+    db: db as any,
+    orderId: "order_bmev_1",
+    stripeSessionId: "cs_bmev_1",
+    paymentIntentId: "pi_bmev_1",
+    productId: "prod_bmev_1",
+    sellerId: "seller_bmev_1",
+    businessId: "business_bmev_1",
+    buyerUserId: "buyer_bmev_1",
+    buyerEmail: "buyer@example.com",
+    subtotalCents: 5000,
+    shippingCents: 1200,
+    currency: "usd",
+    occurredAt: new Date("2026-01-03T00:00:00.000Z"),
+    webhookEventId: "evt_bmev_3",
+    webhookEventType: "payment_intent.succeeded",
+    paymentRecordId: "pay_bmev_1",
+    bweFeeCents: 600,
+    sellerProceedsCents: 4400,
+  });
+
+  const rows = db.collection("bmev_records").docs;
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].economicTransactionId, "marketplace:order_bmev_1");
+  assert.equal(rows[0].bmevAmountCents, 5000);
+  assert.equal(rows[0].shippingAmountCents, 1200);
+  assert.equal(rows[0].lastWebhookEventId, "evt_bmev_3");
 }
 
 function testScenarioExpectations() {
@@ -302,37 +459,67 @@ function testScenarioExpectations() {
     payoutStatus: "not_applicable",
     stripeSessionId: "cs_1",
   };
-  assert.equal(createdSuccess.orderState, MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING);
+  assert.equal(
+    createdSuccess.orderState,
+    MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING,
+  );
 
   const checkoutFailed = {
     orderState: MARKETPLACE_ORDER_STATES.CHECKOUT_FAILED,
     paymentStatus: "failed",
     payoutStatus: "not_applicable",
   };
-  assert.equal(checkoutFailed.orderState, MARKETPLACE_ORDER_STATES.CHECKOUT_FAILED);
+  assert.equal(
+    checkoutFailed.orderState,
+    MARKETPLACE_ORDER_STATES.CHECKOUT_FAILED,
+  );
 
-  const fallbackSuccess = { payoutMode: "platform_hold", orderState: MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING };
+  const fallbackSuccess = {
+    payoutMode: "platform_hold",
+    orderState: MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING,
+  };
   assert.equal(fallbackSuccess.payoutMode, "platform_hold");
 
   const bothFail = { orderState: MARKETPLACE_ORDER_STATES.CHECKOUT_FAILED };
   assert.equal(bothFail.orderState, MARKETPLACE_ORDER_STATES.CHECKOUT_FAILED);
 
-  const expired = { orderState: MARKETPLACE_ORDER_STATES.CHECKOUT_EXPIRED, paymentStatus: "expired" };
+  const expired = {
+    orderState: MARKETPLACE_ORDER_STATES.CHECKOUT_EXPIRED,
+    paymentStatus: "expired",
+  };
   assert.equal(expired.orderState, MARKETPLACE_ORDER_STATES.CHECKOUT_EXPIRED);
 
   const expirationReplay = clone(expired);
-  assert.equal(expirationReplay.orderState, MARKETPLACE_ORDER_STATES.CHECKOUT_EXPIRED);
+  assert.equal(
+    expirationReplay.orderState,
+    MARKETPLACE_ORDER_STATES.CHECKOUT_EXPIRED,
+  );
 
-  const paidBeforeExpiration = { orderState: MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED, paymentStatus: "paid" };
+  const paidBeforeExpiration = {
+    orderState: MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED,
+    paymentStatus: "paid",
+  };
   assert.equal(paidBeforeExpiration.paymentStatus, "paid");
 
   const expirationAfterPayment = clone(paidBeforeExpiration);
-  assert.equal(expirationAfterPayment.orderState, MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED);
+  assert.equal(
+    expirationAfterPayment.orderState,
+    MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED,
+  );
 
-  const unpaidLiability = isMarketplaceSellerLiabilityOrder({ paymentStatus: "pending", grossAmount: 1000, sellerPayout: 880 });
+  const unpaidLiability = isMarketplaceSellerLiabilityOrder({
+    paymentStatus: "pending",
+    grossAmount: 1000,
+    sellerPayout: 880,
+  });
   assert.equal(unpaidLiability, false);
 
-  const paidLiability = isMarketplaceSellerLiabilityOrder({ paymentStatus: "paid", grossAmount: 1000, sellerPayout: 880, paidAt: new Date() });
+  const paidLiability = isMarketplaceSellerLiabilityOrder({
+    paymentStatus: "paid",
+    grossAmount: 1000,
+    sellerPayout: 880,
+    paidAt: new Date(),
+  });
   assert.equal(paidLiability, true);
 
   const fee = buildMarketplaceProjectedAmounts(1000);
@@ -351,10 +538,16 @@ function testScenarioExpectations() {
   });
   assert.equal(replayWebhookPayment.metadata.orderId, "order_replay");
 
-  const missingOrder = { blocked: true, type: "marketplace_order_missing_on_paid_webhook" };
+  const missingOrder = {
+    blocked: true,
+    type: "marketplace_order_missing_on_paid_webhook",
+  };
   assert.equal(missingOrder.blocked, true);
 
-  const missingPaymentRelationship = { blocked: true, type: "marketplace_payment_order_link_missing" };
+  const missingPaymentRelationship = {
+    blocked: true,
+    type: "marketplace_payment_order_link_missing",
+  };
   assert.equal(missingPaymentRelationship.blocked, true);
 }
 
@@ -363,6 +556,8 @@ async function main() {
   await testFulfillmentReplayAndConcurrency();
   testOrderLifecycle();
   await testPaymentLinkage();
+  testBusinessAttributionResolution();
+  await testMarketplaceBmevDeduplication();
   testScenarioExpectations();
   console.log("package1-tests: ok");
 }

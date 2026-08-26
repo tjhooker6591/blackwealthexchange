@@ -11,6 +11,7 @@ import {
   emitMarketplaceReconciliationException,
   upsertMarketplacePaymentRecord,
 } from "@/lib/marketplace/paymentLinkage";
+import { upsertMarketplaceBmevRecord } from "@/lib/economics/marketplaceBmev";
 import {
   MARKETPLACE_ORDER_STATES,
   MARKETPLACE_PAYOUT_STATUSES,
@@ -2563,6 +2564,9 @@ export default async function webhookHandler(
         const reconciledSellerId =
           idToString(refreshedOrderRecord?.sellerId) ||
           asString((mergedMeta as any).sellerId);
+        const reconciledBusinessId =
+          idToString(refreshedOrderRecord?.businessId) ||
+          asString((mergedMeta as any).businessId);
 
         const paymentRecord = await upsertMarketplacePaymentRecord({
           db,
@@ -2572,6 +2576,7 @@ export default async function webhookHandler(
           orderId: targetOrderId,
           productId: reconciledProductId,
           sellerId: reconciledSellerId,
+          businessId: reconciledBusinessId || null,
           payoutMode: asString(refreshedOrderRecord?.payoutMode),
           amountTotal: deriveMarketplaceAmountTotal({
             session,
@@ -2657,6 +2662,35 @@ export default async function webhookHandler(
               `⚠️ Product order fulfillment blocked order=${targetOrderId} code=${fulfillment.code}`,
             );
           } else {
+            await upsertMarketplaceBmevRecord({
+              db,
+              orderId: targetOrderId,
+              stripeSessionId,
+              paymentIntentId: paymentIntentId || null,
+              productId: reconciledProductId,
+              sellerId: reconciledSellerId || null,
+              businessId: reconciledBusinessId || null,
+              buyerUserId: reconciledBuyerId || null,
+              buyerEmail: email || null,
+              subtotalCents: Number(
+                refreshedOrderRecord?.subtotalCents ??
+                  refreshedOrderRecord?.subtotal ??
+                  0,
+              ),
+              shippingCents: Number(
+                refreshedOrderRecord?.shippingCents ??
+                  refreshedOrderRecord?.shipping ??
+                  0,
+              ),
+              currency: session.currency || "usd",
+              occurredAt: paidAt,
+              webhookEventId: event.id,
+              webhookEventType: event.type,
+              paymentRecordId: stripeSessionId,
+              bweFeeCents: Number(paymentRecord?.bweFee ?? 0),
+              sellerProceedsCents: Number(paymentRecord?.payout ?? 0),
+            });
+
             await db.collection("payments").updateOne(
               { stripeSessionId },
               {
