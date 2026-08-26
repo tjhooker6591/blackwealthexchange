@@ -14,7 +14,7 @@ Last updated: 2026-08-26
 
 - CURRENT MASTER PLAN PHASE: `PHASE 1 — BWE EXPERIENCE 2.0`
 - CURRENT RELEASE COMPLETION: `67%`
-- CURRENT WORLD-CLASS INDEX: `358 / 1000`
+- CURRENT WORLD-CLASS INDEX: `363 / 1000`
 - WORLD-CLASS CLASSIFICATION: `FOUNDATION STAGE — trusted operational base forming, but far from world-class breadth`
 - REFINEMENT RULE: `2026-08-26 accepted hierarchy/density refinement does not add points by itself; keep the index at 341 unless new rubric evidence justifies movement`
 
@@ -61,22 +61,24 @@ Baseline release completion calculation before this workstream:
 
 ## Domain score baseline
 
-### Brand & Visual Authority — 32 / 80
+### Brand & Visual Authority — 33 / 80
 
 - Evidence:
   - shared visual language now spans the homepage, start-here, marketplace, product detail, nav, and footer
   - pricing and Black Card now follow the calmer Experience 2.0 visual system instead of the older heavier promotional treatment
   - music landing, creator join, and creator pricing now align with the same visual system while retaining a distinct creator-focused presentation
+  - financial literacy, learning, enrollment, and course dashboard now present a calmer product-grade learning experience instead of older marketing-heavy or utility-only layouts
   - premium dark/gold shell, typography, and trust cues are materially more cohesive
   - broader route-by-route adoption is still incomplete
 
-### Information Architecture & Navigation — 40 / 80
+### Information Architecture & Navigation — 41 / 80
 
 - Evidence:
   - global platform shell and reusable navigation are now in place across key public routes
   - homepage, /start-here, business directory, jobs, and Student Hub now present clearer buyer, business, seller, and opportunity pathways with less internal-facing language
   - pricing and Black Card now present clearer plan-to-tier mapping and cleaner decision paths into checkout and member destinations
   - music now presents a clearer listener-to-creator handoff and staged creator activation path across landing, onboarding, and pricing
+  - learning now presents clearer handoffs between overview, enrollment, dashboard, and public resources
   - deeper route hierarchy and cross-surface consistency remain incomplete
 
 ### Search & Discovery — 27 / 100
@@ -87,12 +89,13 @@ Baseline release completion calculation before this workstream:
   - music now gives creators and listeners a clearer discovery-to-action path instead of a generic promo page
   - discovery is still fragmented and not powered by a unified search model
 
-### Marketplace & Conversion — 42 / 100
+### Marketplace & Conversion — 43 / 100
 
 - Evidence:
   - marketplace browse, product detail, and checkout entry now surface clearer pricing, availability, and seller/business trust context
   - pricing and Black Card now make membership selection, card mapping, and checkout entry materially clearer without changing prices or Stripe behavior
   - music creator pricing and join now present a cleaner staged conversion path into the existing onboarding and checkout flow
+  - the learning lane now explains direct course purchase versus existing entitlement access more clearly without changing checkout contracts
   - paid fulfillment truth is still pending owner live proof
   - post-purchase trust and reorder/review loops are still incomplete
 
@@ -109,21 +112,23 @@ Baseline release completion calculation before this workstream:
   - limited dashboard and admin metrics exist
   - no true personalized home, recommendation system, or user-goal orchestration yet
 
-### Trust & Verification — 45 / 80
+### Trust & Verification — 46 / 80
 
 - Evidence:
   - claim/ownership and admin proof lanes are functioning
   - Black-owned verification rules are explicit and safeguarded
   - membership surfaces now explain Black Card access behavior and plan mapping more clearly, reducing ambiguity without changing the underlying contract
+  - learning now communicates access state, enrollment state, and locked dashboard behavior more consistently
   - trust signals are now materially stronger across the first Experience 2.0 consumer surfaces, but not yet consistent platform-wide
 
-### Mobile Experience — 20 / 70
+### Mobile Experience — 21 / 70
 
 - Evidence:
   - the first Experience 2.0 consumer block now renders with responsive navigation, stacked CTA hierarchy, and mobile-safe product purchase layout
   - a reusable responsive standard is now present on the first high-value public surfaces, including the compact homepage wayfinding block and Student Hub discovery surface
   - pricing and Black Card now use compact mobile plan/tier cards without horizontal overflow
   - music now carries the same mobile-safe hierarchy with verified no-overflow public proof
+  - learning and financial-literacy now use lighter mobile stacks and reduced scroll density compared with the older layouts
   - no native mobile capability
 
 ### Performance & Reliability — 26 / 80
@@ -155,7 +160,7 @@ Baseline release completion calculation before this workstream:
 
 ## Total
 
-- TOTAL SCORE: `358 / 1000`
+- TOTAL SCORE: `363 / 1000`
 
 ## Evidence anchors used for this baseline
 
@@ -167,6 +172,7 @@ Baseline release completion calculation before this workstream:
 - additional browser proof exists at `tmp/phase1-ui-proof-20260826-student-home-v2/`, which supports the limited navigation/discovery/mobile increase above
 - pricing + Black Card browser proof exists at `tmp/phase1-ui-proof-20260826-pricing-blackcard/`
 - music creator browser proof exists at `tmp/phase1-ui-proof-20260826-music/`
+- learning browser proof exists at `tmp/phase1-ui-proof-20260826-learning/`
 
 ## No-score items
 

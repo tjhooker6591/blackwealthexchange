@@ -6,7 +6,7 @@
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
 - CURRENT CONTROL HEAD: `1ec2aaa1931ca9a64f929d639b24394db99ec9ee`
-- LATEST RUNTIME HEAD: `706273a206c87a02987b4c5802a1ca458e1ed42a`
+- LATEST RUNTIME HEAD: `b9efc79a9c13a2ce8fbc8db397a7e30cbdc13ec4`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -22,8 +22,8 @@
 - WORLD-CLASS GAP REGISTER: `docs/BWE_WORLD_CLASS_GAP_REGISTER.md`
 - WORLD-CLASS MEASUREMENT HISTORY: `docs/BWE_WORLD_CLASS_MEASUREMENT_HISTORY.md`
 - WORLD-CLASS DECISION LOG: `docs/BWE_WORLD_CLASS_DECISION_LOG.md`
-- UNIQUE APPLICATION FILES SINCE 2026-08-06: `160`
-- UNIQUE APPLICATION FILES SINCE 81426-1453: `34`
+- UNIQUE APPLICATION FILES SINCE 2026-08-06: `163`
+- UNIQUE APPLICATION FILES SINCE 81426-1453: `37`
 - DB OPERATIONS: `35`
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
 - AUTH/ENV PARITY STATUS: `LOCAL PROOF COMPLETED — business-session role drift fixed; production-safe config parity remains partial`
@@ -36,7 +36,7 @@
 - INTERNAL PHASE 0: `COMPLETE`
 - EXTERNAL / OWNER PROOFS: `PENDING`
 - CURRENT BLOCKER: `no internal Phase 1 blocker; external owner-only BWE-10 live proof plus BWE-13 second-machine proof remain pending outside the current UI lane`
-- CURRENT NEXT WORK: `P1-03 / P1-04 learning + financial literacy and remaining consumer opportunity surfaces after the accepted music creator checkpoint`
+- CURRENT NEXT WORK: `P1-03 / P1-04 resources/articles and remaining consumer learning surfaces after the accepted financial literacy checkpoint`
 - BWE-10 OWNER ACTION: `PENDING — Pamfa hoodies owner-only live proof`
 - STRIPE STATUS: `existing architecture preserved`
 - REAL TRANSACTION RULE: `OWNER ONLY`
@@ -53,21 +53,22 @@
   - preserve the accepted Phase 1 homepage pathway + Student Hub runtime checkpoint `faff2cdfb6e556c8e8cbc5d35beececa74e16610`
   - preserve the accepted Phase 1 pricing + Black Card runtime checkpoint `fad902f66bdcfe6109e9e2cb2a5c85e0e958969b`
   - preserve the accepted Phase 1 music creator runtime checkpoint `706273a206c87a02987b4c5802a1ca458e1ed42a`
+  - preserve the accepted Phase 1 learning runtime checkpoint `b9efc79a9c13a2ce8fbc8db397a7e30cbdc13ec4`
   - preserve the existing Stripe checkout and webhook path
   - preserve the approved deterministic Pamfa attribution links:
     - `sellers/67fd9ed3acdef9011c60ff99 -> businessId 6a45de2d3278d888ed5d0730`
     - `products/680d23a3dc57cdf2efedf784 -> businessId 6a45de2d3278d888ed5d0730`
   - return exact owner-only live transaction instructions; do not execute the transaction autonomously
   - continue independent approved engineering in Phase 1 while owner proof is pending
-  - continue with P1-03 / P1-04 expansion after the accepted music creator checkpoint; do not propagate the pre-refinement density standard
-  - next live consumer-opportunity inspection lane already started in `src/pages/financial-literacy.tsx` and `src/pages/learning.tsx`
+  - continue with P1-03 / P1-04 expansion after the accepted financial literacy checkpoint; do not propagate the pre-refinement density standard
+  - next live consumer-opportunity inspection lane already started in `src/pages/resources/index.tsx` and `src/pages/resources/articles.tsx`
   - preserve the accepted compact homepage wayfinding treatment and Student Hub Experience 2.0 checkpoint
 - ENGINEERING RULE: `PHASE 1 ACTIVE — continue Experience 2.0 foundation work while BWE-10 owner proof and BWE-13 external proof remain pending`
 
 ## Master program anchors — 2026-08-25
 
 - CURRENT RELEASE COMPLETION: `67%`
-- CURRENT WORLD-CLASS INDEX: `358 / 1000`
+- CURRENT WORLD-CLASS INDEX: `363 / 1000`
 - PROGRAM ITEMS: `26`
 - WORLD-CLASS GAPS: `10`
 - OPEN P0: `0`
@@ -207,9 +208,9 @@ Interpret all workstream activity through that directive and its Revenue Gate be
 - **Status:** BLOCKED BY PAYMENT COMPLETION
 - **Entry point:** `/financial-literacy` (Get Lifetime Access / Enroll)
 - **Expected final outcome:** paid or free path completes; user gets course access/enrollment and correct destination.
-- **Current actual outcome:** both CTAs route correctly to Stripe; post-payment course access grant not fully proven in current canonical proof set.
+- **Current actual outcome:** `/financial-literacy`, `/learning`, `/course-enrollment`, and `/course-dashboard` now use the shared Experience 2.0 learning system with clearer access explanations, calmer module discovery, and preserved enrollment/dashboard route contracts; post-payment course access grant is still not fully proven in the current canonical proof set.
 - **Exact blocker:** payment-complete + access entitlement proof pending.
-- **Files/routes/endpoints involved:** `src/pages/financial-literacy.tsx`, `src/pages/api/stripe/checkout.ts`, `src/pages/api/courses/enroll.ts`, `src/pages/api/courses/verify-session.ts`, `src/pages/course-dashboard.tsx`.
+- **Files/routes/endpoints involved:** `src/pages/financial-literacy.tsx`, `src/pages/learning.tsx`, `src/pages/course-enrollment.tsx`, `src/pages/course-dashboard.tsx`, `src/pages/api/stripe/checkout.ts`, `src/pages/api/courses/enroll.ts`, `src/pages/api/courses/verify-session.ts`.
 - **Exact closure condition:** one canonical course purchase shows webhook/DB access grant and successful access to entitled course area.
 
 ## 6) Sponsorship purchase-to-fulfillment

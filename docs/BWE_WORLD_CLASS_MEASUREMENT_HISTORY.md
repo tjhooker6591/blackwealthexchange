@@ -294,6 +294,39 @@ Last updated: 2026-08-26
   - guest entry proof confirms `/music` loads and `/music/join` plus `/music/pricing` preserve the login boundary
   - next live consumer-opportunity lane is already started through inspection of `/financial-literacy` and `/learning`
 
+## Entry 2026-08-26 — Phase 1 learning and financial literacy checkpoint
+
+- WORKSTREAM: `P1-03 / P1-04 financial literacy, learning, enrollment, and course dashboard refinement`
+- SCORE BEFORE: `358 / 1000`
+- SCORE AFTER: `363 / 1000`
+- POINTS EARNED: `5`
+- RELEASE COMPLETION BEFORE: `67%`
+- RELEASE COMPLETION AFTER: `67%`
+- GAPS CLOSED: `0`
+- GAPS CREATED: `0`
+- PROGRAM ITEMS COMPLETED: `0`
+- NEW PROGRAM ITEMS IDENTIFIED: `0`
+- DEPENDENCIES CLOSED: `0`
+- ENGINEERING GAIN: `YES — the financial literacy overview, learning hub, enrollment, and dashboard now use the accepted Experience 2.0 system with clearer access states and calmer learning hierarchy`
+- EVIDENCE GAIN: `YES — browser proof now covers the updated learning surfaces, commercial-clarity copy, and guest dashboard redirect behavior`
+- METHODOLOGY ADJUSTMENT: `0`
+- REVENUE GAIN: `0`
+- REVENUE ENABLEMENT: `YES — the course path now explains direct purchase versus existing entitlement access more clearly while payment-complete proof remains pending`
+- REVENUE PROTECTION: `YES — existing learning content, entitlement checks, enrollment logic, and checkout routes were preserved`
+- EVIDENCE:
+  - runtime commit `b9efc79a9c13a2ce8fbc8db397a7e30cbdc13ec4`
+  - `src/pages/financial-literacy.tsx`
+  - `src/pages/learning.tsx`
+  - `src/pages/course-enrollment.tsx`
+  - `src/pages/course-dashboard.tsx`
+  - `tmp/phase1-ui-proof-20260826-learning/`
+  - `npm run typecheck`
+  - `node scripts/runtime-check.mjs`
+  - `node scripts/check-critical-paths.mjs`
+- NOTES:
+  - `/financial-literacy` now resolves the prior public-copy conflict by explicitly distinguishing direct course purchase from premium-linked entitlement access
+  - next live learning inspection lane is already started in `/resources` and `/resources/articles`
+
 ## Entry 2026-08-26 — Phase 1 discovery and opportunity expansion checkpoint
 
 - WORKSTREAM: `P1-03 / P1-04 homepage wayfinding + jobs/discovery expansion + Student Hub Experience 2.0`
