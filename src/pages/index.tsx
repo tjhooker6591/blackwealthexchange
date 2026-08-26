@@ -803,15 +803,13 @@ export default function Home() {
                   Black-owned business discovery and commerce
                 </div>
 
-                <h1 className="bwe-display-title mx-auto mt-3 max-w-[16ch]">
-                  Search Black-owned businesses and move into trusted economic
-                  action.
+                <h1 className="bwe-display-title mx-auto mt-3 max-w-[15ch]">
+                  Find Black-owned businesses. Shop. Connect. Build wealth.
                 </h1>
 
                 <p className="bwe-lead mx-auto mt-4 max-w-xl">
-                  One search entry. Four live scopes. Existing directory,
-                  marketplace, jobs, and student-opportunity systems stay intact
-                  underneath it.
+                  Search businesses, products, jobs, and opportunities across
+                  the Black Wealth Exchange.
                 </p>
               </div>
 
