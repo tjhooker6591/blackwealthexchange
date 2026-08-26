@@ -16,6 +16,7 @@ Last updated: 2026-08-26
 - CURRENT RELEASE COMPLETION: `67%`
 - CURRENT WORLD-CLASS INDEX: `341 / 1000`
 - WORLD-CLASS CLASSIFICATION: `FOUNDATION STAGE — trusted operational base forming, but far from world-class breadth`
+- REFINEMENT RULE: `2026-08-26 accepted hierarchy/density refinement does not add points by itself; keep the index at 341 unless new rubric evidence justifies movement`
 
 ## Release completion method
 
@@ -143,7 +144,7 @@ Baseline release completion calculation before this workstream:
 
 ## Total
 
-- TOTAL SCORE: `313 / 1000`
+- TOTAL SCORE: `341 / 1000`
 
 ## Evidence anchors used for this baseline
 
@@ -151,6 +152,7 @@ Baseline release completion calculation before this workstream:
 - `docs/BWE_RUNNING_APPLICATION_FILE_CHANGES_2026-08-06_FORWARD.md`
 - `docs/81426-1453_DB_TRACKING.md`
 - authenticated admin proof pass completed on 2026-08-25 with 7/7 targeted routes passing
+- refinement browser proof exists at `tmp/phase1-ui-proof-20260826-refined/`, but does not change the canonical score
 
 ## No-score items
 

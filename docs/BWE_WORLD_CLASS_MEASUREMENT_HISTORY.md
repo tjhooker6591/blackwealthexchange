@@ -1,6 +1,6 @@
 # BWE World-Class Measurement History
 
-Last updated: 2026-08-25
+Last updated: 2026-08-26
 
 ## Entry 2026-08-25 — Master program baseline established
 
@@ -199,3 +199,34 @@ Last updated: 2026-08-25
 - NOTES:
   - release completion does not move because this work is Phase 1 experience implementation, not unresolved Phase 0 release-scope closure
   - BI-1 and ES-0 remain blocked on owner live proof rather than UI readiness
+
+## Entry 2026-08-26 — Phase 1 consumer refinement checkpoint
+
+- WORKSTREAM: `P1-02 refinement / calm hierarchy, lower density, preserve functionality`
+- SCORE BEFORE: `341 / 1000`
+- SCORE AFTER: `341 / 1000`
+- POINTS EARNED: `0`
+- RELEASE COMPLETION BEFORE: `67%`
+- RELEASE COMPLETION AFTER: `67%`
+- GAPS CLOSED: `0`
+- GAPS CREATED: `0`
+- PROGRAM ITEMS COMPLETED: `0`
+- NEW PROGRAM ITEMS IDENTIFIED: `0`
+- DEPENDENCIES CLOSED: `0`
+- ENGINEERING GAIN: `YES — accepted homepage, start-here, marketplace, and product-detail hierarchy was materially refined without reopening Phase 0 or changing runtime business logic`
+- EVIDENCE GAIN: `YES — refreshed desktop/mobile browser proof captured for the refined consumer surfaces`
+- METHODOLOGY ADJUSTMENT: `0`
+- REVENUE GAIN: `0`
+- REVENUE ENABLEMENT: `UNCHANGED — checkout entry remains clearer, but no new paid proof exists`
+- REVENUE PROTECTION: `YES — Stripe architecture, checkout path, and owner-only live proof rules remain preserved`
+- EVIDENCE:
+  - runtime commit `ac8831a69a5d510bb356aab3d0fd0490a135e6d6`
+  - `src/styles/globals.css`
+  - `src/pages/index.tsx`
+  - `src/pages/start-here.tsx`
+  - `src/pages/marketplace/index.tsx`
+  - `src/pages/marketplace/product/[id].tsx`
+  - browser proof in `tmp/phase1-ui-proof-20260826-refined/`
+- NOTES:
+  - accepted owner feedback required calmer typography, lower density, and fewer equally weighted containers before broader rollout
+  - this checkpoint improves implementation quality but does not justify additional world-class points under the current rubric
