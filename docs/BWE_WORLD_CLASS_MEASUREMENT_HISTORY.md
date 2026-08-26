@@ -262,6 +262,38 @@ Last updated: 2026-08-26
   - this checkpoint improves commercial clarity and cross-surface cohesion without changing the underlying membership contract
   - BWE-10 owner transaction remains pending and is not blocked by this Experience 2.0 lane
 
+## Entry 2026-08-26 — Phase 1 music creator experience checkpoint
+
+- WORKSTREAM: `P1-03 / P1-04 music creator entry, onboarding, and pricing refinement`
+- SCORE BEFORE: `353 / 1000`
+- SCORE AFTER: `358 / 1000`
+- POINTS EARNED: `5`
+- RELEASE COMPLETION BEFORE: `67%`
+- RELEASE COMPLETION AFTER: `67%`
+- GAPS CLOSED: `0`
+- GAPS CREATED: `0`
+- PROGRAM ITEMS COMPLETED: `0`
+- NEW PROGRAM ITEMS IDENTIFIED: `0`
+- DEPENDENCIES CLOSED: `0`
+- ENGINEERING GAIN: `YES — /music, /music/join, and /music/pricing now follow the accepted Experience 2.0 standard while preserving the staged creator onboarding and checkout contract`
+- EVIDENCE GAIN: `YES — browser proof, route checks, and guest-boundary redirects now cover the canonical music entry surfaces`
+- METHODOLOGY ADJUSTMENT: `0`
+- REVENUE GAIN: `0`
+- REVENUE ENABLEMENT: `YES — music creator onboarding and pricing now communicate the existing activation sequence more clearly while live payment proof remains pending`
+- REVENUE PROTECTION: `YES — creator pricing, onboarding rules, gating, and Stripe checkout path were preserved`
+- EVIDENCE:
+  - runtime commit `706273a206c87a02987b4c5802a1ca458e1ed42a`
+  - `src/pages/music.tsx`
+  - `src/pages/music/join.tsx`
+  - `src/pages/music/pricing.tsx`
+  - `tmp/phase1-ui-proof-20260826-music/`
+  - `npm run typecheck`
+  - `node scripts/runtime-check.mjs`
+  - `node scripts/check-critical-paths.mjs`
+- NOTES:
+  - guest entry proof confirms `/music` loads and `/music/join` plus `/music/pricing` preserve the login boundary
+  - next live consumer-opportunity lane is already started through inspection of `/financial-literacy` and `/learning`
+
 ## Entry 2026-08-26 — Phase 1 discovery and opportunity expansion checkpoint
 
 - WORKSTREAM: `P1-03 / P1-04 homepage wayfinding + jobs/discovery expansion + Student Hub Experience 2.0`

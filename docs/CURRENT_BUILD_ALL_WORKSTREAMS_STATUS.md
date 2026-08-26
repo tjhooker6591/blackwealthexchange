@@ -6,7 +6,7 @@
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
 - CURRENT CONTROL HEAD: `1ec2aaa1931ca9a64f929d639b24394db99ec9ee`
-- LATEST RUNTIME HEAD: `fad902f66bdcfe6109e9e2cb2a5c85e0e958969b`
+- LATEST RUNTIME HEAD: `706273a206c87a02987b4c5802a1ca458e1ed42a`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -22,8 +22,8 @@
 - WORLD-CLASS GAP REGISTER: `docs/BWE_WORLD_CLASS_GAP_REGISTER.md`
 - WORLD-CLASS MEASUREMENT HISTORY: `docs/BWE_WORLD_CLASS_MEASUREMENT_HISTORY.md`
 - WORLD-CLASS DECISION LOG: `docs/BWE_WORLD_CLASS_DECISION_LOG.md`
-- UNIQUE APPLICATION FILES SINCE 2026-08-06: `157`
-- UNIQUE APPLICATION FILES SINCE 81426-1453: `31`
+- UNIQUE APPLICATION FILES SINCE 2026-08-06: `160`
+- UNIQUE APPLICATION FILES SINCE 81426-1453: `34`
 - DB OPERATIONS: `35`
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
 - AUTH/ENV PARITY STATUS: `LOCAL PROOF COMPLETED — business-session role drift fixed; production-safe config parity remains partial`
@@ -36,7 +36,7 @@
 - INTERNAL PHASE 0: `COMPLETE`
 - EXTERNAL / OWNER PROOFS: `PENDING`
 - CURRENT BLOCKER: `no internal Phase 1 blocker; external owner-only BWE-10 live proof plus BWE-13 second-machine proof remain pending outside the current UI lane`
-- CURRENT NEXT WORK: `P1-03 / P1-04 remaining consumer opportunity surfaces after the accepted pricing + Black Card Experience 2.0 checkpoint`
+- CURRENT NEXT WORK: `P1-03 / P1-04 learning + financial literacy and remaining consumer opportunity surfaces after the accepted music creator checkpoint`
 - BWE-10 OWNER ACTION: `PENDING — Pamfa hoodies owner-only live proof`
 - STRIPE STATUS: `existing architecture preserved`
 - REAL TRANSACTION RULE: `OWNER ONLY`
@@ -52,20 +52,22 @@
   - preserve the accepted Phase 1 discovery/jobs runtime checkpoint `aec329ca6c15a053ede2f256cea686670d13afdc`
   - preserve the accepted Phase 1 homepage pathway + Student Hub runtime checkpoint `faff2cdfb6e556c8e8cbc5d35beececa74e16610`
   - preserve the accepted Phase 1 pricing + Black Card runtime checkpoint `fad902f66bdcfe6109e9e2cb2a5c85e0e958969b`
+  - preserve the accepted Phase 1 music creator runtime checkpoint `706273a206c87a02987b4c5802a1ca458e1ed42a`
   - preserve the existing Stripe checkout and webhook path
   - preserve the approved deterministic Pamfa attribution links:
     - `sellers/67fd9ed3acdef9011c60ff99 -> businessId 6a45de2d3278d888ed5d0730`
     - `products/680d23a3dc57cdf2efedf784 -> businessId 6a45de2d3278d888ed5d0730`
   - return exact owner-only live transaction instructions; do not execute the transaction autonomously
   - continue independent approved engineering in Phase 1 while owner proof is pending
-  - continue with P1-03 / P1-04 expansion after the accepted pricing + Black Card checkpoint; do not propagate the pre-refinement density standard
+  - continue with P1-03 / P1-04 expansion after the accepted music creator checkpoint; do not propagate the pre-refinement density standard
+  - next live consumer-opportunity inspection lane already started in `src/pages/financial-literacy.tsx` and `src/pages/learning.tsx`
   - preserve the accepted compact homepage wayfinding treatment and Student Hub Experience 2.0 checkpoint
 - ENGINEERING RULE: `PHASE 1 ACTIVE — continue Experience 2.0 foundation work while BWE-10 owner proof and BWE-13 external proof remain pending`
 
 ## Master program anchors — 2026-08-25
 
 - CURRENT RELEASE COMPLETION: `67%`
-- CURRENT WORLD-CLASS INDEX: `353 / 1000`
+- CURRENT WORLD-CLASS INDEX: `358 / 1000`
 - PROGRAM ITEMS: `26`
 - WORLD-CLASS GAPS: `10`
 - OPEN P0: `0`
