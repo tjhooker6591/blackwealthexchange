@@ -4,11 +4,22 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { Space_Grotesk, Source_Serif_4 } from "next/font/google";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/footer";
 import { SessionProvider } from "next-auth/react";
 import "leaflet/dist/leaflet.css";
+
+const platformSans = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-platform-sans",
+});
+
+const platformSerif = Source_Serif_4({
+  subsets: ["latin"],
+  variable: "--font-platform-serif",
+});
 
 export default function App({
   Component,
@@ -90,17 +101,15 @@ export default function App({
         <link rel="icon" href="/favicon.png" type="image/png" />
         <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
-
-      {/* Global Header / Navigation */}
-      <NavBar />
-
-      {/* Page Content */}
-      <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
-        <Component {...pageProps} />
-      </main>
-
-      {/* Global Footer */}
-      <Footer />
+      <div
+        className={`${platformSans.variable} ${platformSerif.variable} bwe-app-shell`}
+      >
+        <NavBar />
+        <main className="bwe-page-shell">
+          <Component {...pageProps} />
+        </main>
+        <Footer />
+      </div>
     </SessionProvider>
   );
 }

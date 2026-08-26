@@ -153,7 +153,7 @@ Every major project should report:
 
 ### P0-04 — Auth / environment parity
 
-- STATE: `IN PROGRESS`
+- STATE: `EXTERNAL PROOF PENDING`
 - PHASE: `PHASE 0`
 - DOMAIN: `Identity & Accounts`
 - WORK TYPE: `PLATFORM / ENGINEERING`, `SECURITY`, `EXTERNAL PROOF`
@@ -161,7 +161,7 @@ Every major project should report:
 - WORLD-CLASS SCOPE: `NO`
 - DEPENDENCIES: `current localhost recovery and admin proof baseline`
 - BLOCKERS: `preview/production actual env values are not safely verifiable from this machine; second-machine proof still pending`
-- NEXT ACTION: `preserve the fixed business-session role behavior and close cross-machine / deploy-target parity evidence`
+- NEXT ACTION: `preserve the fixed business-session role behavior and wait for external parity evidence`
 - OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `50`
 - POINTS EARNED: `0`
@@ -193,7 +193,7 @@ Every major project should report:
 - WORLD-CLASS SCOPE: `NO`
 - DEPENDENCIES: `owner approval for real payment activity`
 - BLOCKERS: `cannot complete without explicit owner authorization and owner-executed legitimate transaction evidence`
-- NEXT ACTION: `preserve the existing checkout/webhook flow, prove readiness around it, return exact owner-only transaction steps, then wait`
+- NEXT ACTION: `preserve the existing checkout/webhook flow, keep internal transaction readiness at GO, return exact owner-only transaction steps, then wait for live proof`
 - OWNER DECISION REQUIRED: `YES`
 - POINTS AVAILABLE: `60`
 - POINTS EARNED: `0`
@@ -217,15 +217,15 @@ Every major project should report:
 
 ### P0-08 — Production readiness and release closure
 
-- STATE: `IN PROGRESS`
+- STATE: `EXTERNAL PROOF PENDING`
 - PHASE: `PHASE 0`
 - DOMAIN: `Operations`
 - WORK TYPE: `OPERATIONS`, `PLATFORM / ENGINEERING`, `FUNCTIONAL`
 - RELEASE SCOPE: `YES`
 - WORLD-CLASS SCOPE: `NO`
 - DEPENDENCIES: `P0-04`, `P0-05`, `P0-06`
-- BLOCKERS: `release-closing proofs are still open`
-- NEXT ACTION: `close parity and paid proof gates`
+- BLOCKERS: `release-closing proofs are still open and external`
+- NEXT ACTION: `hold release closure while external proofs are pending and continue approved Phase 1 execution`
 - OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `50`
 - POINTS EARNED: `20`
@@ -249,15 +249,15 @@ Every major project should report:
 
 ### P1-01 — Master design system
 
-- STATE: `READY`
+- STATE: `IN PROGRESS`
 - PHASE: `PHASE 1`
 - DOMAIN: `Brand & Visual Authority`
 - WORK TYPE: `DESIGN`, `PLATFORM / ENGINEERING`
 - RELEASE SCOPE: `NO`
 - WORLD-CLASS SCOPE: `YES`
-- DEPENDENCIES: `Phase 0 closure`
-- BLOCKERS: `Phase 0 gate`
-- NEXT ACTION: `define tokens, typography, spacing, buttons, forms, cards, states`
+- DEPENDENCIES: `internal Phase 0 completion`
+- BLOCKERS: `none for approved internal execution`
+- NEXT ACTION: `implement tokens, typography, spacing, buttons, forms, cards, and states in production shell`
 - OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `80`
 - POINTS EARNED: `0`
@@ -265,15 +265,15 @@ Every major project should report:
 
 ### P1-02 — Global platform navigation and shell
 
-- STATE: `READY`
+- STATE: `IN PROGRESS`
 - PHASE: `PHASE 1`
 - DOMAIN: `Information Architecture & Navigation`
 - WORK TYPE: `DESIGN`, `FUNCTIONAL`, `PLATFORM / ENGINEERING`
 - RELEASE SCOPE: `NO`
 - WORLD-CLASS SCOPE: `YES`
 - DEPENDENCIES: `P1-01`
-- BLOCKERS: `Phase 0 gate`
-- NEXT ACTION: `define global nav, platform shell, route hierarchy, persistent action model`
+- BLOCKERS: `none for approved internal execution`
+- NEXT ACTION: `modernize global nav, platform shell, and persistent action model while preserving existing routes and flows`
 - OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `75`
 - POINTS EARNED: `0`
@@ -288,7 +288,7 @@ Every major project should report:
 - RELEASE SCOPE: `NO`
 - WORLD-CLASS SCOPE: `YES`
 - DEPENDENCIES: `P1-01`, `P1-02`
-- BLOCKERS: `Phase 0 gate`
+- BLOCKERS: `depends on P1-01 and P1-02 completion`
 - NEXT ACTION: `define responsive layout, spacing, and interaction standards`
 - OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `60`

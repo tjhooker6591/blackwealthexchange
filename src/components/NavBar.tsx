@@ -71,9 +71,28 @@ export default function NavBar() {
   return (
     <nav
       ref={navRef}
-      className="relative z-50 border-b border-white/5 bg-black text-white"
+      className="sticky top-0 z-50 border-b border-[var(--border-soft)] bg-[rgba(7,9,14,0.82)] text-white backdrop-blur-xl"
     >
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+      <div className="border-b border-white/5 bg-[linear-gradient(90deg,rgba(212,175,55,0.14),rgba(212,175,55,0.03),transparent)]">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2">
+          <div className="flex items-center gap-2 text-[11px] font-medium text-white/70">
+            <span className="bwe-status-dot" aria-hidden="true" />
+            <span>
+              Phase 1 foundation active. Proven marketplace and trust flows
+              preserved.
+            </span>
+          </div>
+          <Link
+            href="/marketplace"
+            onClick={handleItemClick}
+            className="bwe-focus-ring hidden rounded-full border border-[var(--border-soft)] px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[var(--accent)] hover:border-[var(--border-strong)] hover:bg-white/5 md:inline-flex"
+          >
+            Shop Black-owned
+          </Link>
+        </div>
+      </div>
+
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         <Link
           href="/"
           onClick={handleItemClick}
@@ -84,13 +103,13 @@ export default function NavBar() {
             alt="BWE Logo"
             width={36}
             height={36}
-            className="h-9 w-9 shrink-0 object-contain"
+            className="h-9 w-9 shrink-0 rounded-2xl border border-[var(--border-soft)] bg-white/5 p-1 object-contain shadow-[0_10px_30px_rgba(0,0,0,0.35)]"
             priority
           />
-          <span className="hidden truncate text-base font-extrabold text-[#D4AF37] xl:inline">
+          <span className="hidden truncate text-base font-extrabold tracking-[-0.04em] text-[#D4AF37] xl:inline">
             Black Wealth Exchange
           </span>
-          <span className="truncate text-base font-extrabold text-[#D4AF37] xl:hidden">
+          <span className="truncate text-base font-extrabold tracking-[-0.04em] text-[#D4AF37] xl:hidden">
             BWE
           </span>
         </Link>
@@ -293,7 +312,7 @@ export default function NavBar() {
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-nav-menu"
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-[#D4AF37]/50 bg-black px-4 text-sm font-extrabold text-[#D4AF37] hover:bg-[#D4AF37]/10 lg:hidden"
+          className="bwe-focus-ring inline-flex h-10 items-center justify-center gap-2 rounded-full border border-[#D4AF37]/50 bg-black/70 px-4 text-sm font-extrabold text-[#D4AF37] hover:bg-[#D4AF37]/10 lg:hidden"
         >
           <svg
             className="h-4 w-4 shrink-0"
@@ -324,9 +343,9 @@ export default function NavBar() {
       {mobileMenuOpen && (
         <div
           id="mobile-nav-menu"
-          className="border-t border-[#D4AF37]/20 bg-black/95 px-4 pb-3 pt-2 lg:hidden"
+          className="border-t border-[#D4AF37]/20 bg-[rgba(7,9,14,0.96)] px-4 pb-4 pt-3 lg:hidden"
         >
-          <div className="space-y-2 rounded-xl border border-white/10 bg-white/[0.03] p-3">
+          <div className="bwe-shell-panel space-y-2 rounded-[24px] p-3">
             <div>
               <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#D4AF37]/90">
                 Primary

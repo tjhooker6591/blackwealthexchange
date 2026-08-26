@@ -2,7 +2,7 @@
 
 ## CURRENT CHECKPOINT — 2026-08-26
 
-- PROGRAM PHASE: `PHASE 0 — RELEASE STABILIZATION`
+- PROGRAM PHASE: `PHASE 1 — BWE EXPERIENCE 2.0 (Phase 0 internal execution complete; external proofs still pending)`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
 - CURRENT CONTROL HEAD: `1ec2aaa1931ca9a64f929d639b24394db99ec9ee`
@@ -13,7 +13,7 @@
 - SAFE DETERMINISTIC DB WORK REMAINING: `NO`
 - OPEN OWNER-DATA DECISIONS:
   - applicants duplicate email-group disposition for one three-row legacy/public-apply cluster
-  - Pamfa seller-to-business canonical attribution remains ambiguous for the current marketplace proof candidate and requires owner review
+  - Pamfa canonical attribution is resolved for the approved seller/product pair; broader historical Pamfa cleanup remains intentionally out of scope
 - DB TRACKING LEDGER: `docs/81426-1453_DB_TRACKING.md`
 - RUNNING FILE LEDGER: `docs/BWE_RUNNING_APPLICATION_FILE_CHANGES_2026-08-06_FORWARD.md`
 - WORLD-CLASS MASTER PLAN: `docs/BWE_WORLD_CLASS_PLATFORM_MASTER_PLAN.md`
@@ -22,16 +22,22 @@
 - WORLD-CLASS GAP REGISTER: `docs/BWE_WORLD_CLASS_GAP_REGISTER.md`
 - WORLD-CLASS MEASUREMENT HISTORY: `docs/BWE_WORLD_CLASS_MEASUREMENT_HISTORY.md`
 - WORLD-CLASS DECISION LOG: `docs/BWE_WORLD_CLASS_DECISION_LOG.md`
-- UNIQUE APPLICATION FILES SINCE 2026-08-06: `150`
-- UNIQUE APPLICATION FILES SINCE 81426-1453: `22`
+- UNIQUE APPLICATION FILES SINCE 2026-08-06: `155`
+- UNIQUE APPLICATION FILES SINCE 81426-1453: `27`
+- DB OPERATIONS: `35`
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
 - AUTH/ENV PARITY STATUS: `LOCAL PROOF COMPLETED — business-session role drift fixed; production-safe config parity remains partial`
-- BWE-10 STATUS: `NO-GO — existing Stripe architecture preserved; owner-only transaction remains blocked on canonical Pamfa attribution truth and owner-controlled proof`
-- PAYMENT PROOF STATUS: `NO-GO — preservation-first remediation committed; owner-only transaction still blocked on deterministic business attribution and owner-controlled Stripe runtime proof`
+- BWE-10 INTERNAL TRANSACTION READINESS: `GO`
+- OWNER TRANSACTION: `PENDING`
+- BWE-10 LIVE PROOF: `PENDING`
+- PAYMENT PROOF STATUS: `READY FOR OWNER EXECUTION — existing Stripe architecture preserved; live owner-only proof still pending`
 - CROSS-MACHINE PARITY STATUS: `EXTERNAL PROOF PENDING`
 - CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
-- CURRENT BLOCKER: `Pamfa seller -> business canonical attribution ambiguity`
-- CURRENT NEXT WORK: `Pamfa seller -> business owner decision packet`
+- INTERNAL PHASE 0: `COMPLETE`
+- EXTERNAL / OWNER PROOFS: `PENDING`
+- CURRENT BLOCKER: `external owner-only BWE-10 live proof plus BWE-13 second-machine proof`
+- CURRENT NEXT WORK: `P1-01 / P1-02 Experience 2.0 foundation shell while BWE-10 owner action remains pending`
+- BWE-10 OWNER ACTION: `PENDING — Pamfa hoodies owner-only live proof`
 - STRIPE STATUS: `existing architecture preserved`
 - REAL TRANSACTION RULE: `OWNER ONLY`
 - EXACT RESUME ACTION:
@@ -42,13 +48,12 @@
   - restore and verify localhost on `127.0.0.1:3000`
   - preserve runtime payment checkpoint `665a1193d180d9c3c2bc79dda6bba8310d477416`
   - preserve the existing Stripe checkout and webhook path
-  - assemble the read-only Pamfa seller -> business owner decision packet
-  - do not write `seller.businessId`
-  - do not write `product.businessId`
-  - do not mutate MongoDB
-  - do not execute Stripe transactions
-  - after owner decision resolves canonical attribution, return owner-only proof instructions if and only if readiness reaches GO
-- ENGINEERING RULE: `PHASE 0 CONTINUES — PAMFA ATTRIBUTION DECISION PACKET NEXT`
+  - preserve the approved deterministic Pamfa attribution links:
+    - `sellers/67fd9ed3acdef9011c60ff99 -> businessId 6a45de2d3278d888ed5d0730`
+    - `products/680d23a3dc57cdf2efedf784 -> businessId 6a45de2d3278d888ed5d0730`
+  - return exact owner-only live transaction instructions; do not execute the transaction autonomously
+  - continue independent approved engineering in Phase 1 while owner proof is pending
+- ENGINEERING RULE: `PHASE 1 ACTIVE — continue Experience 2.0 foundation work while BWE-10 owner proof and BWE-13 external proof remain pending`
 
 ## Master program anchors — 2026-08-25
 
@@ -63,6 +68,8 @@
 - BWE-13: `EXTERNAL PROOF PENDING`
 - BUSINESS INDEPENDENCE: `BI-0 — PLATFORM PRE-REVENUE / UNPROVEN`
 - BMEV: `UNVERIFIED / NOT YET INSTRUMENTED`
+- BI-1: `NOT ACHIEVED — owner live proof pending`
+- ES-0: `NOT ACHIEVED — owner live proof pending`
 
 ## Compact checkpoint — 2026-08-12
 
