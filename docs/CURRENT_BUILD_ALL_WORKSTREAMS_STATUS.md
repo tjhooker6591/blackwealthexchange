@@ -1,12 +1,12 @@
 # Current Build — Canonical All-Workstreams Status
 
-## CURRENT CHECKPOINT — 2026-08-26
+## CURRENT CHECKPOINT — 2026-08-27
 
 - PROGRAM PHASE: `PHASE 1 — BWE EXPERIENCE 2.0 (Phase 0 internal execution complete; external proofs still pending)`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- CURRENT CONTROL HEAD: `1ec2aaa1931ca9a64f929d639b24394db99ec9ee`
-- LATEST RUNTIME HEAD: `b9efc79a9c13a2ce8fbc8db397a7e30cbdc13ec4`
+- CURRENT CONTROL HEAD: `03afd4b7ba5a713d723301326c783259912f88f6`
+- LATEST RUNTIME HEAD: `94b0f45957a48e1100445e98ba1c2509e9eda223`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -22,8 +22,8 @@
 - WORLD-CLASS GAP REGISTER: `docs/BWE_WORLD_CLASS_GAP_REGISTER.md`
 - WORLD-CLASS MEASUREMENT HISTORY: `docs/BWE_WORLD_CLASS_MEASUREMENT_HISTORY.md`
 - WORLD-CLASS DECISION LOG: `docs/BWE_WORLD_CLASS_DECISION_LOG.md`
-- UNIQUE APPLICATION FILES SINCE 2026-08-06: `163`
-- UNIQUE APPLICATION FILES SINCE 81426-1453: `37`
+- UNIQUE APPLICATION FILES SINCE 2026-08-06: `165`
+- UNIQUE APPLICATION FILES SINCE 81426-1453: `39`
 - DB OPERATIONS: `35`
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
 - AUTH/ENV PARITY STATUS: `LOCAL PROOF COMPLETED — business-session role drift fixed; production-safe config parity remains partial`
@@ -35,8 +35,8 @@
 - CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
 - INTERNAL PHASE 0: `COMPLETE`
 - EXTERNAL / OWNER PROOFS: `PENDING`
-- CURRENT BLOCKER: `no internal Phase 1 blocker; external owner-only BWE-10 live proof plus BWE-13 second-machine proof remain pending outside the current UI lane`
-- CURRENT NEXT WORK: `P1-03 / P1-04 resources/articles and remaining consumer learning surfaces after the accepted financial literacy checkpoint`
+- CURRENT BLOCKER: `intentional owner review hold for the 16-day file manifest after the accepted resources/articles checkpoint; external owner-only BWE-10 live proof plus BWE-13 second-machine proof still remain pending outside the current UI lane`
+- CURRENT NEXT WORK: `owner review of the completed resources/articles checkpoint plus the exact 16-day Git-derived file manifest before the next Phase 1 surface resumes`
 - BWE-10 OWNER ACTION: `PENDING — Pamfa hoodies owner-only live proof`
 - STRIPE STATUS: `existing architecture preserved`
 - REAL TRANSACTION RULE: `OWNER ONLY`
@@ -54,14 +54,15 @@
   - preserve the accepted Phase 1 pricing + Black Card runtime checkpoint `fad902f66bdcfe6109e9e2cb2a5c85e0e958969b`
   - preserve the accepted Phase 1 music creator runtime checkpoint `706273a206c87a02987b4c5802a1ca458e1ed42a`
   - preserve the accepted Phase 1 learning runtime checkpoint `b9efc79a9c13a2ce8fbc8db397a7e30cbdc13ec4`
+  - preserve the accepted Phase 1 resources/articles + homepage hero copy runtime checkpoint `94b0f45957a48e1100445e98ba1c2509e9eda223`
   - preserve the existing Stripe checkout and webhook path
   - preserve the approved deterministic Pamfa attribution links:
     - `sellers/67fd9ed3acdef9011c60ff99 -> businessId 6a45de2d3278d888ed5d0730`
     - `products/680d23a3dc57cdf2efedf784 -> businessId 6a45de2d3278d888ed5d0730`
   - return exact owner-only live transaction instructions; do not execute the transaction autonomously
   - continue independent approved engineering in Phase 1 while owner proof is pending
-  - continue with P1-03 / P1-04 expansion after the accepted financial literacy checkpoint; do not propagate the pre-refinement density standard
-  - next live consumer-opportunity inspection lane already started in `src/pages/resources/index.tsx` and `src/pages/resources/articles.tsx`
+  - preserve the completed resources/articles Experience 2.0 lane and the corrected public homepage hero copy
+  - stop after the exact 16-day manifest boundary so the owner can review the full touched-file inventory before the next runtime lane
   - preserve the accepted compact homepage wayfinding treatment and Student Hub Experience 2.0 checkpoint
 - ENGINEERING RULE: `PHASE 1 ACTIVE — continue Experience 2.0 foundation work while BWE-10 owner proof and BWE-13 external proof remain pending`
 
