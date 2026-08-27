@@ -5,8 +5,8 @@
 - PROGRAM PHASE: `PHASE 1 — BWE EXPERIENCE 2.0 (Phase 0 internal execution complete; external proofs still pending)`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- CURRENT CONTROL HEAD: `03afd4b7ba5a713d723301326c783259912f88f6`
-- LATEST RUNTIME HEAD: `94b0f45957a48e1100445e98ba1c2509e9eda223`
+- CURRENT CONTROL HEAD: `see latest docs(control) baseline commit on friday-release-candidate`
+- LATEST RUNTIME HEAD: `80c971734635b57b2921a0b31918acb5868faa8d`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -35,8 +35,8 @@
 - CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
 - INTERNAL PHASE 0: `COMPLETE`
 - EXTERNAL / OWNER PROOFS: `PENDING`
-- CURRENT BLOCKER: `intentional owner review hold for the 16-day file manifest after the accepted resources/articles checkpoint; external owner-only BWE-10 live proof plus BWE-13 second-machine proof still remain pending outside the current UI lane`
-- CURRENT NEXT WORK: `owner review of the completed resources/articles checkpoint plus the exact 16-day Git-derived file manifest before the next Phase 1 surface resumes`
+- CURRENT BLOCKER: `intentional owner review hold for the completed Experience 2.0 baseline and exact 2026-08-10-to-baseline inventory; external owner-only BWE-10 live proof plus BWE-13 second-machine proof still remain pending outside the completed UI lane`
+- CURRENT NEXT WORK: `owner review of the completed Experience 2.0 baseline, baseline report, and exact Git-derived file inventory before any Phase 2 or new runtime lane begins`
 - BWE-10 OWNER ACTION: `PENDING — Pamfa hoodies owner-only live proof`
 - STRIPE STATUS: `existing architecture preserved`
 - REAL TRANSACTION RULE: `OWNER ONLY`
@@ -55,21 +55,24 @@
   - preserve the accepted Phase 1 music creator runtime checkpoint `706273a206c87a02987b4c5802a1ca458e1ed42a`
   - preserve the accepted Phase 1 learning runtime checkpoint `b9efc79a9c13a2ce8fbc8db397a7e30cbdc13ec4`
   - preserve the accepted Phase 1 resources/articles + homepage hero copy runtime checkpoint `94b0f45957a48e1100445e98ba1c2509e9eda223`
+  - preserve the accepted Phase 1 support + advertising + creator-dashboard runtime checkpoint `f0110c5aaed1656458704165cfe3115fedada1df`
+  - preserve the accepted Phase 1 shared dashboard-entry shell runtime checkpoint `80c971734635b57b2921a0b31918acb5868faa8d`
   - preserve the existing Stripe checkout and webhook path
   - preserve the approved deterministic Pamfa attribution links:
     - `sellers/67fd9ed3acdef9011c60ff99 -> businessId 6a45de2d3278d888ed5d0730`
     - `products/680d23a3dc57cdf2efedf784 -> businessId 6a45de2d3278d888ed5d0730`
   - return exact owner-only live transaction instructions; do not execute the transaction autonomously
   - continue independent approved engineering in Phase 1 while owner proof is pending
+  - preserve the completed support Experience 2.0 route family, advertising shell/placements/checkout routes, and creator dashboard shell
   - preserve the completed resources/articles Experience 2.0 lane and the corrected public homepage hero copy
-  - stop after the exact 16-day manifest boundary so the owner can review the full touched-file inventory before the next runtime lane
+  - stop after the exact Experience 2.0 baseline and exact 2026-08-10-to-baseline inventory so the owner can review the full touched-file inventory before the next runtime lane
   - preserve the accepted compact homepage wayfinding treatment and Student Hub Experience 2.0 checkpoint
 - ENGINEERING RULE: `PHASE 1 ACTIVE — continue Experience 2.0 foundation work while BWE-10 owner proof and BWE-13 external proof remain pending`
 
 ## Master program anchors — 2026-08-25
 
 - CURRENT RELEASE COMPLETION: `67%`
-- CURRENT WORLD-CLASS INDEX: `363 / 1000`
+- CURRENT WORLD-CLASS INDEX: `381 / 1000`
 - PROGRAM ITEMS: `26`
 - WORLD-CLASS GAPS: `10`
 - OPEN P0: `0`

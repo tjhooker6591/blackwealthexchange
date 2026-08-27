@@ -1,6 +1,6 @@
 # BWE World-Class Platform Scorecard
 
-Last updated: 2026-08-26
+Last updated: 2026-08-27
 
 ## Scoring rules
 
@@ -14,9 +14,9 @@ Last updated: 2026-08-26
 
 - CURRENT MASTER PLAN PHASE: `PHASE 1 — BWE EXPERIENCE 2.0`
 - CURRENT RELEASE COMPLETION: `67%`
-- CURRENT WORLD-CLASS INDEX: `363 / 1000`
+- CURRENT WORLD-CLASS INDEX: `381 / 1000`
 - WORLD-CLASS CLASSIFICATION: `FOUNDATION STAGE — trusted operational base forming, but far from world-class breadth`
-- REFINEMENT RULE: `2026-08-26 accepted hierarchy/density refinement does not add points by itself; keep the index at 341 unless new rubric evidence justifies movement`
+- REFINEMENT RULE: `the accepted hierarchy, resources, support, advertising, and dashboard-frame completion work is already reflected in the 381 baseline; do not add points again without new rubric evidence`
 
 ## Release completion method
 
@@ -61,17 +61,18 @@ Baseline release completion calculation before this workstream:
 
 ## Domain score baseline
 
-### Brand & Visual Authority — 33 / 80
+### Brand & Visual Authority — 38 / 80
 
 - Evidence:
   - shared visual language now spans the homepage, start-here, marketplace, product detail, nav, and footer
   - pricing and Black Card now follow the calmer Experience 2.0 visual system instead of the older heavier promotional treatment
   - music landing, creator join, and creator pricing now align with the same visual system while retaining a distinct creator-focused presentation
   - financial literacy, learning, enrollment, and course dashboard now present a calmer product-grade learning experience instead of older marketing-heavy or utility-only layouts
+  - support and advertising now follow the same Experience 2.0 shell, action hierarchy, and calmer content density rather than dropping back to older utility layouts
+  - the shared dashboard entry frame and creator dashboard now align with the same calmer command-center language while preserving existing dashboard logic
   - premium dark/gold shell, typography, and trust cues are materially more cohesive
-  - broader route-by-route adoption is still incomplete
 
-### Information Architecture & Navigation — 41 / 80
+### Information Architecture & Navigation — 46 / 80
 
 - Evidence:
   - global platform shell and reusable navigation are now in place across key public routes
@@ -79,7 +80,8 @@ Baseline release completion calculation before this workstream:
   - pricing and Black Card now present clearer plan-to-tier mapping and cleaner decision paths into checkout and member destinations
   - music now presents a clearer listener-to-creator handoff and staged creator activation path across landing, onboarding, and pricing
   - learning now presents clearer handoffs between overview, enrollment, dashboard, and public resources
-  - deeper route hierarchy and cross-surface consistency remain incomplete
+  - support now routes users more clearly into status, tickets, category help, and escalation paths
+  - advertising now presents clearer package-to-details-to-checkout routing while preserving canonical placement and approval rules
 
 ### Search & Discovery — 27 / 100
 
@@ -89,13 +91,14 @@ Baseline release completion calculation before this workstream:
   - music now gives creators and listeners a clearer discovery-to-action path instead of a generic promo page
   - discovery is still fragmented and not powered by a unified search model
 
-### Marketplace & Conversion — 43 / 100
+### Marketplace & Conversion — 45 / 100
 
 - Evidence:
   - marketplace browse, product detail, and checkout entry now surface clearer pricing, availability, and seller/business trust context
   - pricing and Black Card now make membership selection, card mapping, and checkout entry materially clearer without changing prices or Stripe behavior
   - music creator pricing and join now present a cleaner staged conversion path into the existing onboarding and checkout flow
   - the learning lane now explains direct course purchase versus existing entitlement access more clearly without changing checkout contracts
+  - advertising checkout review now presents clearer option, duration, campaign, and placement confirmation before secure payment handoff
   - paid fulfillment truth is still pending owner live proof
   - post-purchase trust and reorder/review loops are still incomplete
 
@@ -112,16 +115,17 @@ Baseline release completion calculation before this workstream:
   - limited dashboard and admin metrics exist
   - no true personalized home, recommendation system, or user-goal orchestration yet
 
-### Trust & Verification — 46 / 80
+### Trust & Verification — 47 / 80
 
 - Evidence:
   - claim/ownership and admin proof lanes are functioning
   - Black-owned verification rules are explicit and safeguarded
   - membership surfaces now explain Black Card access behavior and plan mapping more clearly, reducing ambiguity without changing the underlying contract
   - learning now communicates access state, enrollment state, and locked dashboard behavior more consistently
+  - support and advertising now make escalation, policy, and status context easier to verify before users hand off into ticket or checkout flows
   - trust signals are now materially stronger across the first Experience 2.0 consumer surfaces, but not yet consistent platform-wide
 
-### Mobile Experience — 21 / 70
+### Mobile Experience — 24 / 70
 
 - Evidence:
   - the first Experience 2.0 consumer block now renders with responsive navigation, stacked CTA hierarchy, and mobile-safe product purchase layout
@@ -129,6 +133,7 @@ Baseline release completion calculation before this workstream:
   - pricing and Black Card now use compact mobile plan/tier cards without horizontal overflow
   - music now carries the same mobile-safe hierarchy with verified no-overflow public proof
   - learning and financial-literacy now use lighter mobile stacks and reduced scroll density compared with the older layouts
+  - support and advertising route shells now use the same stacked CTA hierarchy and lower-density mobile panels as the rest of the accepted public system
   - no native mobile capability
 
 ### Performance & Reliability — 26 / 80
@@ -150,17 +155,18 @@ Baseline release completion calculation before this workstream:
   - repeat-use surfaces exist in isolated form
   - no strong save/follow/alerts/inbox/referral loop is fully realized
 
-### Data / Admin / Operations — 44 / 80
+### Data / Admin / Operations — 46 / 80
 
 - Evidence:
   - admin proof pass is complete
   - DB tracking and file tracking are strong
   - operational control is improving
+  - support status, ticket entry, and release-note surfaces are now easier to operate and recover against during validation and owner review
   - unified entity model and owner command center are still future work
 
 ## Total
 
-- TOTAL SCORE: `363 / 1000`
+- TOTAL SCORE: `381 / 1000`
 
 ## Evidence anchors used for this baseline
 
@@ -173,6 +179,7 @@ Baseline release completion calculation before this workstream:
 - pricing + Black Card browser proof exists at `tmp/phase1-ui-proof-20260826-pricing-blackcard/`
 - music creator browser proof exists at `tmp/phase1-ui-proof-20260826-music/`
 - learning browser proof exists at `tmp/phase1-ui-proof-20260826-learning/`
+- support, advertising, creator-dashboard, and shared dashboard-entry route validation exists in the 2026-08-27 Experience 2.0 completion pass
 
 ## No-score items
 

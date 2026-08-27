@@ -1,6 +1,48 @@
 # BWE World-Class Measurement History
 
-Last updated: 2026-08-26
+Last updated: 2026-08-27
+
+## Entry 2026-08-27 — Phase 1 Experience 2.0 baseline freeze
+
+- WORKSTREAM: `Complete remaining Experience 2.0 support, advertising, and creator-shell surfaces and freeze the baseline`
+- SCORE BEFORE: `363 / 1000`
+- SCORE AFTER: `381 / 1000`
+- POINTS EARNED: `18`
+- RELEASE COMPLETION BEFORE: `67%`
+- RELEASE COMPLETION AFTER: `67%`
+- GAPS CLOSED: `0`
+- GAPS CREATED: `0`
+- PROGRAM ITEMS COMPLETED: `4`
+- NEW PROGRAM ITEMS IDENTIFIED: `0`
+- DEPENDENCIES CLOSED: `0`
+- ENGINEERING GAIN: `YES — the remaining approved public Experience 2.0 route families now use the shared shell, calmer hierarchy, and clearer action model without replacing existing business logic`
+- EVIDENCE GAIN: `YES — typecheck, runtime-check, critical-path checks, and direct route validation now cover support, advertising, and creator-dashboard completion surfaces`
+- METHODOLOGY ADJUSTMENT: `0`
+- REVENUE GAIN: `0`
+- REVENUE ENABLEMENT: `YES — support escalation and advertising package-to-checkout paths are clearer while payment and fulfillment proof remain owner-pending`
+- REVENUE PROTECTION: `YES — Stripe architecture, checkout contracts, Pamfa attribution, auth boundaries, claims, and support workflows were preserved`
+- EVIDENCE:
+  - runtime commit `80c971734635b57b2921a0b31918acb5868faa8d`
+  - `src/components/support/SupportCategoryPage.tsx`
+  - `src/components/support/SupportTicketEntryPage.tsx`
+  - `src/pages/support.tsx`
+  - `src/pages/support/status.tsx`
+  - `src/pages/support/releases.tsx`
+  - `src/pages/support/help-center.tsx`
+  - `src/pages/support/new.tsx`
+  - `src/pages/support/tickets.tsx`
+  - `src/pages/advertising/index.tsx`
+  - `src/pages/advertising/placements.tsx`
+  - `src/pages/advertising/checkout.tsx`
+  - `src/pages/creator/dashboard.tsx`
+  - `src/components/dashboards/DashboardFrame.tsx`
+  - `npm run typecheck`
+  - `node scripts/runtime-check.mjs`
+  - `node scripts/check-critical-paths.mjs`
+- NOTES:
+  - the completed runtime baseline is frozen at `2026-08-27T08:25:07-07:00`
+  - the exact inventory window for the final manifest runs from `2026-08-10 00:00:00 America/Los_Angeles` through that baseline timestamp
+  - Phase 0 external proofs remain pending and separate from Experience 2.0 completion
 
 ## Entry 2026-08-25 — Master program baseline established
 
