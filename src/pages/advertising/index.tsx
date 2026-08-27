@@ -1,4 +1,3 @@
-// src/pages/advertising/index.tsx
 "use client";
 
 import Link from "next/link";
@@ -30,17 +29,17 @@ const AdCard = ({
   badge?: string;
   onStart?: () => void;
 }) => (
-  <div className="rounded-2xl border border-yellow-500/15 bg-zinc-950 p-5 shadow-sm">
+  <article className="rounded-[28px] border border-white/8 bg-white/[0.03] p-5 shadow-sm">
     <div className="flex items-start justify-between gap-3">
       <div>
-        <h3 className="text-lg font-semibold text-yellow-200">{title}</h3>
-        <p className="mt-1 text-sm text-zinc-300">{desc}</p>
-        <p className="mt-2 text-xs text-zinc-400">
-          <span className="font-semibold text-zinc-200">Where it appears:</span>{" "}
+        <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <p className="mt-2 text-sm leading-6 text-white/68">{desc}</p>
+        <p className="mt-3 text-xs text-white/52">
+          <span className="font-semibold text-white/84">Where it appears:</span>{" "}
           {where}
         </p>
-        <p className="mt-1 text-xs text-zinc-400">
-          <span className="font-semibold text-zinc-200">
+        <p className="mt-1 text-xs text-white/52">
+          <span className="font-semibold text-white/84">
             What happens next:
           </span>{" "}
           {nextStep}
@@ -48,30 +47,27 @@ const AdCard = ({
       </div>
 
       {badge ? (
-        <span className="rounded-full border border-yellow-500/20 bg-yellow-500/10 px-3 py-1 text-xs text-yellow-200">
+        <span className="rounded-full border border-[rgba(212,175,55,0.24)] bg-[rgba(212,175,55,0.12)] px-3 py-1 text-xs text-[var(--accent)]">
           {badge}
         </span>
       ) : null}
     </div>
 
-    <div className="mt-4 flex items-end justify-between gap-3">
+    <div className="mt-5 flex items-end justify-between gap-3">
       <div>
-        <div className="text-xs text-zinc-400">Starting at</div>
-        <div className="text-2xl font-bold text-yellow-300">{price}</div>
+        <div className="text-xs text-white/45">Starting at</div>
+        <div className="text-2xl font-bold text-[var(--accent)]">{price}</div>
       </div>
 
       <Link
         href={href}
         onClick={onStart}
-        className={cx(
-          "rounded-xl px-4 py-2 text-sm font-semibold transition",
-          "bg-yellow-500 text-black hover:bg-yellow-400",
-        )}
+        className={cx("bwe-cta-primary bwe-focus-ring px-5")}
       >
-        Start Campaign Details →
+        Start campaign details
       </Link>
     </div>
-  </div>
+  </article>
 );
 
 function optionToDetailsHref(option: string) {
@@ -80,7 +76,9 @@ function optionToDetailsHref(option: string) {
     return "/advertise/business-directory";
   }
   if (option === "banner-ad") return "/advertise/banner-ads";
-  if (option === "custom-solution-deposit") return "/advertise/custom";
+  if (option === "custom-solution-deposit" || option === "custom-solution") {
+    return "/advertise/custom";
+  }
   return "/advertising";
 }
 
@@ -95,8 +93,12 @@ export default function AdvertisingIndexPage() {
     durationDays: number;
   }) =>
     base ? `$${base.amountDollars} / ${base.durationDays} days` : "See details";
+
   const router = useRouter();
   const success = router.query.success === "1";
+  const canceled = router.query.canceled === "1";
+  const option =
+    typeof router.query.option === "string" ? router.query.option : "";
 
   const trackAdvertisingEvent = (
     eventType: string,
@@ -113,69 +115,83 @@ export default function AdvertisingIndexPage() {
   useEffect(() => {
     trackAdvertisingEvent("advertising_landing_viewed");
   }, []);
-  const canceled = router.query.canceled === "1";
-  const option =
-    typeof router.query.option === "string" ? router.query.option : "";
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="mx-auto max-w-5xl px-5 py-10">
-        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-yellow-300">
-              Advertising
-            </h1>
-            <p className="mt-2 text-sm text-zinc-300">
-              Promote your business on Black Wealth Exchange with trusted,
-              tasteful placements.
-            </p>
-            <p className="mt-1 text-xs text-zinc-400">
-              Choose package → complete campaign details → review/approval →
-              scheduled placement activation.
-            </p>
-            <p className="mt-2 text-xs text-zinc-400">
-              Placement definitions:{" "}
-              <Link
-                href="/advertising/placements"
-                className="underline text-yellow-200"
-              >
-                /advertising/placements
-              </Link>
-            </p>
-          </div>
+    <main className="relative min-h-screen overflow-x-hidden bg-neutral-950 text-white">
+      <div className="absolute inset-0 bg-neutral-950" />
+      <div className="pointer-events-none absolute -top-32 left-1/2 h-[740px] w-[740px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-44 right-[-8rem] h-[420px] w-[420px] rounded-full bg-sky-500/[0.04] blur-3xl" />
 
-          <div className="flex gap-2">
-            <Link
-              href="/advertising/placements"
-              className="rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-2 text-sm hover:bg-zinc-900"
-            >
-              View Placements
-            </Link>
-            <Link
-              href="/"
-              className="rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-2 text-sm hover:bg-zinc-900"
-            >
-              View Site
-            </Link>
+      <div className="bwe-section-wrap relative z-10 py-8 sm:py-10">
+        <section className="bwe-hero-panel relative overflow-hidden rounded-[30px] px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.14),transparent_32%),radial-gradient(circle_at_84%_18%,rgba(255,255,255,0.08),transparent_24%)]" />
+          <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:items-end">
+            <div className="max-w-3xl">
+              <div className="bwe-eyebrow">Advertising</div>
+              <h1 className="bwe-display-title mt-3 max-w-[10ch]">
+                Promote with trusted BWE placements.
+              </h1>
+              <p className="bwe-lead mt-4 max-w-2xl">
+                Choose a package, complete campaign details, and move through
+                the existing review, approval, and scheduled activation flow.
+              </p>
+              <p className="mt-3 text-sm text-white/58">
+                Placement definitions and delivery rules stay canonical and
+                visible before checkout.
+              </p>
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <Link
+                  href="/advertising/placements"
+                  className="bwe-cta-primary bwe-focus-ring px-6"
+                >
+                  View placements
+                </Link>
+                <Link
+                  href="/"
+                  className="bwe-cta-secondary bwe-focus-ring px-6"
+                >
+                  View site
+                </Link>
+              </div>
+            </div>
+
+            <section className="rounded-2xl border border-[rgba(212,175,55,0.24)] bg-[rgba(212,175,55,0.08)] p-4">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
+                Delivery model
+              </div>
+              <p className="mt-2 text-sm leading-6 text-white/72">
+                Choose package, complete campaign details, review and approval,
+                then activation by placement rules and schedule.
+              </p>
+              <p className="mt-3 text-xs text-white/52">
+                Placement definitions:{" "}
+                <Link
+                  href="/advertising/placements"
+                  className="text-[var(--accent)] underline underline-offset-4"
+                >
+                  /advertising/placements
+                </Link>
+              </p>
+            </section>
           </div>
-        </div>
+        </section>
 
         {success ? (
-          <div className="mt-6 rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-200">
+          <div className="mt-6 rounded-[24px] border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-200">
             Payment submitted successfully. Your advertising request is now in
             review, and our team will follow up with activation details.
           </div>
         ) : null}
 
         {canceled ? (
-          <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-200">
-            Checkout was canceled. Your campaign request is still saved — you
-            can restart checkout anytime below.
+          <div className="mt-6 rounded-[24px] border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-100">
+            Checkout was canceled. Your campaign request is still saved and can
+            be resumed.
             {option ? (
               <div className="mt-2">
                 <Link
                   href={optionToDetailsHref(option)}
-                  className="underline text-yellow-100"
+                  className="text-[var(--accent)] underline underline-offset-4"
                 >
                   Resume campaign details for {option}
                 </Link>
@@ -184,43 +200,41 @@ export default function AdvertisingIndexPage() {
           </div>
         ) : null}
 
-        <div className="mt-6 rounded-2xl border border-white/10 bg-zinc-950 p-5">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-300">
-            How advertising works
-          </h2>
-          <ol className="mt-3 grid gap-2 text-sm text-zinc-300 md:grid-cols-3 md:gap-4">
-            <li>
-              <span className="font-semibold text-yellow-200">
+        <section className="mt-8 rounded-[28px] border border-white/8 bg-white/[0.03] p-5 sm:p-6">
+          <div className="bwe-eyebrow">How advertising works</div>
+          <ol className="mt-4 grid gap-3 text-sm leading-6 text-white/68 md:grid-cols-3">
+            <li className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
+              <span className="font-semibold text-white">
                 1. Choose placement
               </span>
               <br />
               Pick the format that matches your goal and budget.
             </li>
-            <li>
-              <span className="font-semibold text-yellow-200">
+            <li className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
+              <span className="font-semibold text-white">
                 2. Submit campaign details
               </span>
               <br />
               Complete targeting and creative requirements.
             </li>
-            <li>
-              <span className="font-semibold text-yellow-200">
+            <li className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
+              <span className="font-semibold text-white">
                 3. Review and activation
               </span>
               <br />
               BWE confirms eligibility, then schedules placement.
             </li>
           </ol>
-        </div>
+        </section>
 
-        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <section className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
           <AdCard
             title="Featured Sponsor"
             desc="Primary homepage sponsorship surface with weekly scheduled Featured Sponsor rail placement."
             where="Homepage Featured Sponsors rail"
             nextStep="Open package details, provide campaign info, then continue through approval and scheduling."
             price={priceLabel(featuredBase)}
-            badge="Most Popular"
+            badge="Most popular"
             href="/advertise/featured-sponsor"
             onStart={() =>
               trackAdvertisingEvent("advertising_option_selected", {
@@ -236,7 +250,7 @@ export default function AdvertisingIndexPage() {
           />
 
           <AdCard
-            title="Directory Listings"
+            title="Directory listings"
             desc="Directory campaign tiers with explicit review and placement lifecycle."
             where="Business Directory featured and top placement areas"
             nextStep="Choose standard or featured listing, then submit campaign details for review."
@@ -256,7 +270,7 @@ export default function AdvertisingIndexPage() {
           />
 
           <AdCard
-            title="Banner Ads"
+            title="Banner ads"
             desc="Business Directory banner inventory for high-visibility campaign impressions."
             where="Business Directory banner and sidebar inventory"
             nextStep="Select requested banner placement and duration, then submit campaign details."
@@ -276,10 +290,10 @@ export default function AdvertisingIndexPage() {
           />
 
           <AdCard
-            title="Custom Solutions"
+            title="Custom solutions"
             desc="Custom scoped campaigns with deliverables defined before launch."
-            where="Approved custom surfaces (defined in campaign plan)"
-            nextStep="Submit custom request first, then proceed with scoped activation flow."
+            where="Approved custom surfaces defined in the campaign plan"
+            nextStep="Submit a custom request first, then proceed with scoped activation flow."
             price={
               customBase
                 ? `$${customBase.amountDollars} deposit`
@@ -298,8 +312,26 @@ export default function AdvertisingIndexPage() {
               })
             }
           />
-        </div>
+        </section>
+
+        <section className="mt-8 rounded-[26px] border border-white/8 bg-white/[0.03] p-5 sm:p-6">
+          <div className="bwe-eyebrow">Support and policy</div>
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Link
+              href="/support/advertising"
+              className="bwe-open-link bwe-focus-ring text-white/86"
+            >
+              Advertising support
+            </Link>
+            <Link
+              href="/legal/advertising-guidelines"
+              className="bwe-open-link bwe-focus-ring text-white/86"
+            >
+              Advertising guidelines
+            </Link>
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
