@@ -1,6 +1,21 @@
 # BWE World-Class Program Board
 
-Last updated: 2026-08-25
+Last updated: 2026-08-30
+
+## 2026-08-30 master-state override
+
+- VERIFIED CURRENT PHASE: `POST-BASELINE EXECUTION`
+- PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
+- PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
+- CURRENT ACTIVE WORKSTREAM: `POST-BASELINE WORKSTREAM 002 — LIBRARY OF BLACK HISTORY`
+- NEXT MAJOR PHASE: `PHASE 2 — UNIFIED PLATFORM CORE`
+- PHASE 2 STATUS: `NOT STARTED`
+- PHASE 3 STATUS: `OUTSTANDING`
+- PHASE 4 STATUS: `OUTSTANDING`
+- PHASE 5 STATUS: `OUTSTANDING`
+- PHASE 6 STATUS: `OUTSTANDING`
+- PHASE 7 STATUS: `OUTSTANDING`
+- BOARD INTERPRETATION RULE: `do not let the currently active history workstream collapse the broader BWE roadmap into a single-lane program`
 
 ## Program state summary
 
@@ -31,6 +46,26 @@ Last updated: 2026-08-25
 - RELEASE READINESS, WORLD-CLASS MATURITY, PROGRAM EXECUTION, BUSINESS INDEPENDENCE, and BWE ECONOMIC CIRCULATION must all be tracked separately.
 - No revenue metric may be treated as collected revenue without actual evidence.
 - Test payments, fake accounts, and estimated value do not qualify.
+
+### Current master-status checkpoint fields
+
+Every meaningful checkpoint must report:
+
+- CURRENT PHASE
+- CURRENT WORKSTREAM
+- WORKSTREAM COMPLETION
+- WORLD-CLASS INDEX
+- RELEASE COMPLETION
+- BUSINESS INDEPENDENCE STAGE
+- ECONOMIC SCALE STAGE
+- BWE-10
+- BWE-13
+- POST-BASELINE FILE COUNTS
+- DB OPERATIONS
+- REVENUE EVIDENCE
+- BMEV EVIDENCE
+- CURRENT BLOCKERS
+- NEXT APPROVED WORK
 
 ### Existing-system preservation rules
 

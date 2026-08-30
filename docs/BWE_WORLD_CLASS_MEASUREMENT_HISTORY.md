@@ -1,6 +1,36 @@
 # BWE World-Class Measurement History
 
-Last updated: 2026-08-27
+Last updated: 2026-08-30
+
+## Entry 2026-08-30 — Workstream 002 master-program re-anchor
+
+- WORKSTREAM: `POST-BASELINE WORKSTREAM 002 — LIBRARY OF BLACK HISTORY / MASTER PROGRAM RE-ANCHOR`
+- SCORE BEFORE: `381 / 1000`
+- SCORE AFTER: `381 / 1000`
+- POINTS EARNED: `0`
+- RELEASE COMPLETION BEFORE: `67%`
+- RELEASE COMPLETION AFTER: `67%`
+- GAPS CLOSED: `0`
+- GAPS CREATED: `0`
+- PROGRAM ITEMS COMPLETED: `0`
+- NEW PROGRAM ITEMS IDENTIFIED: `0`
+- DEPENDENCIES CLOSED: `0`
+- ENGINEERING GAIN: `0`
+- EVIDENCE GAIN: `YES — current post-baseline reporting now explicitly preserves the full BWE roadmap while Workstream 002 continues`
+- METHODOLOGY ADJUSTMENT: `YES — every meaningful checkpoint must now report both current workstream status and master-program status`
+- REVENUE GAIN: `0`
+- REVENUE ENABLEMENT: `UNCHANGED — historical depth may strengthen long-term trust, identity, and education, but no new direct revenue evidence exists yet`
+- REVENUE PROTECTION: `YES — preserves the separation among world-class maturity, release closure, BI stage, BMEV evidence, and current history work`
+- EVIDENCE:
+  - `docs/BWE_WORLD_CLASS_PLATFORM_MASTER_PLAN.md`
+  - `docs/BWE_WORLD_CLASS_PLATFORM_SCORECARD.md`
+  - `docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md`
+  - `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md`
+  - `docs/BWE_BLACK_HISTORY_RESEARCH_AND_SOURCE_LEDGER.md`
+- NOTES:
+  - the active Black History expansion remains approved
+  - the Black History lane is explicitly subordinate to the full BWE world-class program, not a replacement for it
+  - Phase 2 remains outstanding and does not begin until the approved Workstream 002 checkpoint is reached
 
 ## Entry 2026-08-27 — Phase 1 Experience 2.0 baseline freeze
 

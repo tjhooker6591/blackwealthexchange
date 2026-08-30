@@ -1,9 +1,32 @@
 # BWE World-Class Platform Master Plan
 
-Last updated: 2026-08-25
+Last updated: 2026-08-30
 Canonical repo: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 Canonical branch: `friday-release-candidate`
-Current release phase: `PHASE 0 — RELEASE STABILIZATION`
+Current release phase: `POST-BASELINE EXECUTION ON TOP OF COMPLETED PHASE 0 + PHASE 1`
+
+## Current verified master program state
+
+- PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
+- PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
+- PRESERVED EXPERIENCE 2.0 RUNTIME: `80c971734635b57b2921a0b31918acb5868faa8d`
+- PRESERVED BASELINE ARTIFACT: `bf6bdc32db071a3e3a8d38f8dccd6d5b7c3f6b99`
+- CURRENT ACTIVE POST-BASELINE WORKSTREAM: `WORKSTREAM 002 — LIBRARY OF BLACK HISTORY`
+- CURRENT WORLD-CLASS VERIFIED BASELINE: `381 / 1000`
+- CURRENT RELEASE COMPLETION: `67%`
+- BUSINESS INDEPENDENCE STAGE: `BI-0`
+- CURRENT ECONOMIC SCALE STAGE: `PRE-ES-0`
+- BWE-10 INTERNAL: `GO`
+- BWE-10 OWNER TRANSACTION: `PENDING`
+- BWE-10 LIVE PROOF: `PENDING`
+- BWE-13: `EXTERNAL PROOF PENDING`
+
+## Current sequencing rule
+
+- Workstream 002 remains approved and active.
+- Workstream 002 does not replace the BWE world-class master roadmap.
+- Phase 2 work does not begin until the approved Workstream 002 checkpoint is reached.
+- Post-baseline work must keep master-program reporting visible at every meaningful checkpoint.
 
 ## Vision
 

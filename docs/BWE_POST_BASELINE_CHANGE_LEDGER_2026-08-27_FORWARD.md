@@ -13,6 +13,25 @@ Runtime baseline preserved:
 - Baseline release completion: `67%`
 - Starting DB operations: `35`
 
+## Master program anchor
+
+- ACTIVE POST-BASELINE WORKSTREAM: `WORKSTREAM 002 — LIBRARY OF BLACK HISTORY`
+- CURRENT PHASE: `POST-BASELINE EXECUTION`
+- PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
+- PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
+- NEXT MAJOR PHASE AFTER APPROVED HISTORY CHECKPOINT: `PHASE 2 — UNIFIED PLATFORM CORE`
+- CURRENT WORLD-CLASS INDEX: `381 / 1000`
+- CURRENT RELEASE COMPLETION: `67%`
+- BUSINESS INDEPENDENCE STAGE: `BI-0`
+- ECONOMIC SCALE STAGE: `PRE-ES-0`
+- BWE-10 INTERNAL: `GO`
+- BWE-10 OWNER TRANSACTION: `PENDING`
+- BWE-10 LIVE PROOF: `PENDING`
+- BWE-13: `EXTERNAL PROOF PENDING`
+- REVENUE EVIDENCE: `NONE NEW`
+- BMEV EVIDENCE: `NONE NEW`
+- RULE: `the active Black History workstream remains approved but does not replace the broader BWE master roadmap`
+
 ## Workstream 001
 
 Name: `BWE IDENTITY + BLACK HISTORY RESTORATION`
@@ -218,6 +237,295 @@ Post-baseline counters after correction:
 - `POST-BASELINE UNIQUE REPOSITORY FILE COUNT`: `7`
 - `POST-BASELINE ADDED`: `2`
 - `POST-BASELINE MODIFIED`: `5`
+
+## Workstream 002
+
+Name: `LIBRARY OF BLACK HISTORY - COMPREHENSIVE RESEARCH, EXPANSION, AND UNTOLD HISTORY`
+
+Date: `2026-08-30`
+
+Status:
+
+- Preserved the accepted post-baseline chain, including Workstream 001 and the accepted Founding Principle correction.
+- Classified the dirty `package.json` as a local script-only runtime-service change and left it untouched during history work.
+- Began Workstream 002 by preserving the existing history library as the canonical foundation rather than replacing it.
+- Added the research/source ledger, the coverage-gap matrix, and the public content architecture.
+- Expanded the live history route with the first substantive block covering humanity's African beginning, African sacred worlds, and Yoruba worldview.
+
+Package.json reconciliation:
+
+- `DEPENDENCY VERSION CHANGE`: `NO`
+- `SCRIPT CHANGE`: `YES`
+- `NEXT.JS VERSION CHANGE`: `NO`
+- `CURRENT package.json NEXT VERSION`: `^15.5.21`
+- `CURRENT package-lock NEXT VERSION`: `15.5.21`
+- `CURRENT node_modules NEXT VERSION`: `15.5.21`
+- `REQUIRED FOR CURRENT LOCALHOST`: `NO`
+- `ALREADY REFLECTED IN package-lock.json`: `YES` (no lockfile change required because dependencies did not change)
+- `HISTORY COMMIT INCLUDED package.json`: `NO`
+
+History Block:
+
+- `BLOCK 1`: inventory, research/source ledger, gap matrix, architecture
+- `BLOCK 2`: humanity's African beginning, African sacred worlds, Yoruba worldview
+
+Post-baseline counters after Workstream 002 start:
+
+- `POST-BASELINE UNIQUE APPLICATION FILE COUNT`: `7`
+- `POST-BASELINE UNIQUE REPOSITORY FILE COUNT`: `10`
+- `POST-BASELINE ADDED`: `4`
+- `POST-BASELINE MODIFIED`: `6`
+- `POST-BASELINE DELETED`: `0`
+- `POST-BASELINE RENAMED`: `0`
+- `POST-BASELINE DB WRITES`: `0`
+- `CURRENT TOTAL DB OPERATIONS`: `35`
+
+### File Change Records
+
+#### 1. Library of Black History route expansion
+
+DATE:
+
+- `2026-08-30`
+
+WORKSTREAM:
+
+- `LIBRARY OF BLACK HISTORY - COMPREHENSIVE RESEARCH, EXPANSION, AND UNTOLD HISTORY`
+
+HISTORY BLOCK:
+
+- `BLOCK 1 / BLOCK 2`
+
+CHANGE TYPE:
+
+- `MODIFIED`
+
+FILE:
+
+- `library-of-black-history.tsx`
+
+RELATIVE PATH:
+
+- `src/pages/library-of-black-history.tsx`
+
+WHY CHANGED:
+
+- Preserve the current source-library experience while adding the first substantive public historical expansion and a visible roadmap for the full history program.
+
+CONTENT ADDED:
+
+- Workstream 002 editorial framing
+- coverage and evidence standard section
+- public history roadmap
+- substantive sections on human origins in Africa, African sacred worlds, and Yoruba worldview
+
+CONTENT PRESERVED:
+
+- Existing hero, Truth Mirror, search, filters, curated source grid, and route identity
+
+SOURCES ADDED:
+
+- Smithsonian Human Origins Program
+- UNESCO General History of Africa
+- Smithsonian National Museum of African Art
+- British Museum
+- Metropolitan Museum of Art
+
+RUNTIME COMMIT:
+
+- `PENDING`
+
+VALIDATION:
+
+- `npm run typecheck` PASS
+- `/library-of-black-history` browser validation PASS
+- `/` -> `/library-of-black-history` history path PASS
+- `/learning` -> `/library-of-black-history` history path PASS
+- `/about` -> `/library-of-black-history` history path PASS
+- footer history path PASS
+- desktop rendering PASS
+- mobile rendering PASS
+- no horizontal overflow PASS
+- console errors NONE
+- failed network requests NONE
+- canonical repo serving on port `3000` YES
+
+STATUS:
+
+- `WORKING TREE`
+
+#### 2. Research and source ledger
+
+DATE:
+
+- `2026-08-30`
+
+WORKSTREAM:
+
+- `LIBRARY OF BLACK HISTORY - COMPREHENSIVE RESEARCH, EXPANSION, AND UNTOLD HISTORY`
+
+HISTORY BLOCK:
+
+- `BLOCK 1`
+
+CHANGE TYPE:
+
+- `ADDED`
+
+FILE:
+
+- `BWE_BLACK_HISTORY_RESEARCH_AND_SOURCE_LEDGER.md`
+
+RELATIVE PATH:
+
+- `docs/BWE_BLACK_HISTORY_RESEARCH_AND_SOURCE_LEDGER.md`
+
+WHY CHANGED:
+
+- Create the claim-level evidence foundation for public history work and later fact-checking.
+
+CONTENT ADDED:
+
+- evidence classes
+- active claims ledger
+- new-information log
+- source-priority queue
+
+CONTENT PRESERVED:
+
+- Existing post-baseline ledger and baseline manifests remained untouched.
+
+SOURCES ADDED:
+
+- UNESCO
+- Smithsonian
+- British Museum
+- Metropolitan Museum of Art
+
+RUNTIME COMMIT:
+
+- `N/A`
+
+VALIDATION:
+
+- documentation integrity review PASS
+
+STATUS:
+
+- `WORKING TREE`
+
+#### 3. Coverage and gap matrix
+
+DATE:
+
+- `2026-08-30`
+
+WORKSTREAM:
+
+- `LIBRARY OF BLACK HISTORY - COMPREHENSIVE RESEARCH, EXPANSION, AND UNTOLD HISTORY`
+
+HISTORY BLOCK:
+
+- `BLOCK 1`
+
+CHANGE TYPE:
+
+- `ADDED`
+
+FILE:
+
+- `BWE_BLACK_HISTORY_COVERAGE_GAP_MATRIX.md`
+
+RELATIVE PATH:
+
+- `docs/BWE_BLACK_HISTORY_COVERAGE_GAP_MATRIX.md`
+
+WHY CHANGED:
+
+- Inventory the current library honestly so expansions target real gaps instead of rewriting blindly.
+
+CONTENT ADDED:
+
+- current coverage audit across approved history topics
+- source-quality assessment
+- fact-check and priority flags
+
+CONTENT PRESERVED:
+
+- Existing library route remained the foundation reference.
+
+SOURCES ADDED:
+
+- Internal current-page inventory
+
+RUNTIME COMMIT:
+
+- `N/A`
+
+VALIDATION:
+
+- documentation integrity review PASS
+
+STATUS:
+
+- `WORKING TREE`
+
+#### 4. Content architecture
+
+DATE:
+
+- `2026-08-30`
+
+WORKSTREAM:
+
+- `LIBRARY OF BLACK HISTORY - COMPREHENSIVE RESEARCH, EXPANSION, AND UNTOLD HISTORY`
+
+HISTORY BLOCK:
+
+- `BLOCK 1`
+
+CHANGE TYPE:
+
+- `ADDED`
+
+FILE:
+
+- `BWE_BLACK_HISTORY_CONTENT_ARCHITECTURE.md`
+
+RELATIVE PATH:
+
+- `docs/BWE_BLACK_HISTORY_CONTENT_ARCHITECTURE.md`
+
+WHY CHANGED:
+
+- Make the long-range build order explicit so the library grows through durable substantive blocks instead of disconnected pages.
+
+CONTENT ADDED:
+
+- phased block architecture
+- repeating public evidence structures
+- editorial rules
+- live-route implementation rule
+
+CONTENT PRESERVED:
+
+- Existing route-first implementation strategy
+
+SOURCES ADDED:
+
+- Internal architecture derived from approved owner direction
+
+RUNTIME COMMIT:
+
+- `N/A`
+
+VALIDATION:
+
+- documentation integrity review PASS
+
+STATUS:
+
+- `WORKING TREE`
 - `POST-BASELINE DELETED`: `0`
 - `POST-BASELINE RENAMED`: `0`
 - `POST-BASELINE DB WRITES`: `0`

@@ -1,6 +1,6 @@
 # BWE World-Class Platform Scorecard
 
-Last updated: 2026-08-27
+Last updated: 2026-08-30
 
 ## Scoring rules
 
@@ -17,6 +17,14 @@ Last updated: 2026-08-27
 - CURRENT WORLD-CLASS INDEX: `381 / 1000`
 - WORLD-CLASS CLASSIFICATION: `FOUNDATION STAGE — trusted operational base forming, but far from world-class breadth`
 - REFINEMENT RULE: `the accepted hierarchy, resources, support, advertising, and dashboard-frame completion work is already reflected in the 381 baseline; do not add points again without new rubric evidence`
+
+## Current post-baseline reporting rule
+
+- Current active workstream: `POST-BASELINE WORKSTREAM 002 — LIBRARY OF BLACK HISTORY`
+- This workstream does not replace the broader BWE master program.
+- Until new rubric-backed product evidence is accepted, the canonical world-class index remains `381 / 1000`.
+- Documentation, research setup, and roadmap framing alone earn `0` points unless documentation itself is the required deliverable.
+- Every meaningful checkpoint must report both current workstream status and master-program status.
 
 ## Release completion method
 

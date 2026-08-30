@@ -1,6 +1,6 @@
 # BWE World-Class Decision Log
 
-Last updated: 2026-08-25
+Last updated: 2026-08-30
 
 ## Decision entries
 
@@ -169,6 +169,26 @@ Last updated: 2026-08-25
 - IMPACT:
   - clarifies the correct BWE-10 execution model
   - keeps real-payment authority with the owner while preserving engineering validation responsibilities
+- OWNER APPROVAL STATUS: `APPROVED`
+- SUPERSEDES: `none`
+- SUPERSEDED BY: `none`
+
+### 2026-08-30 | BWE-WC-010
+
+- SUBJECT: `Post-baseline workstreams must not replace the master BWE program`
+- DECISION: Active post-baseline workstreams, including Workstream 002 Black History expansion, remain subordinate to the full BWE world-class roadmap and must be reported alongside master-program status.
+- WHY: A deep individual workstream can improve trust, education, and cultural seriousness without becoming the whole product roadmap.
+- ALTERNATIVES:
+  - report only the active lane and let the broader roadmap fade from view
+  - reinterpret history work as equivalent to overall platform progress
+- DEPENDENCIES:
+  - master plan
+  - scorecard
+  - program board
+  - measurement history
+- IMPACT:
+  - every meaningful checkpoint must include both current workstream status and master-program status
+  - preserves visibility for discovery, commerce, identity, trust, personalization, network effects, and economic intelligence phases while current history work continues
 - OWNER APPROVAL STATUS: `APPROVED`
 - SUPERSEDES: `none`
 - SUPERSEDED BY: `none`
