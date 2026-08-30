@@ -3,27 +3,22 @@ import Head from "next/head";
 import Link from "next/link";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import {
-  blackUnityParagraphs,
-  closingDeclarationLines,
   contactParagraph,
-  diasporaUnityParagraphs,
-  economicHistoryParagraphs,
   foundingDeclarationParagraphs,
-  foundingPrincipleClosing,
-  foundingPrincipleParagraphs,
-  generationalProsperityParagraphs,
   leadershipParagraphs,
-  legalAffirmationParagraphs,
   missionParagraphs,
   organizationalStatusParagraphs,
   ourValues,
-  proOurselvesStatement,
 } from "@/lib/foundingContent";
 
 const bweTodayCards = [
   {
-    title: "Founder / Current Platform",
-    body: "Thomas James Hooker Sr. is the founder of Black Wealth Exchange, and the platform remains founder-led in its public identity and strategic direction.",
+    title: "Founder",
+    body: "Thomas James Hooker Sr. is the founder of Black Wealth Exchange.",
+  },
+  {
+    title: "Why BWE exists",
+    body: foundingDeclarationParagraphs[0],
   },
   {
     title: "Current BWE functionality",
@@ -33,31 +28,27 @@ const bweTodayCards = [
     title: "Mission-driven for-profit status",
     body: "BWE operates as a mission-driven for-profit business. Profit supports the business model; the mission remains Black ownership, visibility, opportunity, and durable economic participation.",
   },
-  {
-    title: "History and restoration",
-    body: "The Library of Black History exists as a separate destination because BWE's purpose is inseparable from the history of what Black people built, what was taken, and what must be rebuilt now.",
-  },
 ] as const;
 
-function SectionBlock({
+function ReadingSection({
   eyebrow,
   title,
   paragraphs,
 }: {
-  eyebrow?: string;
+  eyebrow: string;
   title: string;
   paragraphs: readonly string[];
 }) {
   return (
     <section className="border-t border-white/8">
-      <div className="mx-auto max-w-5xl px-4 py-10 sm:py-12">
-        {eyebrow ? (
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#D4AF37]">
-            {eyebrow}
-          </p>
-        ) : null}
-        <h2 className="mt-2 text-2xl font-bold sm:text-3xl">{title}</h2>
-        <div className="mt-5 space-y-5 text-base leading-relaxed text-white/78 sm:text-lg">
+      <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
+          {eyebrow}
+        </p>
+        <h2 className="mt-3 text-2xl font-bold tracking-[-0.03em] text-white sm:text-[2rem]">
+          {title}
+        </h2>
+        <div className="mt-6 space-y-5 text-[1.04rem] leading-8 text-white/78 sm:text-[1.1rem]">
           {paragraphs.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
@@ -102,7 +93,7 @@ export default function About() {
         <meta
           name="description"
           content={truncateMeta(
-            "Read the founding declaration, mission, values, leadership, and current platform direction behind Black Wealth Exchange.",
+            "Read who Black Wealth Exchange is, why it exists, who founded it, and how the current platform connects mission to action.",
           )}
         />
         <link rel="canonical" href={canonical} />
@@ -114,105 +105,65 @@ export default function About() {
         {JSON.stringify(founderSchema)}
       </script>
       <main className="min-h-screen bg-black text-white">
-        <section className="border-b border-white/10 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.16),transparent_34%)]">
-          <div className="mx-auto max-w-5xl px-4 py-14 sm:py-18">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#D4AF37]">
-              About Black Wealth Exchange
+        <section className="border-b border-white/10 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.16),transparent_40%)]">
+          <div className="mx-auto max-w-[54rem] px-4 py-16 sm:px-6 sm:py-20">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">
+              About BWE
             </p>
-            <h1 className="mt-3 max-w-4xl text-3xl font-extrabold leading-tight sm:text-5xl">
-              {foundingDeclarationParagraphs[0]}
+            <h1 className="mt-4 max-w-[12ch] text-[2.45rem] font-extrabold leading-[1.03] tracking-[-0.05em] text-white sm:text-[3.25rem] lg:text-[3.9rem]">
+              A founder-led platform for Black ownership, visibility, and
+              economic growth.
             </h1>
-            <p className="mt-6 max-w-3xl text-base leading-relaxed text-white/76 sm:text-lg">
-              The founder-authored declaration remains the foundation of Black
-              Wealth Exchange. BWE today is a founder-led, mission-driven
-              for-profit platform built to support Black business discovery,
-              trust, ownership, commerce, and long-term economic growth.
+            <p className="mt-7 max-w-[43rem] text-[1.08rem] leading-8 text-white/82 sm:text-[1.22rem] sm:leading-9">
+              Black Wealth Exchange exists to help people discover Black-owned
+              businesses, support them with intention, and build stronger paths
+              for ownership, commerce, and long-term economic participation.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link
-                href="/founding-principle"
-                className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#D4AF37] px-5 text-sm font-semibold text-black transition hover:brightness-105"
-              >
-                Read Founding Principle
-              </Link>
-              <Link
-                href="/library-of-black-history"
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#D4AF37]/60 px-5 text-sm font-semibold text-[#D4AF37] transition hover:border-[#D4AF37]"
-              >
-                Explore Black History Library
-              </Link>
+          </div>
+        </section>
+
+        <section className="border-t border-white/8">
+          <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
+              Why BWE Exists
+            </p>
+            <div className="mt-5 border-l-2 border-[#D4AF37]/55 pl-5 sm:pl-7">
+              <p className="max-w-[44rem] text-[1.06rem] leading-8 text-white/84 sm:text-[1.16rem] sm:leading-9">
+                {foundingDeclarationParagraphs[0]}
+              </p>
             </div>
           </div>
         </section>
 
-        <SectionBlock
-          eyebrow="Founding Declaration"
-          title="The declaration that established BWE"
-          paragraphs={foundingDeclarationParagraphs}
-        />
-        <SectionBlock
+        <ReadingSection
           eyebrow="Mission"
           title="Mission"
           paragraphs={missionParagraphs}
         />
-        <SectionBlock
-          eyebrow="Black Unity"
-          title="Black Unity"
-          paragraphs={blackUnityParagraphs}
-        />
-        <SectionBlock
-          eyebrow="Diaspora Unity"
-          title="Diaspora Unity"
-          paragraphs={diasporaUnityParagraphs}
+        <ReadingSection
+          eyebrow="Leadership"
+          title="Leadership"
+          paragraphs={leadershipParagraphs}
         />
 
         <section className="border-t border-white/8">
-          <div className="mx-auto max-w-5xl px-4 py-10 sm:py-12">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#D4AF37]">
-              Foundation
-            </p>
-            <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
-              We are relentlessly pro-ourselves
-            </h2>
-            <div className="mt-5 rounded-3xl border border-[#D4AF37]/25 bg-[#D4AF37]/10 px-6 py-6 text-xl font-semibold italic text-[#F3D36D] sm:text-2xl">
-              <p>{proOurselvesStatement[0]}</p>
-              <p className="mt-2">{proOurselvesStatement[1]}</p>
-            </div>
-          </div>
-        </section>
-
-        <SectionBlock
-          eyebrow="Constitutional / Legal Affirmation"
-          title="Constitutional and Legal Affirmation"
-          paragraphs={legalAffirmationParagraphs}
-        />
-        <SectionBlock
-          eyebrow="Economic History"
-          title="Economic History"
-          paragraphs={economicHistoryParagraphs}
-        />
-        <SectionBlock
-          eyebrow="Generational Prosperity"
-          title="Generational Prosperity"
-          paragraphs={generationalProsperityParagraphs}
-        />
-
-        <section className="border-t border-white/8">
-          <div className="mx-auto max-w-5xl px-4 py-10 sm:py-12">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#D4AF37]">
+          <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
               Our Values
             </p>
-            <h2 className="mt-2 text-2xl font-bold sm:text-3xl">Our Values</h2>
+            <h2 className="mt-3 text-2xl font-bold tracking-[-0.03em] text-white sm:text-[2rem]">
+              Our Values
+            </h2>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               {ourValues.map((value) => (
                 <article
                   key={value.title}
-                  className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"
+                  className="border-t border-white/10 pt-4"
                 >
                   <h3 className="text-lg font-semibold text-[#D4AF37]">
                     {value.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-white/72 sm:text-base">
+                  <p className="mt-2 text-sm leading-7 text-white/72 sm:text-base">
                     {value.body}
                   </p>
                 </article>
@@ -221,55 +172,24 @@ export default function About() {
           </div>
         </section>
 
-        <SectionBlock
-          eyebrow="Leadership"
-          title="Leadership"
-          paragraphs={leadershipParagraphs}
-        />
-        <SectionBlock
-          eyebrow="Organizational Status"
-          title="Organizational Status"
-          paragraphs={organizationalStatusParagraphs}
-        />
-        <SectionBlock
-          eyebrow="Founding Principle"
-          title="Founding Principle"
-          paragraphs={foundingPrincipleParagraphs}
-        />
-
-        <section className="border-t border-white/8">
-          <div className="mx-auto max-w-5xl px-4 py-10 sm:py-12">
-            <div className="rounded-3xl border border-[#D4AF37]/20 bg-white/[0.02] p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#D4AF37]">
-                Founding Principle Closing
-              </p>
-              <div className="mt-4 space-y-2 text-2xl font-bold text-[#F3D36D] sm:text-3xl">
-                {foundingPrincipleClosing.map((line) => (
-                  <p key={line}>{line}</p>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
         <section className="border-t border-white/8 bg-white/[0.02]">
-          <div className="mx-auto max-w-5xl px-4 py-10 sm:py-12">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#D4AF37]">
+          <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
               BWE Today
             </p>
-            <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
-              Founder / Current Platform
+            <h2 className="mt-3 text-2xl font-bold tracking-[-0.03em] text-white sm:text-[2rem]">
+              Founder and Current Platform
             </h2>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div className="mt-6 grid gap-5 sm:grid-cols-2">
               {bweTodayCards.map((card) => (
                 <article
                   key={card.title}
-                  className="rounded-2xl border border-white/10 bg-black/40 p-5"
+                  className="border-t border-white/10 pt-4"
                 >
                   <h3 className="text-lg font-semibold text-[#D4AF37]">
                     {card.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-white/72 sm:text-base">
+                  <p className="mt-2 text-sm leading-7 text-white/72 sm:text-base">
                     {card.body}
                   </p>
                 </article>
@@ -278,13 +198,54 @@ export default function About() {
           </div>
         </section>
 
+        <ReadingSection
+          eyebrow="Organizational Status"
+          title="Organizational Status"
+          paragraphs={organizationalStatusParagraphs}
+        />
+
         <section className="border-t border-white/8">
-          <div className="mx-auto max-w-5xl px-4 py-10 text-center sm:py-12">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#D4AF37]">
+          <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
+              Related Paths
+            </p>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <Link
+                href="/founding-principle"
+                className="rounded-2xl border border-white/10 px-5 py-4 text-sm font-semibold text-white/78 transition hover:border-[#D4AF37]/40 hover:text-white"
+              >
+                <span className="block text-[11px] uppercase tracking-[0.16em] text-[#D4AF37]">
+                  Full Founding Principle
+                </span>
+                <span className="mt-2 block text-base text-white">
+                  Read the complete founder-authored declaration and philosophy.
+                </span>
+              </Link>
+              <Link
+                href="/library-of-black-history"
+                className="rounded-2xl border border-white/10 px-5 py-4 text-sm font-semibold text-white/78 transition hover:border-[#D4AF37]/40 hover:text-white"
+              >
+                <span className="block text-[11px] uppercase tracking-[0.16em] text-[#D4AF37]">
+                  Library of Black History
+                </span>
+                <span className="mt-2 block text-base text-white">
+                  Continue into the broader historical and educational body that
+                  connects BWE to Black history and economic restoration.
+                </span>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-white/8">
+          <div className="mx-auto max-w-[50rem] px-4 py-12 text-center sm:px-6 sm:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
               Contact
             </p>
-            <h2 className="mt-2 text-2xl font-bold sm:text-3xl">Contact</h2>
-            <p className="mx-auto mt-4 max-w-3xl text-base leading-relaxed text-white/72 sm:text-lg">
+            <h2 className="mt-3 text-2xl font-bold tracking-[-0.03em] text-white sm:text-[2rem]">
+              Contact
+            </h2>
+            <p className="mx-auto mt-5 max-w-[40rem] text-[1.02rem] leading-8 text-white/74 sm:text-[1.08rem]">
               {contactParagraph}
             </p>
             <a
@@ -293,20 +254,6 @@ export default function About() {
             >
               info@blackwealthexchange.com
             </a>
-          </div>
-        </section>
-
-        <section className="border-t border-white/8">
-          <div className="mx-auto max-w-5xl px-4 py-10 text-center sm:py-12">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#D4AF37]">
-              Closing Declaration
-            </p>
-            <div className="mt-4 space-y-3 text-lg font-semibold text-[#F3D36D] sm:text-xl">
-              {closingDeclarationLines.map((line) => (
-                <p key={line}>{line}</p>
-              ))}
-              <p>Black Wealth Exchange</p>
-            </div>
           </div>
         </section>
       </main>

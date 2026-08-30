@@ -6,7 +6,8 @@ import {
   blackUnityParagraphs,
   closingDeclarationLines,
   diasporaUnityParagraphs,
-  foundingDeclarationParagraphs,
+  foundingHeroHeadline,
+  foundingHeroLead,
   foundingPrincipleClosing,
   foundingPrincipleParagraphs,
   generationalProsperityParagraphs,
@@ -15,20 +16,29 @@ import {
   proOurselvesStatement,
 } from "@/lib/foundingContent";
 
-function ParagraphGroup({
+function LongformSection({
+  eyebrow,
   title,
   paragraphs,
 }: {
+  eyebrow: string;
   title: string;
   paragraphs: readonly string[];
 }) {
   return (
-    <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-7">
-      <h2 className="text-2xl font-bold text-white sm:text-3xl">{title}</h2>
-      <div className="mt-4 space-y-4 text-base leading-relaxed text-white/76 sm:text-lg">
-        {paragraphs.map((paragraph) => (
-          <p key={paragraph}>{paragraph}</p>
-        ))}
+    <section className="border-t border-white/8">
+      <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
+          {eyebrow}
+        </p>
+        <h2 className="mt-3 text-2xl font-bold tracking-[-0.03em] text-white sm:text-[2rem]">
+          {title}
+        </h2>
+        <div className="mt-6 space-y-5 text-[1.06rem] leading-8 text-white/78 sm:text-[1.12rem]">
+          {paragraphs.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -57,7 +67,7 @@ export default function FoundingPrinciplePage() {
         <meta
           name="description"
           content={truncateMeta(
-            "Read the founder-authored founding declaration and principle behind Black Wealth Exchange.",
+            "Read the founder-authored founding declaration and philosophy behind Black Wealth Exchange.",
           )}
         />
         <link rel="canonical" href={canonical} />
@@ -66,87 +76,149 @@ export default function FoundingPrinciplePage() {
         {JSON.stringify(founderSchema)}
       </script>
       <main className="min-h-screen bg-black text-white">
-        <section className="border-b border-white/10 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.14),transparent_36%)]">
-          <div className="mx-auto max-w-5xl px-4 py-14 sm:py-18">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#D4AF37]">
+        <section className="border-b border-white/10 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.14),transparent_40%)]">
+          <div className="mx-auto max-w-[54rem] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">
               Founding Principle
             </p>
-            <h1 className="mt-3 max-w-4xl text-3xl font-extrabold leading-tight sm:text-5xl">
-              {foundingDeclarationParagraphs[0]}
+            <h1 className="mt-4 max-w-[13ch] text-[2.5rem] font-extrabold leading-[1.02] tracking-[-0.05em] text-white sm:text-[3.4rem] lg:text-[4rem]">
+              <span className="block">{foundingHeroHeadline[0]}</span>
+              <span className="mt-3 block text-[#F0D06A]">
+                {foundingHeroHeadline[1]}
+              </span>
             </h1>
-            <p className="mt-6 max-w-3xl text-base leading-relaxed text-white/76 sm:text-lg">
-              This route preserves the founder-authored declaration at the core
-              of BWE and keeps it separate from the platform&apos;s broader
-              history library.
+            <p className="mt-8 max-w-[44rem] text-[1.12rem] leading-8 text-white/84 sm:text-[1.32rem] sm:leading-9 lg:text-[1.48rem] lg:leading-10">
+              {foundingHeroLead}
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link
-                href="/about"
-                className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#D4AF37] px-5 text-sm font-semibold text-black transition hover:brightness-105"
-              >
-                Return to About
-              </Link>
-              <Link
-                href="/library-of-black-history"
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#D4AF37]/60 px-5 text-sm font-semibold text-[#D4AF37] transition hover:border-[#D4AF37]"
-              >
-                Open Black History Library
-              </Link>
+          </div>
+        </section>
+
+        <LongformSection
+          eyebrow="Mission"
+          title="Mission"
+          paragraphs={missionParagraphs}
+        />
+        <LongformSection
+          eyebrow="Black Unity"
+          title="Black Unity"
+          paragraphs={blackUnityParagraphs}
+        />
+        <LongformSection
+          eyebrow="Diaspora Unity"
+          title="Diaspora Unity"
+          paragraphs={diasporaUnityParagraphs}
+        />
+
+        <section className="border-t border-white/8">
+          <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
+              Foundation Declaration
+            </p>
+            <div className="mt-5 border-l-2 border-[#D4AF37]/60 pl-5 sm:pl-7">
+              <div className="space-y-3 text-[1.55rem] font-semibold leading-tight tracking-[-0.03em] text-[#F0D06A] sm:text-[2rem]">
+                <p>{proOurselvesStatement[0]}</p>
+                <p>{proOurselvesStatement[1]}</p>
+              </div>
             </div>
           </div>
         </section>
 
-        <div className="mx-auto grid max-w-5xl gap-6 px-4 py-10 sm:py-12">
-          <ParagraphGroup title="Mission" paragraphs={missionParagraphs} />
-          <ParagraphGroup
-            title="Black Unity"
-            paragraphs={blackUnityParagraphs}
-          />
-          <ParagraphGroup
-            title="Diaspora Unity"
-            paragraphs={diasporaUnityParagraphs}
-          />
+        <LongformSection
+          eyebrow="Constitutional and Legal Affirmation"
+          title="Constitutional and Legal Affirmation"
+          paragraphs={legalAffirmationParagraphs}
+        />
 
-          <section className="rounded-3xl border border-[#D4AF37]/25 bg-[#D4AF37]/10 px-6 py-6">
-            <h2 className="text-2xl font-bold text-white sm:text-3xl">
-              Foundation
+        <section className="border-t border-white/8">
+          <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
+              Generational Prosperity
+            </p>
+            <h2 className="mt-3 text-2xl font-bold tracking-[-0.03em] text-white sm:text-[2rem]">
+              Generational Prosperity
             </h2>
-            <div className="mt-4 text-xl font-semibold italic text-[#F3D36D] sm:text-2xl">
-              <p>{proOurselvesStatement[0]}</p>
-              <p className="mt-2">{proOurselvesStatement[1]}</p>
+            <div className="mt-6 space-y-7">
+              <div className="space-y-2 text-[1.2rem] font-semibold uppercase leading-tight tracking-[0.08em] text-[#F0D06A] sm:text-[1.45rem]">
+                <p>{generationalProsperityParagraphs[0]}</p>
+              </div>
+              <div className="space-y-2 text-[1.2rem] font-semibold uppercase leading-tight tracking-[0.08em] text-white sm:text-[1.45rem]">
+                <p>{generationalProsperityParagraphs[1]}</p>
+              </div>
+              <p className="max-w-[44rem] text-[1.06rem] leading-8 text-white/78 sm:text-[1.12rem]">
+                {generationalProsperityParagraphs[2]}
+              </p>
             </div>
-          </section>
+          </div>
+        </section>
 
-          <ParagraphGroup
-            title="Constitutional and Legal Affirmation"
-            paragraphs={legalAffirmationParagraphs}
-          />
-          <ParagraphGroup
-            title="Generational Prosperity"
-            paragraphs={generationalProsperityParagraphs}
-          />
-          <ParagraphGroup
-            title="Founding Principle"
-            paragraphs={foundingPrincipleParagraphs}
-          />
+        <LongformSection
+          eyebrow="Full Founding Principle"
+          title="Founding Principle"
+          paragraphs={foundingPrincipleParagraphs}
+        />
 
-          <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 text-center sm:p-7">
-            <div className="space-y-2 text-2xl font-bold text-[#F3D36D] sm:text-3xl">
+        <section className="border-t border-white/8">
+          <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
+              Declaration
+            </p>
+            <div className="mt-5 space-y-2 text-[1.25rem] font-semibold uppercase leading-tight tracking-[0.08em] text-[#F0D06A] sm:text-[1.55rem]">
               {foundingPrincipleClosing.map((line) => (
                 <p key={line}>{line}</p>
               ))}
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 text-center sm:p-7">
-            <div className="space-y-3 text-lg font-semibold text-[#F3D36D] sm:text-xl">
+        <section className="border-t border-white/8">
+          <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
+              Closing Declaration
+            </p>
+            <div className="mt-5 max-w-[42rem] space-y-4 border-l-2 border-[#D4AF37]/50 pl-5 text-[1.15rem] font-medium leading-8 text-white/88 sm:pl-7 sm:text-[1.3rem] sm:leading-9">
               {closingDeclarationLines.map((line) => (
                 <p key={line}>{line}</p>
               ))}
-              <p>Black Wealth Exchange</p>
             </div>
-          </section>
-        </div>
+            <p className="mt-6 text-sm uppercase tracking-[0.2em] text-[#D4AF37]">
+              Black Wealth Exchange
+            </p>
+          </div>
+        </section>
+
+        <section className="border-t border-white/8 bg-white/[0.02]">
+          <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
+              Related Paths
+            </p>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <Link
+                href="/about"
+                className="rounded-2xl border border-white/10 px-5 py-4 text-sm font-semibold text-white/78 transition hover:border-[#D4AF37]/40 hover:text-white"
+              >
+                <span className="block text-[11px] uppercase tracking-[0.16em] text-[#D4AF37]">
+                  About BWE
+                </span>
+                <span className="mt-2 block text-base text-white">
+                  Read who BWE is, how it operates today, and how the mission is
+                  organized.
+                </span>
+              </Link>
+              <Link
+                href="/library-of-black-history"
+                className="rounded-2xl border border-white/10 px-5 py-4 text-sm font-semibold text-white/78 transition hover:border-[#D4AF37]/40 hover:text-white"
+              >
+                <span className="block text-[11px] uppercase tracking-[0.16em] text-[#D4AF37]">
+                  Library of Black History
+                </span>
+                <span className="mt-2 block text-base text-white">
+                  Continue into the broader historical and educational body that
+                  connects BWE to Black history and economic restoration.
+                </span>
+              </Link>
+            </div>
+          </div>
+        </section>
       </main>
     </>
   );
