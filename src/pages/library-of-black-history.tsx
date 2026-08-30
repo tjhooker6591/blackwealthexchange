@@ -61,6 +61,30 @@ interface LibraryItem {
   links: ResourceLink[];
 }
 
+type EvidenceClass = "A" | "B" | "C" | "D" | "E";
+
+interface JourneyBlock {
+  block: string;
+  title: string;
+  status: "Active now" | "Queued next";
+  note: string;
+}
+
+interface HistorySection {
+  id: string;
+  kicker: string;
+  title: string;
+  coverage: string;
+  evidenceClass: EvidenceClass;
+  summary: string;
+  commonlyTaught: string;
+  missingContext: string;
+  evidence: string[];
+  whyItMatters: string;
+  caution?: string;
+  sources: ResourceLink[];
+}
+
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
@@ -535,6 +559,269 @@ const ALL_REGIONS: Region[] = [
   "Asia",
 ];
 
+const historyJourneys: JourneyBlock[] = [
+  {
+    block: "Block 1",
+    title: "Inventory, research ledger, gap matrix, content architecture",
+    status: "Active now",
+    note: "This pass establishes the research scaffold and preserves the current library before larger expansions.",
+  },
+  {
+    block: "Block 2",
+    title:
+      "Humanity's African Beginning, Africa Before Captivity, African Sacred Worlds, Yoruba Worldview",
+    status: "Active now",
+    note: "The first substantive expansion enters the live page in this pass.",
+  },
+  {
+    block: "Block 3",
+    title: "Egypt / Kemet / Nile Valley / Nubia / Kush",
+    status: "Queued next",
+    note: "This is the next major evidence-heavy build and will not be reduced to pyramids or flattened identity claims.",
+  },
+  {
+    block: "Block 4",
+    title: "Government, rulers, knowledge systems, writing, science, education",
+    status: "Queued next",
+    note: "This block will connect political institutions to intellectual production.",
+  },
+  {
+    block: "Block 5",
+    title: "West African civilizations: Ghana, Mali, Songhai, Timbuktu",
+    status: "Queued next",
+    note: "Trade, scholarship, governance, and wealth networks.",
+  },
+  {
+    block: "Block 6",
+    title: "East Africa, Aksum, Ethiopia, and the Swahili world",
+    status: "Queued next",
+    note: "This block will connect inland and Indian Ocean histories.",
+  },
+  {
+    block: "Block 7",
+    title: "North Africa, Amazigh histories, Moors, and al-Andalus",
+    status: "Queued next",
+    note: "Complexity first, slogans never.",
+  },
+  {
+    block: "Block 8",
+    title: "Christianity, Islam, the Bible, and Africa",
+    status: "Queued next",
+    note: "The page will separate text, history, tradition, and modern interpretation.",
+  },
+  {
+    block: "Block 9",
+    title: "Slave trades, colonialism, and extraction",
+    status: "Queued next",
+    note: "Will cover trans-Saharan, Indian Ocean, Atlantic, and colonial systems together.",
+  },
+  {
+    block: "Block 10",
+    title: "Diaspora, Haiti, Caribbean, and Latin America",
+    status: "Queued next",
+    note: "Global Black history cannot collapse into a U.S.-only story.",
+  },
+  {
+    block: "Block 11",
+    title: "Black America before emancipation through Reconstruction",
+    status: "Queued next",
+    note: "Resistance, war service, officeholding, institutions, and land.",
+  },
+  {
+    block: "Block 12",
+    title: "Black land, towns, enterprise, and HBCUs",
+    status: "Queued next",
+    note: "Institution-building becomes explicit here.",
+  },
+  {
+    block: "Block 13",
+    title: "Racial violence, Jim Crow, housing discrimination, and redlining",
+    status: "Queued next",
+    note: "Economic exclusion will be treated as structure, not side-note tragedy.",
+  },
+  {
+    block: "Block 14",
+    title: "Civil Rights, economic movements, invention, and culture",
+    status: "Queued next",
+    note: "History of ideas, ownership, and innovation together.",
+  },
+  {
+    block: "Block 15",
+    title: "Modern Black economics, restoration, and the BWE bridge",
+    status: "Queued next",
+    note: "The library closes by connecting memory, trust, institutions, and ownership.",
+  },
+];
+
+const historySections: HistorySection[] = [
+  {
+    id: "origins",
+    kicker: "BLOCK 2A",
+    title: "Humanity's African Beginning",
+    coverage: "Current coverage: Partial, now expanded",
+    evidenceClass: "B",
+    summary:
+      "The strongest current scientific consensus places the emergence of Homo sapiens in Africa about 300,000 years ago. That matters because it resets the frame: Africa is not a late chapter in world history, but the central ground of human beginnings.",
+    commonlyTaught:
+      "Many people were taught Black history as though it begins with captivity, colonization, or civil-rights struggle.",
+    missingContext:
+      "Human history begins in Africa. Any serious Black historical library has to start before forced dispersal, before empire, and before modern racial hierarchy.",
+    evidence: [
+      "The Smithsonian Human Origins Program states that Homo sapiens evolved in Africa about 300,000 years ago.",
+      "Smithsonian genetics and fossil framing also place the deepest roots of living humans and earlier human species in Africa.",
+      "UNESCO's General History of Africa treats African prehistory as foundational, not peripheral, and includes prehistory, art, agriculture, and metallurgy in Volume I.",
+    ],
+    whyItMatters:
+      "When history starts in captivity, identity starts in damage. When history starts in Africa, identity starts in origin, adaptation, creativity, and civilization-building.",
+    caution:
+      "This does not authorize simplistic racial storytelling about every prehistoric population. The evidence establishes Africa's centrality to human origins, not one modern political identity projected backward without care.",
+    sources: [
+      {
+        label: "Smithsonian Human Origins - Homo sapiens",
+        url: "https://humanorigins.si.edu/evidence/human-fossils/species/homo-sapiens",
+        type: "Museum",
+      },
+      {
+        label: "Smithsonian Human Origins - One Species, Living Worldwide",
+        url: "https://humanorigins.si.edu/evidence/genetics/one-species-living-worldwide",
+        type: "Research Tool",
+      },
+      {
+        label: "UNESCO - General History of Africa",
+        url: "https://www.unesco.org/en/general-history-africa",
+        type: "Open Access",
+      },
+    ],
+  },
+  {
+    id: "before-captivity",
+    kicker: "BLOCK 2B",
+    title: "Africa Before Captivity",
+    coverage: "Current coverage: Partial, now expanded",
+    evidenceClass: "B",
+    summary:
+      "Africa before Atlantic captivity was not a blank space waiting for Europe. It held multiple civilizations, trade systems, urban centers, sacred worlds, and political traditions that developed across very different regions and time periods.",
+    commonlyTaught:
+      "Too many public histories collapse pre-captivity Africa into vague tribal imagery, a few monuments, or a fast jump into the slave trade.",
+    missingContext:
+      "Long before Atlantic slavery became the frame through which many people encounter Africa, the continent contained regional systems of agriculture, metallurgy, governance, trade, scholarship, and city-building. The real story is not one empire or one identity, but a large field of connected and distinct histories.",
+    evidence: [
+      "UNESCO's General History of Africa Volume II covers nearly nine thousand years of African history across the Nile corridor, Egypt and Nubia, the Ethiopian highlands, the Maghrib, the Sahara, and other regions.",
+      "UNESCO's Volume IV describes the twelfth through sixteenth centuries as a period of expanding trade, cultural exchange, political development, and more common written records across major parts of Africa.",
+      "The Met's work on trans-Saharan gold trade shows structured economic exchange linking Mediterranean and sub-Saharan economies, while its Guinea Coast essays show distinct African polities rather than one undifferentiated society.",
+    ],
+    whyItMatters:
+      "When Africa before captivity is erased, Black identity is easier to detach from statecraft, commerce, scholarship, and inherited civilizational memory. Restoring that record changes what people think is normal, possible, and worth rebuilding.",
+    caution:
+      "Africa before captivity should not be turned into a single golden-age slogan. Different regions moved on different timelines, and the public library should keep distinctions between regions, periods, and evidence types clear.",
+    sources: [
+      {
+        label: "UNESCO - General History of Africa",
+        url: "https://www.unesco.org/en/general-history-africa",
+        type: "Open Access",
+      },
+      {
+        label: "UNESCO - General History of Africa Volume IV",
+        url: "https://unesdoc.unesco.org/ark:/48223/pf0000184287",
+        type: "Open Access",
+      },
+      {
+        label: "Met - The Trans-Saharan Gold Trade",
+        url: "https://www.metmuseum.org/essays/the-trans-saharan-gold-trade-7th-14th-century",
+        type: "Academic",
+      },
+      {
+        label: "Met - Origins and Empire: Benin, Owo, and Ijebu",
+        url: "https://www.metmuseum.org/essays/origins-and-empire-the-benin-owo-and-ijebu-kingdoms",
+        type: "Academic",
+      },
+    ],
+  },
+  {
+    id: "sacred-worlds",
+    kicker: "BLOCK 2C",
+    title: "African Sacred Worlds",
+    coverage: "Current coverage: Partial, now expanded",
+    evidenceClass: "C",
+    summary:
+      "African sacred worlds were never one interchangeable system. They include distinct cosmologies, moral languages, ritual institutions, and ways of understanding creation, character, community, and obligation.",
+    commonlyTaught:
+      "School often treated African religions as folklore, superstition, or a hazy backdrop before Christianity or Islam arrived.",
+    missingContext:
+      "Across the continent, sacred life helped order time, kinship, responsibility, political legitimacy, healing, environment, and social memory. These traditions were knowledge systems, not empty myths.",
+    evidence: [
+      "UNESCO's historical method explicitly combines written archives with oral traditions, archaeology, and scientific findings rather than excluding African knowledge traditions from history.",
+      "The Smithsonian's African Cosmos exhibition frames African cosmologies as deep intellectual and artistic traditions tied to sky, environment, and daily life.",
+      "This library will distinguish established fact from theology, oral memory, and scholarly interpretation instead of flattening them into one category.",
+    ],
+    whyItMatters:
+      "If a people are taught that their sacred inheritance was primitive, it becomes easier to sever them from memory, authority, and continuity. Recovering sacred worlds helps restore intellectual dignity.",
+    caution:
+      "Public sections should label tradition and theology honestly. Not every sacred claim is archaeology, but neither should sacred systems be dismissed because they are not written in European categories.",
+    sources: [
+      {
+        label: "UNESCO - General History of Africa",
+        url: "https://www.unesco.org/en/general-history-africa",
+        type: "Open Access",
+      },
+      {
+        label: "UNESCO - 2025 General History of Africa release",
+        url: "https://www.unesco.org/en/articles/unesco-releases-three-new-volumes-its-general-history-africa",
+        type: "Open Access",
+      },
+      {
+        label: "Smithsonian - African Cosmos: Stellar Arts",
+        url: "https://africa.si.edu/exhibitions/african-cosmos-stellar-arts",
+        type: "Museum",
+      },
+    ],
+  },
+  {
+    id: "yoruba",
+    kicker: "BLOCK 2D",
+    title: "Yoruba Worldview",
+    coverage: "Current coverage: Partial, now expanded",
+    evidenceClass: "B",
+    summary:
+      "The Yoruba world deserves treatment as a serious intellectual, spiritual, artistic, and civic tradition. It should not appear on this library only as a side-note to diaspora religion or museum aesthetics.",
+    commonlyTaught:
+      "Many readers only encounter Yoruba traditions indirectly through diaspora religions, internet simplifications, or scattered references to deities without context.",
+    missingContext:
+      "Museum and scholarly sources describe Ifa as a Yoruba way of life involving spiritual belief, ethics, and moral behavior. They also document divination, urban life, sacred geography, and the historical importance of Ile-Ife.",
+    evidence: [
+      "The British Museum describes Ifa as a traditional Yoruba way of life that incorporates spiritual belief, ethics, and moral behavior.",
+      "Smithsonian collection records note that babalawo used Ifa divination to consult Orunmila, identifying a formal knowledge practice rather than vague mysticism.",
+      "Met and Smithsonian materials treat Ile-Ife as a major center of Yoruba history, art, and sacred memory, which helps connect worldview to city-building, trade, and political culture.",
+    ],
+    whyItMatters:
+      "If the library is going to discuss Black identity, diaspora religion, or African continuity with seriousness, Yoruba thought has to be handled with respect, accuracy, and enough room to breathe.",
+    caution:
+      "Origin traditions about Oduduwa and Ile-Ife should be labeled as tradition or theology where appropriate, while archaeological and art-historical claims should be grounded separately.",
+    sources: [
+      {
+        label: "British Museum - Creation narratives and feminine power",
+        url: "https://www.britishmuseum.org/blog/creation-narratives-and-feminine-power",
+        type: "Museum",
+      },
+      {
+        label: "Smithsonian NMAfA - Divination cup",
+        url: "https://africa.si.edu/collection/object/nmafa_92-10-1",
+        type: "Museum",
+      },
+      {
+        label: "Met - Ife (from ca. 6th Century)",
+        url: "https://www.metmuseum.org/essays/ife-from-ca-6th-century",
+        type: "Academic",
+      },
+      {
+        label: "Smithsonian - Featured Artwork on Ifa divination",
+        url: "https://africa.si.edu/collection/selected-artwork/2196",
+        type: "Museum",
+      },
+    ],
+  },
+];
+
 export default function LibraryOfBlackHistory() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<
@@ -824,6 +1111,184 @@ export default function LibraryOfBlackHistory() {
                   that protect families.
                 </Callout>
               </Expandable>
+            </div>
+          </Card>
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 xl:grid-cols-[1.15fr_0.85fr] gap-4">
+          <Card
+            kicker="WORKSTREAM 002"
+            title="Research standard, coverage audit, and build order"
+            icon={<BookOpen className="h-5 w-5 text-[#D4AF37]" />}
+          >
+            <p className="text-white/75">
+              This library is no longer just a list of links. It is being
+              expanded as a serious historical program. The current page remains
+              the foundation, but each new block must be strong enough to stand
+              on its own and honest enough to label what is fact,
+              interpretation, tradition, and dispute.
+            </p>
+
+            <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3">
+              <Callout title="Current audit" tone="gold">
+                The live library already works as a source gateway and a truth
+                frame. It is still thin on many pre-captivity civilizations,
+                African sacred systems, and Black American wealth history after
+                emancipation.
+              </Callout>
+              <Callout title="Evidence rule" tone="emerald">
+                We are prioritizing UNESCO, Smithsonian, major museums,
+                archives, databases, and scholarly collections over internet
+                summaries and recycled social content.
+              </Callout>
+              <Callout title="What comes next" tone="red">
+                The next deep build after this block is Egypt, Nubia, Kush, and
+                the Nile Valley. That section will treat complexity as a
+                requirement, not an optional note.
+              </Callout>
+            </div>
+          </Card>
+
+          <Card
+            kicker="HISTORY ROADMAP"
+            title="The program this library is growing into"
+            icon={<Globe className="h-5 w-5 text-[#D4AF37]" />}
+          >
+            <div className="space-y-3">
+              {historyJourneys.map((item) => (
+                <div
+                  key={item.block}
+                  className="rounded-2xl border border-white/10 bg-black/30 p-4"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-[11px] uppercase tracking-widest text-white/45 font-extrabold">
+                        {item.block}
+                      </div>
+                      <div className="mt-1 text-sm font-extrabold text-white">
+                        {item.title}
+                      </div>
+                    </div>
+                    <span
+                      className={cx(
+                        "rounded-full px-2.5 py-1 text-[11px] font-extrabold",
+                        item.status === "Active now"
+                          ? "bg-[#D4AF37]/15 text-[#D4AF37]"
+                          : "bg-white/5 text-white/55",
+                      )}
+                    >
+                      {item.status}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-white/65">
+                    {item.note}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+
+        <div className="mt-8">
+          <Card
+            kicker="FIRST SUBSTANTIVE EXPANSION"
+            title="Block 2: origins, Africa before captivity, sacred worlds, and Yoruba worldview"
+            icon={<LibraryBig className="h-5 w-5 text-[#D4AF37]" />}
+          >
+            <p className="text-white/75">
+              The library now begins where too many public histories do not:
+              before captivity, before reduction, and before the lie that Black
+              history only matters when it enters someone else&apos;s economy.
+            </p>
+
+            <div className="mt-5 space-y-4">
+              {historySections.map((section) => (
+                <section
+                  key={section.id}
+                  className="rounded-[28px] border border-white/10 bg-black/30 p-5 sm:p-6"
+                >
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="max-w-3xl">
+                      <div className="text-[11px] uppercase tracking-[0.24em] text-white/45 font-extrabold">
+                        {section.kicker}
+                      </div>
+                      <h3 className="mt-2 text-2xl font-extrabold tracking-tight text-white">
+                        {section.title}
+                      </h3>
+                      <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-extrabold">
+                        <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-white/65">
+                          {section.coverage}
+                        </span>
+                        <span className="rounded-full border border-[#D4AF37]/25 bg-[#D4AF37]/10 px-3 py-1 text-[#D4AF37]">
+                          Evidence class {section.evidenceClass}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="max-w-sm text-sm leading-relaxed text-white/70">
+                      {section.summary}
+                    </div>
+                  </div>
+
+                  <div className="mt-5 grid grid-cols-1 xl:grid-cols-[0.92fr_1.08fr] gap-4">
+                    <div className="space-y-4">
+                      <Callout title="Commonly taught" tone="red">
+                        {section.commonlyTaught}
+                      </Callout>
+                      <Callout title="Missing context" tone="gold">
+                        {section.missingContext}
+                      </Callout>
+                      <Callout title="Why it matters" tone="emerald">
+                        {section.whyItMatters}
+                      </Callout>
+                      {section.caution ? (
+                        <Callout title="Evidence caution" tone="red">
+                          {section.caution}
+                        </Callout>
+                      ) : null}
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                        <div className="text-[11px] uppercase tracking-widest text-white/45 font-extrabold">
+                          The evidence
+                        </div>
+                        <List
+                          items={section.evidence.map((item) => (
+                            <>{item}</>
+                          ))}
+                        />
+                      </div>
+
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                        <div className="text-[11px] uppercase tracking-widest text-white/45 font-extrabold">
+                          Source path
+                        </div>
+                        <div className="mt-3 grid grid-cols-1 gap-2">
+                          {section.sources.map((source) => (
+                            <ExternalA
+                              key={source.url}
+                              href={source.url}
+                              className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 transition hover:bg-white/[0.06]"
+                            >
+                              <span className="min-w-0">
+                                <span className="text-[#D4AF37] font-extrabold text-[12px]">
+                                  {source.type}
+                                </span>{" "}
+                                <span className="text-white/80">-</span>{" "}
+                                <span className="font-semibold">
+                                  {source.label}
+                                </span>
+                              </span>
+                              <ExternalLink className="h-4 w-4 shrink-0 text-white/50" />
+                            </ExternalA>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              ))}
             </div>
           </Card>
         </div>

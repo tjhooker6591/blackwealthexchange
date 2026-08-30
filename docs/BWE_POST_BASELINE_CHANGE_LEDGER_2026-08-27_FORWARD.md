@@ -250,7 +250,8 @@ Status:
 - Classified the dirty `package.json` as a local script-only runtime-service change and left it untouched during history work.
 - Began Workstream 002 by preserving the existing history library as the canonical foundation rather than replacing it.
 - Added the research/source ledger, the coverage-gap matrix, and the public content architecture.
-- Expanded the live history route with the first substantive block covering humanity's African beginning, African sacred worlds, and Yoruba worldview.
+- Expanded the live history route with the first substantive block covering humanity's African beginning, Africa before captivity, African sacred worlds, and Yoruba worldview.
+- Preserved the accepted master-program re-anchor in control commit `8f40bb769b2c6a72418ff4be673ba50ea7f4a7a2`.
 
 Package.json reconciliation:
 
@@ -267,7 +268,7 @@ Package.json reconciliation:
 History Block:
 
 - `BLOCK 1`: inventory, research/source ledger, gap matrix, architecture
-- `BLOCK 2`: humanity's African beginning, African sacred worlds, Yoruba worldview
+- `BLOCK 2`: humanity's African beginning, Africa before captivity, African sacred worlds, Yoruba worldview
 
 Post-baseline counters after Workstream 002 start:
 
@@ -317,7 +318,7 @@ CONTENT ADDED:
 - Workstream 002 editorial framing
 - coverage and evidence standard section
 - public history roadmap
-- substantive sections on human origins in Africa, African sacred worlds, and Yoruba worldview
+- substantive sections on human origins in Africa, Africa before captivity, African sacred worlds, and Yoruba worldview
 
 CONTENT PRESERVED:
 
@@ -327,6 +328,7 @@ SOURCES ADDED:
 
 - Smithsonian Human Origins Program
 - UNESCO General History of Africa
+- UNESCO General History of Africa Volume IV
 - Smithsonian National Museum of African Art
 - British Museum
 - Metropolitan Museum of Art
@@ -334,6 +336,10 @@ SOURCES ADDED:
 RUNTIME COMMIT:
 
 - `PENDING`
+
+CONTROL COMMIT:
+
+- `8f40bb769b2c6a72418ff4be673ba50ea7f4a7a2`
 
 VALIDATION:
 
