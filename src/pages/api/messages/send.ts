@@ -41,11 +41,9 @@ export default async function handler(
     }
 
     if (suppliedSenderId && suppliedSenderId !== senderId) {
-      return res
-        .status(403)
-        .json({
-          message: "Sender identity must match the authenticated user.",
-        });
+      return res.status(403).json({
+        message: "Sender identity must match the authenticated user.",
+      });
     }
 
     // Validate input
