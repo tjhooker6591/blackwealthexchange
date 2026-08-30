@@ -1,17 +1,40 @@
-"use client";
-
 import React from "react";
 import Head from "next/head";
+import Link from "next/link";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
+import {
+  blackUnityParagraphs,
+  closingDeclarationLines,
+  diasporaUnityParagraphs,
+  foundingDeclarationParagraphs,
+  foundingPrincipleClosing,
+  foundingPrincipleParagraphs,
+  generationalProsperityParagraphs,
+  legalAffirmationParagraphs,
+  missionParagraphs,
+  proOurselvesStatement,
+} from "@/lib/foundingContent";
 
-const platformLanes = [
-  "Discovery through the business directory, search, and public category/state pages.",
-  "Ownership and trust through claim, verification, and profile management workflows.",
-  "Commerce through marketplace, sponsor, advertising, and future growth pathways.",
-  "Support and accountability through public contact, support, and release-history surfaces.",
-];
+function ParagraphGroup({
+  title,
+  paragraphs,
+}: {
+  title: string;
+  paragraphs: readonly string[];
+}) {
+  return (
+    <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-7">
+      <h2 className="text-2xl font-bold text-white sm:text-3xl">{title}</h2>
+      <div className="mt-4 space-y-4 text-base leading-relaxed text-white/76 sm:text-lg">
+        {paragraphs.map((paragraph) => (
+          <p key={paragraph}>{paragraph}</p>
+        ))}
+      </div>
+    </section>
+  );
+}
 
-export default function About() {
+export default function FoundingPrinciplePage() {
   const canonical = canonicalUrl("/founding-principle");
   const founderSchema = {
     "@context": "https://schema.org",
@@ -34,7 +57,7 @@ export default function About() {
         <meta
           name="description"
           content={truncateMeta(
-            "Read the founder story and founding principle behind Black Wealth Exchange, founded by Thomas James Hooker Sr.",
+            "Read the founder-authored founding declaration and principle behind Black Wealth Exchange.",
           )}
         />
         <link rel="canonical" href={canonical} />
@@ -42,156 +65,89 @@ export default function About() {
       <script type="application/ld+json">
         {JSON.stringify(founderSchema)}
       </script>
-      <div className="min-h-screen bg-black text-white">
-        <section className="container mx-auto px-4 py-16 text-left">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gold mb-8">
-            Founder Story and Founding Principle
-          </h1>
-
-          <div className="space-y-6 text-lg text-gray-300 max-w-4xl">
-            <p>
-              Black Wealth Exchange was founded by{" "}
-              <strong className="text-gold">Thomas James Hooker Sr.</strong> as
-              a founder-led platform built to help Black-owned businesses become
-              easier to discover, easier to trust, and easier to support.
+      <main className="min-h-screen bg-black text-white">
+        <section className="border-b border-white/10 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.14),transparent_36%)]">
+          <div className="mx-auto max-w-5xl px-4 py-14 sm:py-18">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#D4AF37]">
+              Founding Principle
             </p>
-
-            <p>
-              The founding principle is straightforward: Black-owned businesses,
-              consumers, and partners need stronger economic infrastructure than
-              scattered listings and vague promises. BWE was created to connect
-              discovery, ownership, commerce, and growth in one practical
-              system.
+            <h1 className="mt-3 max-w-4xl text-3xl font-extrabold leading-tight sm:text-5xl">
+              {foundingDeclarationParagraphs[0]}
+            </h1>
+            <p className="mt-6 max-w-3xl text-base leading-relaxed text-white/76 sm:text-lg">
+              This route preserves the founder-authored declaration at the core
+              of BWE and keeps it separate from the platform&apos;s broader
+              history library.
             </p>
-
-            <p>
-              That means helping a business get found in the directory, helping
-              the rightful owner claim and strengthen the profile, helping
-              customers discover products and offers, and building trust through
-              clear public information, responsive support, and honest platform
-              behavior.
-            </p>
-
-            <p>
-              BWE operates as a{" "}
-              <strong className="text-gold">
-                mission-driven for-profit business
-              </strong>
-              . It is not a nonprofit, not a government program, and not a
-              faceless template site. The platform exists to build durable
-              value, create useful economic pathways, and earn trust by being
-              factual about what is live now.
-            </p>
-
-            <p>
-              The goal is not to overstate scale or pretend every future feature
-              already exists. The goal is to keep building a platform where
-              Black business discovery, claim and ownership, commerce,
-              sponsorship, and growth tools fit together in a credible, useful
-              way.
-            </p>
-
-            <p className="italic text-gold">
-              Black Wealth Exchange — Black-Owned Business Discovery and Growth
-              Platform
-            </p>
-
-            <p>
-              Trust grows when people can see who built the platform, understand
-              what it offers, and reach real support when they need help. That
-              is why the founder is named publicly, why the platform description
-              stays clear, and why BWE only describes features that visitors can
-              actually use today.
-            </p>
-          </div>
-        </section>
-
-        <section className="container mx-auto px-4 py-12">
-          <h2 className="text-3xl font-bold text-gold mb-6">Our Values</h2>
-          <ul className="space-y-4 text-gray-300 text-lg list-disc list-inside max-w-4xl">
-            <li>
-              <strong>Economic Justice:</strong> Building structures that
-              correct the historical denial of access to wealth and ownership.
-            </li>
-            <li>
-              <strong>Integrity and Accountability:</strong> Operating
-              transparently, lawfully, and with unwavering commitment to
-              community trust.
-            </li>
-            <li>
-              <strong>Generational Prosperity:</strong> Laying foundations not
-              just for today, but for the prosperity of future Black
-              generations.
-            </li>
-            <li>
-              <strong>Strategic Empowerment:</strong> Creating opportunities
-              intentionally, with clear strategy and measurable outcomes.
-            </li>
-            <li>
-              <strong>Constitutional and Legal Affirmation:</strong> Asserting
-              our rightful place in the economy under the protections afforded
-              by law.
-            </li>
-          </ul>
-        </section>
-
-        <section className="container mx-auto px-4 py-12">
-          <h2 className="text-3xl font-bold text-gold mb-6">Leadership</h2>
-          <p className="text-lg text-gray-300 max-w-4xl">
-            Black Wealth Exchange is led by{" "}
-            <strong className="text-white">Thomas James Hooker Sr.</strong>. He
-            leads the platform&apos;s direction, public accountability, and
-            long-term growth.
-            <br />
-            <br />
-            BWE is built to serve businesses, consumers, sponsors, partners, and
-            future investors who want a clear understanding of who is leading
-            the company and what the platform is here to do.
-          </p>
-        </section>
-
-        <section className="container mx-auto px-4 py-12">
-          <h2 className="text-3xl font-bold text-gold mb-6">
-            Organizational Status
-          </h2>
-          <p className="text-lg text-gray-300 max-w-4xl">
-            Black Wealth Exchange operates as a for-profit, mission-driven
-            organization. Profit supports the business model, while the mission
-            remains focused on strengthening Black business ownership,
-            visibility, opportunity, and long-term economic participation.
-          </p>
-        </section>
-
-        <section className="container mx-auto px-4 py-12">
-          <h2 className="text-3xl font-bold text-gold mb-6">
-            What BWE Is Building
-          </h2>
-          <div className="grid gap-4 max-w-4xl md:grid-cols-2">
-            {platformLanes.map((lane) => (
-              <div
-                key={lane}
-                className="rounded-xl border border-white/10 bg-white/5 p-5 text-base text-gray-300"
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link
+                href="/about"
+                className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#D4AF37] px-5 text-sm font-semibold text-black transition hover:brightness-105"
               >
-                {lane}
-              </div>
-            ))}
+                Return to About
+              </Link>
+              <Link
+                href="/library-of-black-history"
+                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#D4AF37]/60 px-5 text-sm font-semibold text-[#D4AF37] transition hover:border-[#D4AF37]"
+              >
+                Open Black History Library
+              </Link>
+            </div>
           </div>
         </section>
 
-        <section className="container mx-auto px-4 py-12 text-center">
-          <h2 className="text-2xl font-bold text-gold mb-4">Contact Us</h2>
-          <p className="text-gray-400 mb-6">
-            For serious inquiries, partnerships, or collaborations, please
-            contact us at:
-            <br />
-            <strong className="text-white">info@blackwealthexchange.com</strong>
-          </p>
-        </section>
+        <div className="mx-auto grid max-w-5xl gap-6 px-4 py-10 sm:py-12">
+          <ParagraphGroup title="Mission" paragraphs={missionParagraphs} />
+          <ParagraphGroup
+            title="Black Unity"
+            paragraphs={blackUnityParagraphs}
+          />
+          <ParagraphGroup
+            title="Diaspora Unity"
+            paragraphs={diasporaUnityParagraphs}
+          />
 
-        <footer className="bg-black text-center py-6">
-          <div className="text-gray-500 text-sm space-y-2" />
-        </footer>
-      </div>
+          <section className="rounded-3xl border border-[#D4AF37]/25 bg-[#D4AF37]/10 px-6 py-6">
+            <h2 className="text-2xl font-bold text-white sm:text-3xl">
+              Foundation
+            </h2>
+            <div className="mt-4 text-xl font-semibold italic text-[#F3D36D] sm:text-2xl">
+              <p>{proOurselvesStatement[0]}</p>
+              <p className="mt-2">{proOurselvesStatement[1]}</p>
+            </div>
+          </section>
+
+          <ParagraphGroup
+            title="Constitutional and Legal Affirmation"
+            paragraphs={legalAffirmationParagraphs}
+          />
+          <ParagraphGroup
+            title="Generational Prosperity"
+            paragraphs={generationalProsperityParagraphs}
+          />
+          <ParagraphGroup
+            title="Founding Principle"
+            paragraphs={foundingPrincipleParagraphs}
+          />
+
+          <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 text-center sm:p-7">
+            <div className="space-y-2 text-2xl font-bold text-[#F3D36D] sm:text-3xl">
+              {foundingPrincipleClosing.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 text-center sm:p-7">
+            <div className="space-y-3 text-lg font-semibold text-[#F3D36D] sm:text-xl">
+              {closingDeclarationLines.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+              <p>Black Wealth Exchange</p>
+            </div>
+          </section>
+        </div>
+      </main>
     </>
   );
 }

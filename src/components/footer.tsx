@@ -20,6 +20,7 @@ const footerSections: Array<{
     links: [
       { href: "/start-here", label: "Start Here" },
       { href: "/financial-literacy", label: "Learn" },
+      { href: "/library-of-black-history", label: "Black History Library" },
       { href: "/wealth-builder", label: "Wealth Builder" },
       { href: "/black-student-opportunities", label: "Student Opportunities" },
       { href: "/black-card", label: "Black Card" },

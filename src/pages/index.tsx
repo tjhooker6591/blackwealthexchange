@@ -1050,6 +1050,37 @@ export default function Home() {
                   </Link>
                 ))}
               </div>
+
+              <div className="mt-4 rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/10 p-4 text-left">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <div className="bwe-eyebrow">History and context</div>
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-white/72">
+                      Our history does not begin with slavery. The Library of
+                      Black History restores the longer story of what Black
+                      people built, what survived, and why ownership work still
+                      matters now.
+                    </p>
+                  </div>
+                  <Link
+                    href="/library-of-black-history"
+                    onClick={() =>
+                      trackHomepageEvent(
+                        "homepage_history_truth_entry_clicked",
+                        {
+                          section: "homepage",
+                          ctaId: "quick_path_history_restore",
+                          ctaLabel: "Explore the Library of Black History",
+                          destination: "/library-of-black-history",
+                        },
+                      )
+                    }
+                    className="bwe-cta-secondary bwe-focus-ring px-5"
+                  >
+                    Explore Black History
+                  </Link>
+                </div>
+              </div>
             </div>
           </section>
 

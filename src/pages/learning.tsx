@@ -16,6 +16,7 @@ const PATHWAYS = [
     links: [
       { href: "/resources", label: "Open resources" },
       { href: "/financial-literacy", label: "Financial literacy" },
+      { href: "/library-of-black-history", label: "Library of Black History" },
       { href: "/news", label: "News and insights" },
     ],
   },
@@ -199,6 +200,25 @@ export default function LearningPage() {
                 The hub now makes it clearer where to read, where to enroll, and
                 where to continue your existing course progress.
               </p>
+            </div>
+          </section>
+
+          <section className="mt-8 rounded-[28px] border border-[rgba(212,175,55,0.22)] bg-[rgba(212,175,55,0.08)] px-4 py-5 sm:px-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="bwe-eyebrow">History and context</div>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-white/68">
+                  BWE learning does not begin with tactics alone. The Library of
+                  Black History connects the broader history, economic context,
+                  and source material behind why this work matters.
+                </p>
+              </div>
+              <Link
+                href="/library-of-black-history"
+                className="bwe-cta-secondary bwe-focus-ring px-5"
+              >
+                Open Black History Library
+              </Link>
             </div>
           </section>
 
