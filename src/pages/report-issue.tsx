@@ -1,15 +1,14 @@
-import SupportTicketForm from "@/components/support/SupportTicketForm";
+import SupportTicketEntryPage from "@/components/support/SupportTicketEntryPage";
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-black text-white p-8">
-      <div className="max-w-3xl mx-auto space-y-4">
-        <h1 className="text-3xl font-bold text-yellow-400">report issue</h1>
-        <div className="rounded border border-zinc-800 bg-zinc-950 p-4 text-zinc-300">
-          Select category and submit your support ticket.
-        </div>
-        <SupportTicketForm defaultCategory="General Question" />
-      </div>
-    </main>
+    <SupportTicketEntryPage
+      title="Report an Issue"
+      intro="Use this route to report a technical issue, broken page, account problem, or other support concern that needs follow-up."
+      metaTitle="Report an Issue | Black Wealth Exchange"
+      metaDescription="Report a technical issue, broken page, account problem, or other support concern to Black Wealth Exchange."
+      canonicalPath="/report-issue"
+      defaultCategory="Technical Issue"
+    />
   );
 }

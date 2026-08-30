@@ -5,6 +5,7 @@ import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { adminFail, ADMIN_ERROR_CODES } from "@/lib/adminApiContract";
 import { reserveFeaturedSponsorWeeks } from "@/lib/advertising/sponsorSchedule";
+import { validateSponsorBusinessLink } from "@/lib/advertising/sponsorListings";
 
 type Body = {
   requestId?: string;
@@ -105,9 +106,23 @@ export default async function handler(
 
     let assignedWeeks: string[] = [];
     if (option === "featured-sponsor") {
+      const sponsorValidation = await validateSponsorBusinessLink(
+        db,
+        String(reqDoc.businessId || ""),
+      );
+      if (!sponsorValidation.ok) {
+        return adminFail(
+          res,
+          sponsorValidation.reason === "business_not_found" ? 404 : 409,
+          "INVALID_SPONSOR_BUSINESS_LINK",
+          "Featured sponsor requests require a linked public business listing",
+        );
+      }
+
       const rows = await reserveFeaturedSponsorWeeks(db as any, {
         campaignId: requestId,
         durationDays,
+        businessId: sponsorValidation.businessId,
         requestedStartDate: reqDoc?.requestedStartDate
           ? new Date(reqDoc.requestedStartDate).toISOString()
           : null,

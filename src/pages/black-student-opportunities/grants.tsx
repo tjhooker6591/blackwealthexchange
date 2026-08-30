@@ -1,4 +1,5 @@
 // pages/black-student-opportunities/grants.tsx
+import type { GetServerSideProps } from "next";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,6 +13,10 @@ import {
   MapPin,
   ArrowLeft,
 } from "lucide-react";
+import {
+  getPublicStudentHubPageRecords,
+  type PublicStudentHubRecord,
+} from "@/lib/studentHub/public";
 
 type GrantItem = {
   title: string;
@@ -117,79 +122,26 @@ function GrantCard({ item }: { item: GrantItem }) {
   );
 }
 
-const Grants = () => {
+const Grants = ({
+  initialGrants,
+}: {
+  initialGrants: PublicStudentHubRecord[];
+}) => {
   const YEAR = 2026;
 
-  const grants: GrantItem[] = [
-    {
-      title: "Federal Pell Grant",
-      description:
-        "Need-based federal grant for undergraduate students. Great starting point for most students who qualify through FAFSA.",
-      whoItsFor: [
-        "Undergraduate students with financial need",
-        "Students who complete FAFSA",
-        "Typically available to eligible students year to year (based on need/enrollment)",
-      ],
-      howToApply: [
-        "Complete FAFSA (and any state aid applications if required).",
-        "Check your school portal for your aid offer.",
-        "Confirm enrollment status (full-time/part-time can affect award).",
-      ],
-      link: "https://studentaid.gov/understand-aid/types/grants/pell",
-      tags: ["Federal", "Need-based", "FAFSA"],
-    },
-    {
-      title: "Federal Supplemental Educational Opportunity Grant (FSEOG)",
-      description:
-        "Campus-administered need-based grant for students with exceptional financial need (limited funds).",
-      whoItsFor: [
-        "Undergraduates with exceptional financial need",
-        "FAFSA filers (earlier is better because funding is limited)",
-        "Students attending participating schools",
-      ],
-      howToApply: [
-        "Submit FAFSA as early as possible.",
-        "Ask your school’s financial aid office if they participate in FSEOG.",
-        "Confirm any additional campus forms/deadlines.",
-      ],
-      link: "https://studentaid.gov/understand-aid/types/grants/fseog",
-      tags: ["Federal", "Campus-based", "Limited funds"],
-    },
-    {
-      title: "TEACH Grant",
-      description:
-        "Grant for students planning to teach in high-need fields in low-income areas (has service requirements).",
-      whoItsFor: [
-        "Students in eligible programs who plan to teach",
-        "Those willing to meet service obligations after graduation",
-        "Students in high-need subject areas (varies by state/school)",
-      ],
-      howToApply: [
-        "Confirm your program/school is TEACH-eligible.",
-        "Complete counseling and agreement requirements.",
-        "Track your service obligations carefully (important).",
-      ],
-      link: "https://studentaid.gov/understand-aid/types/grants/teach",
-      tags: ["Federal", "Service requirement", "Teaching"],
-    },
-    {
-      title: "UNCF Emergency Student Aid",
-      description:
-        "Emergency support to help students continue their education when unexpected financial hardship hits.",
-      whoItsFor: [
-        "Students experiencing urgent, unexpected financial hardship",
-        "Often tied to UNCF-member institutions and program criteria",
-        "Students who can document the emergency need",
-      ],
-      howToApply: [
-        "Review the program details and eligibility.",
-        "Contact your school/UNCF program contact if listed.",
-        "Prepare documentation (bill, notice, emergency expense proof).",
-      ],
-      link: "https://uncf.org/programs/uncf-emergency-student-aid",
-      tags: ["Emergency", "UNCF", "Student support"],
-    },
-  ];
+  const grants: GrantItem[] = initialGrants.map((record) => ({
+    title: record.title,
+    description: record.description,
+    whoItsFor: [record.eligibilitySummary],
+    howToApply:
+      record.howToApply && record.howToApply.length
+        ? record.howToApply
+        : [
+            "Review the official source and complete the current financial-aid or program application steps.",
+          ],
+    link: record.applicationUrl,
+    tags: [...(record.tags || []), record.statusLabel],
+  }));
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
@@ -361,14 +313,12 @@ const Grants = () => {
             </SectionCard>
           </div>
 
-          {/* Live updates (RSS links only — safe, no new API required) */}
           <div className="mt-6">
             <SectionCard title="Live Updates (RSS / Feeds)" icon={BookOpen}>
               <p className="text-sm text-white/70">
-                If you want this page to stay “2026-current” automatically, we
-                can plug in RSS feeds behind an API route and render the latest
-                items here. For now, here are reliable feed sources to subscribe
-                to:
+                These official sources are worth revisiting when you are
+                checking grant deadlines, aid changes, and school-specific
+                funding updates:
               </p>
 
               <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -411,10 +361,9 @@ const Grants = () => {
               </div>
 
               <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4 text-xs text-white/60">
-                Recommended “leading-edge” approach for BWE: create one API
-                endpoint that fetches 2–4 trusted feeds nightly, normalizes
-                items, caches results, then this page renders “Latest updates”
-                with zero manual edits.
+                Grant and aid policies move fast. Use official financial-aid
+                pages as your source of truth before you apply or make a school
+                decision.
               </div>
             </SectionCard>
           </div>
@@ -447,3 +396,12 @@ const Grants = () => {
 };
 
 export default Grants;
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { records } = await getPublicStudentHubPageRecords("grants");
+  return {
+    props: {
+      initialGrants: records,
+    },
+  };
+};

@@ -123,7 +123,7 @@ export default function FinancialReviewPage() {
         <Section title="Top Totals">
           <div className="grid md:grid-cols-3 gap-3 text-sm">
             <div className="rounded border border-zinc-800 bg-zinc-950 p-3">
-              Total Revenue: {money(data?.grossRevenue)}
+              Gross Collected Revenue: {money(data?.grossRevenue)}
             </div>
             <div className="rounded border border-zinc-800 bg-zinc-950 p-3">
               BWE Net Revenue: {money(data?.totalRevenue)}

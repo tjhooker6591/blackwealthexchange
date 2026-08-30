@@ -1,141 +1,84 @@
 import Link from "next/link";
-
-type ReleaseSection = {
-  title: string;
-  label: "Available now" | "Improved" | "Foundation update";
-  bullets: string[];
-};
-
-const releaseMeta = {
-  releaseTitle: "BWE May 2026 Platform Update",
-  releaseId: "BWE-2026.05",
-  publishedDate: "May 12, 2026",
-  lastUpdated: "May 12, 2026, 11:30 AM PT",
-  status: "Available now" as const,
-};
-
-const sections: ReleaseSection[] = [
-  {
-    title: "Search & Directory improvements",
-    label: "Improved",
-    bullets: [
-      "Better search quality and consistency across business directory views.",
-      "Directory browsing now has more reliable result rendering.",
-    ],
-  },
-  {
-    title: "Marketplace stability improvements",
-    label: "Improved",
-    bullets: [
-      "Order and product flows are now more stable across common user paths.",
-      "Checkout and seller workflows received reliability-focused updates.",
-    ],
-  },
-  {
-    title: "Support experience improvements",
-    label: "Available now",
-    bullets: [
-      "Support routes and ticket surfaces were tightened for better consistency.",
-      "Release notes now have a dedicated user-facing page in Support.",
-    ],
-  },
-  {
-    title: "Wealth Builder foundation updates",
-    label: "Foundation update",
-    bullets: [
-      "Core Wealth Builder APIs and auth/entitlement plumbing were expanded.",
-      "Budget, debt, goals, insights, and transaction foundations are in place.",
-    ],
-  },
-  {
-    title: "Travel Map foundation updates",
-    label: "Foundation update",
-    bullets: [
-      "Travel Map API and page scaffolding expanded for upcoming user features.",
-      "Saved and nearby experience foundations were added for future releases.",
-    ],
-  },
-  {
-    title: "Sponsor & Business Image reliability improvements",
-    label: "Improved",
-    bullets: [
-      "Fallback image handling was improved for business and sponsor content.",
-      "Image loading reliability was strengthened across key pages.",
-    ],
-  },
-  {
-    title: "Security/session/runtime stability improvements",
-    label: "Improved",
-    bullets: [
-      "Session and runtime guardrails were hardened in core app paths.",
-      "Security-related route protections were reinforced for stability.",
-    ],
-  },
-];
-
-const labelStyles: Record<ReleaseSection["label"], string> = {
-  "Available now": "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-  Improved: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
-  "Foundation update": "bg-sky-500/20 text-sky-300 border-sky-500/40",
-};
+import Head from "next/head";
+import {
+  labelStyles,
+  releaseMeta,
+  releaseSections,
+} from "@/lib/support/releases";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 export default function ReleasesPage() {
   return (
-    <main className="min-h-screen bg-black text-white p-8">
-      <div className="max-w-5xl mx-auto space-y-6">
-        <h1 className="text-3xl font-bold text-yellow-400">
-          What’s New at Black Wealth Exchange
-        </h1>
-        <p className="text-zinc-300 max-w-3xl">
-          This page summarizes recent platform improvements so you can quickly
-          see what is available now, what has improved, and which foundation
-          updates are setting up future features.
-        </p>
+    <>
+      <Head>
+        <title>Release Notes | Black Wealth Exchange</title>
+        <meta
+          name="description"
+          content={truncateMeta(
+            "Read current Black Wealth Exchange release notes and platform status updates aligned to verified live functionality.",
+          )}
+        />
+        <link rel="canonical" href={canonicalUrl("/support/releases")} />
+      </Head>
+      <main className="relative min-h-screen overflow-x-hidden bg-neutral-950 text-white">
+        <div className="absolute inset-0 bg-neutral-950" />
+        <div className="pointer-events-none absolute -top-32 left-1/2 h-[720px] w-[720px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
 
-        <section className="rounded-xl border border-yellow-500/20 bg-zinc-950/70 p-5">
-          <h2 className="text-xl font-semibold text-yellow-300">
-            Release: {releaseMeta.releaseTitle}
-          </h2>
-          <dl className="mt-3 grid gap-2 text-sm text-zinc-200">
-            <div>
-              <dt className="inline font-medium text-zinc-400">Release ID:</dt>{" "}
-              <dd className="inline">{releaseMeta.releaseId}</dd>
-            </div>
-            <div>
-              <dt className="inline font-medium text-zinc-400">Published:</dt>{" "}
-              <dd className="inline">{releaseMeta.publishedDate}</dd>
-            </div>
-            <div>
-              <dt className="inline font-medium text-zinc-400">
-                Last updated:
-              </dt>{" "}
-              <dd className="inline">{releaseMeta.lastUpdated}</dd>
-            </div>
-            <div className="flex items-center gap-2">
-              <dt className="font-medium text-zinc-400">Status:</dt>
-              <dd>
-                <span
-                  className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${labelStyles[releaseMeta.status]}`}
-                >
-                  {releaseMeta.status}
-                </span>
-              </dd>
-            </div>
-          </dl>
-        </section>
+        <div className="bwe-section-wrap relative z-10 py-8 sm:py-10">
+          <section className="bwe-hero-panel relative overflow-hidden rounded-[30px] px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.14),transparent_32%),radial-gradient(circle_at_82%_18%,rgba(255,255,255,0.08),transparent_24%)]" />
+            <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:items-end">
+              <div className="max-w-3xl">
+                <div className="bwe-eyebrow">Release notes</div>
+                <h1 className="bwe-display-title mt-3 max-w-[12ch]">
+                  What is live and what changed.
+                </h1>
+                <p className="bwe-lead mt-4 max-w-2xl">
+                  Read the current Black Wealth Exchange release notes in the
+                  same calmer Experience 2.0 support system.
+                </p>
+              </div>
 
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold text-yellow-300">
-            Included in this release
-          </h2>
-          <div className="grid gap-4">
-            {sections.map((section) => (
+              <section className="rounded-2xl border border-[rgba(212,175,55,0.24)] bg-[rgba(212,175,55,0.08)] p-4">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
+                  Current release
+                </div>
+                <h2 className="mt-2 text-lg font-semibold text-white">
+                  {releaseMeta.releaseTitle}
+                </h2>
+                <dl className="mt-3 grid gap-2 text-sm text-white/72">
+                  <div>
+                    <dt className="inline text-white/48">Release ID:</dt>{" "}
+                    <dd className="inline">{releaseMeta.releaseId}</dd>
+                  </div>
+                  <div>
+                    <dt className="inline text-white/48">Published:</dt>{" "}
+                    <dd className="inline">{releaseMeta.publishedDate}</dd>
+                  </div>
+                  <div>
+                    <dt className="inline text-white/48">Last updated:</dt>{" "}
+                    <dd className="inline">{releaseMeta.lastUpdated}</dd>
+                  </div>
+                  <div className="pt-1">
+                    <span
+                      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${labelStyles[releaseMeta.status]}`}
+                    >
+                      {releaseMeta.status}
+                    </span>
+                  </div>
+                </dl>
+              </section>
+            </div>
+          </section>
+
+          <section className="mt-8 grid gap-4">
+            {releaseSections.map((section) => (
               <article
                 key={section.title}
-                className="rounded-xl border border-yellow-500/20 bg-zinc-950/70 p-5"
+                className="rounded-[28px] border border-white/8 bg-white/[0.03] p-5 sm:p-6"
               >
-                <div className="flex items-center justify-between gap-3 flex-wrap">
-                  <h2 className="text-xl font-semibold text-yellow-300">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <h2 className="text-[1.35rem] font-semibold tracking-[-0.03em] text-white">
                     {section.title}
                   </h2>
                   <span
@@ -144,28 +87,31 @@ export default function ReleasesPage() {
                     {section.label}
                   </span>
                 </div>
-                <ul className="mt-3 list-disc pl-6 text-zinc-200 space-y-1">
+                <ul className="mt-4 space-y-2 text-sm leading-6 text-white/72">
                   {section.bullets.map((bullet) => (
-                    <li key={bullet}>{bullet}</li>
+                    <li key={bullet} className="flex gap-3">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
+                      <span>{bullet}</span>
+                    </li>
                   ))}
                 </ul>
-                <p className="mt-3 text-xs text-zinc-400">
+                <p className="mt-4 text-xs text-white/48">
                   Part of {releaseMeta.releaseId}
                 </p>
               </article>
             ))}
-          </div>
-        </section>
+          </section>
 
-        <div>
-          <Link
-            href="/support"
-            className="inline-flex items-center rounded border border-zinc-700 px-4 py-2 text-zinc-200 hover:border-yellow-500/60 hover:text-yellow-300"
-          >
-            Back to Support
-          </Link>
+          <div className="mt-8">
+            <Link
+              href="/support"
+              className="bwe-cta-secondary bwe-focus-ring px-6"
+            >
+              Back to support
+            </Link>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }

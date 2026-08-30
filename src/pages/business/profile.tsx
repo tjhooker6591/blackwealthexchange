@@ -1,100 +1,85 @@
-// pages/dashboard/business/profile.tsx
 import { GetServerSideProps } from "next";
-import jwt from "jsonwebtoken";
-import clientPromise from "@/lib/mongodb";
 import React from "react";
-
-interface TokenPayload {
-  email: string;
-  accountType: string;
-}
-
-interface Biz {
-  businessName: string;
-  email: string;
-  businessAddress?: string;
-  businessPhone?: string;
-  description?: string;
-  verified: boolean;
-}
+import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
+import {
+  buildObjectIdOrStringFilter,
+  parseSessionIdentity,
+  resolvePrimaryVerifiedBusinessOwnership,
+  resolveVerifiedOwnership,
+} from "@/lib/directoryOwnership";
+import { mapDirectoryProfileFromDoc } from "@/lib/directoryProfileContract";
+import BusinessProfileContent from "@/components/business/BusinessProfileContent";
 
 interface Props {
-  business: Biz;
+  business: ReturnType<typeof mapDirectoryProfileFromDoc> | null;
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async ({
   req,
+  query,
 }) => {
-  const token = req.cookies["session_token"];
-  if (!token) return { redirect: { destination: "/login", permanent: false } };
-
-  let payload: TokenPayload;
-  try {
-    payload = jwt.verify(token, process.env.JWT_SECRET!) as TokenPayload;
-  } catch {
+  const session = parseSessionIdentity(req as any);
+  if (!session) {
     return { redirect: { destination: "/login", permanent: false } };
   }
 
-  if (payload.accountType !== "business") {
-    return { notFound: true };
+  const requestedBusinessId = String(query.businessId || query.id || "").trim();
+
+  const client = await clientPromise;
+  const db = client.db(getMongoDbName());
+  const ownership = requestedBusinessId
+    ? await resolveVerifiedOwnership(db, {
+        entityType: "business",
+        entityId: requestedBusinessId,
+        userId: session.userId,
+      })
+    : await resolvePrimaryVerifiedBusinessOwnership(db, session.userId);
+
+  if (!ownership) {
+    return { props: { business: null } };
   }
 
-  const db = (await clientPromise).db("bwes-cluster");
-  const doc = await db
-    .collection("businesses")
-    .findOne({ email: payload.email });
-  if (!doc) return { notFound: true };
-
-  return {
-    props: {
-      business: {
-        businessName: doc.businessName,
-        email: doc.email,
-        businessAddress: doc.businessAddress || "",
-        businessPhone: doc.businessPhone || "",
-        description: doc.description || "",
-        verified: doc.verified ?? false,
-      },
+  const doc = await db.collection("businesses").findOne(
+    buildObjectIdOrStringFilter("_id", ownership.entityId) || {
+      _id: ownership.entityId as any,
     },
-  };
+  );
+
+  if (!doc) return { props: { business: null } };
+  const business = JSON.parse(
+    JSON.stringify(mapDirectoryProfileFromDoc(doc)),
+  ) as ReturnType<typeof mapDirectoryProfileFromDoc>;
+  return { props: { business } };
 };
 
 export default function BusinessProfile({ business }: Props) {
   return (
-    <div className="min-h-screen bg-black text-white p-6">
-      <h1 className="text-3xl font-bold text-gold mb-6">Business Profile</h1>
-      <div className="bg-gray-800 p-6 rounded-lg shadow-lg space-y-3">
-        <p>
-          <strong>Name:</strong> {business.businessName}
-        </p>
-        <p>
-          <strong>Email:</strong> {business.email}
-        </p>
-        {business.businessAddress && (
-          <p>
-            <strong>Address:</strong> {business.businessAddress}
+    <div className="min-h-screen bg-black p-6 text-white">
+      <h1 className="mb-6 text-3xl font-bold text-gold">Business Profile</h1>
+      {business ? (
+        <BusinessProfileContent
+          business={business}
+          mode="owner"
+          showPrivateContactEmail
+          editHref={
+            business.id
+              ? `/edit-business?businessId=${encodeURIComponent(business.id)}`
+              : "/edit-business"
+          }
+        />
+      ) : (
+        <div className="max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h2 className="text-xl font-semibold text-white">
+            No verified managed business profile available
+          </h2>
+          <p className="mt-3 text-sm text-white/80">
+            This account does not currently have an active verified business
+            management relationship. If you expected access here, finish the
+            business verification flow or contact support.
           </p>
-        )}
-        {business.businessPhone && (
-          <p>
-            <strong>Phone:</strong> {business.businessPhone}
-          </p>
-        )}
-        {business.description && (
-          <p>
-            <strong>Description:</strong> {business.description}
-          </p>
-        )}
-        <p>
-          <strong>Verified:</strong> {business.verified ? "✅ Yes" : "❌ No"}
-        </p>
-        <button
-          onClick={() => window.location.assign("/dashboard/edit-business")}
-          className="mt-4 bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-400 transition"
-        >
-          Edit Business Info
-        </button>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

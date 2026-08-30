@@ -9,6 +9,13 @@ import { ObjectId } from "mongodb";
 import { parse } from "cookie";
 import jwt from "jsonwebtoken";
 import { getJwtSecret } from "@/lib/env";
+import os from "os";
+import {
+  isMultipartFileTooLargeError,
+  moveUploadedFile,
+  replaceExtension,
+  validateUploadedImageFile,
+} from "@/lib/security/imageUploadValidation";
 
 const JWT_SECRET = getJwtSecret();
 
@@ -97,9 +104,10 @@ export default async function handler(
 
   // 4) Parse multipart form (file + fields)
   const form = new IncomingForm({
-    uploadDir,
+    uploadDir: os.tmpdir(),
     keepExtensions: true,
     multiples: false,
+    maxFileSize: 8 * 1024 * 1024,
   });
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
@@ -107,7 +115,11 @@ export default async function handler(
     form.parse(req, async (err: any, fields: Fields, files: Files) => {
       if (err) {
         console.error("Form parse error:", err);
-        res.status(500).json({ error: "Error parsing form data." });
+        res.status(isMultipartFileTooLargeError(err) ? 400 : 500).json({
+          error: isMultipartFileTooLargeError(err)
+            ? "file_too_large"
+            : "Error parsing form data.",
+        });
         return resolve();
       }
 
@@ -126,10 +138,28 @@ export default async function handler(
       }
 
       try {
+        const validation = await validateUploadedImageFile(
+          imageFile,
+          8 * 1024 * 1024,
+        );
+        if (!validation.ok) {
+          res.status(400).json({
+            error:
+              validation.reason === "file_too_large"
+                ? "file_too_large"
+                : "unsupported_media_type",
+          });
+          return resolve();
+        }
+
         // 6) Save image
-        const filename = `${uuidv4()}-${imageFile.originalFilename}`;
+        const originalName = replaceExtension(
+          imageFile.originalFilename || imageFile.newFilename || "upload",
+          validation.canonicalExtension,
+        );
+        const filename = `${uuidv4()}-${originalName}`;
         const destPath = path.join(uploadDir, filename);
-        fs.renameSync(imageFile.filepath, destPath);
+        await moveUploadedFile(imageFile.filepath, destPath);
         const imageUrl = `/uploads/${filename}`;
 
         // 7) Build product doc
@@ -152,7 +182,6 @@ export default async function handler(
           sku: "",
           createdAt: now,
           updatedAt: now,
-          expiresAt: new Date(now.getTime() + 45 * 24 * 60 * 60 * 1000),
         };
 
         // 8) Insert & respond

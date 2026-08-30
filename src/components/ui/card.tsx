@@ -6,7 +6,10 @@ export const Card: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   ...props
 }) => {
   return (
-    <div {...props} className={`rounded-lg shadow p-4 ${className || ""}`}>
+    <div
+      {...props}
+      className={`bwe-shell-panel rounded-[var(--radius-panel)] p-5 text-[var(--foreground)] ${className || ""}`}
+    >
       {children}
     </div>
   );
@@ -18,7 +21,7 @@ export const CardContent: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   ...props
 }) => {
   return (
-    <div {...props} className={`p-4 ${className || ""}`}>
+    <div {...props} className={`p-1 ${className || ""}`}>
       {children}
     </div>
   );

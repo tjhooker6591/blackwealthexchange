@@ -1,4 +1,5 @@
 // pages/black-student-opportunities/scholarships.tsx
+import type { GetServerSideProps } from "next";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,6 +15,10 @@ import {
   Bell,
   Sparkles,
 } from "lucide-react";
+import {
+  getPublicStudentHubPageRecords,
+  type PublicStudentHubRecord,
+} from "@/lib/studentHub/public";
 
 type ScholarshipItem = {
   title: string;
@@ -128,68 +133,27 @@ function ScholarshipCard({ item }: { item: ScholarshipItem }) {
   );
 }
 
-export default function ScholarshipsPage() {
+export default function ScholarshipsPage({
+  initialScholarships,
+}: {
+  initialScholarships: PublicStudentHubRecord[];
+}) {
   const YEAR = 2026;
 
-  const scholarships: ScholarshipItem[] = [
-    {
-      title: "Jackie Robinson Foundation Scholarship",
-      description:
-        "Major scholarship + leadership development for high-achieving students with strong leadership and service.",
-      statusNote:
-        "2026 application deadline was Jan 7, 2026; currently closed. Next cycle typically opens in summer. (Verify on official site.)",
-      whoItsFor: [
-        "High school seniors entering a 4-year college/university",
-        "Strong leadership + community service",
-        "Academic achievement + financial need factors may apply",
-      ],
-      howToApply: [
-        "Review eligibility and required materials on the official JRF page.",
-        "Prepare transcripts, activities list, and recommendations early.",
-        "Apply as soon as the next window opens (summer cycle).",
-      ],
-      link: "https://jackierobinson.org/apply/",
-      tags: ["Leadership", "High school seniors", "Major award"],
-    },
-    {
-      title: "Ron Brown Scholar Program",
-      description:
-        "Prestigious scholarship program recognizing academic excellence, leadership, and service among Black/African American students.",
-      statusNote:
-        "Official site indicates the 2026 application is closed. Check for the next application window on the official page.",
-      whoItsFor: [
-        "Black/African American high school seniors",
-        "Leadership + community impact",
-        "Strong academics and character",
-      ],
-      howToApply: [
-        "Confirm the current application cycle status on the official site.",
-        "Prepare essays + leadership/service documentation.",
-        "Submit early once the next window opens.",
-      ],
-      link: "https://ronbrown.org",
-      tags: ["Prestige", "Leadership", "Service"],
-    },
-    {
-      title: "UNCF Scholarships (Search & Apply)",
-      description:
-        "UNCF offers a broad range of scholarships and programs. Deadlines vary by scholarship and partner program.",
-      statusNote:
-        "Deadlines vary by program—use UNCF’s scholarship listings and apply to matching opportunities.",
-      whoItsFor: [
-        "Students meeting UNCF scholarship criteria (often GPA + enrollment requirements)",
-        "Students with FAFSA filed (common requirement)",
-        "Students attending or planning to attend eligible institutions",
-      ],
-      howToApply: [
-        "Visit UNCF scholarships and review opportunities that match your profile.",
-        "Create/maintain a strong profile (GPA, major, school, FAFSA).",
-        "Apply to multiple opportunities and track each deadline.",
-      ],
-      link: "https://uncf.org/scholarships",
-      tags: ["UNCF", "Many programs", "Deadlines vary"],
-    },
-  ];
+  const scholarships: ScholarshipItem[] = initialScholarships.map((record) => ({
+    title: record.title,
+    description: record.description,
+    statusNote: record.statusNote || record.statusLabel,
+    whoItsFor: [record.eligibilitySummary],
+    howToApply:
+      record.howToApply && record.howToApply.length
+        ? record.howToApply
+        : [
+            "Review the official source and apply through the current program page.",
+          ],
+    link: record.applicationUrl,
+    tags: [...(record.tags || []), record.statusLabel],
+  }));
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
@@ -294,7 +258,7 @@ export default function ScholarshipsPage() {
                 </div>
                 <p className="text-sm text-white/70">
                   Scholarship windows change. Bookmark official pages and check
-                  monthly. We can automate updates via feeds next.
+                  monthly so you are working from the latest official details.
                 </p>
               </div>
             </div>
@@ -361,9 +325,8 @@ export default function ScholarshipsPage() {
           <div className="mt-6">
             <SectionCard title="Live Updates (Feeds / Alerts)" icon={Bell}>
               <p className="text-sm text-white/70">
-                The leading-edge approach is to pull trusted sources into BWE so
-                this page stays current without manual edits. For now, these are
-                reliable official starting points:
+                These are reliable official starting points to keep in your
+                scholarship rotation throughout the year:
               </p>
 
               <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -442,12 +405,9 @@ export default function ScholarshipsPage() {
               </div>
 
               <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4 text-xs text-white/60">
-                Next step (optional): we can add an API route like{" "}
-                <span className="text-white/70 font-bold">
-                  /api/feeds/scholarships
-                </span>{" "}
-                that fetches 3–6 trusted sources on a schedule, caches results,
-                and renders “Latest Scholarship Updates” right here.
+                Keep a shortlist of trusted scholarship pages, revisit them
+                often, and confirm every deadline on the official source before
+                you submit.
               </div>
             </SectionCard>
           </div>
@@ -478,3 +438,12 @@ export default function ScholarshipsPage() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { records } = await getPublicStudentHubPageRecords("scholarships");
+  return {
+    props: {
+      initialScholarships: records,
+    },
+  };
+};

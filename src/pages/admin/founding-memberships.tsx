@@ -57,10 +57,10 @@ export default function AdminFoundingMembershipsPage() {
             </h1>
             <div className="flex gap-4 text-sm">
               <Link
-                href="/admin/claim-verification"
+                href="/admin/claim-approvals"
                 className="text-yellow-300 underline"
               >
-                Pending Claim Verifications
+                Pending Ownership Claims
               </Link>
               <Link
                 href="/admin/dashboard"

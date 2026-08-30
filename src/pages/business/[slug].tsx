@@ -13,6 +13,14 @@ import {
 } from "@/lib/founding-membership-state";
 import { Spotlight, spotlightData } from "../../lib/SpotlightEntry";
 import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
+import {
+  mapDirectoryProfileFromDoc,
+  normalizeDirectoryLocationParts,
+} from "@/lib/directoryProfileContract";
+import {
+  buildBusinessDirectionsUrl,
+  getBusinessMediaSet,
+} from "@/lib/directoryPublicMedia";
 
 type BusinessEntry = {
   claimStage: string | null;
@@ -20,7 +28,16 @@ type BusinessEntry = {
   canClaim: boolean;
   name: string;
   imageSrc: string | null;
+  logoSrc: string | null;
+  galleryImages: string[];
   story: string;
+  summary: string | null;
+  offeringsSummary: string | null;
+  operatingHours: string | null;
+  serviceArea: string | null;
+  tags: string[];
+  primaryCtaLabel: string | null;
+  primaryCtaUrl: string | null;
   details: string | null;
   category: string | null;
   categoriesText: string | null;
@@ -28,6 +45,7 @@ type BusinessEntry = {
   address: string | null;
   website: string | null;
   phone: string | null;
+  social: Array<{ label: string; url: string }>;
   sourceUrl: string | null;
   status: string | null;
   isSponsored: boolean;
@@ -47,39 +65,35 @@ function cleanString(value: unknown) {
 }
 
 function mapDbBusinessToEntry(doc: any): BusinessEntry {
-  const name = cleanString(doc?.business_name) || "Business";
-
-  let imageSrc = "";
-  if (typeof doc?.image === "string" && cleanString(doc.image)) {
-    imageSrc = cleanString(doc.image);
-  } else if (Array.isArray(doc?.images) && doc.images.length > 0) {
-    const first = doc.images[0];
-    if (typeof first === "string" && cleanString(first)) {
-      imageSrc = cleanString(first);
-    } else if (
-      first &&
-      typeof first.url === "string" &&
-      cleanString(first.url)
-    ) {
-      imageSrc = cleanString(first.url);
-    }
-  }
+  const profile = mapDirectoryProfileFromDoc(doc);
+  const name = cleanString(profile.displayName) || "Business";
+  const media = getBusinessMediaSet({
+    ...doc,
+    coverImage: profile.coverImage,
+    logo: profile.logo,
+    galleryImages: profile.galleryImages,
+  });
+  const galleryImages = media.galleryImages;
+  const imageSrc = cleanString(media.primaryImage);
 
   const description =
-    cleanString(doc?.description) ||
+    cleanString(profile.description) ||
     `${name} is listed on Black Wealth Exchange.`;
 
-  const website = cleanString(doc?.website);
-  const category = cleanString(doc?.category || doc?.display_categories);
+  const website = cleanString(profile.website);
+  const category = cleanString(profile.primaryCategory);
   const categoriesText = cleanString(
-    [doc?.display_categories, doc?.categories, doc?.category]
+    [
+      profile.primaryCategory,
+      Array.isArray(profile.secondaryCategories)
+        ? profile.secondaryCategories.join(" • ")
+        : "",
+    ]
       .filter(Boolean)
       .join(" • "),
   );
-  const city = cleanString(doc?.city) || cleanString(doc?.address?.city);
-  const state = cleanString(doc?.state) || cleanString(doc?.address?.state);
-  const address = cleanString(doc?.address);
-  const location = [city, state].filter(Boolean).join(", ") || address;
+  const locationParts = normalizeDirectoryLocationParts(doc);
+  const location = locationParts.fullAddress;
   const status =
     cleanString(doc?.status || doc?.trustStatus).toLowerCase() || null;
   const claimStage = normalizeFoundingClaimStage(doc?.claimStage);
@@ -95,13 +109,14 @@ function mapDbBusinessToEntry(doc: any): BusinessEntry {
     doc?.isComplete === true ||
     Number(doc?.qualityScore || 0) >= 70 ||
     Number(doc?.completenessScore || 0) >= 70;
-  const directionsQuery = cleanString(
-    [address, city, state].filter(Boolean).join(", "),
-  );
-  const directionsUrl = directionsQuery
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(directionsQuery)}`
-    : null;
-
+  const directionsUrl = buildBusinessDirectionsUrl({
+    ...doc,
+    streetAddress: locationParts.streetAddress,
+    addressLine2: locationParts.addressLine2,
+    city: locationParts.city,
+    state: locationParts.state,
+    postalCode: locationParts.postalCode,
+  });
   const detailParts: string[] = [];
   if (category)
     detailParts.push(`<p><strong>Category:</strong> ${category}</p>`);
@@ -111,18 +126,47 @@ function mapDbBusinessToEntry(doc: any): BusinessEntry {
     detailParts.push(
       `<p><strong>Website:</strong> <a href="${website}" target="_blank" rel="noreferrer">${website}</a></p>`,
     );
+  if (cleanString(profile.serviceArea))
+    detailParts.push(
+      `<p><strong>Service area:</strong> ${cleanString(profile.serviceArea)}</p>`,
+    );
+  if (cleanString(profile.operatingHours))
+    detailParts.push(
+      `<p><strong>Hours:</strong> ${cleanString(profile.operatingHours)}</p>`,
+    );
+
+  const socialEntries = [
+    ["Facebook", cleanString(profile.facebook)],
+    ["Instagram", cleanString(profile.instagram)],
+    ["LinkedIn", cleanString(profile.linkedin)],
+    ["Twitter / X", cleanString(profile.twitter)],
+    ["YouTube", cleanString(profile.youtube)],
+    ["TikTok", cleanString(profile.tiktok)],
+  ]
+    .filter(([, url]) => url)
+    .map(([label, url]) => ({ label: String(label), url: String(url) }));
 
   return {
     name,
     imageSrc: imageSrc || null,
+    logoSrc: cleanString(media.logo) || null,
+    galleryImages,
     story: description,
+    summary: cleanString(profile.shortSummary) || null,
+    offeringsSummary: cleanString(profile.offeringsSummary) || null,
+    operatingHours: cleanString(profile.operatingHours) || null,
+    serviceArea: cleanString(profile.serviceArea) || null,
+    tags: Array.isArray(profile.tags) ? profile.tags : [],
+    primaryCtaLabel: cleanString(profile.primaryCtaLabel) || null,
+    primaryCtaUrl: cleanString(profile.primaryCtaUrl) || null,
     details: sanitizeRichHtml(detailParts.join("")) || null,
     category: category || null,
     categoriesText: categoriesText || null,
     location: location || null,
-    address: address || null,
+    address: location || locationParts.streetAddress || null,
     website: website || null,
-    phone: cleanString(doc?.phone) || null,
+    phone: cleanString(profile.phone) || null,
+    social: socialEntries,
     sourceUrl: cleanString(doc?.sourceUrl || doc?.source) || null,
     status,
     claimStage,
@@ -283,7 +327,7 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                     }
                     className="inline-flex items-center justify-center rounded-xl bg-yellow-500 text-black font-semibold text-sm px-3 py-2 hover:bg-yellow-400 transition"
                   >
-                    Claim This Business
+                    Claim This Listing
                   </Link>
                 ) : (
                   <span className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white/60">
@@ -300,7 +344,16 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                     Claim Status
                   </Link>
                 ) : null}
-                {entry.website ? (
+                {entry.primaryCtaLabel && entry.primaryCtaUrl ? (
+                  <a
+                    href={entry.primaryCtaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-sm px-3 py-2 transition"
+                  >
+                    {entry.primaryCtaLabel}
+                  </a>
+                ) : entry.website ? (
                   <a
                     href={entry.website}
                     target="_blank"
@@ -317,7 +370,7 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-sm px-3 py-2 transition"
                   >
-                    Get directions
+                    Directions
                   </a>
                 ) : null}
               </div>
@@ -339,6 +392,11 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                 <div className="text-sm font-semibold text-white/90 mb-2">
                   About
                 </div>
+                {entry.summary ? (
+                  <div className="text-white/80 text-sm mb-2">
+                    {entry.summary}
+                  </div>
+                ) : null}
                 {entry.categoriesText ? (
                   <div className="text-white/60 text-sm mb-2">
                     {entry.categoriesText}
@@ -347,6 +405,28 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                 <div className="text-white/75 leading-relaxed">
                   {entry.story || "Business details are being expanded."}
                 </div>
+                {entry.offeringsSummary ? (
+                  <div className="mt-4">
+                    <div className="text-sm font-semibold text-white/90 mb-2">
+                      Products and services
+                    </div>
+                    <div className="text-white/75 leading-relaxed">
+                      {entry.offeringsSummary}
+                    </div>
+                  </div>
+                ) : null}
+                {entry.tags.length ? (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {entry.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/80"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-black/30 p-5 space-y-3">
@@ -356,16 +436,16 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                 <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-4 text-sm text-white/75">
                   <div className="font-semibold text-yellow-200">
                     {entry.canClaim
-                      ? "Claim This Business"
+                      ? "Claim This Listing"
                       : entry.publicListingStatus === "ownership_verified"
                         ? "Ownership Verified"
                         : "Ownership verification pending"}
                   </div>
                   <div className="mt-2">
                     {entry.canClaim
-                      ? "If this is your business, start the Founding Verified Business Growth Membership claim path to open ownership verification, profile review, fulfillment, and monthly reporting."
+                      ? "If this is your listing, start the Founding Verified Business Growth Membership claim path to open ownership verification, profile review, fulfillment, and monthly reporting."
                       : entry.publicListingStatus === "ownership_verified"
-                        ? "This business has already completed ownership verification and business-management access has been activated for the verified owner."
+                        ? "This listing has already completed ownership verification and listing-management access has been activated for the verified owner."
                         : "A founding membership is already active for this listing and ownership verification is still pending. Another claim or payment is not available while review is in progress."}
                   </div>
                   <div className="mt-2 text-white/60">
@@ -389,7 +469,7 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                         }
                         className="rounded-lg bg-yellow-500 px-3 py-2 text-xs font-extrabold text-black"
                       >
-                        Start Membership and Claim
+                        Start Membership and Claim Listing
                       </Link>
                     ) : (
                       <span className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/70">
@@ -423,6 +503,30 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                     No additional details yet.
                   </div>
                 )}
+                {entry.social.length ? (
+                  <div className="pt-3 space-y-1 text-sm text-white/75">
+                    <div className="font-semibold text-white/90">Social</div>
+                    {entry.social.map((item) => (
+                      <div key={`${item.label}-${item.url}`}>
+                        {item.label}: {item.url}
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+                {entry.operatingHours ? (
+                  <div className="pt-3 text-sm text-white/75">
+                    <div className="font-semibold text-white/90">Hours</div>
+                    <div>{entry.operatingHours}</div>
+                  </div>
+                ) : null}
+                {entry.serviceArea ? (
+                  <div className="pt-3 text-sm text-white/75">
+                    <div className="font-semibold text-white/90">
+                      Service Area
+                    </div>
+                    <div>{entry.serviceArea}</div>
+                  </div>
+                ) : null}
                 {entry.reference ? (
                   <div className="text-xs text-white/50 pt-2">
                     Reference: {entry.reference}
@@ -452,14 +556,24 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
         entry: {
           name: spotlight.name,
           imageSrc: cleanString(spotlight.imageSrc) || null,
+          logoSrc: null,
+          galleryImages: [],
           story:
             cleanString(spotlight.story) ||
             `${cleanString(spotlight.name) || "Business"} is listed on Black Wealth Exchange.`,
+          summary: null,
+          offeringsSummary: null,
+          operatingHours: null,
+          serviceArea: null,
+          tags: [],
+          primaryCtaLabel: null,
+          primaryCtaUrl: null,
           details: cleanString(spotlight.details) || null,
           category: null,
           location: null,
           website: null,
           phone: null,
+          social: [],
           sourceUrl: null,
           categoriesText: null,
           address: null,
@@ -491,19 +605,56 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
       {
         projection: {
           business_name: 1,
+          businessName: 1,
+          name: 1,
+          shortSummary: 1,
+          summary: 1,
           description: 1,
           image: 1,
+          logo: 1,
           images: 1,
+          galleryImages: 1,
           website: 1,
           phone: 1,
+          businessPhone: 1,
           sourceUrl: 1,
           source: 1,
           category: 1,
+          primaryCategory: 1,
           categories: 1,
+          secondaryCategories: 1,
           display_categories: 1,
           city: 1,
           state: 1,
+          zip: 1,
+          postalCode: 1,
+          zipCode: 1,
           address: 1,
+          streetAddress: 1,
+          businessAddress: 1,
+          addressLine1: 1,
+          addressLine2: 1,
+          suite: 1,
+          unit: 1,
+          serviceArea: 1,
+          operatingHours: 1,
+          hours: 1,
+          offeringsSummary: 1,
+          productsServicesSummary: 1,
+          programsSummary: 1,
+          tags: 1,
+          specialties: 1,
+          keywords: 1,
+          social: 1,
+          facebook: 1,
+          instagram: 1,
+          linkedin: 1,
+          twitter: 1,
+          youtube: 1,
+          tiktok: 1,
+          primaryCtaLabel: 1,
+          primaryCtaUrl: 1,
+          additionalCtas: 1,
           status: 1,
           trustStatus: 1,
           amountPaid: 1,

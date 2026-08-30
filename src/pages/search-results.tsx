@@ -293,37 +293,55 @@ export default function SearchResults() {
                 Sponsored Partners
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {sponsors.map((s) => (
-                  <a
-                    key={s._id}
-                    href={s.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-3 rounded-lg border border-white/10 bg-black/35 p-3 hover:bg-black/45"
-                  >
-                    <img
-                      src={s.img}
-                      alt={s.name}
-                      className="h-12 w-12 rounded-lg border border-white/20 object-cover"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-sm font-semibold text-[#EFD27A]">
-                        {s.name}
+                {sponsors.map((s) =>
+                  (() => {
+                    const card = (
+                      <div className="flex items-center gap-3 rounded-lg border border-white/10 bg-black/35 p-3 hover:bg-black/45">
+                        <img
+                          src={s.img}
+                          alt={s.name}
+                          className="h-12 w-12 rounded-lg border border-white/20 object-cover"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-sm font-semibold text-[#EFD27A]">
+                            {s.name}
+                          </div>
+                          <div className="truncate text-xs text-gray-300">
+                            {s.tagline}
+                          </div>
+                          <div className="mt-1 inline-flex rounded border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-semibold text-[#EFD27A]">
+                            Sponsored
+                          </div>
+                        </div>
+                        <span className="rounded bg-[#D4AF37] px-2 py-1 text-xs font-semibold text-black">
+                          {s.cta || "Learn More"}
+                        </span>
                       </div>
-                      <div className="truncate text-xs text-gray-300">
-                        {s.tagline}
-                      </div>
-                      <div className="mt-1 inline-flex rounded border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-semibold text-[#EFD27A]">
-                        Sponsored
-                      </div>
-                    </div>
-                    <span className="rounded bg-[#D4AF37] px-2 py-1 text-xs font-semibold text-black">
-                      {s.cta || "Learn More"}
-                    </span>
-                  </a>
-                ))}
+                    );
+
+                    if (typeof s.url === "string" && s.url.startsWith("/")) {
+                      return (
+                        <Link key={s._id} href={s.url}>
+                          {card}
+                        </Link>
+                      );
+                    }
+
+                    return (
+                      <a
+                        key={s._id}
+                        href={s.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="block"
+                      >
+                        {card}
+                      </a>
+                    );
+                  })(),
+                )}
               </div>
             </section>
           ) : null}

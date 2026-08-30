@@ -1,172 +1,89 @@
+// src/pages/api/marketplace/create.ts
 import type { NextApiRequest, NextApiResponse } from "next";
-import formidable, { type File } from "formidable";
-import fs from "node:fs";
-import path from "node:path";
-import { v4 as uuidv4 } from "uuid";
 import clientPromise from "@/lib/mongodb";
-import {
-  buildUniqueSlug,
-  getCanonicalBusinessName,
-  getCreateBusinessDuplicateError,
-  getCreateBusinessSuccessMessage,
-  validateBusinessSubmission,
-} from "@/lib/businessSubmission";
-
-export const config = {
-  api: { bodyParser: false },
-};
-
-function first(v: string | string[] | undefined) {
-  if (Array.isArray(v)) return v[0] || "";
-  return v || "";
-}
+import { getMarketplaceDbName } from "@/lib/marketplace/db";
+import { resolveSellerSession } from "@/lib/marketplace/sellerSession";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  // Disable HTTP caching
+  res.setHeader("Cache-Control", "no-store, max-age=0");
+
+  // Only allow POST for creating a product
   if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
-    return res.status(405).json({ ok: false, error: "Method Not Allowed" });
+    return res.status(405).json({ error: "Method Not Allowed" });
+  }
+
+  const body =
+    typeof req.body === "string"
+      ? JSON.parse(req.body || "{}")
+      : req.body || {};
+  const {
+    name,
+    description,
+    price,
+    category,
+    imageUrl,
+    stockQuantity = 0,
+    isFeatured = false,
+    sellerId: suppliedSellerId = "",
+  } = body;
+
+  // Validate required fields
+  if (!name || !description || !price || !category || !imageUrl) {
+    return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
-    const form = formidable({
-      multiples: false,
-      keepExtensions: true,
-      maxFileSize: 8 * 1024 * 1024,
-    });
-
-    const { fields, files } = await new Promise<{
-      fields: formidable.Fields;
-      files: formidable.Files;
-    }>((resolve, reject) => {
-      form.parse(req, (err, fields, files) => {
-        if (err) reject(err);
-        else resolve({ fields, files });
-      });
-    });
-
-    const validation = validateBusinessSubmission({
-      businessName: first(fields.businessName as any),
-      category: first(fields.category as any),
-      location: first(fields.location as any),
-      phone: first(fields.phone as any),
-      email: first(fields.email as any),
-      website: first(fields.website as any),
-      description: first(fields.description as any),
-      facebook: first(fields.facebook as any),
-      twitter: first(fields.twitter as any),
-    });
-
-    if (!validation.ok) {
-      return res.status(400).json({
-        ok: false,
-        error: validation.error,
-      });
-    }
-
-    const {
-      businessName,
-      category,
-      phone,
-      email,
-      website,
-      description,
-      facebook,
-      twitter,
-      normalizedLocation,
-      slugBase,
-    } = validation.value;
-
-    const logoRaw = (files.logo as File | File[] | undefined) || undefined;
-    const logoFile = Array.isArray(logoRaw) ? logoRaw[0] : logoRaw;
-    let imagePath = "";
-    if (logoFile?.filepath) {
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
-      const ext = path.extname(logoFile.originalFilename || "") || ".jpg";
-      const filename = `${uuidv4()}${ext}`;
-      const destPath = path.join(uploadDir, filename);
-      await fs.promises.copyFile(logoFile.filepath, destPath);
-      imagePath = `/uploads/${filename}`;
-    }
-
     const client = await clientPromise;
-    const dbName = process.env.MONGODB_DB?.trim();
-    const db = dbName ? client.db(dbName) : client.db("bwes-cluster");
+    const db = client.db(getMarketplaceDbName());
+    const sellerSession = await resolveSellerSession(req, db);
+    if (!sellerSession.ok) {
+      return res
+        .status(sellerSession.status)
+        .json({ error: sellerSession.error });
+    }
 
-    const existingWithSlug = slugBase
-      ? await db.collection("businesses").countDocuments({
-          slug: { $regex: `^${slugBase}(-\\d+)?$`, $options: "i" },
-        })
-      : 0;
+    if (
+      typeof suppliedSellerId === "string" &&
+      suppliedSellerId.trim() &&
+      suppliedSellerId.trim() !== sellerSession.sellerId
+    ) {
+      return res.status(403).json({
+        error: "Seller identity must match the authenticated seller account.",
+      });
+    }
 
-    const slug = buildUniqueSlug(slugBase, existingWithSlug);
-    const alias = slug;
+    const parsedPrice = Number(price);
+    const parsedStock = Number(stockQuantity);
+    if (!Number.isFinite(parsedPrice) || parsedPrice <= 0) {
+      return res.status(400).json({ error: "Invalid price" });
+    }
+    if (!Number.isFinite(parsedStock) || parsedStock < 0) {
+      return res.status(400).json({ error: "Invalid stock quantity" });
+    }
 
-    const doc: any = {
-      business_name: businessName,
-      businessName,
-      title: businessName,
-      email,
-      phone,
-      website,
+    const newProduct = {
+      name,
       description,
+      price: parsedPrice,
       category,
-      categories: category,
-      city: normalizedLocation.city,
-      state: normalizedLocation.state,
-      locationDisplay: normalizedLocation.normalized,
-      status: "pending",
-      approved: false,
-      listingStatus: "pending_approval",
-      social: {
-        facebook,
-        twitter,
-      },
-      slug,
-      alias,
+      imageUrl,
+      stockQuantity: parsedStock,
+      isFeatured,
+      sellerId: sellerSession.sellerId,
       createdAt: new Date(),
-      updatedAt: new Date(),
     };
 
-    doc.businessName = getCanonicalBusinessName(doc) || businessName;
+    const result = await db.collection("products").insertOne(newProduct);
 
-    if (imagePath) {
-      doc.image = imagePath;
-      doc.logo = imagePath;
-      doc.images = [imagePath];
-    }
-
-    await db.collection("businesses").insertOne(doc);
-
-    return res.status(201).json({
-      ok: true,
-      image: imagePath || null,
-      alias: doc.alias || null,
-      slug: doc.slug || null,
-      message: getCreateBusinessSuccessMessage(),
-      listingStatus: doc.listingStatus,
-      normalizedLocation: doc.locationDisplay,
-    });
-  } catch (error: any) {
-    console.error("business create error", error);
-
-    if (error?.code === 11000) {
-      return res.status(409).json({
-        ok: false,
-        error: getCreateBusinessDuplicateError(),
-      });
-    }
-
-    return res.status(500).json({
-      ok: false,
-      error:
-        error?.message ||
-        "We could not submit your business right now. Please try again.",
-    });
+    return res
+      .status(201)
+      .json({ success: true, productId: result.insertedId });
+  } catch (error) {
+    console.error("Error inserting product:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 }

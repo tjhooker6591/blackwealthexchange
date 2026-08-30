@@ -8,8 +8,13 @@ import {
   findFoundingSourcePayment,
   FOUNDING_MEMBERSHIP_PRODUCT_KEY,
   formatUsdFromCents,
+  getFoundingActivationContractBlueprint,
   getFoundingClaimVerificationCounts,
   getFoundingClaimVerificationRecords,
+  getFoundingNormalCheckCounts,
+  getFoundingOwnershipAutomationMode,
+  getFoundingShadowValidationSummary,
+  getFoundingVerificationDecisionCounts,
   getPendingFoundingClaimVerifications,
   normalizeFoundingClaimStage,
   normalizeFoundingPaymentStatus,
@@ -33,6 +38,10 @@ export default async function handler(
 
     if (req.method === "POST") {
       const action = String(req.body?.action || "").trim();
+      const normalizedAction =
+        action === "request_additional_evidence"
+          ? "request_more_evidence"
+          : action;
       const claimId = String(req.body?.claimId || "").trim();
       const membershipId = String(req.body?.membershipId || "").trim();
       const reason = String(req.body?.reason || "").trim();
@@ -43,13 +52,13 @@ export default async function handler(
           : null;
       const allowedActions = new Set([
         "verify",
-        "request_additional_evidence",
+        "request_more_evidence",
         "verification_failed",
         "mark_disputed",
         "reopen_verification",
         "submit_evidence",
       ]);
-      if (!allowedActions.has(action) || !membershipId) {
+      if (!allowedActions.has(normalizedAction) || !membershipId) {
         return res
           .status(400)
           .json({ ok: false, error: "invalid_action_or_membership" });
@@ -78,7 +87,7 @@ export default async function handler(
         ).trim() || null;
       const sourcePayment = await findFoundingSourcePayment(db, membership);
       const transition = buildFoundingTransitionState({
-        action: action as any,
+        action: normalizedAction as any,
         previousStatus,
         evidenceStatus: review.evidenceStatus,
         paymentAmountCents:
@@ -100,7 +109,7 @@ export default async function handler(
       const evidenceStatus = transition.evidenceStatus;
 
       const auditEntry = {
-        action,
+        action: normalizedAction,
         reviewer: adminEmail,
         previousStatus,
         resultingStatus,
@@ -208,11 +217,13 @@ export default async function handler(
             ownershipReviewStatus: resultingStatus,
             publicListingStatus: transition.publicListingStatus,
             claimLocked,
-            claimedByUserId: action === "verify" ? membership.userId : null,
-            managedByUserId: action === "verify" ? membership.userId : null,
+            claimedByUserId:
+              normalizedAction === "verify" ? membership.userId : null,
+            managedByUserId:
+              normalizedAction === "verify" ? membership.userId : null,
             updatedAt: new Date(),
           },
-          ...(action === "verify"
+          ...(normalizedAction === "verify"
             ? { $addToSet: { ownerUserIds: membership.userId } }
             : {}),
         },
@@ -225,7 +236,7 @@ export default async function handler(
         {
           $set: {
             claimedBusinessId:
-              action === "verify" ? membership.businessId : null,
+              normalizedAction === "verify" ? membership.businessId : null,
             foundingMembershipId: membershipId,
             foundingOwnershipStatus: resultingStatus,
             updatedAt: new Date(),
@@ -318,6 +329,13 @@ export default async function handler(
         getFoundingClaimVerificationRecords(db),
         getFoundingClaimVerificationCounts(db),
       ]);
+    const normalCheckCounts = getFoundingNormalCheckCounts(normalizedRecords);
+    const verificationDecisionCounts =
+      getFoundingVerificationDecisionCounts(normalizedRecords);
+    const shadowValidationSummary =
+      getFoundingShadowValidationSummary(normalizedRecords);
+    const automationMode = getFoundingOwnershipAutomationMode();
+    const activationContract = getFoundingActivationContractBlueprint();
 
     return res.status(200).json({
       ok: true,
@@ -325,6 +343,11 @@ export default async function handler(
       claims: normalizedClaims,
       records: normalizedRecords,
       claimVerificationCounts,
+      normalCheckCounts,
+      verificationDecisionCounts,
+      shadowValidationSummary,
+      automationMode,
+      activationContract,
       reviews,
       fulfillment,
       onboarding,

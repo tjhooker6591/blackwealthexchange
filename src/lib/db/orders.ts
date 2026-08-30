@@ -24,7 +24,9 @@ export type FulfillOrderResult = {
   orderState?: string;
   stockDecremented?: boolean;
   payoutReady?: boolean;
-  reconciliationException?: string | null;
+  reconciliationException?:
+    | "marketplace_inventory_dual_field_conflict_detected"
+    | null;
 };
 
 function toObjectId(value: string) {

@@ -11,6 +11,7 @@ type Business = {
   name: string;
   description: string;
   slug: string;
+  alias?: string;
   logo?: string;
   image?: string;
   imageUrl?: string;
@@ -46,6 +47,11 @@ function normalizeImageSrc(biz: Business) {
   if (v.startsWith("/")) return v;
   if (/^https?:\/\//i.test(v)) return v;
   return `/${v}`;
+}
+
+function businessHref(biz: Business) {
+  const slug = String(biz.slug || biz.alias || biz._id || "").trim();
+  return `/business/${encodeURIComponent(slug)}`;
 }
 
 export default function SponsoredBusinessPage() {
@@ -316,7 +322,7 @@ export default function SponsoredBusinessPage() {
 
                       <div className="mt-4">
                         <Link
-                          href={`/business/${biz.slug}`}
+                          href={businessHref(biz)}
                           className="inline-flex w-full items-center justify-center rounded-xl bg-gold px-4 py-2 text-sm font-bold text-black hover:bg-yellow-400 transition"
                         >
                           View Business
@@ -404,7 +410,7 @@ export default function SponsoredBusinessPage() {
 
                       <div className="mt-4">
                         <Link
-                          href={`/business/${biz.slug}`}
+                          href={businessHref(biz)}
                           className="inline-flex w-full items-center justify-center rounded-xl bg-gold px-4 py-2 text-sm font-bold text-black hover:bg-yellow-400 transition"
                         >
                           View Business

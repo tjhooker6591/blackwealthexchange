@@ -1,15 +1,14 @@
-import SupportTicketForm from "@/components/support/SupportTicketForm";
+import SupportTicketEntryPage from "@/components/support/SupportTicketEntryPage";
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-black text-white p-8">
-      <div className="max-w-3xl mx-auto space-y-4">
-        <h1 className="text-3xl font-bold text-yellow-400">seller support</h1>
-        <div className="rounded border border-zinc-800 bg-zinc-950 p-4 text-zinc-300">
-          Select category and submit your support ticket.
-        </div>
-        <SupportTicketForm defaultCategory="General Question" />
-      </div>
-    </main>
+    <SupportTicketEntryPage
+      title="Seller Support"
+      intro="Open a support ticket for seller listings, payouts, fulfillment, product visibility, or storefront issues."
+      metaTitle="Seller Support | Black Wealth Exchange"
+      metaDescription="Contact Black Wealth Exchange support for seller payouts, fulfillment, product visibility, and storefront issues."
+      canonicalPath="/seller-support"
+      defaultCategory="Seller/Payout"
+    />
   );
 }

@@ -1,15 +1,14 @@
-import SupportTicketForm from "@/components/support/SupportTicketForm";
+import SupportTicketEntryPage from "@/components/support/SupportTicketEntryPage";
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-black text-white p-8">
-      <div className="max-w-3xl mx-auto space-y-4">
-        <h1 className="text-3xl font-bold text-yellow-400">contact</h1>
-        <div className="rounded border border-zinc-800 bg-zinc-950 p-4 text-zinc-300">
-          Select category and submit your support ticket.
-        </div>
-        <SupportTicketForm defaultCategory="General Question" />
-      </div>
-    </main>
+    <SupportTicketEntryPage
+      title="Contact Black Wealth Exchange"
+      intro="Use this contact route to reach Black Wealth Exchange, a founder-led for-profit platform founded by Thomas James Hooker Sr. Send general questions, partnership inquiries, media requests, or support issues through this page."
+      metaTitle="Contact | Black Wealth Exchange"
+      metaDescription="Contact Black Wealth Exchange for general questions, support requests, partnership inquiries, and founder-led platform information."
+      canonicalPath="/contact"
+      defaultCategory="General Question"
+    />
   );
 }

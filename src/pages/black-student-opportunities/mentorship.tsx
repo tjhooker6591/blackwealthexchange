@@ -1,7 +1,12 @@
 // /pages/black-student-opportunities/mentorship.tsx
+import type { GetServerSideProps } from "next";
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  getPublicStudentHubPageRecords,
+  type PublicStudentHubRecord,
+} from "@/lib/studentHub/public";
 
 type Program = {
   title: string;
@@ -17,68 +22,32 @@ type Program = {
 
 const HUB_PATH = "/black-student-opportunities";
 
-const PROGRAMS: Program[] = [
-  {
-    title: "MLT Career Prep",
-    org: "Management Leadership for Tomorrow (MLT)",
-    summary:
-      "A structured coaching + community program for high-achieving undergrads to build career readiness, leadership, and long-term networks.",
-    who: "Undergraduates (varies by cohort)",
-    format: "Coaching + community + skill-building",
-    tags: ["Career", "Leadership", "Business"],
-    href: "https://mlt.org/career-prep/",
-  },
-  {
-    title: "INROADS",
-    org: "INROADS",
-    summary:
-      "Development-focused experience connecting students with professional opportunities plus ongoing support and growth pathways.",
-    who: "Students & early-career talent (varies)",
-    format: "Career development + opportunities",
-    tags: ["Career", "Leadership", "Business"],
-    href: "https://inroads.org/",
-  },
-  {
-    title: "SEO Career (Mentorship / Coach & Mentor network)",
-    org: "Sponsors for Educational Opportunity (SEO)",
-    summary:
-      "A career access network for high-achieving undergrads that includes professional guidance and mentorship pathways.",
-    who: "High-achieving undergraduates",
-    format: "Mentors + professional development",
-    tags: ["Career", "Leadership", "Finance"],
-    href: "https://www.seo-usa.org/career/",
-  },
-  {
-    title: "NSBE Professional Development Program",
-    org: "National Society of Black Engineers (NSBE)",
-    summary:
-      "Member-focused professional development that includes mentoring and career support resources in STEM pathways.",
-    who: "NSBE members (students + professionals)",
-    format: "Mentoring + professional development",
-    tags: ["STEM", "Career", "Leadership"],
-    href: "https://nsbe.org/initiative/professional-development-program/",
-  },
-  {
-    title: "NABA Mentoring Program (Student-focused)",
-    org: "National Association of Black Accountants (NABA)",
-    summary:
-      "Chapter-based mentoring and guidance designed to support students with career development, accountability, and professional growth.",
-    who: "Students (chapter/member programs vary)",
-    format: "Mentor matching + chapter support",
-    tags: ["Finance", "Career", "Community"],
-    href: "https://community.nabainc.org/shpcchapter/aboutus/naba-mentoring-program",
-  },
-  {
-    title: "The Posse Program",
-    org: "The Posse Foundation",
-    summary:
-      "A cohort-based model supporting students through college with training, leadership development, and ongoing community support.",
-    who: "Students selected through Posse cohorts",
-    format: "Cohort model + leadership + support network",
-    tags: ["Leadership", "Community", "Career"],
-    href: "https://www.possefoundation.org/",
-  },
-];
+function buildPrograms(records: PublicStudentHubRecord[]): Program[] {
+  return records.map((record) => {
+    const tags: Program["tags"] = [];
+    const discipline = (record.discipline || "").toLowerCase();
+    if ((record.tags || []).some((tag) => /career/i.test(tag)))
+      tags.push("Career");
+    if (discipline.includes("stem")) tags.push("STEM");
+    if (discipline.includes("business") || discipline.includes("consult"))
+      tags.push("Business");
+    if (discipline.includes("finance") || discipline.includes("account"))
+      tags.push("Finance");
+    if ((record.tags || []).some((tag) => /lead/i.test(tag)))
+      tags.push("Leadership");
+    if (tags.length === 0) tags.push("Community");
+
+    return {
+      title: record.title,
+      org: record.organization,
+      summary: record.description,
+      who: record.eligibilitySummary,
+      format: record.statusNote || record.statusLabel,
+      tags: Array.from(new Set(tags)).slice(0, 3) as Program["tags"],
+      href: record.applicationUrl,
+    };
+  });
+}
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -94,13 +63,21 @@ const TAGS: Array<"All" | Program["tags"][number]> = [
   "Community",
 ];
 
-export default function Mentorship() {
+export default function Mentorship({
+  initialPrograms,
+}: {
+  initialPrograms: PublicStudentHubRecord[];
+}) {
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState<(typeof TAGS)[number]>("All");
+  const programs = useMemo(
+    () => buildPrograms(initialPrograms),
+    [initialPrograms],
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return PROGRAMS.filter((p) => {
+    return programs.filter((p) => {
       const matchesTag = tag === "All" ? true : p.tags.includes(tag);
       const matchesQuery =
         !q ||
@@ -109,7 +86,7 @@ export default function Mentorship() {
           .includes(q);
       return matchesTag && matchesQuery;
     });
-  }, [query, tag]);
+  }, [programs, query, tag]);
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
@@ -314,3 +291,12 @@ export default function Mentorship() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { records } = await getPublicStudentHubPageRecords("mentorship");
+  return {
+    props: {
+      initialPrograms: records,
+    },
+  };
+};

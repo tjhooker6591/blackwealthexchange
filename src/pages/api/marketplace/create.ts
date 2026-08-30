@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMarketplaceDbName } from "@/lib/marketplace/db";
+import { resolveSellerSession } from "@/lib/marketplace/sellerSession";
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,6 +16,10 @@ export default async function handler(
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
+  const body =
+    typeof req.body === "string"
+      ? JSON.parse(req.body || "{}")
+      : req.body || {};
   const {
     name,
     description,
@@ -23,8 +28,8 @@ export default async function handler(
     imageUrl,
     stockQuantity = 0,
     isFeatured = false,
-    sellerId = "demo_user", // Replace with actual session user ID later
-  } = req.body;
+    sellerId: suppliedSellerId = "",
+  } = body;
 
   // Validate required fields
   if (!name || !description || !price || !category || !imageUrl) {
@@ -34,16 +39,41 @@ export default async function handler(
   try {
     const client = await clientPromise;
     const db = client.db(getMarketplaceDbName());
+    const sellerSession = await resolveSellerSession(req, db);
+    if (!sellerSession.ok) {
+      return res
+        .status(sellerSession.status)
+        .json({ error: sellerSession.error });
+    }
+
+    if (
+      typeof suppliedSellerId === "string" &&
+      suppliedSellerId.trim() &&
+      suppliedSellerId.trim() !== sellerSession.sellerId
+    ) {
+      return res.status(403).json({
+        error: "Seller identity must match the authenticated seller account.",
+      });
+    }
+
+    const parsedPrice = Number(price);
+    const parsedStock = Number(stockQuantity);
+    if (!Number.isFinite(parsedPrice) || parsedPrice <= 0) {
+      return res.status(400).json({ error: "Invalid price" });
+    }
+    if (!Number.isFinite(parsedStock) || parsedStock < 0) {
+      return res.status(400).json({ error: "Invalid stock quantity" });
+    }
 
     const newProduct = {
       name,
       description,
-      price: parseFloat(price),
+      price: parsedPrice,
       category,
       imageUrl,
-      stockQuantity,
+      stockQuantity: parsedStock,
       isFeatured,
-      sellerId,
+      sellerId: sellerSession.sellerId,
       createdAt: new Date(),
     };
 

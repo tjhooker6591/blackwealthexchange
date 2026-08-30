@@ -28,7 +28,7 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
       "Verified BWE member identity used across supported experiences",
       "Access to the existing BWE rewards and redemption system",
       "QR-verifiable membership card for live status checks",
-      "Optional physical card request after membership activation",
+      "Current Black Card tools available through the active digital member experience",
     ],
   },
   signature: {
@@ -39,13 +39,13 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     priceLabel: "$49/month",
     billingModel: "monthly",
     tagline:
-      "Build on Standard with expanding benefits, broader redemption access, and priority access rolling out across experiences.",
+      "Build on Standard with higher-tier rewards access and added member benefits available in the current system.",
     benefits: [
       "Everything in Standard",
-      "Expanding premium member experiences as rollout continues",
-      "Priority access (rolling out) for selected events and offers",
-      "Advanced Black Card features coming to dashboard workflows",
-      "Ongoing admin-tracked redemption and membership operations",
+      "Higher-tier rewards access in supported experiences",
+      "Priority access for selected events and offers when available",
+      "Current Signature Black Card features in dashboard workflows",
+      "Ongoing redemption and membership support",
     ],
   },
   elite: {
@@ -56,13 +56,13 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     priceLabel: "Invite-only",
     billingModel: "invite_only",
     tagline:
-      "Highest Black Card tier with verified identity, rewards access, and advanced experiences that continue to expand.",
+      "Highest Black Card tier with verified identity, rewards access, and high-touch member support.",
     benefits: [
       "Everything in Signature",
-      "Expanded access as Elite experiences roll out",
-      "Priority access (rolling out) to selected high-touch member moments",
-      "Advanced features coming for Elite membership workflows",
-      "Full visibility through Black Card dashboard and admin tracking",
+      "High-touch access for selected member opportunities",
+      "Priority access for eligible Elite moments and offers",
+      "Elite-specific support across active Black Card experiences",
+      "Full visibility through the Black Card dashboard",
     ],
   },
 };

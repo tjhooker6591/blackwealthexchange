@@ -58,7 +58,7 @@ export default function BannerAdsPage() {
     });
   };
 
-  const [loading, setLoading] = useState(true);
+  const [loadingUser, setLoadingUser] = useState(true);
   const [selectedPlacement, setSelectedPlacement] =
     useState<BannerPlacement | null>(null);
   const [duration, setDuration] = useState<BannerDuration>("14");
@@ -82,7 +82,6 @@ export default function BannerAdsPage() {
         });
 
         if (!res.ok) {
-          router.replace("/login?redirect=/advertise/banner-ads");
           return;
         }
 
@@ -94,7 +93,7 @@ export default function BannerAdsPage() {
       } catch (err) {
         console.error("Failed to fetch user from /api/auth/me", err);
       } finally {
-        setLoading(false);
+        setLoadingUser(false);
       }
     };
 
@@ -197,25 +196,36 @@ export default function BannerAdsPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-white">
-        Loading...
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-black text-white px-4 py-10 flex flex-col items-center text-center">
       <h1 className="text-4xl font-bold text-gold mb-4">
         Advertise with Banner Ads
       </h1>
 
-      <p className="text-lg text-gray-400 max-w-2xl mb-10">
+      <p className="text-lg text-gray-400 max-w-2xl mb-6">
         Submit a banner campaign request with your preferred placement and
         duration. Campaigns go live only after review, approval, and confirmed
         placement scheduling.
       </p>
+
+      <div className="w-full max-w-3xl mb-8">
+        {loadingUser ? (
+          <div className="rounded-xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-gray-300">
+            Checking your account details for faster checkout...
+          </div>
+        ) : email ? (
+          <div className="rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-200">
+            We found your account details and prefilled the campaign form where
+            possible.
+          </div>
+        ) : (
+          <div className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-200">
+            You can review pricing and submit your banner campaign without a
+            detected session, but secure checkout may ask you to log in before
+            payment.
+          </div>
+        )}
+      </div>
 
       {/* Placement cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl">

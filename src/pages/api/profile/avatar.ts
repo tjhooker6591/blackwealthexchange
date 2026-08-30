@@ -7,6 +7,12 @@ import jwt from "jsonwebtoken";
 import cookie from "cookie";
 import clientPromise from "@/lib/mongodb";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
+import os from "os";
+import {
+  isMultipartFileTooLargeError,
+  moveUploadedFile,
+  validateUploadedImageFile,
+} from "@/lib/security/imageUploadValidation";
 
 export const config = {
   api: {
@@ -63,19 +69,19 @@ export default async function handler(
     }
 
     const form = formidable({
-      uploadDir,
+      uploadDir: os.tmpdir(),
       keepExtensions: true,
       maxFileSize: 5 * 1024 * 1024,
-      filename: (_name, _ext, part) => {
-        const ext = path.extname(part.originalFilename || "");
-        return `${uuidv4()}${ext}`;
-      },
     });
 
     form.parse(req, async (err, _fields, files) => {
       if (err) {
         console.error("Form parse error:", err);
-        return res.status(500).json({ error: "Upload failed" });
+        return res.status(isMultipartFileTooLargeError(err) ? 400 : 500).json({
+          error: isMultipartFileTooLargeError(err)
+            ? "file_too_large"
+            : "Upload failed",
+        });
       }
 
       const raw = files.avatar || files.profileImage;
@@ -87,7 +93,21 @@ export default async function handler(
         return res.status(400).json({ error: "No file uploaded" });
       }
 
-      const savedPath = file.filepath;
+      const validation = await validateUploadedImageFile(file, 5 * 1024 * 1024);
+      if (!validation.ok) {
+        return res.status(400).json({
+          error:
+            validation.reason === "file_too_large"
+              ? "file_too_large"
+              : "unsupported_media_type",
+        });
+      }
+
+      const savedPath = path.join(
+        uploadDir,
+        `${uuidv4()}${validation.canonicalExtension}`,
+      );
+      await moveUploadedFile(file.filepath, savedPath);
       const relative = path.relative(
         path.join(process.cwd(), "public"),
         savedPath,

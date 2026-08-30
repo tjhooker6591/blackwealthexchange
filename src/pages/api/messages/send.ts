@@ -1,5 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
 import clientPromise from "../../../lib/mongodb";
+import { getJwtSecret, getMongoDbName } from "@/lib/env";
+
+type SessionPayload = {
+  userId?: string;
+  email?: string;
+};
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,7 +18,35 @@ export default async function handler(
   }
 
   try {
-    const { senderId, receiverId, message } = JSON.parse(req.body);
+    const body =
+      typeof req.body === "string"
+        ? JSON.parse(req.body || "{}")
+        : req.body || {};
+    const suppliedSenderId =
+      typeof body.senderId === "string" ? body.senderId.trim() : "";
+    const receiverId =
+      typeof body.receiverId === "string" ? body.receiverId.trim() : "";
+    const message = typeof body.message === "string" ? body.message : "";
+
+    const parsed = cookie.parse(req.headers.cookie || "");
+    const token = parsed.session_token || req.cookies?.session_token;
+    if (!token) {
+      return res.status(401).json({ message: "Authentication required." });
+    }
+
+    const session = jwt.verify(token, getJwtSecret()) as SessionPayload;
+    const senderId = String(session.userId || "").trim();
+    if (!senderId) {
+      return res.status(401).json({ message: "Authentication required." });
+    }
+
+    if (suppliedSenderId && suppliedSenderId !== senderId) {
+      return res
+        .status(403)
+        .json({
+          message: "Sender identity must match the authenticated user.",
+        });
+    }
 
     // Validate input
     if (!senderId || !receiverId || !message) {
@@ -24,7 +60,7 @@ export default async function handler(
     }
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     // Insert message into messages collection
     await db.collection("messages").insertOne({

@@ -5,7 +5,7 @@ import { canonicalUrl, truncateMeta } from "@/lib/seo";
 const STATES = ["CA", "TX", "GA", "FL", "NY", "NC", "IL", "MD"];
 const CATEGORIES = [
   "financial-services",
-  "restaurants",
+  "restaurant",
   "health-and-wellness",
   "legal-services",
   "real-estate",

@@ -47,6 +47,26 @@ export function streamForPayment(
   return "other";
 }
 
+function normalizeString(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function streamForPaymentDoc(doc: any): AdminFinanceStream {
+  const explicitRevenueStream = normalizeString(doc?.revenueStream);
+  if (explicitRevenueStream) {
+    return explicitRevenueStream as AdminFinanceStream;
+  }
+
+  const type =
+    normalizeString(doc?.type) || normalizeString(doc?.metadata?.type);
+  const itemId =
+    normalizeString(doc?.itemId) ||
+    normalizeString(doc?.metadata?.itemId) ||
+    normalizeString(doc?.metadata?.option);
+
+  return streamForPayment(type, itemId);
+}
+
 function buildEmptyStreams() {
   const byStream: Record<string, any> = {};
   for (const s of STREAMS) {
@@ -143,7 +163,11 @@ export async function getAdminFinanceSummary(db: Db) {
         pendingRevenue += gross;
       }
 
-      if (d && !Number.isNaN(d.getTime())) {
+      if (
+        (paymentStatus === "paid" || paymentStatus === "completed") &&
+        d &&
+        !Number.isNaN(d.getTime())
+      ) {
         const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
         monthlySummary[key] = (monthlySummary[key] || 0) + retained;
       }
@@ -198,12 +222,10 @@ export async function getAdminFinanceSummary(db: Db) {
   let revenueThisMonth = 0;
   let pendingRevenue = 0;
   let failedOrRefunded = 0;
+  const monthlySummary: Record<string, number> = {};
 
   for (const p of payments as any[]) {
-    const stream = streamForPayment(
-      String(p.type || ""),
-      String(p.itemId || ""),
-    );
+    const stream = streamForPaymentDoc(p);
     const amount = Number(p.amountCents || 0);
     const fee = Number(p.bweFee ?? amount);
     const payout = Number(p.payout || 0);
@@ -220,6 +242,10 @@ export async function getAdminFinanceSummary(db: Db) {
       grossRevenue += amount;
       totalRevenue += fee;
       if (paidAt && paidAt >= monthStart) revenueThisMonth += fee;
+      if (paidAt && !Number.isNaN(paidAt.getTime())) {
+        const key = `${paidAt.getFullYear()}-${String(paidAt.getMonth() + 1).padStart(2, "0")}`;
+        monthlySummary[key] = (monthlySummary[key] || 0) + fee;
+      }
     } else if (status.includes("fail")) {
       byStream[stream].failed += amount;
       failedOrRefunded += amount;
@@ -253,19 +279,6 @@ export async function getAdminFinanceSummary(db: Db) {
     updatedAt: p.updatedAt || null,
     source: "payments",
   }));
-
-  const monthlySummary: Record<string, number> = {};
-  for (const p of payments as any[]) {
-    const fee = Number(p.bweFee ?? p.amountCents ?? 0);
-    const d = p.paidAt
-      ? new Date(p.paidAt)
-      : p.updatedAt
-        ? new Date(p.updatedAt)
-        : null;
-    if (!d || Number.isNaN(d.getTime())) continue;
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-    monthlySummary[key] = (monthlySummary[key] || 0) + fee;
-  }
 
   return {
     sourceOfTruth: "payments",

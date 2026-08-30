@@ -1,8 +1,22 @@
 // src/pages/payment-cancel.tsx
 import Head from "next/head";
 import Link from "next/link";
+import { useMemo } from "react";
 
 export default function PaymentCancelPage() {
+  const params = useMemo(() => {
+    if (typeof window === "undefined") {
+      return { context: "", businessId: "" };
+    }
+    const search = new URLSearchParams(window.location.search);
+    return {
+      context: search.get("context") || "",
+      businessId: search.get("businessId") || "",
+    };
+  }, []);
+
+  const foundingMembership = params.context === "founding-membership";
+
   return (
     <>
       <Head>
@@ -21,30 +35,41 @@ export default function PaymentCancelPage() {
             </h1>
 
             <p className="mt-3 text-white/80">
-              No worries — your checkout was cancelled and no charge was
+              No worries, your checkout was cancelled and no charge was
               completed. You can try again whenever you’re ready.
             </p>
 
             <div className="mt-6 rounded-xl border border-white/10 bg-black/30 p-4">
               <p className="text-sm text-white/70">
-                If you were trying to purchase a directory listing or an ad,
-                return to the appropriate page and restart checkout.
+                {foundingMembership
+                  ? "Your founding membership claim was not activated. Return to the offer page when you are ready to restart secure checkout."
+                  : "If you were trying to purchase a directory listing or an ad, return to the appropriate page and restart checkout."}
               </p>
             </div>
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="/business-directory"
+                href={
+                  foundingMembership
+                    ? `/founding-membership${params.businessId ? `?businessId=${encodeURIComponent(params.businessId)}` : ""}`
+                    : "/business-directory"
+                }
                 className="inline-flex items-center rounded-md bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 transition"
               >
-                Try Again
+                {foundingMembership
+                  ? "Return to Membership Offer"
+                  : "Try Again"}
               </Link>
 
               <Link
-                href="/advertising"
+                href={
+                  foundingMembership ? "/business-directory" : "/advertising"
+                }
                 className="inline-flex items-center rounded-md border border-yellow-500/40 px-4 py-2 font-semibold text-yellow-300 hover:border-yellow-400/70 transition"
               >
-                Advertising Hub
+                {foundingMembership
+                  ? "Browse Claimable Businesses"
+                  : "Advertising Hub"}
               </Link>
 
               <Link

@@ -26,6 +26,7 @@ import {
   normalizeSort,
 } from "@/lib/directory/queryState";
 import { publicBusinessBaseQuery } from "@/lib/directory/publicBusinessQuery";
+import { resolveBusinessImage } from "@/lib/imageResolver";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -165,22 +166,13 @@ function buildLocationDisplay(parts: {
   return cityState || address || "";
 }
 
-const DEFAULT_SPONSOR_ADS = [
-  {
-    img: "/pamfa1.jpg",
-    name: "Pamfa United Citizens",
-    tagline: "Bold. Fearless. Iconic.",
-    url: "https://pamfaunited.com",
-    cta: "Shop Now",
-  },
-  {
-    img: "/titans.jpg",
-    name: "Titan Era Productions",
-    tagline: "Level Up Your Look.",
-    url: "https://www.instagram.com/titaneraoffical/",
-    cta: "Explore",
-  },
-];
+const DEFAULT_SPONSOR_ADS: Array<{
+  img: string;
+  name: string;
+  tagline: string;
+  url: string;
+  cta: string;
+}> = [];
 
 type PlacementCard = {
   id: string;
@@ -243,11 +235,8 @@ type BusinessDirectoryProps = {
 };
 
 function SponsorCard({ img, name, tagline, url, cta }: any) {
-  return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
+  const card = (
+    <div
       className="relative flex flex-col items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.05)] transition hover:-translate-y-0.5 hover:bg-white/[0.06]"
       style={{ minHeight: 160 }}
     >
@@ -272,6 +261,16 @@ function SponsorCard({ img, name, tagline, url, cta }: any) {
       <span className="absolute top-2 right-2 rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-extrabold text-[#D4AF37]">
         Sponsored
       </span>
+    </div>
+  );
+
+  if (safeStr(url).startsWith("/")) {
+    return <Link href={url}>{card}</Link>;
+  }
+
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer">
+      {card}
     </a>
   );
 }
@@ -1088,6 +1087,11 @@ export default function BusinessDirectory({
     return formatCategoryDisplay(display || cats);
   };
 
+  const getListingImage = (r: Row) => {
+    if (r.__kind !== "business") return "/default-image.jpg";
+    return resolveBusinessImage(r).url || "/default-image.jpg";
+  };
+
   const getRatingLine = (r: Row) => {
     const rating = safeStr((r as any).rating);
     const reviewCount = safeStr((r as any).reviewCount);
@@ -1248,31 +1252,37 @@ export default function BusinessDirectory({
 
         <div className="mx-auto max-w-7xl px-3 sm:px-4 md:px-6 py-6">
           {/* Header */}
-          <div className="relative mb-4 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.07] via-white/[0.03] to-transparent p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_40px_90px_rgba(0,0,0,0.55)] sm:mb-5 sm:p-5">
+          <div className="bwe-hero-panel relative mb-4 overflow-hidden rounded-[30px] p-4 shadow-[0_24px_72px_rgba(0,0,0,0.34)] sm:mb-5 sm:p-6">
             <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-[40rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
 
             <div className="relative flex flex-col gap-4">
               <div className="flex flex-wrap items-start justify-between gap-2 sm:items-end sm:gap-3">
                 <div>
-                  <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white">
+                  <div className="bwe-eyebrow">
+                    {claimMode ? "Claim guidance" : "Business discovery"}
+                  </div>
+                  <h1 className="bwe-section-title mt-2 max-w-3xl">
                     {claimMode
                       ? "Find the business you want to claim"
                       : scope === "organizations"
                         ? "Black Organizations Directory"
                         : "Black-Owned Business Directory"}
-                    <span className="ml-2 text-[#D4AF37]">
+                    <span className="ml-2 text-[var(--accent)]">
                       {claimMode ? "• Claim Mode" : "• City + Category Hub"}
                     </span>
                   </h1>
-                  <p className="mt-1 text-xs text-white/70 sm:text-base">
+                  <p className="mt-3 max-w-2xl text-sm leading-6 text-white/66 sm:text-[15px]">
                     {claimMode
                       ? "Search for your existing BWE listing, select it, and continue to the Founding Membership process. If your business is not listed yet, use the separate listing path below."
                       : "Use this directory hub to discover trusted listings by city, state, and category, then compare and contact the best fit."}
                   </p>
                 </div>
 
-                <span className="hidden sm:inline-flex items-center gap-1 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1.5 text-xs font-bold text-emerald-200">
+                <span
+                  className="bwe-badge hidden sm:inline-flex"
+                  data-tone="success"
+                >
                   <ShieldCheck className="h-3.5 w-3.5" />
                   {claimMode ? "Claim guidance active" : "Trusted listings"}
                 </span>
@@ -1327,7 +1337,7 @@ export default function BusinessDirectory({
                     })
                   }
                   className={cx(
-                    "rounded-xl border px-3 py-2 text-xs font-extrabold tracking-wide transition",
+                    "rounded-full border px-3.5 py-2 text-[11px] font-semibold tracking-[0.08em] transition",
                     scope === "businesses"
                       ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
                       : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
@@ -1350,7 +1360,7 @@ export default function BusinessDirectory({
                     })
                   }
                   className={cx(
-                    "rounded-xl border px-3 py-2 text-xs font-extrabold tracking-wide transition",
+                    "rounded-full border px-3.5 py-2 text-[11px] font-semibold tracking-[0.08em] transition",
                     scope === "organizations"
                       ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
                       : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
@@ -1360,62 +1370,20 @@ export default function BusinessDirectory({
                 </button>
               </div>
 
-              <div className="hidden sm:grid gap-2 sm:grid-cols-3">
-                <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                  <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
-                    Ranking
-                  </div>
-                  <div className="text-sm font-semibold text-white/80">
-                    Trust + relevance first
-                  </div>
-                </div>
-                <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                  <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
-                    Control
-                  </div>
-                  <div className="text-sm font-semibold text-white/80">
-                    Strong filters, zero clutter
-                  </div>
-                </div>
-                <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                  <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
-                    Goal
-                  </div>
-                  <div className="text-sm font-semibold text-white/80">
-                    Find, vet, and contact quickly
-                  </div>
-                </div>
+              <div className="hidden flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/8 pt-4 text-sm text-white/64 sm:flex">
+                <span>Trust and relevance stay first.</span>
+                <span>Filters are optional, not mandatory.</span>
+                <span>Compare, vet, and contact faster.</span>
               </div>
 
               <details className="sm:hidden rounded-xl border border-white/10 bg-black/20 px-3 py-2">
                 <summary className="cursor-pointer list-none text-xs font-bold text-white/85">
                   Why this directory?
                 </summary>
-                <div className="mt-2 grid gap-2">
-                  <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                    <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
-                      Ranking
-                    </div>
-                    <div className="text-xs font-semibold text-white/80">
-                      Trust + relevance first
-                    </div>
-                  </div>
-                  <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                    <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
-                      Control
-                    </div>
-                    <div className="text-xs font-semibold text-white/80">
-                      Strong filters, zero clutter
-                    </div>
-                  </div>
-                  <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                    <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
-                      Goal
-                    </div>
-                    <div className="text-xs font-semibold text-white/80">
-                      Find, vet, and contact quickly
-                    </div>
-                  </div>
+                <div className="mt-2 grid gap-2 text-xs text-white/70">
+                  <div>Trust + relevance first.</div>
+                  <div>Strong filters when you need them.</div>
+                  <div>Find, vet, and contact quickly.</div>
                 </div>
               </details>
 
@@ -1538,10 +1506,10 @@ export default function BusinessDirectory({
               )}
 
               {/* Search bar */}
-              <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_24px_60px_rgba(0,0,0,0.45)] backdrop-blur">
+              <div className="bwe-shell-panel relative overflow-hidden rounded-[24px] p-3 sm:p-4">
                 <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-[30rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
 
-                <div className="flex items-stretch gap-2">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
                   <div className="relative flex-1">
                     <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/45" />
                     <input
@@ -1553,7 +1521,7 @@ export default function BusinessDirectory({
                       }
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
-                      className="w-full rounded-xl border border-white/10 bg-black/30 pl-9 pr-4 py-3 text-[14px] text-white placeholder:text-white/35 outline-none transition focus:border-[#D4AF37]/40 focus:ring-2 focus:ring-[#D4AF37]/20"
+                      className="bwe-input w-full border-white/10 bg-black/28 pl-9 pr-4 text-[14px]"
                     />
                   </div>
                   <button
@@ -1562,7 +1530,7 @@ export default function BusinessDirectory({
                       setPage(1);
                       setHasSearched(true);
                     }}
-                    className="rounded-xl bg-[#D4AF37] px-4 sm:px-6 text-[13px] font-extrabold text-black transition hover:bg-yellow-500"
+                    className="bwe-cta-primary bwe-focus-ring px-5 text-[13px] sm:px-6"
                   >
                     Search
                   </button>
@@ -1572,14 +1540,14 @@ export default function BusinessDirectory({
                       setInput("");
                       setPage(1);
                     }}
-                    className="rounded-xl border border-white/10 bg-white/[0.03] px-3 text-[12px] font-bold text-white/75 transition hover:bg-white/[0.06]"
+                    className="bwe-cta-secondary bwe-focus-ring px-4 text-[12px] font-semibold text-white/78"
                     title="Clear search"
                   >
                     Clear
                   </button>
                 </div>
-                <div className="mt-2 flex items-center justify-between text-[11px] text-white/50">
-                  <span>
+                <div className="mt-2 flex flex-col gap-1 text-[11px] text-white/50 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="max-w-xl">
                     Try keywords like “tax”, “restaurant”, “barber”, or “real
                     estate”.
                   </span>
@@ -1591,7 +1559,7 @@ export default function BusinessDirectory({
               </div>
 
               {/* Filter/sort controls */}
-              <details className="mt-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+              <details className="bwe-soft-tile mt-3 p-3">
                 <summary className="cursor-pointer list-none text-sm font-bold text-white/85">
                   Filters
                 </summary>
@@ -2344,11 +2312,7 @@ export default function BusinessDirectory({
                         >
                           {/* Thumbnail (business only if available) */}
                           <img
-                            src={
-                              (item as any).__kind === "business"
-                                ? (item as any).image || "/default-image.jpg"
-                                : "/default-image.jpg"
-                            }
+                            src={getListingImage(item as Row)}
                             alt={getTitle(item as Row) || "Listing"}
                             width={48}
                             height={48}
@@ -2440,7 +2404,7 @@ export default function BusinessDirectory({
                                 Location:
                               </span>{" "}
                               {getLocation(item as Row) ||
-                                "Location details coming soon"}
+                                "Location not listed"}
                             </div>
 
                             {/* Snippet line (quote-style like your example) */}
@@ -2455,7 +2419,7 @@ export default function BusinessDirectory({
                             >
                               {getDesc(item as Row)
                                 ? `“${getDesc(item as Row)}”`
-                                : "Business details are being expanded."}
+                                : "View this business profile for current public details."}
                             </div>
 
                             <div className="mt-2 flex flex-wrap gap-2">
@@ -2549,7 +2513,7 @@ export default function BusinessDirectory({
                               </a>
                             ) : (
                               <div className="text-white/35">
-                                Contact details coming soon
+                                Contact not listed
                               </div>
                             )}
                           </div>

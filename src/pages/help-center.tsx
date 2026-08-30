@@ -1,15 +1,14 @@
-import SupportTicketForm from "@/components/support/SupportTicketForm";
+import SupportTicketEntryPage from "@/components/support/SupportTicketEntryPage";
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-black text-white p-8">
-      <div className="max-w-3xl mx-auto space-y-4">
-        <h1 className="text-3xl font-bold text-yellow-400">help center</h1>
-        <div className="rounded border border-zinc-800 bg-zinc-950 p-4 text-zinc-300">
-          Select category and submit your support ticket.
-        </div>
-        <SupportTicketForm defaultCategory="General Question" />
-      </div>
-    </main>
+    <SupportTicketEntryPage
+      title="Help Center"
+      intro="Use this direct help-center route to open a support ticket when you already know the issue you need help with."
+      metaTitle="Help Center | Black Wealth Exchange"
+      metaDescription="Open a Black Wealth Exchange support ticket from the help center for account, marketplace, billing, directory, and other issues."
+      canonicalPath="/help-center"
+      defaultCategory="General Question"
+    />
   );
 }

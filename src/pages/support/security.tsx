@@ -4,6 +4,9 @@ export default function Page() {
     <SupportCategoryPage
       title="Security & Trust Support"
       intro="Report account risks, abuse, fraud, and trust/safety incidents."
+      pageTitle="Security & Trust Support | Black Wealth Exchange"
+      metaDescription="Report Black Wealth Exchange account risks, abuse, fraud, and trust or safety incidents."
+      canonicalPath="/support/security"
       commonIssues={["Suspicious login", "Abusive content", "Possible fraud"]}
       decisionGuidance={[
         "Use Security priority for account-risk events.",

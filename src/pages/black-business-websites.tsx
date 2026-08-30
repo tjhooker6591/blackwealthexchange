@@ -1,5 +1,7 @@
 import React from "react";
 import Link from "next/link";
+import Head from "next/head";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 const blackOwnedBusinessDirectories = [
   {
@@ -124,48 +126,74 @@ const blackOwnedBusinessDirectories = [
 ];
 
 export default function BlackOwnedDirectories() {
-  return (
-    <div className="bg-gray-900 text-white min-h-screen">
-      <header className="hero bg-gray-800 p-20 text-center shadow-md">
-        <h1 className="text-4xl font-bold text-gold">
-          Black Website Listing Of Black Owned Business Directories
-        </h1>
-        <p className="text-lg mt-2 text-gray-300">
-          Discover the most comprehensive list of Black Website that list Black
-          owned and Our Black-owned business directories.
-        </p>
-        <div className="mt-4">
-          <Link href="/">
-            <button className="px-6 py-2 bg-gray-700 text-white font-semibold rounded-lg hover:bg-gray-600 transition">
-              Back to Home
-            </button>
-          </Link>
-        </div>
-      </header>
+  const title =
+    "External Black-Owned Business Directory Resources | Black Wealth Exchange";
+  const description = truncateMeta(
+    "Black Wealth Exchange is a Black-Owned Business Discovery and Growth Platform. Review curated external directory resources, marketplaces, and discovery hubs that highlight Black-owned businesses.",
+  );
+  const canonical = canonicalUrl("/black-business-websites");
+  const socialImage = canonicalUrl("/images/hero1.jpg");
 
-      <div className="container mx-auto p-6">
-        <div className="mt-6 space-y-6">
-          {blackOwnedBusinessDirectories.map((directory, index) => (
-            <div
-              key={index}
-              className="bg-gray-800 p-4 rounded shadow-md border border-gray-700"
-            >
-              <h2 className="text-xl font-semibold text-gold">
-                {directory.name}
-              </h2>
-              <p className="text-gray-300 mt-2">{directory.description}</p>
-              <p className="mt-2 text-gray-400">
-                <strong>Categories:</strong> {directory.categories}
-              </p>
-              <Link href={directory.url}>
-                <button className="mt-4 p-2 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition">
-                  Visit Website
-                </button>
-              </Link>
-            </div>
-          ))}
+  return (
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={socialImage} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={socialImage} />
+      </Head>
+      <div className="bg-gray-900 text-white min-h-screen">
+        <header className="hero bg-gray-800 p-20 text-center shadow-md">
+          <h1 className="text-4xl font-bold text-gold">
+            Black-Owned Business Directory Resources
+          </h1>
+          <p className="text-lg mt-2 text-gray-300">
+            Black Wealth Exchange is a Black-Owned Business Discovery and Growth
+            Platform. This page highlights external directories, marketplaces,
+            and resource hubs that can help you discover more Black-owned
+            businesses.
+          </p>
+          <div className="mt-4">
+            <Link href="/">
+              <button className="px-6 py-2 bg-gray-700 text-white font-semibold rounded-lg hover:bg-gray-600 transition">
+                Back to Home
+              </button>
+            </Link>
+          </div>
+        </header>
+
+        <div className="container mx-auto p-6">
+          <div className="mt-6 space-y-6">
+            {blackOwnedBusinessDirectories.map((directory, index) => (
+              <div
+                key={index}
+                className="bg-gray-800 p-4 rounded shadow-md border border-gray-700"
+              >
+                <h2 className="text-xl font-semibold text-gold">
+                  {directory.name}
+                </h2>
+                <p className="text-gray-300 mt-2">{directory.description}</p>
+                <p className="mt-2 text-gray-400">
+                  <strong>Categories:</strong> {directory.categories}
+                </p>
+                <Link href={directory.url}>
+                  <button className="mt-4 p-2 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition">
+                    Visit Website
+                  </button>
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

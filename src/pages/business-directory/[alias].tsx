@@ -4,21 +4,44 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
+import {
+  mapDirectoryProfileFromDoc,
+  normalizeDirectoryLocationParts,
+} from "@/lib/directoryProfileContract";
 
 type Business = {
   _id?: string;
   alias?: string;
   business_name?: string;
   name?: string;
+  shortSummary?: string;
   categories?: string | string[];
   address?: string;
+  fullAddress?: string;
   city?: string;
   state?: string;
+  postalCode?: string;
+  serviceArea?: string;
   description?: string;
   phone?: string;
   latitude?: number;
   longitude?: number;
   website?: string;
+  image?: string;
+  logo?: string;
+  galleryImages?: string[];
+  operatingHours?: string;
+  offeringsSummary?: string;
+  tags?: string[];
+  facebook?: string;
+  instagram?: string;
+  linkedin?: string;
+  twitter?: string;
+  youtube?: string;
+  tiktok?: string;
+  primaryCtaLabel?: string;
+  primaryCtaUrl?: string;
+  additionalCtas?: Array<{ label?: string; url?: string }>;
   verified?: boolean;
   isVerified?: boolean;
   status?: string;
@@ -31,6 +54,7 @@ type Business = {
   amountPaid?: number;
   completenessScore?: number;
   isComplete?: boolean;
+  publicListingStatus?: string;
 };
 
 function safeStr(v: unknown): string {
@@ -82,22 +106,49 @@ type Props = {
 };
 
 function normalizeBusinessDoc(doc: any): Business {
+  const profile = mapDirectoryProfileFromDoc(doc);
+  const locationParts = normalizeDirectoryLocationParts(doc);
   return {
-    _id: safeStr(doc?._id),
-    alias: safeStr(doc?.alias),
-    business_name: safeStr(doc?.business_name),
+    _id: safeStr(doc?._id || profile.id),
+    alias: safeStr(doc?.alias || doc?.slug),
+    business_name: safeStr(profile.displayName),
     name: safeStr(doc?.name),
-    categories: Array.isArray(doc?.categories)
-      ? doc.categories.map((x: unknown) => safeStr(x)).filter(Boolean)
-      : safeStr(doc?.categories),
-    address: safeStr(doc?.address),
-    city: safeStr(doc?.city),
-    state: safeStr(doc?.state),
-    description: safeStr(doc?.description) || "No description available",
-    phone: safeStr(doc?.phone),
-    latitude: typeof doc?.latitude === "number" ? doc.latitude : undefined,
-    longitude: typeof doc?.longitude === "number" ? doc.longitude : undefined,
-    website: safeStr(doc?.website),
+    shortSummary: safeStr(profile.shortSummary),
+    categories:
+      Array.isArray(profile.secondaryCategories) &&
+      profile.secondaryCategories.length > 0
+        ? profile.secondaryCategories
+        : safeStr(profile.primaryCategory),
+    address: locationParts.streetAddress,
+    fullAddress: locationParts.fullAddress,
+    city: locationParts.city,
+    state: locationParts.state,
+    postalCode: locationParts.postalCode,
+    serviceArea: safeStr(profile.serviceArea),
+    description: safeStr(profile.description) || "No description available",
+    phone: safeStr(profile.phone),
+    latitude: typeof doc?.latitude === "number" ? doc.latitude : null,
+    longitude: typeof doc?.longitude === "number" ? doc.longitude : null,
+    website: safeStr(profile.website),
+    image: safeStr(profile.coverImage),
+    logo: safeStr(profile.logo),
+    galleryImages: Array.isArray(profile.galleryImages)
+      ? profile.galleryImages
+      : [],
+    operatingHours: safeStr(profile.operatingHours),
+    offeringsSummary: safeStr(profile.offeringsSummary),
+    tags: Array.isArray(profile.tags) ? profile.tags : [],
+    facebook: safeStr(profile.facebook),
+    instagram: safeStr(profile.instagram),
+    linkedin: safeStr(profile.linkedin),
+    twitter: safeStr(profile.twitter),
+    youtube: safeStr(profile.youtube),
+    tiktok: safeStr(profile.tiktok),
+    primaryCtaLabel: safeStr(profile.primaryCtaLabel),
+    primaryCtaUrl: safeStr(profile.primaryCtaUrl),
+    additionalCtas: Array.isArray(profile.additionalCtas)
+      ? profile.additionalCtas
+      : [],
     verified: doc?.verified === true,
     isVerified: doc?.isVerified === true,
     status: safeStr(doc?.status),
@@ -109,8 +160,7 @@ function normalizeBusinessDoc(doc: any): Business {
     ownershipReviewStatus: safeStr(doc?.ownershipReviewStatus),
     amountPaid: Number(doc?.amountPaid || 0),
     completenessScore: Number(doc?.completenessScore || 0),
-    isComplete:
-      typeof doc?.isComplete === "boolean" ? doc.isComplete : undefined,
+    isComplete: typeof doc?.isComplete === "boolean" ? doc.isComplete : null,
     publicListingStatus: safeStr(doc?.publicListingStatus),
   } as Business;
 }
@@ -127,11 +177,9 @@ export default function BusinessDetail({
     return routeAlias || initialAlias || undefined;
   }, [initialAlias, router.query.alias]);
 
-  const [business, setBusiness] = useState<Business | null>(
-    initialBusiness || null,
-  );
-  const [isLoading, setIsLoading] = useState(!initialBusiness && !initialError);
-  const [error, setError] = useState(initialError || "");
+  const [business] = useState<Business | null>(initialBusiness || null);
+  const [isLoading] = useState(!initialBusiness && !initialError);
+  const [error] = useState(initialError || "");
 
   const source = useMemo(() => {
     const raw = router.query.from;
@@ -144,51 +192,6 @@ export default function BusinessDetail({
   }, [router.query.mode]);
 
   useEffect(() => {
-    if (!router.isReady || !alias) return;
-    if (initialBusiness && safeStr(initialBusiness.alias) === safeStr(alias))
-      return;
-
-    let active = true;
-    const ctrl = new AbortController();
-
-    (async () => {
-      setIsLoading(true);
-      setError("");
-      try {
-        const res = await fetch(
-          `/api/getBusiness?alias=${encodeURIComponent(alias)}`,
-          {
-            signal: ctrl.signal,
-          },
-        );
-
-        const data = await res.json().catch(() => null);
-        if (!active) return;
-
-        if (!res.ok || !data) {
-          setBusiness(null);
-          setError(`Could not load this business (${res.status}).`);
-          setIsLoading(false);
-          return;
-        }
-
-        setBusiness(data as Business);
-        setIsLoading(false);
-      } catch (err: any) {
-        if (!active || err?.name === "AbortError") return;
-        setBusiness(null);
-        setError("Could not load this business. Please retry.");
-        setIsLoading(false);
-      }
-    })();
-
-    return () => {
-      active = false;
-      ctrl.abort();
-    };
-  }, [router.isReady, alias, initialBusiness]);
-
-  useEffect(() => {
     if (!business || !alias) return;
     trackFlowEvent({
       eventType: "business_detail_view",
@@ -199,10 +202,17 @@ export default function BusinessDetail({
 
   const website = safeWebsite(business?.website);
   const categoryText = toCategoryText(business?.categories);
-  const placeLine = [safeStr(business?.city), safeStr(business?.state)]
+  const cityState = [safeStr(business?.city), safeStr(business?.state)]
     .filter(Boolean)
     .join(", ");
-  const locationText = [safeStr(business?.address), placeLine]
+  const placeLine = [cityState, safeStr(business?.postalCode)]
+    .filter(Boolean)
+    .join(cityState && safeStr(business?.postalCode) ? " " : "");
+  const locationText = [
+    safeStr(business?.fullAddress),
+    safeStr(business?.address),
+    placeLine,
+  ]
     .filter(Boolean)
     .join(", ");
   const hasLatLng =
@@ -336,10 +346,25 @@ export default function BusinessDetail({
                 </h1>
 
                 <div className="mt-2 text-sm text-white/70">
-                  {[categoryText, placeLine || safeStr(business.address)]
+                  {[
+                    categoryText,
+                    placeLine ||
+                      safeStr(business.fullAddress) ||
+                      safeStr(business.address),
+                  ]
                     .filter(Boolean)
                     .join(" • ") || "Black-owned business"}
                 </div>
+                {safeStr(business.serviceArea) ? (
+                  <div className="mt-2 text-sm text-white/80">
+                    Service area: {safeStr(business.serviceArea)}
+                  </div>
+                ) : null}
+                {safeStr(business.shortSummary) ? (
+                  <p className="mt-3 max-w-3xl text-sm text-white/75">
+                    {safeStr(business.shortSummary)}
+                  </p>
+                ) : null}
 
                 <div className="mt-3 flex flex-wrap gap-2">
                   {trust.verified ? (
@@ -361,21 +386,112 @@ export default function BusinessDetail({
               </header>
 
               <div className="grid gap-4 p-6 md:grid-cols-3 md:p-8">
-                <article className="md:col-span-2 rounded-2xl border border-white/12 bg-black/35 p-5 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.03)]">
-                  <h2 className="mb-2 text-sm font-extrabold uppercase tracking-wide text-white/80">
-                    About
-                  </h2>
-                  <p className="leading-relaxed text-white/75">
-                    {safeStr(business.description) ||
-                      "Business details are being expanded."}
-                  </p>
+                <article className="md:col-span-2 space-y-4 rounded-2xl border border-white/12 bg-black/35 p-5 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.03)]">
+                  <div>
+                    <h2 className="mb-2 text-sm font-extrabold uppercase tracking-wide text-white/80">
+                      About
+                    </h2>
+                    <p className="leading-relaxed text-white/75">
+                      {safeStr(business.description) ||
+                        "Business details are being expanded."}
+                    </p>
+                  </div>
+
+                  {safeStr(business.offeringsSummary) ? (
+                    <div>
+                      <h3 className="mb-2 text-sm font-extrabold uppercase tracking-wide text-white/80">
+                        Products and services
+                      </h3>
+                      <p className="leading-relaxed text-white/75">
+                        {safeStr(business.offeringsSummary)}
+                      </p>
+                    </div>
+                  ) : null}
+
+                  {Array.isArray(business.tags) && business.tags.length > 0 ? (
+                    <div>
+                      <h3 className="mb-2 text-sm font-extrabold uppercase tracking-wide text-white/80">
+                        Specialties
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {business.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-white/80"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {Array.isArray(business.galleryImages) &&
+                  business.galleryImages.length > 0 ? (
+                    <div>
+                      <h3 className="mb-2 text-sm font-extrabold uppercase tracking-wide text-white/80">
+                        Gallery
+                      </h3>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {business.galleryImages
+                          .slice(0, 4)
+                          .map((image, index) => (
+                            <a
+                              key={`${image}-${index}`}
+                              href={image}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-yellow-200 hover:bg-white/[0.06] break-all"
+                            >
+                              {image}
+                            </a>
+                          ))}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {Array.isArray(business.additionalCtas) &&
+                  business.additionalCtas.length > 0 ? (
+                    <div>
+                      <h3 className="mb-2 text-sm font-extrabold uppercase tracking-wide text-white/80">
+                        More ways to connect
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {business.additionalCtas.map((cta, index) =>
+                          safeStr(cta?.label) && safeStr(cta?.url) ? (
+                            <a
+                              key={`${cta?.label}-${index}`}
+                              href={safeWebsite(cta?.url)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-xs font-bold text-white/85 transition hover:bg-white/[0.08]"
+                            >
+                              {safeStr(cta?.label)}
+                            </a>
+                          ) : null,
+                        )}
+                      </div>
+                    </div>
+                  ) : null}
                 </article>
 
                 <aside className="space-y-3 rounded-2xl border border-white/12 bg-black/35 p-5 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.03)]">
+                  {safeStr(business.serviceArea) ? (
+                    <div className="text-sm">
+                      <div className="text-white/55">Service area</div>
+                      <div className="text-white/80 font-medium">
+                        {safeStr(business.serviceArea)}
+                      </div>
+                    </div>
+                  ) : null}
+
                   <div className="text-sm">
                     <div className="text-white/55">Address</div>
                     <div className="text-white/80 font-medium">
-                      {safeStr(business.address) || placeLine || "—"}
+                      {safeStr(business.fullAddress) ||
+                        safeStr(business.address) ||
+                        placeLine ||
+                        "—"}
                     </div>
                   </div>
 
@@ -401,6 +517,44 @@ export default function BusinessDetail({
                       <div className="text-white/80">—</div>
                     )}
                   </div>
+
+                  {safeStr(business.operatingHours) ? (
+                    <div className="text-sm">
+                      <div className="text-white/55">Hours</div>
+                      <div className="whitespace-pre-line text-white/80">
+                        {safeStr(business.operatingHours)}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {[
+                    ["Facebook", business.facebook],
+                    ["Instagram", business.instagram],
+                    ["LinkedIn", business.linkedin],
+                    ["Twitter / X", business.twitter],
+                    ["YouTube", business.youtube],
+                    ["TikTok", business.tiktok],
+                  ].some(([, value]) => safeStr(value)) ? (
+                    <div className="text-sm">
+                      <div className="text-white/55">Social</div>
+                      <div className="mt-1 space-y-1 text-white/80">
+                        {[
+                          ["Facebook", business.facebook],
+                          ["Instagram", business.instagram],
+                          ["LinkedIn", business.linkedin],
+                          ["Twitter / X", business.twitter],
+                          ["YouTube", business.youtube],
+                          ["TikTok", business.tiktok],
+                        ].map(([label, value]) =>
+                          safeStr(value) ? (
+                            <div key={String(label)}>
+                              {label}: {safeStr(value)}
+                            </div>
+                          ) : null,
+                        )}
+                      </div>
+                    </div>
+                  ) : null}
 
                   <div className="pt-2 flex flex-wrap gap-2">
                     {claimMode ? (
@@ -440,7 +594,17 @@ export default function BusinessDetail({
                                     : "Not Claimable"}
                       </span>
                     )}
-                    {website && (
+                    {safeStr(business.primaryCtaLabel) &&
+                    safeStr(business.primaryCtaUrl) ? (
+                      <a
+                        href={safeWebsite(business.primaryCtaUrl)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center rounded-xl bg-[#D4AF37] px-4 py-2 text-sm font-extrabold text-black transition hover:bg-yellow-500"
+                      >
+                        {safeStr(business.primaryCtaLabel)}
+                      </a>
+                    ) : website ? (
                       <a
                         href={website}
                         target="_blank"
@@ -456,7 +620,7 @@ export default function BusinessDetail({
                       >
                         Visit website
                       </a>
-                    )}
+                    ) : null}
                     {safeStr(business.phone) && (
                       <a
                         href={`tel:${safeStr(business.phone).replace(/\s+/g, "")}`}
@@ -588,22 +752,60 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
     const doc = await db.collection("businesses").findOne(
-      { alias },
+      { $or: [{ alias }, { slug: alias }] },
       {
         projection: {
           _id: 1,
           alias: 1,
+          slug: 1,
           business_name: 1,
+          businessName: 1,
           name: 1,
+          shortSummary: 1,
+          summary: 1,
           categories: 1,
+          secondaryCategories: 1,
+          category: 1,
+          primaryCategory: 1,
+          display_categories: 1,
           address: 1,
+          streetAddress: 1,
+          businessAddress: 1,
           city: 1,
           state: 1,
+          serviceArea: 1,
+          postalCode: 1,
+          zip: 1,
+          zipCode: 1,
           description: 1,
           phone: 1,
+          businessPhone: 1,
           latitude: 1,
           longitude: 1,
           website: 1,
+          image: 1,
+          coverImage: 1,
+          logo: 1,
+          images: 1,
+          galleryImages: 1,
+          operatingHours: 1,
+          hours: 1,
+          offeringsSummary: 1,
+          productsServicesSummary: 1,
+          programsSummary: 1,
+          tags: 1,
+          specialties: 1,
+          keywords: 1,
+          social: 1,
+          facebook: 1,
+          instagram: 1,
+          linkedin: 1,
+          twitter: 1,
+          youtube: 1,
+          tiktok: 1,
+          primaryCtaLabel: 1,
+          primaryCtaUrl: 1,
+          additionalCtas: 1,
           verified: 1,
           isVerified: 1,
           status: 1,

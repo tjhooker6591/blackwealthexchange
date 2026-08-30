@@ -4,6 +4,9 @@ export default function Page() {
     <SupportCategoryPage
       title="Employer Support"
       intro="Help for job postings, applicants, and hiring workflow tools."
+      pageTitle="Employer Support | Black Wealth Exchange"
+      metaDescription="Get help with BWE employer tools, job postings, applicant lists, and hiring workflow issues."
+      canonicalPath="/support/employer"
       commonIssues={[
         "Job not published",
         "Applicant list missing",

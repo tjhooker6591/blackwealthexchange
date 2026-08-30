@@ -4,6 +4,9 @@ export default function Page() {
     <SupportCategoryPage
       title="Advertising Support"
       intro="Resolve campaign delivery, placement, and sponsor fulfillment issues."
+      pageTitle="Advertising Support | Black Wealth Exchange"
+      metaDescription="Get help with BWE advertising campaigns, sponsor fulfillment, placement mismatches, and delivery issues."
+      canonicalPath="/support/advertising"
       commonIssues={[
         "Campaign not live",
         "Placement mismatch",

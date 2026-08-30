@@ -151,6 +151,7 @@ export default async function handler(
 
   const pendingAdminApprovalsTotal =
     Number(businessCounts.pending || 0) +
+    Number(businessCounts.duplicateReview || 0) +
     Number(pendingOrganizations || 0) +
     Number(pendingJobs || 0) +
     Number(pendingProducts || 0) +
@@ -244,7 +245,7 @@ export default async function handler(
       pendingAdminApprovals: {
         value: Number(pendingAdminApprovalsTotal || 0),
         sourceStatus: "live",
-        note: "Combined pending approvals across businesses, organizations, jobs, products, directory, payouts, and claim verification",
+        note: "Combined pending approvals across business approvals, duplicate review, organizations, jobs, products, directory, payouts, and claim verification",
       },
       activeSponsors: { value: 0, sourceStatus: "needs_mapping" },
       criticalIssues: {

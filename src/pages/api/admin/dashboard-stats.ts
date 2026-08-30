@@ -85,7 +85,7 @@ export default async function handler(
     const products = db.collection("products");
     const users = db.collection("users");
     const internApps = db.collection("intern_applications");
-    const consultingInterests = db.collection("consulting_interests");
+    const consultingInterests = db.collection("consulting_interest");
 
     // ---- Directory / Payments ----
     const directoryListings = db.collection("directory_listings");
@@ -255,6 +255,7 @@ export default async function handler(
       pending: pendingBusinesses,
       approved: approvedBusinesses,
       rejected: rejectedBusinesses,
+      duplicateReview: duplicateReviewBusinesses,
       total: totalBusinesses,
     } = await businessCountsPromise;
 
@@ -373,6 +374,7 @@ export default async function handler(
 
     const pendingApprovalsTotal =
       n(pendingBusinesses) +
+      n(duplicateReviewBusinesses) +
       n(pendingOrganizations) +
       n(pendingJobs) +
       n(pendingProducts) +
@@ -580,6 +582,7 @@ export default async function handler(
         pending: pendingBusinesses,
         approved: approvedBusinesses,
         rejected: rejectedBusinesses,
+        duplicateReview: duplicateReviewBusinesses,
         total: totalBusinesses,
       },
 
@@ -616,6 +619,7 @@ export default async function handler(
 
       // Optional legacy fields (helps older dashboard components if any still use them)
       pendingBusinesses,
+      duplicateReviewBusinesses,
       pendingOrganizations,
       pendingPayouts,
       activeAffiliates,

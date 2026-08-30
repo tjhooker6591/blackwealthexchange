@@ -1,8 +1,16 @@
-import React, { useEffect, useMemo, useState } from "react";
+import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import Image from "next/legacy/image";
 import { useRouter } from "next/router";
+import {
+  ArrowRight,
+  BadgeCheck,
+  BookOpen,
+  Lock,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 type MeUser = {
@@ -14,10 +22,168 @@ type MeUser = {
 
 const ITEM_ID = "financial-literacy-premium";
 
-const FinancialLiteracy = () => {
+const COURSE_MODULES = [
+  {
+    title: "Breaking Financial Myths",
+    text: "Build a money mindset designed for legacy, not survival.",
+    bullets: [
+      "Your money story and scarcity patterns",
+      "The real math behind getting ahead",
+      "How wealth is built through time, systems, and ownership",
+    ],
+  },
+  {
+    title: "Budgeting for Real Life",
+    text: "Use a simple system that works even when income is uneven.",
+    bullets: [
+      "Zero-based and priority budgeting",
+      "Emergency fund planning",
+      "Spending categories that protect your future",
+    ],
+  },
+  {
+    title: "Credit Repair and Power",
+    text: "Improve your score with a clear step-by-step process.",
+    bullets: [
+      "What affects your score and what does not",
+      "Dispute letters and tracking",
+      "Building positive credit without new traps",
+    ],
+  },
+  {
+    title: "Building Wealth with Investments",
+    text: "Learn the basics of investing, real estate, and passive income.",
+    bullets: [
+      "Key investing terms in plain English",
+      "How to avoid common mistakes and scams",
+      "Matching a plan to your risk level",
+    ],
+  },
+  {
+    title: "Side Hustles and Business Basics",
+    text: "Turn skills into income with a cleaner business foundation.",
+    bullets: [
+      "Choosing a profitable offer",
+      "Pricing and packaging",
+      "Business setup basics",
+    ],
+  },
+  {
+    title: "Debt Management and Elimination",
+    text: "Reduce debt while still protecting savings and credit health.",
+    bullets: [
+      "Snowball and avalanche methods",
+      "Negotiating rates and payment plans",
+      "Avoiding the re-debt cycle",
+    ],
+  },
+  {
+    title: "Retirement Planning",
+    text: "Build long-term security whether you are starting early or restarting.",
+    bullets: [
+      "401(k), IRA, and Roth IRA basics",
+      "Catch-up strategies",
+      "A durable long-term plan",
+    ],
+  },
+  {
+    title: "Legacy and Asset Protection",
+    text: "Learn the basics of protecting assets for your family.",
+    bullets: [
+      "Wills versus trusts",
+      "Beneficiaries and probate mistakes",
+      "A practical legacy planning checklist",
+    ],
+  },
+] as const;
+
+const COURSE_BONUSES = [
+  "Downloadable worksheets and checklists",
+  "Credit repair letter pack",
+  "Investment starter guide",
+  "Optional certificate of completion",
+] as const;
+
+const COURSE_FAQS = [
+  {
+    q: "Is this course beginner-friendly?",
+    a: "Yes. It is designed for people starting from scratch and for people who want a cleaner structure for what they already know.",
+  },
+  {
+    q: "How can access be activated?",
+    a: "Existing system access can come through an eligible premium entitlement or a direct course entitlement after verified checkout.",
+  },
+  {
+    q: "What happens after payment?",
+    a: "The existing course access flow verifies checkout, grants the entitlement, and then unlocks the course dashboard or modules for the user.",
+  },
+  {
+    q: "Do I need an account?",
+    a: "You can browse the overview without an account, but checkout and dashboard access work best when the purchase is linked to your profile.",
+  },
+] as const;
+
+function cx(...classes: Array<string | false | null | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
+
+function InfoTile({
+  title,
+  copy,
+  tone = "default",
+}: {
+  title: string;
+  copy: string;
+  tone?: "default" | "accent";
+}) {
+  return (
+    <div
+      className={cx(
+        "rounded-2xl border px-4 py-4",
+        tone === "accent"
+          ? "border-[rgba(212,175,55,0.28)] bg-[rgba(212,175,55,0.08)]"
+          : "border-white/8 bg-white/[0.03]",
+      )}
+    >
+      <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/42">
+        {title}
+      </div>
+      <p className="mt-2 text-sm leading-6 text-white/66">{copy}</p>
+    </div>
+  );
+}
+
+function DetailBox({
+  icon,
+  title,
+  copy,
+}: {
+  icon: ReactNode;
+  title: string;
+  copy: string;
+}) {
+  return (
+    <div className="bwe-soft-tile p-4">
+      <div className="flex items-center gap-2 text-[var(--accent)]">
+        {icon}
+        <span className="text-[11px] font-semibold uppercase tracking-[0.14em]">
+          {title}
+        </span>
+      </div>
+      <p className="mt-3 text-sm leading-6 text-white/64">{copy}</p>
+    </div>
+  );
+}
+
+export default function FinancialLiteracy() {
   const router = useRouter();
   const [user, setUser] = useState<MeUser | null>(null);
   const [meChecked, setMeChecked] = useState(false);
+  const [quickLoading, setQuickLoading] = useState(false);
+  const [ctaState, setCtaState] = useState<
+    "idle" | "loading" | "redirect-login" | "redirect-checkout" | "failed"
+  >("idle");
+  const [ctaError, setCtaError] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -40,12 +206,7 @@ const FinancialLiteracy = () => {
     })();
   }, []);
 
-  const userId = useMemo(() => user?._id || user?.id || "", [user]);
-  const [quickLoading, setQuickLoading] = useState(false);
-  const [ctaState, setCtaState] = useState<
-    "idle" | "loading" | "redirect-login" | "redirect-checkout" | "failed"
-  >("idle");
-  const [ctaError, setCtaError] = useState("");
+  const userId = String(user?._id || user?.id || "").trim();
 
   const startCourseCheckout = async () => {
     setCtaError("");
@@ -86,540 +247,329 @@ const FinancialLiteracy = () => {
     }
   };
 
-  const modules = useMemo(
-    () => [
-      {
-        title: "1. Breaking Financial Myths",
-        text: "Unlearn the lies we’ve been taught about money. Build a mindset designed for legacy, not survival.",
-        bullets: [
-          "Your money story + breaking scarcity patterns",
-          "The real math behind “getting ahead”",
-          "How wealth is actually built: time, systems, and ownership",
-        ],
-      },
-      {
-        title: "2. Budgeting for Real Life",
-        text: "A simple budgeting system you can actually stick to—even with unpredictable income.",
-        bullets: [
-          "Zero-based vs. priority budgeting (what works best for you)",
-          "Emergency fund plan (fast + realistic)",
-          "Spending categories that protect your future",
-        ],
-      },
-      {
-        title: "3. Credit Repair & Power",
-        text: "Improve your score with a step-by-step system plus templates and dispute strategies.",
-        bullets: [
-          "What impacts your score (and what doesn’t)",
-          "Dispute letters + tracking process",
-          "Building positive credit without new debt traps",
-        ],
-      },
-      {
-        title: "4. Building Wealth with Investments",
-        text: "Learn the basics of stocks, index funds, real estate, and passive income—starting small.",
-        bullets: [
-          "Investing terms in plain English",
-          "How to avoid common mistakes and scams",
-          "Creating an investing plan that matches your risk level",
-        ],
-      },
-      {
-        title: "5. Side Hustles & Business Basics",
-        text: "Turn skills into income. Build a simple business foundation and scale step-by-step.",
-        bullets: [
-          "Choosing a profitable offer (without guessing)",
-          "Pricing + packaging your services/products",
-          "Basic business setup checklist (clean + legit)",
-        ],
-      },
-      {
-        title: "6. Debt Management & Elimination",
-        text: "Eliminate debt using proven strategies while still building savings and credit.",
-        bullets: [
-          "Snowball vs. avalanche methods",
-          "Negotiating interest + payment plans",
-          "Avoiding re-debt cycles (the trap most people miss)",
-        ],
-      },
-      {
-        title: "7. Retirement Planning",
-        text: "Build retirement security whether you’re early, late, or restarting—without stress.",
-        bullets: [
-          "401(k), IRA, Roth IRA—what they are and when to use them",
-          "Catch-up strategies if you’re behind",
-          "Long-term plan that doesn’t require perfection",
-        ],
-      },
-      {
-        title: "8. Building Legacy & Asset Protection",
-        text: "Learn the basics of wills, trusts, beneficiaries, and protecting assets for your family.",
-        bullets: [
-          "Wills vs. trusts (and when each makes sense)",
-          "Beneficiaries and avoiding probate mistakes",
-          "Legacy planning checklist for families",
-        ],
-      },
-    ],
-    [],
-  );
-
-  const bonuses = useMemo(
-    () => [
-      {
-        title: "Downloadable Worksheets + Checklists",
-        text: "Budget templates, goal trackers, debt payoff planners, and spending tools.",
-      },
-      {
-        title: "Credit Repair Letter Pack",
-        text: "Dispute templates + tracking sheet to keep the process organized.",
-      },
-      {
-        title: "Investment Starter Guide",
-        text: "Plain-English guide to getting started with a safe foundation.",
-      },
-      {
-        title: "Optional Certificate of Completion",
-        text: "Earn a completion certificate after finishing the course.",
-      },
-    ],
-    [],
-  );
-
-  const faqs = useMemo(
-    () => [
-      {
-        q: "Is this course beginner-friendly?",
-        a: "Yes. It’s built for people starting from scratch and for those who need a clean system to get organized and level up.",
-      },
-      {
-        q: "Do I need a lot of money to get value from this?",
-        a: "No. The course is designed to help you build stability first—then growth—using real tools and realistic steps.",
-      },
-      {
-        q: "How is access billed?",
-        a: "Course access is included through active paid BWE subscription plans at launch.",
-      },
-      {
-        q: "How do I access the course after purchase?",
-        a: "After checkout, your account will be granted access and you’ll be able to view the modules from your dashboard/course area.",
-      },
-      {
-        q: "Can I buy it without creating an account?",
-        a: "You can browse the page without an account, but we recommend creating a free account so your access can be linked to you automatically.",
-      },
-    ],
-    [],
+  const title = "Black Financial Literacy Course | Black Wealth Exchange";
+  const description = truncateMeta(
+    "Build practical money skills with Black Wealth Exchange financial literacy training, clear module discovery, and direct next-step access into enrollment or checkout.",
   );
 
   return (
     <>
       <Head>
-        <title>Black Financial Literacy Course | Black Wealth Exchange</title>
-        <meta
-          name="description"
-          content={truncateMeta(
-            "Build practical money skills with Black Wealth Exchange financial literacy training and guided modules.",
-          )}
-        />
+        <title>{title}</title>
+        <meta name="description" content={description} />
         <link rel="canonical" href={canonicalUrl("/financial-literacy")} />
       </Head>
-      <div className="relative min-h-screen bg-black text-white overflow-hidden">
-        {/* Background Effects */}
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-35 z-0"
-          style={{ backgroundImage: "url('/images/story3.jpg')" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-60 z-0" />
 
-        {/* subtle glow */}
-        <div className="pointer-events-none absolute inset-0 z-0 opacity-40">
-          <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full blur-3xl bg-yellow-500/20" />
-          <div className="absolute top-24 right-[-120px] h-[420px] w-[420px] rounded-full blur-3xl bg-yellow-400/10" />
-        </div>
+      <main className="relative min-h-screen overflow-x-hidden bg-neutral-950 text-white">
+        <div className="absolute inset-0 bg-neutral-950" />
+        <div className="pointer-events-none absolute -top-32 left-1/2 h-[760px] w-[760px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-44 right-[-9rem] h-[440px] w-[440px] rounded-full bg-emerald-500/[0.04] blur-3xl" />
 
-        {/* Hero */}
-        <header className="text-center pt-24 pb-14 relative z-10 px-6">
-          <div className="mx-auto max-w-5xl">
-            <Image
-              src="/favicon.png"
-              alt="BWE Logo"
-              width={110}
-              height={110}
-              className="mx-auto mb-5"
-            />
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-wide text-gold neon-text">
-              Premium Financial Literacy Course
-            </h1>
-            <p className="text-lg md:text-2xl mt-4 font-light text-gray-200 max-w-3xl mx-auto">
-              Practical tools, knowledge, and confidence to build real Black
-              wealth, included with active paid BWE subscription plans.
-            </p>
+        <div className="bwe-section-wrap relative z-10 py-8 sm:py-10">
+          <section className="bwe-hero-panel relative overflow-hidden rounded-[30px] px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.12),transparent_34%),radial-gradient(circle_at_82%_24%,rgba(255,255,255,0.08),transparent_24%)]" />
 
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-3 text-sm text-gray-300">
-              <Badge>✅ Included with paid plans</Badge>
-              <Badge>✅ Templates & worksheets</Badge>
-              <Badge>✅ Beginner-friendly</Badge>
-              <Badge>✅ Built for real life</Badge>
-            </div>
-
-            {router.query.locked ? (
-              <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-100">
-                <p>
-                  Reason: premium course modules are locked until your
-                  entitlement is active.
+            <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:items-end">
+              <div className="max-w-3xl">
+                <div className="bwe-eyebrow">Financial literacy</div>
+                <h1 className="bwe-display-title mt-3 max-w-[12ch]">
+                  Learn the money systems that support long-term wealth.
+                </h1>
+                <p className="bwe-lead mt-4 max-w-2xl">
+                  This course focuses on practical progress: budgeting, credit,
+                  investing, debt reduction, business fundamentals, and legacy
+                  planning in one guided learning path.
                 </p>
-                <p className="mt-1 text-yellow-50/90">
-                  Next action: complete enrollment, then re-enter modules.
-                </p>
-                <div className="mt-3">
+
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                  <button
+                    type="button"
+                    onClick={startCourseCheckout}
+                    disabled={quickLoading}
+                    className="bwe-cta-primary bwe-focus-ring px-6"
+                  >
+                    {quickLoading ? "Redirecting…" : "Start secure checkout"}
+                  </button>
                   <Link
                     href="/course-enrollment"
-                    className="inline-flex rounded-lg bg-gold px-3 py-1.5 text-xs font-semibold text-black hover:bg-yellow-500"
+                    className="bwe-cta-secondary bwe-focus-ring px-6"
                   >
-                    Go to Enrollment
+                    View enrollment details
                   </Link>
-                </div>
-              </div>
-            ) : null}
-
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <button
-                onClick={startCourseCheckout}
-                disabled={quickLoading}
-                className="px-7 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition disabled:opacity-60"
-              >
-                {quickLoading ? "Redirecting..." : "Activate Course Access"}
-              </button>
-              <a href="#modules">
-                <button className="px-7 py-3 border border-gold text-gold font-semibold rounded-lg hover:bg-gold hover:text-black transition">
-                  View Modules
-                </button>
-              </a>
-            </div>
-          </div>
-        </header>
-
-        {/* Content */}
-        <div className="container mx-auto px-6 pb-20 relative z-10">
-          <div className="max-w-6xl mx-auto grid lg:grid-cols-12 gap-8">
-            {/* Left Column */}
-            <div className="lg:col-span-8 space-y-10">
-              {/* Offer */}
-              <section
-                id="pricing"
-                className="bg-gray-900/80 border border-gold/20 p-8 rounded-2xl shadow-xl"
-              >
-                <h2 className="text-3xl font-semibold text-gold mb-3">
-                  Unlock the Full Premium Course
-                </h2>
-                <p className="text-gray-200 text-lg mb-6 max-w-3xl">
-                  Learn how to budget, fix credit, invest, and build legacy
-                  wealth with step-by-step guidance. Course access is activated
-                  through eligible paid BWE subscription plans.
-                </p>
-
-                <div className="grid md:grid-cols-2 gap-8 text-left text-gray-200">
-                  <div>
-                    <h3 className="text-xl text-gold font-semibold mb-2">
-                      ✅ What You’ll Learn
-                    </h3>
-                    <ul className="list-disc pl-6 space-y-1 text-gray-300">
-                      <li>Budgeting and goal-setting on any income</li>
-                      <li>How to build and repair your credit</li>
-                      <li>
-                        Investing basics: stocks, real estate, and passive
-                        income
-                      </li>
-                      <li>Debt elimination strategies that actually work</li>
-                      <li>
-                        How to protect assets and build generational wealth
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 className="text-xl text-gold font-semibold mb-2">
-                      ✅ What’s Included
-                    </h3>
-                    <ul className="list-disc pl-6 space-y-1 text-gray-300">
-                      <li>8 full modules + bonus content</li>
-                      <li>
-                        Downloadable worksheets, templates, and credit letters
-                      </li>
-                      <li>Lifetime access with free updates</li>
-                      <li>Optional certificate of completion</li>
-                    </ul>
-                  </div>
+                  <a
+                    href="#modules"
+                    className="bwe-open-link bwe-focus-ring text-sm text-white/82"
+                  >
+                    Review modules
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
                 </div>
 
-                <div className="mt-7 rounded-xl bg-black/40 border border-gray-800 p-5">
-                  <p className="text-gray-300 text-sm">
-                    <span className="text-gold font-semibold">
-                      No subscription.
-                    </span>{" "}
-                    One-time payment. Your access stays active forever.
-                  </p>
-                  <p className="mt-2 text-xs text-gray-400">
-                    Locked state: curriculum and outcomes are visible here.
-                    Unlocked state: your full course area opens with direct
-                    module access.
-                  </p>
-                </div>
-              </section>
-
-              <section className="bg-gray-900/70 border border-gray-800 p-8 rounded-2xl shadow-lg">
-                <h2 className="text-2xl font-bold text-gold mb-3">
-                  Why this matters
-                </h2>
-                <p className="text-gray-300">
-                  Wealth outcomes come from repeatable habits, clear systems,
-                  and ownership decisions. This curriculum moves from financial
-                  stability to long-term leverage.
-                </p>
-                <div className="mt-4 grid md:grid-cols-3 gap-3 text-sm text-gray-300">
-                  <CardLine>
-                    Phase 1: Stabilize cash flow and eliminate chaos
-                  </CardLine>
-                  <CardLine>
-                    Phase 2: Build credit and invest with discipline
-                  </CardLine>
-                  <CardLine>
-                    Phase 3: Protect assets and grow legacy systems
-                  </CardLine>
-                </div>
-              </section>
-
-              {/* Modules */}
-              <section id="modules" className="space-y-5">
-                <h2 className="text-3xl font-bold text-gold text-center">
-                  Course Modules
-                </h2>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  {modules.map((mod, i) => (
-                    <div
-                      key={i}
-                      className="bg-gray-900/70 border border-gray-800 p-6 rounded-2xl shadow-lg"
-                    >
-                      <h4 className="text-xl font-semibold text-gold mb-2">
-                        {mod.title}
-                      </h4>
-                      <p className="text-gray-300">{mod.text}</p>
-                      <ul className="mt-3 space-y-1 text-sm text-gray-300 list-disc pl-6">
-                        {mod.bullets.map((b, idx) => (
-                          <li key={idx}>{b}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              {/* Bonuses */}
-              <section className="bg-gray-900/70 border border-gray-800 p-8 rounded-2xl shadow-lg">
-                <h2 className="text-2xl font-bold text-gold mb-4">
-                  Bonus Resources
-                </h2>
-                <div className="grid md:grid-cols-2 gap-5">
-                  {bonuses.map((b, i) => (
-                    <div
-                      key={i}
-                      className="rounded-xl border border-gray-800 bg-black/30 p-5"
-                    >
-                      <h3 className="font-semibold text-gold">{b.title}</h3>
-                      <p className="text-gray-300 mt-2 text-sm">{b.text}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              {/* Who this is for */}
-              <section className="bg-gray-900/70 border border-gray-800 p-8 rounded-2xl shadow-lg">
-                <h2 className="text-2xl font-bold text-gold mb-3">
-                  Who This Is For
-                </h2>
-                <div className="grid md:grid-cols-2 gap-4 text-gray-300">
-                  <CardLine>
-                    People who want a clear, simple money system
-                  </CardLine>
-                  <CardLine>
-                    Anyone rebuilding credit or learning investing basics
-                  </CardLine>
-                  <CardLine>
-                    Families building a legacy and protecting assets
-                  </CardLine>
-                  <CardLine>
-                    Entrepreneurs who need financial fundamentals
-                  </CardLine>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <span className="bwe-badge">
+                    <BookOpen className="h-4 w-4" />8 modules
+                  </span>
+                  <span className="bwe-badge">
+                    <BadgeCheck className="h-4 w-4" />
+                    Worksheets and guides
+                  </span>
+                  <span className="bwe-badge" data-tone="accent">
+                    <Sparkles className="h-4 w-4" />
+                    Direct and premium-linked access
+                  </span>
                 </div>
 
-                <div className="mt-5 text-sm text-gray-400">
-                  Not financial advice — educational content built to improve
-                  your decision-making and confidence.
-                </div>
-              </section>
-
-              {/* FAQs */}
-              <section className="bg-gray-900/70 border border-gray-800 p-8 rounded-2xl shadow-lg">
-                <h2 className="text-2xl font-bold text-gold mb-4">FAQ</h2>
-                <div className="space-y-4">
-                  {faqs.map((f, i) => (
-                    <div
-                      key={i}
-                      className="rounded-xl border border-gray-800 bg-black/30 p-5"
-                    >
-                      <p className="font-semibold text-gray-200">{f.q}</p>
-                      <p className="text-gray-300 mt-2 text-sm">{f.a}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              {/* Back */}
-              <section className="text-center mt-10">
-                <Link href="/">
-                  <button className="px-6 py-3 bg-gold text-black font-semibold text-lg rounded-lg hover:bg-yellow-500 transition">
-                    Back to Home
-                  </button>
-                </Link>
-              </section>
-            </div>
-
-            {/* Right Column: Sticky checkout */}
-            <div className="lg:col-span-4">
-              <div className="lg:sticky lg:top-6 space-y-4">
-                <div className="bg-gray-900/80 border border-gold/20 rounded-2xl shadow-xl p-6">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sm text-gray-300">
-                        Premium Course Access
-                      </p>
-                      <h3 className="text-2xl font-bold text-gold">$49</h3>
-                      <p className="text-xs text-gray-400 mt-1">
-                        One-time payment • Lifetime access
-                      </p>
-                    </div>
-                    <span className="text-xs px-2 py-1 rounded bg-gold/15 text-gold border border-gold/20">
-                      Best Value
-                    </span>
-                  </div>
-
-                  <div className="mt-5 space-y-2 text-sm text-gray-300">
-                    <CheckLine>8 modules + free updates</CheckLine>
-                    <CheckLine>Worksheets + templates</CheckLine>
-                    <CheckLine>Credit letters pack</CheckLine>
-                    <CheckLine>Optional completion certificate</CheckLine>
-                  </div>
-
-                  <div className="mt-6">
-                    {meChecked && !userId ? (
-                      <div className="rounded-xl border border-gray-800 bg-black/30 p-4">
-                        <p className="text-sm text-gray-300">
-                          Create a free account to link your purchase to your
-                          profile.
-                        </p>
-                        <div className="mt-3 flex gap-2">
-                          <Link href="/signup?next=/financial-literacy">
-                            <button className="px-4 py-2 rounded bg-gold text-black font-semibold hover:bg-yellow-500 transition">
-                              Sign Up
-                            </button>
-                          </Link>
-                          <Link href="/login?next=/financial-literacy">
-                            <button className="px-4 py-2 rounded border border-gold text-gold hover:bg-gold hover:text-black transition">
-                              Login
-                            </button>
-                          </Link>
-                        </div>
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={startCourseCheckout}
-                        disabled={quickLoading}
-                        className="w-full px-4 py-2 rounded bg-gold text-black font-semibold hover:bg-yellow-500 transition disabled:opacity-60"
+                {router.query.locked ? (
+                  <div className="mt-6 rounded-2xl border border-yellow-400/25 bg-yellow-500/10 p-4 text-sm text-yellow-100">
+                    Premium course modules are locked until entitlement is
+                    active. Continue through enrollment, then return to the
+                    modules.
+                    <div className="mt-3">
+                      <Link
+                        href="/course-enrollment"
+                        className="bwe-open-link bwe-focus-ring text-[var(--accent)]"
                       >
-                        {quickLoading
-                          ? "Starting checkout..."
-                          : "Activate Course Access"}
-                      </button>
-                    )}
+                        Go to enrollment
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
 
-                    <p className="text-xs text-gray-400 mt-3">
-                      {ctaState === "idle" &&
-                        "State: idle. Secure checkout available."}
-                      {ctaState === "loading" && "State: starting checkout..."}
-                      {ctaState === "redirect-login" &&
-                        "State: redirecting to login..."}
-                      {ctaState === "redirect-checkout" &&
-                        "State: redirecting to secure checkout..."}
-                      {ctaState === "failed" &&
-                        "State: failed to start checkout."}
-                    </p>
-                    {ctaError ? (
-                      <p className="mt-2 text-xs text-red-300">{ctaError}</p>
-                    ) : null}
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 sm:col-span-2">
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/40">
+                    Access clarity
+                  </div>
+                  <div className="mt-2 text-lg font-semibold text-white">
+                    Existing access can come through an eligible premium
+                    entitlement or a direct course entitlement after verified
+                    checkout.
                   </div>
                 </div>
-
-                <div className="bg-gray-900/70 border border-gray-800 rounded-2xl p-5">
-                  <p className="text-sm text-gray-300">
-                    <span className="text-gold font-semibold">
-                      Built for our community.
-                    </span>{" "}
-                    Clear steps, practical tools, and a system you can repeat
-                    for life.
-                  </p>
+                <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/40">
+                    Direct checkout
+                  </div>
+                  <div className="mt-1 text-sm font-semibold text-white/88">
+                    $49 course access
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
+                  <div className="text-[11px] uppercase tracking-[0.14em] text-white/40">
+                    Best next step
+                  </div>
+                  <div className="mt-1 text-sm font-semibold text-white/88">
+                    review enrollment or begin checkout
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </section>
 
-        {/* bottom CTA */}
-        <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-gray-800 bg-black/70 backdrop-blur">
-          <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
-            <p className="text-sm text-gray-300">
-              Premium Financial Literacy Course — included with eligible paid
-              BWE plans
-            </p>
-            <button
-              onClick={startCourseCheckout}
-              disabled={quickLoading}
-              className="px-5 py-2 rounded bg-gold text-black font-semibold hover:bg-yellow-500 transition disabled:opacity-60"
-            >
-              {quickLoading ? "Redirecting..." : "Enroll Now"}
-            </button>
-          </div>
+          <section className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)]">
+            <div className="border-t border-white/8 pt-5 text-left">
+              <div className="bwe-eyebrow">What you learn</div>
+              <h2 className="bwe-section-title mt-2 max-w-2xl">
+                A practical curriculum from stability to long-term ownership.
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-white/62 sm:text-[15px]">
+                The course is structured to help learners stabilize cash flow,
+                improve decision-making, and build a stronger base for wealth
+                over time.
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+              <InfoTile
+                title="Stabilize"
+                copy="Budget, manage debt, and reduce financial chaos first."
+              />
+              <InfoTile
+                title="Build"
+                copy="Improve credit, save with discipline, and understand investing."
+                tone="accent"
+              />
+              <InfoTile
+                title="Protect"
+                copy="Use business and legacy planning to support durable outcomes."
+              />
+            </div>
+          </section>
+
+          <section id="modules" className="mt-8">
+            <div className="flex flex-col gap-3 border-t border-white/8 pt-5 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <div className="bwe-eyebrow">Course modules</div>
+                <h2 className="bwe-section-title mt-2">
+                  Review the learning path before checkout.
+                </h2>
+              </div>
+              <Link
+                href="/course-dashboard"
+                className="bwe-open-link bwe-focus-ring text-sm text-white/82"
+              >
+                Open course dashboard
+              </Link>
+            </div>
+
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              {COURSE_MODULES.map((module, index) => (
+                <article
+                  key={module.title}
+                  className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5"
+                >
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/42">
+                    Module {index + 1}
+                  </div>
+                  <h3 className="mt-2 text-lg font-semibold text-white">
+                    {module.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-white/66">
+                    {module.text}
+                  </p>
+                  <ul className="mt-4 space-y-2 text-sm leading-6 text-white/64">
+                    {module.bullets.map((bullet) => (
+                      <li key={bullet}>• {bullet}</li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,0.96fr)_minmax(0,1.04fr)]">
+            <div className="rounded-[28px] border border-[rgba(212,175,55,0.22)] bg-[rgba(212,175,55,0.07)] p-5 sm:p-6">
+              <div className="bwe-eyebrow">Enrollment path</div>
+              <h2 className="bwe-section-title mt-2 max-w-xl">
+                Keep the next step clear: account, checkout, then access.
+              </h2>
+              <div className="mt-5 space-y-3 text-sm leading-6 text-white/68">
+                <p>
+                  1. Browse the course overview and decide whether to continue.
+                </p>
+                <p>
+                  2. Log in if needed so access can be linked to your account.
+                </p>
+                <p>
+                  3. Complete checkout through the existing secure payment path.
+                </p>
+                <p>
+                  4. Return to the course dashboard once entitlement is active.
+                </p>
+              </div>
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <Link
+                  href="/course-enrollment"
+                  className="bwe-cta-secondary bwe-focus-ring px-6"
+                >
+                  Enrollment details
+                </Link>
+                <button
+                  type="button"
+                  onClick={startCourseCheckout}
+                  disabled={quickLoading}
+                  className="bwe-cta-primary bwe-focus-ring px-6"
+                >
+                  {quickLoading ? "Redirecting…" : "Checkout now"}
+                </button>
+              </div>
+              {ctaError ? (
+                <p className="mt-4 text-sm text-red-300">{ctaError}</p>
+              ) : null}
+              <p className="mt-4 text-xs text-white/46">
+                {ctaState === "idle" && "Secure checkout is available."}
+                {ctaState === "loading" && "Starting secure checkout."}
+                {ctaState === "redirect-login" && "Redirecting to login."}
+                {ctaState === "redirect-checkout" &&
+                  "Redirecting to secure checkout."}
+                {ctaState === "failed" && "Checkout could not be started."}
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <DetailBox
+                icon={<ShieldCheck className="h-4 w-4" />}
+                title="What is preserved"
+                copy="Existing course routes, entitlement checks, and checkout contracts stay intact in this Experience 2.0 pass."
+              />
+              <DetailBox
+                icon={<Lock className="h-4 w-4" />}
+                title="Account state"
+                copy={
+                  meChecked && !userId
+                    ? "You can browse now and log in before checkout to link access to your profile."
+                    : "Your account can continue through checkout or enrollment details using the current route contracts."
+                }
+              />
+              <div className="sm:col-span-2 rounded-[24px] border border-white/8 bg-white/[0.03] p-5">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-white/42">
+                  Included resources
+                </div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {COURSE_BONUSES.map((bonus) => (
+                    <div
+                      key={bonus}
+                      className="rounded-2xl border border-white/8 bg-black/20 px-4 py-3 text-sm text-white/68"
+                    >
+                      {bonus}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-8">
+            <div className="border-t border-white/8 pt-5 text-left">
+              <div className="bwe-eyebrow">FAQ</div>
+              <h2 className="bwe-section-title mt-2 max-w-2xl">
+                Common questions before you continue.
+              </h2>
+            </div>
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              {COURSE_FAQS.map((faq) => (
+                <article
+                  key={faq.q}
+                  className="rounded-[24px] border border-white/8 bg-white/[0.03] p-5"
+                >
+                  <h3 className="text-base font-semibold text-white">
+                    {faq.q}
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-white/66">
+                    {faq.a}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="mt-8 flex flex-col gap-3 rounded-[28px] border border-white/8 bg-white/[0.025] px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+            <div>
+              <div className="bwe-eyebrow">Continue learning</div>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/64">
+                Open the broader learning hub for free resources, premium course
+                routes, and next-step learning destinations.
+              </p>
+            </div>
+            <div className="flex flex-col gap-3 sm:w-auto sm:flex-row">
+              <Link
+                href="/learning"
+                className="bwe-cta-secondary bwe-focus-ring px-5"
+              >
+                Open learning hub
+              </Link>
+              <Link
+                href="/"
+                className="bwe-open-link bwe-focus-ring text-sm text-white/82"
+              >
+                Back to home
+              </Link>
+            </div>
+          </section>
         </div>
-      </div>
+      </main>
     </>
   );
-};
-
-function Badge({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="px-3 py-1 rounded-full bg-gray-900/70 border border-gray-800 text-gray-200">
-      {children}
-    </span>
-  );
 }
-
-function CheckLine({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex gap-2">
-      <span className="text-gold">✓</span>
-      <span>{children}</span>
-    </div>
-  );
-}
-
-function CardLine({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="rounded-xl border border-gray-800 bg-black/30 p-4">
-      <p className="text-gray-200">{children}</p>
-    </div>
-  );
-}
-
-export default FinancialLiteracy;

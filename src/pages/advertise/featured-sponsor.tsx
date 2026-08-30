@@ -2,12 +2,24 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import { getAdDurationOptions, getAdQuote } from "@/lib/advertising/pricing";
 
 export default function FeaturedSponsorPage() {
   const router = useRouter();
+  const [managedBusinesses, setManagedBusinesses] = useState<
+    Array<{
+      id: string;
+      displayName: string;
+      publicHref: string | null;
+    }>
+  >([]);
+  const [managedBusinessesLoading, setManagedBusinessesLoading] =
+    useState(true);
+  const [managedBusinessesError, setManagedBusinessesError] = useState("");
+  const [businessId, setBusinessId] = useState("");
 
   const trackAdEvent = (
     eventType: string,
@@ -51,6 +63,73 @@ export default function FeaturedSponsorPage() {
     trackAdEvent("advertising_landing_viewed");
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await fetch("/api/user/managed-businesses", {
+          credentials: "include",
+          cache: "no-store",
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (cancelled) return;
+        if (!res.ok) {
+          setManagedBusinesses([]);
+          setManagedBusinessesError(
+            "Sign in with a verified business-owner account to link a business listing before sponsorship.",
+          );
+          return;
+        }
+
+        const businesses = Array.isArray(data?.businesses)
+          ? data.businesses
+              .map((business: any) => ({
+                id: String(business?.id || "").trim(),
+                displayName: String(
+                  business?.displayName || business?.businessName || "Business",
+                ).trim(),
+                publicHref:
+                  typeof business?.publicHref === "string" &&
+                  business.publicHref.trim()
+                    ? business.publicHref.trim()
+                    : null,
+              }))
+              .filter((business: { id: string }) => business.id)
+          : [];
+
+        setManagedBusinesses(businesses);
+        if (businesses.length === 1) {
+          setBusinessId(businesses[0].id);
+          setBusinessName((current) => current || businesses[0].displayName);
+          setTargetUrl((current) => current || businesses[0].publicHref || "");
+        }
+      } catch {
+        if (cancelled) return;
+        setManagedBusinesses([]);
+        setManagedBusinessesError(
+          "We could not load your verified business listings right now.",
+        );
+      } finally {
+        if (!cancelled) setManagedBusinessesLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const selected = managedBusinesses.find(
+      (business) => business.id === businessId,
+    );
+    if (!selected) return;
+    setBusinessName((current) => current || selected.displayName);
+    setTargetUrl((current) => current || selected.publicHref || "");
+  }, [businessId, managedBusinesses]);
+
   const hasCreative =
     Boolean(adImageFile) || /^https?:\/\//i.test(creativeUrl.trim());
   const hasValidEmail = /^\S+@\S+\.\S+$/.test(email.trim());
@@ -59,6 +138,7 @@ export default function FeaturedSponsorPage() {
       Boolean(campaignDuration) &&
       confirmed &&
       hasCreative &&
+      Boolean(businessId) &&
       name.trim().length >= 2 &&
       businessName.trim().length >= 2 &&
       hasValidEmail
@@ -67,6 +147,7 @@ export default function FeaturedSponsorPage() {
     campaignDuration,
     confirmed,
     hasCreative,
+    businessId,
     name,
     businessName,
     hasValidEmail,
@@ -96,6 +177,7 @@ export default function FeaturedSponsorPage() {
         name,
         email,
         businessName,
+        businessId,
         campaignTitle: campaignTitle || `${businessName} Featured Sponsor`,
         adText: notes || "Featured sponsor campaign request",
         adImage: adImageFile?.name || creativeUrl.trim(),
@@ -142,6 +224,7 @@ export default function FeaturedSponsorPage() {
         duration: campaignDuration,
       });
       if (requestId) query.set("campaignId", requestId);
+      query.set("businessId", businessId);
       query.set("placement", "homepage-featured-sponsor");
 
       router.push(`/advertising/checkout?${query.toString()}`);
@@ -194,6 +277,60 @@ export default function FeaturedSponsorPage() {
             Reserve your placement early to secure visibility during your ideal
             timeframe.
           </p>
+        </section>
+
+        <section className="bg-gray-900/80 border border-[#D4AF37]/20 p-6 rounded-lg shadow space-y-4">
+          <div>
+            <h2 className="text-2xl font-bold text-gold mb-2">
+              Link Your BWE Business Listing
+            </h2>
+            <p className="text-sm text-gray-300">
+              Every active sponsor must point to one eligible public BWE
+              business listing. Sponsorship boosts placement; it does not create
+              a separate sponsor-only record.
+            </p>
+          </div>
+
+          {managedBusinessesLoading ? (
+            <p className="text-sm text-gray-400">
+              Loading your verified businesses...
+            </p>
+          ) : managedBusinesses.length ? (
+            <label className="block">
+              <span className="mb-2 block text-sm font-semibold text-gray-200">
+                Linked business listing
+              </span>
+              <select
+                value={businessId}
+                onChange={(event) => setBusinessId(event.target.value)}
+                className="w-full rounded-lg border border-gray-700 bg-black px-4 py-3 text-white"
+              >
+                <option value="">Select your verified business listing</option>
+                {managedBusinesses.map((business) => (
+                  <option key={business.id} value={business.id}>
+                    {business.displayName}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-100">
+              <p>
+                {managedBusinessesError ||
+                  "No verified business listings are available on this account yet."}
+              </p>
+              <p className="mt-2">
+                Create or claim your business listing first at{" "}
+                <Link
+                  href="/business-directory?mode=claim"
+                  className="text-gold underline"
+                >
+                  /business-directory?mode=claim
+                </Link>
+                .
+              </p>
+            </div>
+          )}
         </section>
 
         {/* Benefits */}

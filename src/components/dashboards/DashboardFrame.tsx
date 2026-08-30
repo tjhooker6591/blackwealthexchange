@@ -217,9 +217,14 @@ export default function DashboardFrame({
           ? "User Dashboard"
           : "BWE Global Dashboard";
   const whoLabel = me?.businessName || me?.email;
+  const quickLinks = [
+    { label: "Support", href: "/support" },
+    { label: "Pricing", href: "/pricing" },
+    { label: "Marketplace", href: "/marketplace" },
+  ];
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#050505] text-white">
       <div
         className={clsx(
           "fixed inset-0 z-30 bg-black/60 backdrop-blur-sm transition-opacity md:hidden",
@@ -229,142 +234,201 @@ export default function DashboardFrame({
         aria-hidden="true"
       />
 
-      <aside
-        className={clsx(
-          "fixed inset-y-0 left-0 z-40 w-72 bg-neutral-950 border-r border-yellow-500/10 transition-transform duration-200",
-          open ? "translate-x-0" : "-translate-x-full md:translate-x-0",
-          "md:static md:block",
-        )}
-      >
-        <div className="px-6 pt-6 pb-4 border-b border-yellow-500/10">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-yellow-300 hover:text-yellow-200"
-          >
-            <Home size={18} />
-            <span className="font-semibold tracking-tight">
-              Black Wealth Exchange
-            </span>
-          </Link>
+      <div className="pointer-events-none fixed inset-x-0 top-0 h-[28rem] bg-[radial-gradient(circle_at_top,_rgba(212,175,55,0.22),_transparent_52%)]" />
 
-          <div className="mt-3 text-xs text-gray-400">
-            {loadingMe ? (
-              <span>Loading account…</span>
-            ) : whoLabel ? (
-              <div className="space-y-2">
-                <div>
-                  Signed in as <span className="text-gray-200">{whoLabel}</span>
-                </div>
+      <div className="relative mx-auto flex min-h-screen w-full max-w-[1600px] flex-col md:flex-row">
+        <aside
+          className={clsx(
+            "fixed inset-y-0 left-0 z-40 w-72 border-r border-[#d4af37]/10 bg-[#090909]/95 backdrop-blur-xl transition-transform duration-200",
+            open ? "translate-x-0" : "-translate-x-full md:translate-x-0",
+            "md:static md:block md:min-h-screen",
+          )}
+        >
+          <div className="border-b border-[#d4af37]/10 px-6 pb-5 pt-6">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-yellow-300 transition hover:text-yellow-200"
+            >
+              <Home size={18} />
+              <span className="font-semibold tracking-tight">
+                Black Wealth Exchange
+              </span>
+            </Link>
 
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center rounded-full border border-yellow-500/25 px-2 py-0.5 text-[10px] text-yellow-200">
-                    {String(accountType).toUpperCase()}
-                  </span>
-
-                  <span
-                    className={clsx(
-                      "inline-flex items-center rounded-full border px-2 py-0.5 text-[10px]",
-                      isPremiumActive
-                        ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-200"
-                        : "border-white/10 bg-white/5 text-gray-300",
-                    )}
-                  >
-                    {currentPlanLabel}
-                  </span>
-                </div>
+            <div className="mt-5 rounded-3xl border border-white/8 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
+              <div className="text-[11px] uppercase tracking-[0.24em] text-white/45">
+                Command Center
               </div>
-            ) : (
-              <span>Not signed in</span>
-            )}
-          </div>
-        </div>
+              <div className="mt-2 text-lg font-semibold tracking-tight text-white">
+                {pageTitle}
+              </div>
+              <p className="mt-2 text-sm leading-6 text-white/62">
+                Keep your BWE account, access, and next actions in one place.
+              </p>
+            </div>
 
-        <nav className="px-3 py-4">
-          <ul className="space-y-1">
-            {navItems.map((item) => {
-              const active =
-                router.asPath === item.href ||
-                (item.href !== "/dashboard" &&
-                  router.asPath.startsWith(item.href));
+            <div className="mt-4 text-xs text-gray-400">
+              {loadingMe ? (
+                <span>Loading account…</span>
+              ) : whoLabel ? (
+                <div className="space-y-2">
+                  <div>
+                    Signed in as{" "}
+                    <span className="text-gray-200">{whoLabel}</span>
+                  </div>
 
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={clsx(
-                      "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition",
-                      active
-                        ? "bg-yellow-500/10 text-yellow-200 border border-yellow-500/20"
-                        : "text-gray-200 hover:bg-neutral-900/60 hover:text-white",
-                    )}
-                  >
-                    <span className="opacity-90">{item.icon}</span>
-                    <span>{item.label}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center rounded-full border border-yellow-500/25 px-2 py-0.5 text-[10px] text-yellow-200">
+                      {String(accountType).toUpperCase()}
+                    </span>
 
-          <div className="mt-5 px-3">
-            {isPremiumActive ? (
-              <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 px-4 py-3">
-                <div className="flex items-center justify-center gap-2 text-sm font-semibold text-yellow-200">
-                  <BadgeCheck size={16} />
-                  Premium Active
+                    <span
+                      className={clsx(
+                        "inline-flex items-center rounded-full border px-2 py-0.5 text-[10px]",
+                        isPremiumActive
+                          ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-200"
+                          : "border-white/10 bg-white/5 text-gray-300",
+                      )}
+                    >
+                      {currentPlanLabel}
+                    </span>
+                  </div>
                 </div>
-                <p className="mt-1 text-center text-[11px] text-gray-300">
-                  Your Premium membership is active.
-                </p>
+              ) : (
+                <span>Not signed in</span>
+              )}
+            </div>
+          </div>
+
+          <nav className="px-3 py-4">
+            <div className="mb-3 px-3 text-[11px] uppercase tracking-[0.22em] text-white/35">
+              Workspace
+            </div>
+            <ul className="space-y-1.5">
+              {navItems.map((item) => {
+                const active =
+                  router.asPath === item.href ||
+                  (item.href !== "/dashboard" &&
+                    router.asPath.startsWith(item.href));
+
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={clsx(
+                        "flex items-center gap-3 rounded-2xl border px-3 py-3 text-sm transition",
+                        active
+                          ? "border-[#d4af37]/25 bg-[#d4af37]/10 text-yellow-100 shadow-[0_16px_40px_rgba(212,175,55,0.08)]"
+                          : "border-transparent text-gray-200 hover:border-white/10 hover:bg-white/[0.04] hover:text-white",
+                      )}
+                    >
+                      <span className="opacity-90">{item.icon}</span>
+                      <span>{item.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="mt-6 px-3">
+              {isPremiumActive ? (
+                <div className="rounded-3xl border border-yellow-500/25 bg-yellow-500/10 px-4 py-4">
+                  <div className="flex items-center justify-center gap-2 text-sm font-semibold text-yellow-200">
+                    <BadgeCheck size={16} />
+                    Premium Active
+                  </div>
+                  <p className="mt-1 text-center text-[11px] text-gray-300">
+                    Your Premium membership is active.
+                  </p>
+                  <Link
+                    href="/pricing"
+                    className="mt-3 block rounded-full border border-yellow-500/20 bg-black/30 px-4 py-2 text-center text-sm font-semibold text-yellow-200 transition hover:bg-yellow-500/10"
+                  >
+                    View Plan
+                  </Link>
+                </div>
+              ) : (
                 <Link
                   href="/pricing"
-                  className="mt-3 block rounded-full border border-yellow-500/20 bg-black/30 px-4 py-2 text-center text-sm font-semibold text-yellow-200 hover:bg-yellow-500/10 transition"
+                  className="block rounded-full bg-yellow-400 px-4 py-2 text-center font-semibold text-black transition hover:bg-yellow-300"
                 >
-                  View Plan
+                  Upgrade to Premium
+                </Link>
+              )}
+            </div>
+
+            <div className="mt-6 px-3">
+              <div className="rounded-3xl border border-white/8 bg-white/[0.03] p-4">
+                <div className="text-[11px] uppercase tracking-[0.22em] text-white/35">
+                  Quick links
+                </div>
+                <div className="mt-3 space-y-2">
+                  {quickLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="block rounded-2xl border border-white/8 px-3 py-2 text-sm text-white/72 transition hover:border-[#d4af37]/20 hover:bg-[#d4af37]/8 hover:text-white"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={handleLogout}
+              className="mx-3 mt-5 flex w-[calc(100%-1.5rem)] items-center justify-center gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300 transition hover:bg-red-500/15 hover:text-red-200"
+            >
+              <LogOut size={18} />
+              Sign Out
+            </button>
+          </nav>
+        </aside>
+
+        <main className="flex-1 min-w-0 overflow-y-auto px-4 py-6 md:px-8 lg:px-10">
+          <header className="mb-6 rounded-[2rem] border border-white/8 bg-[linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] px-5 py-5 shadow-[0_24px_80px_rgba(0,0,0,0.28)] backdrop-blur">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex min-w-0 items-start gap-3">
+                <button
+                  aria-label="Toggle navigation"
+                  onClick={() => setOpen((v) => !v)}
+                  className="mt-1 rounded-xl border border-white/10 bg-white/[0.04] p-2 md:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-yellow-400"
+                >
+                  <Menu size={20} />
+                </button>
+
+                <div className="min-w-0">
+                  <div className="text-[11px] uppercase tracking-[0.24em] text-white/45">
+                    Experience 2.0
+                  </div>
+                  <div className="relative mt-2">
+                    <div className="pointer-events-none absolute -top-8 left-0 h-24 w-72 rounded-full bg-yellow-400 opacity-20 blur-3xl" />
+                    <h1 className="relative text-2xl font-bold tracking-tight md:text-4xl">
+                      {pageTitle}
+                    </h1>
+                  </div>
+                  <p className="mt-3 max-w-2xl text-sm leading-6 text-white/62 md:text-base">
+                    Move through account actions, access checks, and platform
+                    tools without losing the working business logic underneath.
+                  </p>
+                </div>
+              </div>
+
+              <div className="hidden shrink-0 md:block">
+                <Link
+                  href="/"
+                  className="inline-flex items-center rounded-full border border-[#d4af37]/25 bg-[#d4af37]/10 px-4 py-2 text-sm font-semibold text-yellow-100 transition hover:bg-[#d4af37]/16"
+                >
+                  Back to BWE home
                 </Link>
               </div>
-            ) : (
-              <Link
-                href="/pricing"
-                className="block rounded-full bg-yellow-400 px-4 py-2 text-center font-semibold text-black hover:bg-yellow-300 transition"
-              >
-                Upgrade to Premium
-              </Link>
-            )}
-          </div>
+            </div>
+          </header>
 
-          <button
-            onClick={handleLogout}
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-300 hover:bg-red-500/15 hover:text-red-200 transition"
-          >
-            <LogOut size={18} />
-            Sign Out
-          </button>
-        </nav>
-      </aside>
-
-      <main className="flex-1 min-w-0 overflow-y-auto px-4 py-6 md:px-10">
-        <header className="flex items-center justify-between mb-6">
-          <button
-            aria-label="Toggle navigation"
-            onClick={() => setOpen((v) => !v)}
-            className="md:hidden rounded p-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-yellow-400"
-          >
-            <Menu size={24} />
-          </button>
-
-          <div className="relative">
-            <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 h-24 w-72 rounded-full blur-3xl opacity-25 bg-yellow-400" />
-            <h1 className="relative text-xl font-bold md:text-3xl">
-              {pageTitle}
-            </h1>
-          </div>
-
-          <div className="w-10 md:hidden" />
-        </header>
-
-        {children}
-      </main>
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

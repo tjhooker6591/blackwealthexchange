@@ -105,65 +105,95 @@ export default function StartHerePage() {
               };
 
   return (
-    <main className="min-h-screen bg-black px-4 py-8 text-white">
+    <main className="min-h-screen bg-[var(--surface-0)] py-8 text-white sm:py-10">
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonical} />
       </Head>
 
-      <div className="mx-auto max-w-6xl space-y-6">
-        <header className="rounded-2xl border border-white/10 bg-white/5 p-6">
-          <h1 className="text-3xl font-extrabold text-[#D4AF37]">Start Here</h1>
-          <p className="mt-2 max-w-3xl text-white/80">
-            Choose the path that matches your goal. Each flow is designed to get
-            you to value quickly with clear next steps.
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <Link
-              href={roleResume.href}
-              onClick={() =>
-                trackFlowEvent({
-                  eventType: "start_here_role_selected",
-                  source: "start-here-header",
-                  path: roleResume.href,
-                })
-              }
-              className="rounded-lg bg-[#D4AF37] px-3 py-2 text-xs font-extrabold text-black hover:bg-yellow-400"
-            >
-              {roleResume.label}
-            </Link>
-            <Link
-              href="/terms-of-service"
-              className="rounded-lg border border-white/20 px-3 py-2 text-xs font-semibold text-white hover:bg-white/10"
-            >
-              Review trust standards
-            </Link>
+      <div className="bwe-section-wrap space-y-8">
+        <header className="bwe-hero-panel overflow-hidden rounded-[32px] px-5 py-6 sm:px-8 sm:py-8">
+          <div className="mx-auto max-w-4xl">
+            <div className="bwe-eyebrow">Orientation</div>
+            <h1 className="bwe-display-title mt-3 max-w-3xl">
+              Choose the BWE path that matches what you want to do next.
+            </h1>
+            <p className="bwe-lead mt-4 max-w-2xl">
+              Discover businesses, shop products, build a business presence,
+              sell, hire, or find opportunities without hunting through the full
+              platform first.
+            </p>
+
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href={roleResume.href}
+                onClick={() =>
+                  trackFlowEvent({
+                    eventType: "start_here_role_selected",
+                    source: "start-here-header",
+                    path: roleResume.href,
+                  })
+                }
+                className="bwe-cta-primary bwe-focus-ring inline-flex min-h-12 items-center justify-center px-6 text-sm"
+              >
+                {roleResume.label}
+              </Link>
+              <Link
+                href="/marketplace"
+                className="bwe-cta-secondary bwe-focus-ring inline-flex min-h-12 items-center justify-center px-5 text-sm text-white/88"
+              >
+                Browse live marketplace
+              </Link>
+            </div>
+
+            <div className="bwe-divider mt-6" />
+
+            <div className="mt-4 grid gap-4 sm:grid-cols-[1.1fr_0.9fr]">
+              <div>
+                <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
+                  What BWE helps you do
+                </div>
+                <p className="mt-2 max-w-xl text-sm leading-6 text-white/62">
+                  Move into trusted discovery, commerce, opportunity, and
+                  ownership flows with clearer navigation and fewer wrong turns.
+                </p>
+              </div>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <div className="bwe-soft-tile px-4 py-3 text-sm text-white/78">
+                  Discover, shop, and support Black-owned businesses.
+                </div>
+                <div className="bwe-soft-tile px-4 py-3 text-sm text-white/78">
+                  List, sell, hire, and keep moving into growth paths.
+                </div>
+              </div>
+            </div>
           </div>
         </header>
 
+        <section className="border-y border-white/8 py-4">
+          <div className="grid gap-2 text-sm text-white/68 sm:grid-cols-3 lg:grid-cols-7">
+            <div>Discover</div>
+            <div>Shop</div>
+            <div>Build wealth</div>
+            <div>Find opportunities</div>
+            <div>Grow a business</div>
+            <div>Sell</div>
+            <div>Hire</div>
+          </div>
+        </section>
+
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {ROLES.map((role) => (
-            <article
-              key={role.title}
-              className="rounded-2xl border border-white/10 bg-white/5 p-5"
-            >
-              <h2 className="text-lg font-bold text-white">{role.title}</h2>
-              <p className="mt-2 text-sm text-white/75">{role.summary}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Link
-                  href={`/signup?accountType=${encodeURIComponent(role.key)}&intent=${encodeURIComponent(role.intent)}`}
-                  onClick={() =>
-                    trackFlowEvent({
-                      eventType: "signup_start",
-                      source: "start-here-role-card",
-                      category: role.title,
-                    })
-                  }
-                  className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2 text-sm font-bold text-[#D4AF37] hover:bg-[#D4AF37]/20"
-                >
-                  Join now for this path
-                </Link>
+            <article key={role.title} className="bwe-soft-tile p-5 sm:p-6">
+              <div className="bwe-eyebrow">
+                {role.intent.replace(/-/g, " ")}
+              </div>
+              <h2 className="bwe-card-title mt-2">{role.title}</h2>
+              <p className="mt-3 min-h-[4.5rem] text-sm leading-6 text-white/74">
+                {role.summary}
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
                 <Link
                   href={role.primary.href}
                   onClick={() =>
@@ -174,7 +204,7 @@ export default function StartHerePage() {
                       path: role.primary.href,
                     })
                   }
-                  className="rounded-lg bg-[#D4AF37] px-3 py-2 text-sm font-bold text-black hover:bg-yellow-400"
+                  className="bwe-cta-primary bwe-focus-ring inline-flex min-h-11 items-center justify-center px-4 text-sm"
                 >
                   {role.primary.label}
                 </Link>
@@ -188,44 +218,68 @@ export default function StartHerePage() {
                       path: role.secondary.href,
                     })
                   }
-                  className="rounded-lg border border-white/20 px-3 py-2 text-sm font-semibold text-white hover:bg-white/10"
+                  className="bwe-link-pill bwe-focus-ring"
                 >
                   {role.secondary.label}
+                </Link>
+              </div>
+              <div className="mt-3">
+                <Link
+                  href={`/signup?accountType=${encodeURIComponent(role.key)}&intent=${encodeURIComponent(role.intent)}`}
+                  onClick={() =>
+                    trackFlowEvent({
+                      eventType: "signup_start",
+                      source: "start-here-role-card",
+                      category: role.title,
+                    })
+                  }
+                  className="bwe-open-link bwe-focus-ring text-[var(--accent)]"
+                >
+                  Join now for this path
                 </Link>
               </div>
             </article>
           ))}
         </section>
 
-        <section className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-white/75">
-          <div className="font-semibold text-white">Why join now?</div>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-white/80">
-            <li>Save opportunities and continue where you left off.</li>
-            <li>
-              Unlock faster role-based onboarding (seller, employer, business
-              owner).
-            </li>
-            <li>Get a cleaner path to buying, hiring, and growth actions.</li>
-          </ul>
-          <div className="mt-3">
-            Already have an account?{" "}
-            <Link href="/login" className="text-[#D4AF37] underline">
-              Log in
-            </Link>
-            . New here?{" "}
-            <Link
-              href="/signup?intent=join-bwe"
-              onClick={() =>
-                trackFlowEvent({
-                  eventType: "signup_start",
-                  source: "start-here-footer",
-                })
-              }
-              className="text-[#D4AF37] underline"
-            >
-              Create an account
-            </Link>
-            .
+        <section className="grid gap-4 border-t border-white/8 pt-6 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="bwe-soft-tile p-6 text-sm text-white/75">
+            <div className="bwe-eyebrow">Why join now</div>
+            <ul className="mt-3 space-y-2 text-sm leading-6 text-white/82">
+              <li>Save opportunities and continue where you left off.</li>
+              <li>
+                Unlock faster role-based onboarding for sellers, employers, and
+                businesses.
+              </li>
+              <li>Get a cleaner path to buying, hiring, and growth actions.</li>
+            </ul>
+          </div>
+
+          <div className="bwe-soft-tile p-6 text-sm text-white/75">
+            <div className="bwe-eyebrow">Account access</div>
+            <div className="mt-3 space-y-3">
+              <p>
+                Already have an account?{" "}
+                <Link href="/login" className="bwe-open-link bwe-focus-ring">
+                  Log in
+                </Link>
+              </p>
+              <p>
+                New here?{" "}
+                <Link
+                  href="/signup?intent=join-bwe"
+                  onClick={() =>
+                    trackFlowEvent({
+                      eventType: "signup_start",
+                      source: "start-here-footer",
+                    })
+                  }
+                  className="bwe-open-link bwe-focus-ring"
+                >
+                  Create an account
+                </Link>
+              </p>
+            </div>
           </div>
         </section>
       </div>

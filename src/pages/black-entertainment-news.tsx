@@ -158,7 +158,9 @@ export default function BlackEntertainmentNewsPage() {
 
   const [proofOpen, setProofOpen] = useState(false);
   const [proofMoment, setProofMoment] = useState<PulseMoment | null>(null);
-  const [sourceFailures, setSourceFailures] = useState<Record<string, string>>({});
+  const [sourceFailures, setSourceFailures] = useState<Record<string, string>>(
+    {},
+  );
 
   const abortRef = useRef<AbortController | null>(null);
 
@@ -428,7 +430,8 @@ export default function BlackEntertainmentNewsPage() {
               </div>
               {Object.keys(sourceFailures).length ? (
                 <div className="mt-4 text-xs text-red-100/80">
-                  Some upstream feeds are unavailable right now. The page will recover automatically when those sources respond again.
+                  Some upstream feeds are unavailable right now. The page will
+                  recover automatically when those sources respond again.
                 </div>
               ) : null}
             </div>

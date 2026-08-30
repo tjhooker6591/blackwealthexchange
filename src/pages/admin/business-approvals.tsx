@@ -21,7 +21,12 @@ type Business = {
   missingFields?: string[];
   sourceLabel?: string | null;
   listingType?: string | null;
+  automationDisposition?: string | null;
+  automationSummary?: string | null;
+  requiredActions?: Array<{ code?: string; message?: string }>;
 };
+
+const PAGE_SIZE = 25;
 
 type MeResponse = {
   user?: {
@@ -31,6 +36,14 @@ type MeResponse = {
     isAdmin?: boolean;
     roles?: string[];
   };
+};
+
+type Summary = {
+  pending: number;
+  approved: number;
+  rejected: number;
+  duplicateReview: number;
+  totalBusinesses: number;
 };
 
 function userIsAdmin(user?: MeResponse["user"]) {
@@ -46,12 +59,19 @@ export default function BusinessApprovals() {
   const router = useRouter();
 
   const [pendingBusinesses, setPendingBusinesses] = useState<Business[]>([]);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
+  const [summary, setSummary] = useState<Summary | null>(null);
 
   const fetchPending = useCallback(async () => {
-    const res = await fetch("/api/admin/get-pending-businesses", {
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: String(PAGE_SIZE),
+    });
+    const res = await fetch(`/api/admin/get-pending-businesses?${params}`, {
       cache: "no-store",
       credentials: "include",
     });
@@ -65,7 +85,19 @@ export default function BusinessApprovals() {
     setPendingBusinesses(
       Array.isArray(data?.businesses) ? data.businesses : [],
     );
-  }, []);
+    setTotal(Number(data?.total || 0));
+    setSummary(
+      data?.summary
+        ? {
+            pending: Number(data.summary.pending || 0),
+            approved: Number(data.summary.approved || 0),
+            rejected: Number(data.summary.rejected || 0),
+            duplicateReview: Number(data.summary.duplicateReview || 0),
+            totalBusinesses: Number(data.summary.totalBusinesses || 0),
+          }
+        : null,
+    );
+  }, [page]);
 
   useEffect(() => {
     let mounted = true;
@@ -169,6 +201,10 @@ export default function BusinessApprovals() {
     }
   };
 
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const pageStart = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
+  const pageEnd = total === 0 ? 0 : Math.min(page * PAGE_SIZE, total);
+
   return (
     <>
       <Head>
@@ -185,6 +221,15 @@ export default function BusinessApprovals() {
               <p className="text-sm text-gray-400">
                 Review and approve pending business submissions.
               </p>
+              <p className="mt-1 text-xs text-zinc-500">
+                Showing {pageStart}-{pageEnd} of {total} pending businesses
+              </p>
+              {summary ? (
+                <p className="mt-1 text-xs text-zinc-500">
+                  Duplicate review queue: {summary.duplicateReview} separate
+                  records
+                </p>
+              ) : null}
             </div>
 
             <div className="flex gap-2">
@@ -228,81 +273,148 @@ export default function BusinessApprovals() {
                   No pending business approvals. 🎉
                 </div>
               ) : (
-                <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950">
-                  <table className="w-full text-left">
-                    <thead>
-                      <tr className="border-b border-zinc-800 text-gold">
-                        <th className="p-3">Business Name</th>
-                        <th className="p-3">Owner</th>
-                        <th className="p-3">Email</th>
-                        <th className="p-3">Submitted</th>
-                        <th className="p-3">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {pendingBusinesses.map((biz) => (
-                        <tr
-                          key={biz._id}
-                          className="border-b border-zinc-800 last:border-b-0"
-                        >
-                          <td className="p-3">
-                            <div className="font-medium">
-                              {biz.businessName}
-                            </div>
-                            {biz.queueKind &&
-                            biz.queueKind !== "approvable_submission" ? (
-                              <div className="mt-1 text-xs text-yellow-300">
-                                {biz.queueKind === "imported_pending_record"
-                                  ? "Imported/incomplete pending record"
-                                  : "Malformed pending record"}
-                              </div>
-                            ) : null}
-                            {biz.sourceLabel ? (
-                              <div className="mt-1 text-xs text-zinc-500">
-                                Source: {biz.sourceLabel}
-                              </div>
-                            ) : null}
-                          </td>
-                          <td className="p-3">{biz.ownerName || "N/A"}</td>
-                          <td className="p-3">{biz.email || "N/A"}</td>
-                          <td className="p-3">
-                            {biz.submittedAt
-                              ? new Date(biz.submittedAt).toLocaleDateString()
-                              : "Unknown"}
-                            {Array.isArray(biz.missingFields) &&
-                            biz.missingFields.length ? (
-                              <div className="mt-1 text-xs text-zinc-500">
-                                Missing: {biz.missingFields.join(", ")}
-                              </div>
-                            ) : null}
-                          </td>
-                          <td className="p-3">
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => handleApprove(biz._id)}
-                                disabled={!biz.canApprove}
-                                className="rounded bg-green-600 px-3 py-1 font-semibold text-black hover:bg-green-500 transition disabled:cursor-not-allowed disabled:opacity-40"
-                                title={
-                                  biz.canApprove
-                                    ? "Approve this business"
-                                    : "Only valid pending submissions can be approved"
-                                }
-                              >
-                                Approve
-                              </button>
-                              <button
-                                onClick={() => handleReject(biz._id)}
-                                disabled={biz.canReject === false}
-                                className="rounded bg-red-600 px-3 py-1 font-semibold text-black hover:bg-red-500 transition disabled:cursor-not-allowed disabled:opacity-40"
-                              >
-                                Reject
-                              </button>
-                            </div>
-                          </td>
+                <div className="space-y-4">
+                  <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950">
+                    <table className="w-full text-left">
+                      <thead>
+                        <tr className="border-b border-zinc-800 text-gold">
+                          <th className="p-3">Business Name</th>
+                          <th className="p-3">Owner</th>
+                          <th className="p-3">Email</th>
+                          <th className="p-3">Submitted</th>
+                          <th className="p-3">Action</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {pendingBusinesses.map((biz) => (
+                          <tr
+                            key={biz._id}
+                            className="border-b border-zinc-800 last:border-b-0"
+                          >
+                            <td className="p-3">
+                              <div className="font-medium">
+                                {biz.businessName}
+                              </div>
+                              <div className="mt-1 text-xs text-zinc-500">
+                                ID: {biz._id}
+                              </div>
+                              {biz.automationDisposition ? (
+                                <div className="mt-2 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-xs text-zinc-200">
+                                  <div className="font-semibold text-gold">
+                                    {biz.automationDisposition}
+                                  </div>
+                                  {biz.automationSummary ? (
+                                    <div className="mt-1 text-zinc-300">
+                                      {biz.automationSummary}
+                                    </div>
+                                  ) : null}
+                                  {Array.isArray(biz.requiredActions) &&
+                                  biz.requiredActions.length ? (
+                                    <ul className="mt-2 list-disc space-y-1 pl-4 text-yellow-200">
+                                      {biz.requiredActions.map(
+                                        (item, index) => (
+                                          <li
+                                            key={`${biz._id}-required-${index}`}
+                                          >
+                                            {item?.message ||
+                                              "Additional evidence required"}
+                                          </li>
+                                        ),
+                                      )}
+                                    </ul>
+                                  ) : null}
+                                </div>
+                              ) : null}
+                              {biz.queueKind &&
+                              biz.queueKind !== "approvable_submission" ? (
+                                <div className="mt-1 text-xs text-yellow-300">
+                                  {biz.queueKind === "imported_pending_record"
+                                    ? "Imported/incomplete pending record"
+                                    : "Malformed pending record"}
+                                </div>
+                              ) : null}
+                              {biz.sourceLabel ? (
+                                <div className="mt-1 text-xs text-zinc-500">
+                                  Source: {biz.sourceLabel}
+                                </div>
+                              ) : null}
+                            </td>
+                            <td className="p-3">{biz.ownerName || "N/A"}</td>
+                            <td className="p-3">{biz.email || "N/A"}</td>
+                            <td className="p-3">
+                              {biz.submittedAt
+                                ? new Date(biz.submittedAt).toLocaleDateString()
+                                : "Unknown"}
+                              {Array.isArray(biz.missingFields) &&
+                              biz.missingFields.length ? (
+                                <div className="mt-1 text-xs text-zinc-500">
+                                  Missing: {biz.missingFields.join(", ")}
+                                </div>
+                              ) : null}
+                            </td>
+                            <td className="p-3">
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => handleApprove(biz._id)}
+                                  disabled={!biz.canApprove}
+                                  className="rounded bg-green-600 px-3 py-1 font-semibold text-black hover:bg-green-500 transition disabled:cursor-not-allowed disabled:opacity-40"
+                                  title={
+                                    biz.canApprove
+                                      ? "Approve this business"
+                                      : "Only valid pending submissions can be approved"
+                                  }
+                                >
+                                  Approve
+                                </button>
+                                <button
+                                  onClick={() => handleReject(biz._id)}
+                                  disabled={biz.canReject === false}
+                                  className="rounded bg-red-600 px-3 py-1 font-semibold text-black hover:bg-red-500 transition disabled:cursor-not-allowed disabled:opacity-40"
+                                  title={
+                                    biz.canReject === false
+                                      ? "Malformed records cannot be rejected from this queue"
+                                      : "Reject this business"
+                                  }
+                                >
+                                  Reject
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className="flex flex-col gap-3 rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      Page {page} of {totalPages}
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPage((current) => Math.max(1, current - 1))
+                        }
+                        disabled={page <= 1 || refreshing}
+                        className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-800 disabled:opacity-50"
+                      >
+                        Previous
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPage((current) =>
+                            Math.min(totalPages, current + 1),
+                          )
+                        }
+                        disabled={page >= totalPages || refreshing}
+                        className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-800 disabled:opacity-50"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )}
             </>

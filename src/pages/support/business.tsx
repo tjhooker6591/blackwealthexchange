@@ -4,6 +4,9 @@ export default function Page() {
     <SupportCategoryPage
       title="Business Directory Support"
       intro="Fix listing quality, verification, and directory visibility issues."
+      pageTitle="Business Directory Support | Black Wealth Exchange"
+      metaDescription="Get help with Black Wealth Exchange business directory listings, verification, listing quality, and public visibility issues."
+      canonicalPath="/support/business"
       commonIssues={[
         "Listing not appearing",
         "Wrong listing details",

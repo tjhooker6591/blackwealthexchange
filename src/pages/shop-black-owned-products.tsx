@@ -4,6 +4,7 @@ import type { GetServerSideProps } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
+import { buildPublicMarketplaceVisibilityFilter } from "@/lib/marketplace/publicCatalog";
 
 type Product = {
   _id: string;
@@ -17,7 +18,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
   try {
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
-    const q = { status: "active", isPublished: true };
+    const q = buildPublicMarketplaceVisibilityFilter(new Date());
     const total = await db.collection("products").countDocuments(q);
     const products = (
       await db
@@ -41,7 +42,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
 export default function ShopBlackOwnedProducts({ products, total }: Props) {
   const title = "Shop Black-Owned Products | Black Wealth Exchange Marketplace";
   const description = truncateMeta(
-    "Shop Black-owned brands and products across apparel, beauty, books, and more. Discover trusted products and support Black economic growth.",
+    "Open the Black Wealth Exchange marketplace to view the current public catalog state for Black-owned products and brands.",
   );
   const canonical = canonicalUrl("/shop-black-owned-products");
 
@@ -58,8 +59,9 @@ export default function ShopBlackOwnedProducts({ products, total }: Props) {
             Shop Black-owned products
           </h1>
           <p className="mt-2 text-white/80">
-            {total.toLocaleString()} products available in the Black Wealth
-            Exchange marketplace.
+            {total > 0
+              ? `${total.toLocaleString()} active public products are currently visible in the Black Wealth Exchange marketplace.`
+              : "The public marketplace is currently between active product listings. Open the marketplace to view the live catalog state and buyer support options."}
           </p>
           <div className="mt-3 flex flex-wrap gap-2 text-sm">
             <Link
@@ -77,24 +79,32 @@ export default function ShopBlackOwnedProducts({ products, total }: Props) {
           </div>
         </header>
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <ul className="grid md:grid-cols-2 gap-3">
-            {products.map((p) => (
-              <li key={p._id} className="border-b border-white/10 pb-2">
-                <Link
-                  href={`/marketplace/product/${p._id}`}
-                  className="font-semibold hover:text-[#D4AF37]"
-                >
-                  {p.name || "Product"}
-                </Link>
-                <p className="text-sm text-white/70">
-                  {p.category || "Other"}
-                  {typeof p.price === "number"
-                    ? ` • $${p.price.toFixed(2)}`
-                    : ""}
-                </p>
-              </li>
-            ))}
-          </ul>
+          {products.length ? (
+            <ul className="grid md:grid-cols-2 gap-3">
+              {products.map((p) => (
+                <li key={p._id} className="border-b border-white/10 pb-2">
+                  <Link
+                    href={`/marketplace/product/${p._id}`}
+                    className="font-semibold hover:text-[#D4AF37]"
+                  >
+                    {p.name || "Product"}
+                  </Link>
+                  <p className="text-sm text-white/70">
+                    {p.category || "Other"}
+                    {typeof p.price === "number"
+                      ? ` • $${p.price.toFixed(2)}`
+                      : ""}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="text-sm text-white/75">
+              No active public product listings are available on this overview
+              page right now. Use the main marketplace for the live empty state,
+              seller onboarding, and buyer support paths.
+            </div>
+          )}
         </section>
       </div>
     </div>

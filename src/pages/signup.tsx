@@ -51,19 +51,23 @@ const benefitItems: BenefitItem[] = [
 const roleItems: RoleItem[] = [
   {
     label: "Supporters",
-    description: "Discover businesses, save opportunities, and move your spending with purpose.",
+    description:
+      "Discover businesses, save opportunities, and move your spending with purpose.",
   },
   {
     label: "Business owners",
-    description: "Join the ecosystem, strengthen visibility, and prepare to manage your presence as tools expand.",
+    description:
+      "Join the ecosystem, strengthen visibility, and prepare to manage your presence as tools expand.",
   },
   {
     label: "Sellers",
-    description: "Create your account and continue into seller setup when you are ready to grow through the marketplace.",
+    description:
+      "Create your account and continue into seller setup when you are ready to grow through the marketplace.",
   },
   {
     label: "Employers",
-    description: "Access hiring tools and job visibility designed to connect talent with opportunity.",
+    description:
+      "Access hiring tools and job visibility designed to connect talent with opportunity.",
   },
 ];
 
@@ -84,16 +88,16 @@ const nextStepsByRole: Record<AccountType, NextStep[]> = {
   ],
   business: [
     {
-      title: "Access your dashboard",
-      body: "Create your secure account and move into your BWE dashboard experience.",
+      title: "Search for your listing",
+      body: "Start in the directory to find your existing public listing before beginning a claim.",
     },
     {
-      title: "List or manage your business",
-      body: "Continue into business-related flows so your presence can grow with the platform.",
+      title: "Begin the claim path",
+      body: "Use the listing claim flow to start membership, ownership review, and profile-management access.",
     },
     {
-      title: "Stay visible to the community",
-      body: "Use BWE to strengthen discovery, trust, and long-term reach.",
+      title: "Complete ownership verification",
+      body: "Payment begins the process, but ownership verification is still a separate manual review before owner access is approved.",
     },
   ],
   seller: [
@@ -113,7 +117,7 @@ const nextStepsByRole: Record<AccountType, NextStep[]> = {
   employer: [
     {
       title: "Access employer tools",
-      body: "After signup, head into employer workflows designed for job posting and hiring visibility.",
+      body: "After signup, head into employer workflows for onboarding, verification, and job posting visibility.",
     },
     {
       title: "Share opportunities",
@@ -129,7 +133,7 @@ const nextStepsByRole: Record<AccountType, NextStep[]> = {
 const accountTypeDescriptions: Record<AccountType, string> = {
   user: "For supporters who want to discover businesses, save resources, and stay connected to the mission.",
   business:
-    "For business owners who want an account they can use to grow visibility and manage their BWE presence.",
+    "For business owners who want to find an existing listing, begin a claim, and move through ownership verification before management access is approved.",
   seller:
     "For sellers who plan to continue into marketplace onboarding and start building their storefront path.",
   employer:
@@ -286,10 +290,13 @@ export default function Signup() {
       setTimeout(() => {
         switch (data.accountType) {
           case "business":
-            router.push("/add-business");
+            router.push("/business-directory?mode=claim");
             break;
           case "employer":
             router.push("/employer/jobs");
+            break;
+          case "user":
+            router.push("/business-directory");
             break;
           default:
             router.push("/dashboard");
@@ -341,11 +348,14 @@ export default function Signup() {
               </div>
 
               <h1 className="mt-5 max-w-2xl text-4xl font-black tracking-tight text-white sm:text-5xl">
-                Join the platform built to discover, support, and grow Black economic power.
+                Join the platform built to discover, support, and grow Black
+                economic power.
               </h1>
 
               <p className="mt-4 max-w-2xl text-base leading-7 text-gray-200 sm:text-lg">
-                Create your BWE account to find Black-owned businesses, support the mission, save the opportunities you care about, and access member tools as the ecosystem expands.
+                Create your BWE account to find Black-owned businesses, support
+                the mission, save the opportunities you care about, and access
+                member tools as the ecosystem expands.
               </p>
 
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -371,7 +381,8 @@ export default function Signup() {
                       Built for every part of the BWE ecosystem
                     </h2>
                     <p className="mt-1 text-sm text-gray-300">
-                      One account experience, with role-aware paths for how you show up.
+                      One account experience, with role-aware paths for how you
+                      show up.
                     </p>
                   </div>
                   <div className="rounded-full border border-yellow-400/25 bg-yellow-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-yellow-300">
@@ -408,7 +419,9 @@ export default function Signup() {
                   Build your place inside BWE
                 </h2>
                 <p className="mt-3 max-w-xl text-sm leading-6 text-gray-600 sm:text-base">
-                  Choose the path that fits you now. You can join as a supporter, business owner, seller, or employer without a complicated setup process.
+                  Choose the path that fits you now. You can join as a
+                  supporter, business owner, seller, or employer without a
+                  complicated setup process.
                 </p>
               </div>
             </div>
@@ -422,7 +435,9 @@ export default function Signup() {
               </p>
             </div>
 
-            {error && <p className="mt-4 text-center text-sm text-red-600">{error}</p>}
+            {error && (
+              <p className="mt-4 text-center text-sm text-red-600">{error}</p>
+            )}
             {success && !onboardingUrl && (
               <p className="mt-4 text-center text-sm text-green-600">
                 Signup successful. Taking you to your next step.
@@ -430,7 +445,8 @@ export default function Signup() {
             )}
             {onboardingUrl && (
               <p className="mt-4 text-center text-sm leading-6 text-gray-700">
-                Redirecting you to Stripe to complete your setup. If you are not redirected automatically, {" "}
+                Redirecting you to Stripe to complete your setup. If you are not
+                redirected automatically,{" "}
                 <a
                   href={onboardingUrl}
                   target="_blank"
@@ -462,7 +478,9 @@ export default function Signup() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-800">Email</label>
+                <label className="block text-sm font-semibold text-gray-800">
+                  Email
+                </label>
                 <input
                   type="email"
                   name="email"
@@ -490,7 +508,8 @@ export default function Signup() {
                   required
                 />
                 <p className="mt-2 text-xs leading-5 text-gray-500">
-                  Use at least 8 characters, including 1 uppercase letter, 1 number, and 1 special character.
+                  Use at least 8 characters, including 1 uppercase letter, 1
+                  number, and 1 special character.
                 </p>
               </div>
 
@@ -517,7 +536,8 @@ export default function Signup() {
                       Business details
                     </h3>
                     <p className="mt-1 text-sm text-gray-600">
-                      These details help prepare your business-related experience after signup.
+                      These details help prepare your business-related
+                      experience after signup.
                     </p>
                   </div>
                   <div>
@@ -579,8 +599,12 @@ export default function Signup() {
                       {index + 1}
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-gray-900">{step.title}</p>
-                      <p className="mt-1 text-sm leading-6 text-gray-600">{step.body}</p>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {step.title}
+                      </p>
+                      <p className="mt-1 text-sm leading-6 text-gray-600">
+                        {step.body}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -592,17 +616,24 @@ export default function Signup() {
                 Secure and respectful by design
               </h3>
               <p className="mt-2 text-sm leading-6 text-gray-600">
-                Your account is protected through our secure signup flow. Need help? Visit the {" "}
-                <Link href="/support" className="font-semibold text-yellow-700 hover:underline">
+                Your account is protected through our secure signup flow. Need
+                help? Visit the{" "}
+                <Link
+                  href="/support"
+                  className="font-semibold text-yellow-700 hover:underline"
+                >
                   support center
-                </Link>
-                {" "}or log in anytime to manage your dashboard.
+                </Link>{" "}
+                or log in anytime to manage your dashboard.
               </p>
             </div>
 
             <p className="mt-6 text-center text-sm text-gray-600">
-              Already have an account? {" "}
-              <Link href="/login" className="font-semibold text-yellow-700 hover:underline">
+              Already have an account?{" "}
+              <Link
+                href="/login"
+                className="font-semibold text-yellow-700 hover:underline"
+              >
                 Log in
               </Link>
             </p>

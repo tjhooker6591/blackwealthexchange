@@ -7,6 +7,7 @@ export type MarketplaceInventoryResolution = {
   purchasable: boolean;
   stockValue: number | null;
   inventoryValue: number | null;
+  missingOrInvalid: boolean;
 };
 
 function toValidQuantity(value: unknown): number | null {
@@ -55,6 +56,7 @@ export function resolveMarketplaceInventory(
     purchasable: quantity > 0,
     stockValue,
     inventoryValue,
+    missingOrInvalid: authoritativeField === "none",
   };
 }
 

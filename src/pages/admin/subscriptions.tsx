@@ -41,9 +41,17 @@ export default function AdminSubscriptionsPage() {
             <h1 className="text-2xl font-bold text-yellow-200">
               Subscription Admin
             </h1>
-            <Link href="/admin/tools" className="text-yellow-300 underline">
-              Back to Admin Tools
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/admin/founding-memberships"
+                className="text-yellow-300 underline"
+              >
+                Founding Membership Pilot
+              </Link>
+              <Link href="/admin/tools" className="text-yellow-300 underline">
+                Back to Admin Tools
+              </Link>
+            </div>
           </div>
 
           {loading ? <div>Loading…</div> : null}

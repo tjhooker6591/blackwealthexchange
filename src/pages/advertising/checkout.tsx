@@ -210,6 +210,15 @@ export default function AdvertisingCheckoutPage({
       };
     }
 
+    if (option === "featured-sponsor" && !businessId) {
+      return {
+        invalid: true,
+        error:
+          "Featured sponsorship requires a linked BWE business listing before checkout.",
+        detailsHref: optionToDetailsHref(quote.option),
+      };
+    }
+
     return {
       invalid: false,
       option: quote.option,
@@ -339,16 +348,17 @@ export default function AdvertisingCheckoutPage({
 
   if (!parsed) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
-        <div className="max-w-md w-full rounded-2xl border border-yellow-500/20 bg-zinc-950 p-6 text-center">
-          <h1 className="text-xl font-bold text-yellow-300">
-            Advertising Checkout
-          </h1>
-          <p className="mt-3 text-sm text-zinc-300">
-            Loading checkout details…
+      <main className="relative flex min-h-screen items-center justify-center overflow-x-hidden bg-neutral-950 p-6 text-white">
+        <div className="absolute inset-0 bg-neutral-950" />
+        <div className="pointer-events-none absolute -top-32 left-1/2 h-[640px] w-[640px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
+        <div className="bwe-hero-panel relative w-full max-w-md rounded-[30px] p-6 text-center">
+          <div className="bwe-eyebrow">Advertising checkout</div>
+          <h1 className="bwe-section-title mt-3">Loading checkout details</h1>
+          <p className="mt-3 text-sm text-white/68">
+            Preparing your pricing and campaign review state.
           </p>
         </div>
-      </div>
+      </main>
     );
   }
 
@@ -356,116 +366,160 @@ export default function AdvertisingCheckoutPage({
     const detailsHref = parsed.detailsHref || "";
 
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
-        <div className="max-w-md w-full rounded-2xl border border-red-500/30 bg-zinc-950 p-6 text-center">
-          <h1 className="text-xl font-bold text-yellow-300">
-            Advertising Checkout
-          </h1>
+      <main className="relative flex min-h-screen items-center justify-center overflow-x-hidden bg-neutral-950 p-6 text-white">
+        <div className="absolute inset-0 bg-neutral-950" />
+        <div className="pointer-events-none absolute -top-32 left-1/2 h-[640px] w-[640px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
+        <div className="bwe-hero-panel relative w-full max-w-md rounded-[30px] border border-red-500/30 p-6 text-center">
+          <div className="bwe-eyebrow">Advertising checkout</div>
+          <h1 className="bwe-section-title mt-3">Checkout details required</h1>
           <p className="mt-3 text-sm text-red-200">{parsed.error}</p>
           <button
             onClick={() => router.replace(detailsHref || "/advertising")}
-            className="mt-4 rounded-xl bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400"
+            className="bwe-cta-primary bwe-focus-ring mt-5 px-6"
           >
             {detailsHref
               ? "Complete Campaign Details"
               : "Back to Advertising Options"}
           </button>
         </div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
-      <div className="max-w-lg w-full rounded-2xl border border-yellow-500/20 bg-zinc-950 p-6">
-        <h1 className="text-xl font-bold text-yellow-300 text-center">
-          Review Advertising Checkout
-        </h1>
+    <main className="relative min-h-screen overflow-x-hidden bg-neutral-950 text-white">
+      <div className="absolute inset-0 bg-neutral-950" />
+      <div className="pointer-events-none absolute -top-32 left-1/2 h-[680px] w-[680px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
 
-        <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4 text-sm space-y-2">
-          <div className="rounded-lg border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-100">
-            You are reviewing your transaction before secure payment handoff.
+      <div className="bwe-section-wrap relative z-10 py-8 sm:py-10">
+        <section className="bwe-hero-panel relative overflow-hidden rounded-[30px] px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.14),transparent_32%),radial-gradient(circle_at_82%_18%,rgba(255,255,255,0.08),transparent_24%)]" />
+          <div className="relative max-w-3xl">
+            <div className="bwe-eyebrow">Advertising checkout</div>
+            <h1 className="bwe-display-title mt-3 max-w-[11ch]">
+              Review your campaign before secure payment.
+            </h1>
+            <p className="bwe-lead mt-4 max-w-2xl">
+              This page confirms option, duration, placement, and campaign
+              linkage before the secure Stripe handoff.
+            </p>
           </div>
-          <div>
-            <span className="text-zinc-400">Option:</span>{" "}
-            <span className="text-white font-semibold">{parsed.label}</span>
-          </div>
-          <div>
-            <span className="text-zinc-400">Duration:</span>{" "}
-            <span className="text-white">{parsed.durationDays} days</span>
-          </div>
-          <div>
-            <span className="text-zinc-400">Price:</span>{" "}
-            <span className="text-yellow-300 font-semibold">
-              ${parsed.amountDollars}
-            </span>
-          </div>
-          {parsed.placement ? (
-            <div>
-              <span className="text-zinc-400">Placement:</span>{" "}
-              <span className="text-white">{parsed.placement}</span>
+        </section>
+
+        <section className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)]">
+          <div className="rounded-[28px] border border-white/8 bg-white/[0.03] p-5 sm:p-6">
+            <div className="rounded-2xl border border-[rgba(212,175,55,0.24)] bg-[rgba(212,175,55,0.08)] px-4 py-3 text-xs text-white/82">
+              You are reviewing your transaction before secure payment handoff.
             </div>
-          ) : null}
-          {parsed.campaignId ? (
-            <div>
-              <span className="text-zinc-400">Campaign Request:</span>{" "}
-              <span className="text-white break-all">{parsed.campaignId}</span>
+
+            <div className="mt-4 grid gap-3 text-sm">
+              <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
+                <div className="text-xs uppercase tracking-[0.12em] text-white/45">
+                  Option
+                </div>
+                <div className="mt-1 font-semibold text-white">
+                  {parsed.label}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
+                <div className="text-xs uppercase tracking-[0.12em] text-white/45">
+                  Duration
+                </div>
+                <div className="mt-1 text-white">
+                  {parsed.durationDays} days
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
+                <div className="text-xs uppercase tracking-[0.12em] text-white/45">
+                  Price
+                </div>
+                <div className="mt-1 font-semibold text-[var(--accent)]">
+                  ${parsed.amountDollars}
+                </div>
+              </div>
+              {parsed.placement ? (
+                <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
+                  <div className="text-xs uppercase tracking-[0.12em] text-white/45">
+                    Placement
+                  </div>
+                  <div className="mt-1 text-white">{parsed.placement}</div>
+                </div>
+              ) : null}
+              {parsed.campaignId ? (
+                <div className="rounded-2xl border border-white/8 bg-black/20 px-4 py-4">
+                  <div className="text-xs uppercase tracking-[0.12em] text-white/45">
+                    Campaign request
+                  </div>
+                  <div className="mt-1 break-all text-white">
+                    {parsed.campaignId}
+                  </div>
+                </div>
+              ) : null}
+              <div className="rounded-2xl border border-[rgba(212,175,55,0.24)] bg-[rgba(212,175,55,0.08)] px-4 py-4">
+                <div className="text-xs uppercase tracking-[0.12em] text-white/45">
+                  Estimated total
+                </div>
+                <div className="mt-1 font-semibold text-[var(--accent)]">
+                  ${parsed.amountDollars}
+                </div>
+              </div>
             </div>
-          ) : null}
-          <div className="pt-2 border-t border-white/10">
-            <span className="text-zinc-400">Estimated Total:</span>{" "}
-            <span className="text-yellow-300 font-semibold">
-              ${parsed.amountDollars}
-            </span>
           </div>
-        </div>
 
-        <div className="mt-4 rounded-xl border border-white/10 bg-zinc-900/70 p-4 text-xs text-zinc-300 space-y-1">
-          <p className="font-semibold text-zinc-100">What happens next</p>
-          <p>1) Complete secure payment.</p>
-          <p>2) Campaign enters review/approval workflow.</p>
-          <p>
-            3) Approved campaigns are scheduled and activated by placement
-            rules.
-          </p>
-          <p className="pt-1">
-            Need help? Visit <span className="text-yellow-200">/support</span>{" "}
-            or review
-            <span className="text-yellow-200">
-              {" "}
-              /legal/advertising-guidelines
-            </span>
-            .
-          </p>
-        </div>
+          <div className="grid gap-4">
+            <section className="rounded-[28px] border border-white/8 bg-white/[0.03] p-5 sm:p-6">
+              <div className="bwe-eyebrow">What happens next</div>
+              <div className="mt-4 space-y-2 text-sm leading-6 text-white/68">
+                <p>1. Complete secure payment.</p>
+                <p>2. Campaign enters review and approval workflow.</p>
+                <p>
+                  3. Approved campaigns are scheduled and activated by placement
+                  rules.
+                </p>
+                <p>
+                  Need help? Visit{" "}
+                  <span className="text-[var(--accent)]">/support</span> or
+                  review{" "}
+                  <span className="text-[var(--accent)]">
+                    /legal/advertising-guidelines
+                  </span>
+                  .
+                </p>
+              </div>
+            </section>
 
-        {message ? (
-          <p className="mt-4 text-sm text-zinc-300">{message}</p>
-        ) : null}
-        {retryHint ? (
-          <p className="mt-2 text-xs text-yellow-200">
-            Retry checkout, or go back to confirm details before trying again.
-          </p>
-        ) : null}
+            {message ? (
+              <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-4 text-sm text-white/72">
+                {message}
+              </div>
+            ) : null}
+            {retryHint ? (
+              <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-4 text-xs text-yellow-100">
+                Retry checkout, or go back to confirm details before trying
+                again.
+              </div>
+            ) : null}
 
-        <div className="mt-6 flex gap-3">
-          <button
-            onClick={() => router.back()}
-            className="flex-1 rounded-xl border border-white/20 px-4 py-2 text-sm hover:bg-white/10"
-            disabled={loading}
-          >
-            Back
-          </button>
-          <button
-            onClick={handleStartCheckout}
-            className="flex-1 rounded-xl bg-yellow-500 px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-400 disabled:opacity-60"
-            disabled={loading}
-          >
-            {loading ? "Starting…" : "Continue to Secure Checkout"}
-          </button>
-        </div>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <button
+                onClick={() => router.back()}
+                className="bwe-cta-secondary bwe-focus-ring flex-1 px-6"
+                disabled={loading}
+              >
+                Back
+              </button>
+              <button
+                onClick={handleStartCheckout}
+                className="bwe-cta-primary bwe-focus-ring flex-1 px-6 disabled:opacity-60"
+                disabled={loading}
+              >
+                {loading ? "Starting..." : "Continue to Secure Checkout"}
+              </button>
+            </div>
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
 

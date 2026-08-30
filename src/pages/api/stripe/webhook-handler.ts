@@ -11,6 +11,7 @@ import {
   emitMarketplaceReconciliationException,
   upsertMarketplacePaymentRecord,
 } from "@/lib/marketplace/paymentLinkage";
+import { upsertMarketplaceBmevRecord } from "@/lib/economics/marketplaceBmev";
 import {
   MARKETPLACE_ORDER_STATES,
   MARKETPLACE_PAYOUT_STATUSES,
@@ -28,6 +29,7 @@ import {
 } from "@/lib/black-card";
 import { ensureBlackCardMembershipAndCard } from "@/lib/black-card-membership";
 import {
+  buildFoundingClaimIntakeRecord,
   FOUNDING_MEMBERSHIP_ITEM_ID,
   FOUNDING_MEMBERSHIP_NAME,
   FOUNDING_MEMBERSHIP_PRICE_CENTS,
@@ -46,6 +48,7 @@ import {
   ensureFinancialLedgerIndexes,
   isFinancialLedgerEnabled,
 } from "@/lib/finance/ledger";
+import { validateSponsorBusinessLink } from "@/lib/advertising/sponsorListings";
 
 export const config = {
   api: { bodyParser: false },
@@ -263,14 +266,14 @@ function resolveCanonicalAdItemId(meta: SessionMetadata) {
 
 function inferCanonicalAdItemIdFromCampaignContext(input: {
   legacyCampaign?: any;
-  adminCampaign?: any;
+  requestCampaign?: any;
 }) {
   const candidates: unknown[] = [
-    input.adminCampaign?.option,
-    input.adminCampaign?.itemId,
-    input.adminCampaign?.metadata?.itemId,
-    input.adminCampaign?.metadata?.option,
-    input.adminCampaign?.placement,
+    input.requestCampaign?.option,
+    input.requestCampaign?.itemId,
+    input.requestCampaign?.metadata?.itemId,
+    input.requestCampaign?.metadata?.option,
+    input.requestCampaign?.placement,
     input.legacyCampaign?.name,
     input.legacyCampaign?.banner,
   ];
@@ -340,6 +343,20 @@ function wealthBuilderPeriodEndFromInterval(
   // default monthly
   end.setMonth(end.getMonth() + 1);
   return end;
+}
+
+function membershipBillingCopy(plan: string | null | undefined) {
+  return plan === "founding"
+    ? {
+        billed: "billed monthly",
+        renews: "auto-renews monthly",
+        cycleFallback: "monthly cycle",
+      }
+    : {
+        billed: "billed annually",
+        renews: "auto-renews annually",
+        cycleFallback: "annual cycle",
+      };
 }
 
 async function resolveEntitlementUserId(db: Db, userId: string, email: string) {
@@ -775,10 +792,11 @@ export default async function webhookHandler(
       });
 
       if (event.type === "invoice.paid") {
+        const billingCopy = membershipBillingCopy(planGuess);
         await sendMembershipEmailSafe({
           to: (user as any)?.email || null,
           subject: "BWE renewal successful",
-          text: `Your membership renewed successfully. Next billing date: ${periodEnd ? periodEnd.toLocaleDateString() : "annual cycle"}.`,
+          text: `Your membership renewed successfully. Next billing date: ${periodEnd ? periodEnd.toLocaleDateString() : billingCopy.cycleFallback}.`,
         });
       }
 
@@ -1033,16 +1051,16 @@ export default async function webhookHandler(
       const legacyCampaign = await getCampaignById(campaignId).catch(
         () => null,
       );
-      const adminCampaign = ObjectId.isValid(campaignId)
+      const requestCampaign = ObjectId.isValid(campaignId)
         ? await db
-            .collection("advertising_campaigns")
+            .collection("advertising_requests")
             .findOne({ _id: new ObjectId(campaignId) })
             .catch(() => null)
         : null;
 
       const inferred = inferCanonicalAdItemIdFromCampaignContext({
         legacyCampaign,
-        adminCampaign,
+        requestCampaign,
       });
       if (inferred) {
         normalizedItemId = inferred;
@@ -1356,37 +1374,6 @@ export default async function webhookHandler(
           `ℹ️ Campaign ${campaignId} already paid or missing; skipping`,
         );
       }
-
-      const adminCampaignFilter = ObjectId.isValid(campaignId)
-        ? {
-            $or: [
-              { _id: new ObjectId(campaignId) },
-              { stripeSessionId },
-              { "metadata.campaignId": campaignId },
-            ],
-          }
-        : {
-            $or: [{ stripeSessionId }, { "metadata.campaignId": campaignId }],
-          };
-
-      const adminCampaignUpdate = await db
-        .collection("advertising_campaigns")
-        .updateOne(adminCampaignFilter, {
-          $set: {
-            status: "paid",
-            paymentStatus: "paid",
-            paidAt,
-            stripeSessionId,
-            stripePaymentIntentId: paymentIntentId || null,
-            updatedAt: now,
-          },
-        });
-
-      if (adminCampaignUpdate.matchedCount > 0) {
-        console.log(
-          `✅ advertising_campaigns marked paid campaignId=${campaignId} session=${stripeSessionId}`,
-        );
-      }
     }
 
     /**
@@ -1486,10 +1473,19 @@ export default async function webhookHandler(
       const expiresAt = new Date(
         paidAt.getTime() + durationDays * 24 * 60 * 60 * 1000,
       );
+      const sponsorValidation =
+        normalizedItemId === "featured-sponsor"
+          ? await validateSponsorBusinessLink(db, businessId)
+          : null;
+      const sponsorLinkInvalid =
+        normalizedItemId === "featured-sponsor" &&
+        sponsorValidation != null &&
+        !sponsorValidation.ok;
 
       const needsAttention =
         (isDirectoryPurchase && !businessId) ||
-        (!isDirectoryPurchase && !campaignId);
+        (!isDirectoryPurchase && !campaignId) ||
+        sponsorLinkInvalid;
 
       await db.collection("ad_purchases").updateOne(
         { stripeSessionId },
@@ -1537,9 +1533,11 @@ export default async function webhookHandler(
               ? businessId
                 ? "paid_directory_linked"
                 : "needs_business_link"
-              : campaignId
-                ? "paid_campaign_linked"
-                : "pending_admin_fulfillment",
+              : sponsorLinkInvalid
+                ? "needs_business_link"
+                : campaignId
+                  ? "paid_campaign_linked"
+                  : "pending_admin_fulfillment",
             needsAttention,
           },
         },
@@ -1567,10 +1565,14 @@ export default async function webhookHandler(
             stripeSessionId,
           };
 
-          if (normalizedItemId === "featured-sponsor") {
+          if (
+            normalizedItemId === "featured-sponsor" &&
+            sponsorValidation?.ok
+          ) {
             const assignments = await reserveFeaturedSponsorWeeks(db as any, {
               campaignId,
               durationDays,
+              businessId: sponsorValidation.businessId,
               requestedStartDate: adReq.requestedStartDate
                 ? new Date(adReq.requestedStartDate).toISOString()
                 : null,
@@ -1606,6 +1608,19 @@ export default async function webhookHandler(
               placement: adReq.placement || "homepage-featured-sponsor",
               durationDays,
             };
+          } else if (normalizedItemId === "featured-sponsor") {
+            setPatch.scheduling = {
+              status: "blocked_missing_business_link",
+              assignedWeeks: [],
+              rolledOver: false,
+              queueStatus: "blocked",
+              placement:
+                adReq.placement ||
+                adReq.placementType ||
+                "homepage-featured-sponsor",
+              durationDays,
+            };
+            setPatch.needsAttention = true;
           }
 
           await db
@@ -1825,6 +1840,45 @@ export default async function webhookHandler(
         });
       } else {
         const membershipId = `${FOUNDING_MEMBERSHIP_PRODUCT_KEY}:${membershipBusinessId}`;
+        const foundingBusiness = await db.collection("businesses").findOne({
+          $or: [
+            { _id: membershipBusinessId as any },
+            { _id: String(membershipBusinessId) as any },
+          ],
+        });
+        const initialClaimIntake = buildFoundingClaimIntakeRecord({
+          business: foundingBusiness,
+          claimantUserId: userId,
+          claimantValues: {
+            businessName:
+              foundingBusiness?.business_name || FOUNDING_MEMBERSHIP_NAME,
+            addressLine1:
+              foundingBusiness?.address ||
+              foundingBusiness?.streetAddress ||
+              "",
+            city: foundingBusiness?.city || "",
+            state: foundingBusiness?.state || "",
+            postalCode:
+              foundingBusiness?.zip || foundingBusiness?.postalCode || "",
+            phone: foundingBusiness?.phone || "",
+            website: foundingBusiness?.website || "",
+            businessEmail: foundingBusiness?.email || "",
+            socialUrls: [
+              foundingBusiness?.instagram,
+              foundingBusiness?.facebook,
+              foundingBusiness?.linkedin,
+              foundingBusiness?.twitter,
+            ]
+              .filter(Boolean)
+              .join("\n"),
+            claimantName: "",
+            claimantEmail: email || "",
+            claimantPhone: "",
+            relationshipToBusiness: "",
+            roleTitle: "",
+          },
+          evidence: [],
+        });
 
         await db.collection("business_memberships").updateOne(
           { membershipId },
@@ -1862,7 +1916,7 @@ export default async function webhookHandler(
                   : null,
               stripeInvoiceId: null,
               stripePaymentIntentId: paymentIntentId || null,
-              ownershipReviewStatus: "ownership_verification_pending",
+              ownershipReviewStatus: "ownership_review_pending",
               claimLocked: true,
               activatedAt: paidAt,
               updatedAt: now,
@@ -1885,8 +1939,8 @@ export default async function webhookHandler(
               businessId: membershipBusinessId,
               userId,
               email: email || null,
-              claimStatus: "claim_initiated",
-              ownershipReviewStatus: "ownership_verification_pending",
+              claimStatus: "claim_pending",
+              ownershipReviewStatus: "ownership_review_pending",
               membershipId,
               membershipName: FOUNDING_MEMBERSHIP_NAME,
               productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
@@ -1897,14 +1951,17 @@ export default async function webhookHandler(
                 : null,
               stripeSessionId,
               claimLocked: true,
+              proposedBusinessProfile: initialClaimIntake.business,
+              claimantProfile: initialClaimIntake.claimant,
+              authorityProfile: initialClaimIntake.authority,
               auditHistory: [
                 {
                   action: "claim_created_from_paid_webhook",
                   previousStatus: null,
-                  resultingStatus: "ownership_verification_pending",
+                  resultingStatus: "ownership_review_pending",
                   reviewer: "system:webhook",
                   reason:
-                    "Paid founding membership created with ownership verification pending.",
+                    "Paid founding membership created pending ownership review.",
                   timestamp: now,
                 },
               ],
@@ -1926,10 +1983,10 @@ export default async function webhookHandler(
               businessId: membershipBusinessId,
               userId,
               email: email || null,
-              reviewStatus: "ownership_verification_pending",
+              reviewStatus: "ownership_review_pending",
               evidenceStatus: "awaiting_owner_documents",
               sourceMembershipId: membershipId,
-              sourceClaimStatus: "claim_initiated",
+              sourceClaimStatus: "claim_pending",
               paymentId: existingPayment?._id
                 ? String(existingPayment._id)
                 : null,
@@ -1942,16 +1999,18 @@ export default async function webhookHandler(
                 "official_website_or_social_account",
                 "written_owner_or_officer_authorization",
               ],
+              claimIntake: initialClaimIntake,
+              structuredEvidenceSubmissions: [],
               evidenceSubmissions: [],
               evidencePublicSummary: null,
               auditHistory: [
                 {
                   action: "review_created_from_paid_webhook",
                   previousStatus: null,
-                  resultingStatus: "ownership_verification_pending",
+                  resultingStatus: "ownership_review_pending",
                   reviewer: "system:webhook",
                   reason:
-                    "Ownership verification opened after successful founding membership payment.",
+                    "Ownership review opened after successful founding membership payment.",
                   timestamp: now,
                 },
               ],
@@ -1996,8 +2055,8 @@ export default async function webhookHandler(
               checklist: [
                 {
                   key: "ownership_review",
-                  label: "Ownership verification",
-                  status: "ownership_verification_pending",
+                  label: "Ownership review",
+                  status: "ownership_review_pending",
                 },
                 {
                   key: "ownership_evidence",
@@ -2089,8 +2148,8 @@ export default async function webhookHandler(
               : { _id: membershipBusinessId as any },
             {
               $set: {
-                claimStage: "ownership_verification_pending",
-                ownershipReviewStatus: "ownership_verification_pending",
+                claimStage: "ownership_review_pending",
+                ownershipReviewStatus: "ownership_review_pending",
                 claimLocked: true,
                 pendingClaimMembershipId: membershipId,
                 pendingClaimUserId: userId,
@@ -2335,10 +2394,11 @@ export default async function webhookHandler(
         createdAt: now,
       });
 
+      const billingCopy = membershipBillingCopy(mappedPlanId);
       await sendMembershipEmailSafe({
         to: email || null,
         subject: "BWE membership purchase confirmation",
-        text: `Your ${mappedPlanId === "founding" ? "Founding Member" : "Premium"} plan is active. It is ${mappedPlanId === "founding" ? "billed monthly and auto-renews monthly" : "billed annually and auto-renews annually"}. Next billing date: ${planExpiresAt.toLocaleDateString()}.`,
+        text: `Your ${mappedPlanId === "founding" ? "Founding Member" : "Premium"} plan is active. It is ${billingCopy.billed} and ${billingCopy.renews}. Next billing date: ${planExpiresAt.toLocaleDateString()}.`,
       });
 
       await pushMembershipNotification(db, {
@@ -2504,6 +2564,9 @@ export default async function webhookHandler(
         const reconciledSellerId =
           idToString(refreshedOrderRecord?.sellerId) ||
           asString((mergedMeta as any).sellerId);
+        const reconciledBusinessId =
+          idToString(refreshedOrderRecord?.businessId) ||
+          asString((mergedMeta as any).businessId);
 
         const paymentRecord = await upsertMarketplacePaymentRecord({
           db,
@@ -2513,6 +2576,7 @@ export default async function webhookHandler(
           orderId: targetOrderId,
           productId: reconciledProductId,
           sellerId: reconciledSellerId,
+          businessId: reconciledBusinessId || null,
           payoutMode: asString(refreshedOrderRecord?.payoutMode),
           amountTotal: deriveMarketplaceAmountTotal({
             session,
@@ -2598,6 +2662,35 @@ export default async function webhookHandler(
               `⚠️ Product order fulfillment blocked order=${targetOrderId} code=${fulfillment.code}`,
             );
           } else {
+            await upsertMarketplaceBmevRecord({
+              db,
+              orderId: targetOrderId,
+              stripeSessionId,
+              paymentIntentId: paymentIntentId || null,
+              productId: reconciledProductId,
+              sellerId: reconciledSellerId || null,
+              businessId: reconciledBusinessId || null,
+              buyerUserId: reconciledBuyerId || null,
+              buyerEmail: email || null,
+              subtotalCents: Number(
+                refreshedOrderRecord?.subtotalCents ??
+                  refreshedOrderRecord?.subtotal ??
+                  0,
+              ),
+              shippingCents: Number(
+                refreshedOrderRecord?.shippingCents ??
+                  refreshedOrderRecord?.shipping ??
+                  0,
+              ),
+              currency: session.currency || "usd",
+              occurredAt: paidAt,
+              webhookEventId: event.id,
+              webhookEventType: event.type,
+              paymentRecordId: stripeSessionId,
+              bweFeeCents: Number(paymentRecord?.bweFee ?? 0),
+              sellerProceedsCents: Number(paymentRecord?.payout ?? 0),
+            });
+
             await db.collection("payments").updateOne(
               { stripeSessionId },
               {

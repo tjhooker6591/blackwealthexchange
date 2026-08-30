@@ -13,6 +13,7 @@ import {
 import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
 import { getMongoDbName } from "@/lib/env";
 import { computeListingCompleteness } from "@/lib/directory/completeness";
+import { expandDirectoryCategoryAliases } from "@/lib/directory/categoryAliases";
 import { publicBusinessBaseQuery } from "@/lib/directory/publicBusinessQuery";
 import { isPublicBusinessVisible } from "@/lib/directory/publicVisibility";
 
@@ -89,15 +90,34 @@ function tokenPatterns(token: string): string[] {
     return [normalized, CITY_STATE_ALIASES[normalized].toLowerCase()];
   }
 
-  if (normalized === "dentist") return ["dentist", "dental", "dentistry"];
-  if (normalized === "restaurant") {
+  if (normalized === "dentist" || normalized === "dentists") {
+    return ["dentist", "dentists", "dental", "dentistry"];
+  }
+  if (normalized === "restaurant" || normalized === "restaurants") {
     return ["restaurant", "restaurants", "cafe", "eatery"];
   }
-  if (normalized === "nonprofit") {
-    return ["nonprofit", "non-profit", "non profit", "charity", "foundation"];
+  if (normalized === "nonprofit" || normalized === "nonprofits") {
+    return [
+      "nonprofit",
+      "nonprofits",
+      "non-profit",
+      "non profit",
+      "charity",
+      "foundation",
+    ];
   }
 
   return [normalized];
+}
+
+function categoryPatterns(category: string): string[] {
+  const expanded = expandDirectoryCategoryAliases(category);
+  const out = new Set<string>();
+  for (const value of expanded) {
+    out.add(value);
+    for (const pattern of tokenPatterns(value)) out.add(pattern);
+  }
+  return Array.from(out).filter(Boolean);
 }
 
 function isLocationToken(token: string) {
@@ -613,10 +633,28 @@ export default async function handler(
     }
 
     if (!isOrganizations && category && category !== "All") {
-      const rx = new RegExp(escapeRegex(category), "i");
-      and.push({
-        $or: [{ categories: rx }, { display_categories: rx }, { category: rx }],
-      });
+      const patterns = categoryPatterns(category);
+      if (patterns.length) {
+        and.push({
+          $or: patterns.flatMap((pattern) => {
+            const normalizedPattern = pattern
+              .replace(/[-_]+/g, " ")
+              .replace(/\s+/g, " ")
+              .trim();
+            const tokenized = normalizedPattern
+              .split(" ")
+              .map((part) => escapeRegex(part))
+              .filter(Boolean)
+              .join("[-\\s&/]*");
+            const rx = new RegExp(tokenized || escapeRegex(pattern), "i");
+            return [
+              { categories: rx },
+              { display_categories: rx },
+              { category: rx },
+            ];
+          }),
+        });
+      }
     }
 
     if (state) and.push({ state });

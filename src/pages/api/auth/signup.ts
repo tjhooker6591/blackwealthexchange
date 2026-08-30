@@ -216,7 +216,7 @@ Black Wealth Exchange was born from a vision: to reclaim our economic power, cir
     
 As a member, you can now:
 - Discover or post job opportunities that uplift our communities
-- Explore a powerful marketplace filled with Black-owned products
+- Browse the live marketplace and view the current public product catalog
 - Showcase your business and gain visibility
 - Invest in the future of Black wealth and innovation
     
@@ -238,7 +238,7 @@ Let's make history — together.
           <p>As a member, you can now:</p>
           <ul>
             <li>Discover or post job opportunities that uplift our communities</li>
-            <li>Explore a powerful marketplace filled with Black-owned products</li>
+            <li>Browse the live marketplace and view the current public product catalog</li>
             <li>Showcase your business and gain visibility</li>
             <li>Invest in the future of Black wealth and innovation</li>
           </ul>

@@ -213,10 +213,16 @@ export default async function handler(
 
     const { password: _password, ...sanitized } = profile;
 
+    // The login/session token role is the canonical runtime role for the
+    // active session. Some legacy documents still carry drifted accountType
+    // values, and echoing those here can route a valid business session into
+    // the wrong dashboard.
     const normalizedAccountType =
-      typeof profile.accountType === "string" && profile.accountType.trim()
-        ? profile.accountType
-        : role;
+      typeof payload.accountType === "string" && payload.accountType.trim()
+        ? payload.accountType
+        : typeof profile.accountType === "string" && profile.accountType.trim()
+          ? profile.accountType
+          : role;
 
     const normalizedCurrentPlan =
       typeof profile.currentPlan === "string" && profile.currentPlan.trim()

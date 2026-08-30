@@ -10,7 +10,6 @@ import {
   getFoundingClaimStatusLabel,
   normalizeFoundingClaimStage,
   normalizeFoundingPaymentStatus,
-  resolveFoundingOwnershipState,
 } from "@/lib/founding-membership";
 
 export default async function handler(
@@ -122,17 +121,6 @@ export default async function handler(
         membership.amountCents ||
         4900,
     );
-    const ownershipState = resolveFoundingOwnershipState({
-      business,
-      claim,
-      review,
-      membership,
-      publicListingStatus: (business as any)?.publicListingStatus,
-      claimStage: (business as any)?.claimStage,
-      claimStatus: claim?.claimStatus,
-      ownershipReviewStatus:
-        review?.reviewStatus || membership.ownershipReviewStatus,
-    });
     const nextStep =
       onboarding?.nextStep ||
       (review?.evidenceStatus === "awaiting_additional_evidence"
@@ -184,21 +172,43 @@ export default async function handler(
               state: business.state || null,
             }
           : null,
-        claimStatus:
-          ownershipState.canonicalState === "ownership_verified"
-            ? "ownership_verified"
-            : normalizeFoundingClaimStage(claim?.claimStatus || null),
+        claimStatus: normalizeFoundingClaimStage(claim?.claimStatus || null),
         claimStatusLabel: getFoundingClaimStatusLabel(
-          ownershipState.canonicalState ||
-            claim?.claimStatus ||
+          claim?.claimStatus ||
             review?.reviewStatus ||
             membership.ownershipReviewStatus,
         ),
-        reviewStatus:
-          ownershipState.canonicalState === "ownership_verified"
+        reviewStatus: normalizeFoundingClaimStage(review?.reviewStatus || null),
+        publicListingStatus:
+          String((business as any)?.publicListingStatus || "").trim() ||
+          (normalizeFoundingClaimStage(
+            business && (business as any).claimStage
+              ? (business as any).claimStage
+              : membership.ownershipReviewStatus,
+          ) === "ownership_verified"
             ? "ownership_verified"
-            : normalizeFoundingClaimStage(review?.reviewStatus || null),
-        publicListingStatus: ownershipState.publicListingStatus,
+            : normalizeFoundingClaimStage(
+                  business && (business as any).claimStage
+                    ? (business as any).claimStage
+                    : membership.ownershipReviewStatus,
+                ) === "claim_initiated" ||
+                normalizeFoundingClaimStage(
+                  business && (business as any).claimStage
+                    ? (business as any).claimStage
+                    : membership.ownershipReviewStatus,
+                ) === "ownership_verification_pending" ||
+                normalizeFoundingClaimStage(
+                  business && (business as any).claimStage
+                    ? (business as any).claimStage
+                    : membership.ownershipReviewStatus,
+                ) === "additional_evidence_required" ||
+                normalizeFoundingClaimStage(
+                  business && (business as any).claimStage
+                    ? (business as any).claimStage
+                    : membership.ownershipReviewStatus,
+                ) === "disputed"
+              ? "verification_pending"
+              : "unclaimed"),
         evidenceStatus: review?.evidenceStatus || null,
         evidencePortalStatus: onboarding?.evidencePortalStatus || null,
         onboardingStatus: onboarding?.onboardingStatus || null,

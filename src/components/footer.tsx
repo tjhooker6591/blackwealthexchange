@@ -55,21 +55,30 @@ const footerSections: Array<{
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-black/95 px-4 py-3 text-white/80 sm:py-4">
+    <footer className="border-t border-[var(--border-soft)] bg-[rgba(6,7,11,0.95)] px-4 py-4 text-white/80 sm:py-5">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-2 flex items-center justify-between gap-3 border-b border-white/10 pb-2">
-          <p className="text-[11px] leading-tight text-white/70 sm:text-xs">
-            Building Black ownership and long-term economic power.
-          </p>
+        <div className="bwe-shell-panel mb-4 flex items-center justify-between gap-4 rounded-[28px] px-4 py-4">
+          <div className="text-[11px] leading-tight text-white/70 sm:text-xs">
+            <p className="bwe-shell-label mb-1">
+              Black Ownership Infrastructure
+            </p>
+            <p>
+              Black Wealth Exchange — Black-Owned Business Discovery and Growth
+              Platform.
+            </p>
+            <p className="mt-0.5 text-white/50">
+              Founded by Thomas James Hooker Sr.
+            </p>
+          </div>
           <Link
             href="/signup"
-            className="inline-flex min-h-8 items-center justify-center rounded-full bg-[#D4AF37] px-3 text-[11px] font-semibold text-black transition hover:brightness-105"
+            className="bwe-focus-ring inline-flex min-h-10 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--accent)] px-4 text-[11px] font-extrabold uppercase tracking-[0.14em] text-black transition hover:bg-[var(--accent-strong)]"
           >
             Join BWE
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-4 sm:gap-x-5">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4 sm:gap-x-5">
           {footerSections.map((section) => (
             <div key={section.title} className="min-w-0">
               <h3 className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#D4AF37]/90">
@@ -104,7 +113,7 @@ export default function Footer() {
 
         <div className="mt-2 border-t border-white/10 pt-2 text-center text-[10px] text-white/45 sm:text-[11px]">
           &copy; {new Date().getFullYear()} Black Wealth Exchange. All rights
-          reserved.
+          reserved. Founder-led and mission-driven.
         </div>
       </div>
     </footer>

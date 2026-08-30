@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import type { GetServerSideProps } from "next";
-import { requireAdminPageProps } from "@/lib/adminPageGuard";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 type VerifyItem = {
   payment: any;
@@ -247,6 +249,39 @@ export default function FinancialClassReconciliationPage() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
-  "/admin/financial-class-reconciliation",
-);
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login?redirect=/admin/financial-class-reconciliation",
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    const payload = jwt.verify(token, getJwtSecret()) as {
+      accountType?: string;
+      isAdmin?: boolean;
+    };
+    if (!(payload.isAdmin === true || payload.accountType === "admin")) {
+      return {
+        redirect: {
+          destination: "/login?redirect=/admin/financial-class-reconciliation",
+          permanent: false,
+        },
+      };
+    }
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/admin/financial-class-reconciliation",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};

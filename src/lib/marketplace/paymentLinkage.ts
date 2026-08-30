@@ -10,6 +10,7 @@ export type MarketplacePaymentUpsertArgs = {
   orderId: string;
   productId: string;
   sellerId: string;
+  businessId?: string | null;
   payoutMode: string | null;
   amountTotal: number;
   currency?: string | null;
@@ -42,6 +43,7 @@ export function buildMarketplacePaymentRecord(
       orderId: args.orderId,
       productId: args.productId,
       sellerId: args.sellerId,
+      businessId: args.businessId || null,
       payoutMode: args.payoutMode || null,
       grossAmount: split.grossAmount,
       bweFee: split.bweFee,
@@ -51,6 +53,7 @@ export function buildMarketplacePaymentRecord(
     orderId: args.orderId,
     productId: args.productId,
     sellerId: args.sellerId,
+    businessId: args.businessId || null,
     payoutMode: args.payoutMode || null,
     lastWebhookEventId: args.webhookEventId || null,
     lastWebhookEventType: args.webhookEventType || null,
@@ -80,7 +83,8 @@ export async function emitMarketplaceReconciliationException(args: {
   eventType:
     | "marketplace_order_missing_on_paid_webhook"
     | "marketplace_payment_missing_on_paid_webhook"
-    | "marketplace_payment_order_link_missing";
+    | "marketplace_payment_order_link_missing"
+    | "marketplace_inventory_dual_field_conflict_detected";
   stripeSessionId: string;
   paymentIntentId?: string | null;
   orderId?: string | null;
@@ -110,7 +114,10 @@ export function deriveMarketplaceAmountTotal(args: {
   existingAmountCents?: number | null;
   orderRecord?: Record<string, any> | null;
 }) {
-  if (typeof args.session.amount_total === "number" && args.session.amount_total >= 0) {
+  if (
+    typeof args.session.amount_total === "number" &&
+    args.session.amount_total >= 0
+  ) {
     return Math.round(args.session.amount_total);
   }
 

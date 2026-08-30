@@ -87,6 +87,7 @@ type EntityCountsObject = {
   pending?: number;
   approved?: number;
   rejected?: number;
+  duplicateReview?: number;
   total?: number;
 };
 
@@ -170,6 +171,7 @@ type StatsVM = {
 
   // approvals
   pendingBusinesses: number;
+  duplicateReviewBusinesses: number;
   pendingOrganizations: number;
   pendingJobs: number;
   pendingProducts: number;
@@ -225,6 +227,7 @@ function readEntityCounts(
       pending: toNum(input.pending, fallbackPending),
       approved: toNum(input.approved),
       rejected: toNum(input.rejected),
+      duplicateReview: toNum((input as any).duplicateReview),
       total: toNum(input.total),
     };
   }
@@ -233,6 +236,7 @@ function readEntityCounts(
     pending: toNum(fallbackPending),
     approved: 0,
     rejected: 0,
+    duplicateReview: 0,
     total: 0,
   };
 }
@@ -278,6 +282,7 @@ function normalizeStats(data: Partial<StatsV2 & StatsLegacy>): StatsVM {
     internApplications: toNum(data.internApplications),
 
     pendingBusinesses: biz.pending,
+    duplicateReviewBusinesses: toNum((biz as any).duplicateReview),
     pendingOrganizations: org.pending,
     pendingJobs,
     pendingProducts,
@@ -345,7 +350,7 @@ const AdminDashboard = ({
     Record<string, string>
   >({});
   const [hideQaTestLikeConsulting, setHideQaTestLikeConsulting] =
-    useState<boolean>(false);
+    useState<boolean>(initialRecentJoinHideTests);
 
   // 4) Admin filter state (applies to consulting table below)
   const DEFAULT_FILTERS: AdminFilters = {
@@ -442,6 +447,12 @@ const AdminDashboard = ({
         href: "/admin/business-approvals",
       },
       {
+        key: "business-duplicates",
+        label: "Duplicate business review",
+        value: stats.duplicateReviewBusinesses,
+        href: "/admin/directory-duplicates",
+      },
+      {
         key: "jobs",
         label: "Job approvals",
         value: stats.pendingJobs,
@@ -474,6 +485,7 @@ const AdminDashboard = ({
     ],
     [
       stats.pendingBusinesses,
+      stats.duplicateReviewBusinesses,
       stats.pendingJobs,
       stats.pendingProducts,
       stats.pendingDirectory,
@@ -1117,13 +1129,18 @@ const AdminDashboard = ({
                   </div>
                 </div>
 
-                <div className="mt-3 grid grid-cols-3 gap-3">
+                <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
                   <MiniStat label="Approved" value={stats.approvedBusinesses} />
                   <MiniStat label="Rejected" value={stats.rejectedBusinesses} />
                   <MiniStat
                     label="Pending"
                     value={stats.pendingBusinesses}
                     tone={stats.pendingBusinesses > 0 ? "warn" : "ok"}
+                  />
+                  <MiniStat
+                    label="Duplicate Review"
+                    value={stats.duplicateReviewBusinesses}
+                    tone={stats.duplicateReviewBusinesses > 0 ? "warn" : "ok"}
                   />
                 </div>
 
