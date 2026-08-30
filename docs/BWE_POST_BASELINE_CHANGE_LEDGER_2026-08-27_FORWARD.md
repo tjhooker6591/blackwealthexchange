@@ -251,6 +251,7 @@ Status:
 - Began Workstream 002 by preserving the existing history library as the canonical foundation rather than replacing it.
 - Added the research/source ledger, the coverage-gap matrix, and the public content architecture.
 - Expanded the live history route with the first substantive block covering humanity's African beginning, Africa before captivity, African sacred worlds, and Yoruba worldview.
+- Expanded the live history route again with the Block 3 Nile Valley build covering Egypt, Kemet, Ma'at, women and power, Nubia, Kush, the 25th Dynasty, the Kandakes, and identity/evidence cautions.
 - Preserved the accepted master-program re-anchor in control commit `8f40bb769b2c6a72418ff4be673ba50ea7f4a7a2`.
 
 Package.json reconciliation:
@@ -269,6 +270,7 @@ History Block:
 
 - `BLOCK 1`: inventory, research/source ledger, gap matrix, architecture
 - `BLOCK 2`: humanity's African beginning, Africa before captivity, African sacred worlds, Yoruba worldview
+- `BLOCK 3`: Egypt / Kemet / Nile Valley / Nubia / Kush
 
 Post-baseline counters after Workstream 002 start:
 
@@ -335,7 +337,7 @@ SOURCES ADDED:
 
 RUNTIME COMMIT:
 
-- `PENDING`
+- `f50fc7316c2f65a4ba93be7be738bf21ddcb5255`
 
 CONTROL COMMIT:
 
@@ -358,7 +360,7 @@ VALIDATION:
 
 STATUS:
 
-- `WORKING TREE`
+- `COMMITTED`
 
 #### 2. Research and source ledger
 
@@ -410,7 +412,7 @@ SOURCES ADDED:
 
 RUNTIME COMMIT:
 
-- `N/A`
+- `f50fc7316c2f65a4ba93be7be738bf21ddcb5255`
 
 VALIDATION:
 
@@ -418,7 +420,7 @@ VALIDATION:
 
 STATUS:
 
-- `WORKING TREE`
+- `COMMITTED`
 
 #### 3. Coverage and gap matrix
 
@@ -466,7 +468,7 @@ SOURCES ADDED:
 
 RUNTIME COMMIT:
 
-- `N/A`
+- `f50fc7316c2f65a4ba93be7be738bf21ddcb5255`
 
 VALIDATION:
 
@@ -474,7 +476,7 @@ VALIDATION:
 
 STATUS:
 
-- `WORKING TREE`
+- `COMMITTED`
 
 #### 4. Content architecture
 
@@ -523,7 +525,7 @@ SOURCES ADDED:
 
 RUNTIME COMMIT:
 
-- `N/A`
+- `f50fc7316c2f65a4ba93be7be738bf21ddcb5255`
 
 VALIDATION:
 
@@ -531,7 +533,199 @@ VALIDATION:
 
 STATUS:
 
-- `WORKING TREE`
+- `COMMITTED`
+
+#### 5. Library of Black History route expansion - Block 3
+
+DATE:
+
+- `2026-08-30`
+
+WORKSTREAM:
+
+- `LIBRARY OF BLACK HISTORY - COMPREHENSIVE RESEARCH, EXPANSION, AND UNTOLD HISTORY`
+
+HISTORY BLOCK:
+
+- `BLOCK 3`
+
+CHANGE TYPE:
+
+- `MODIFIED`
+
+FILE:
+
+- `library-of-black-history.tsx`
+
+RELATIVE PATH:
+
+- `src/pages/library-of-black-history.tsx`
+
+WHY CHANGED:
+
+- Preserve the accepted Blocks 1 and 2 expansion while adding a substantive Nile Valley build that treats Egypt, Nubia, and Kush with a higher evidence standard.
+
+CONTENT ADDED:
+
+- Block 3 long-form sections on Egypt, Kemet, Nile Valley chronology, Ma'at, kingship, scribal culture, women and property, Nubia, Kush, the 25th Dynasty, Kandakes, Taharqa, and Meroitic writing
+- Myth, Claim & Evidence treatment on modern racial claims about ancient Egypt
+- What School Often Left Out treatment for Nubia, Kush, the 25th Dynasty, the Kandakes, Amanirenas, and Meroitic writing
+- new Nile Valley and population-evidence source cards in the live resource grid
+
+CONTENT PRESERVED:
+
+- Existing hero, Truth Mirror, search, filters, curated source grid, route identity, and accepted Blocks 1 and 2 sections
+
+SOURCES ADDED:
+
+- UNESCO General History of Africa Volume II
+- Metropolitan Museum of Art Nile Valley essays
+- UCL Digital Egypt
+- Penn Museum Upper Nubia scholarship
+- Nature 2025 ancient Egyptian genome article
+- Journal of Ancient Egyptian Interconnections
+
+RUNTIME COMMIT:
+
+- `46dbd98d227cfb794b1eaf4c4120adec9856c619`
+
+VALIDATION:
+
+- `npm run typecheck` PASS
+- `node scripts/runtime-check.mjs` PASS
+- `node scripts/check-critical-paths.mjs` PASS
+- `/library-of-black-history` `200`
+- Block 3 browser content validation PASS
+- source links render PASS
+- heading hierarchy spot-check PASS
+- keyboard navigation spot-check PASS
+- visible focus spot-check PASS
+- landmark structure spot-check PASS
+- mobile text scaling PASS
+- no horizontal overflow PASS
+- console errors NONE
+- failed network requests NONE
+- canonical repo serving on port `3000` YES
+
+STATUS:
+
+- `COMMITTED`
+
+#### 6. Research and source ledger - Block 3 expansion
+
+DATE:
+
+- `2026-08-30`
+
+WORKSTREAM:
+
+- `LIBRARY OF BLACK HISTORY - COMPREHENSIVE RESEARCH, EXPANSION, AND UNTOLD HISTORY`
+
+HISTORY BLOCK:
+
+- `BLOCK 3`
+
+CHANGE TYPE:
+
+- `MODIFIED`
+
+FILE:
+
+- `BWE_BLACK_HISTORY_RESEARCH_AND_SOURCE_LEDGER.md`
+
+RELATIVE PATH:
+
+- `docs/BWE_BLACK_HISTORY_RESEARCH_AND_SOURCE_LEDGER.md`
+
+WHY CHANGED:
+
+- Record the evidence stack, cautions, and claim-level support behind the Nile Valley block rather than treating the public page as unsourced editorial summary.
+
+CONTENT ADDED:
+
+- claim rows for Egypt, Kemet terminology, Ma'at, scribal culture, women in Egypt, Hatshepsut, Nubia, Kerma, the 25th Dynasty, Taharqa, Kandakes, Amanirenas, Meroitic writing, and DNA caution
+
+CONTENT PRESERVED:
+
+- Existing Block 1 and Block 2 research entries
+
+SOURCES ADDED:
+
+- UNESCO
+- Met
+- UCL
+- Penn Museum
+- Nature
+- peer-reviewed frontier scholarship
+
+RUNTIME COMMIT:
+
+- `46dbd98d227cfb794b1eaf4c4120adec9856c619`
+
+VALIDATION:
+
+- documentation integrity review PASS
+
+STATUS:
+
+- `COMMITTED`
+
+#### 7. Coverage and gap matrix - Block 3 reclassification
+
+DATE:
+
+- `2026-08-30`
+
+WORKSTREAM:
+
+- `LIBRARY OF BLACK HISTORY - COMPREHENSIVE RESEARCH, EXPANSION, AND UNTOLD HISTORY`
+
+HISTORY BLOCK:
+
+- `BLOCK 3`
+
+CHANGE TYPE:
+
+- `MODIFIED`
+
+FILE:
+
+- `BWE_BLACK_HISTORY_COVERAGE_GAP_MATRIX.md`
+
+RELATIVE PATH:
+
+- `docs/BWE_BLACK_HISTORY_COVERAGE_GAP_MATRIX.md`
+
+WHY CHANGED:
+
+- Reclassify the live library honestly after the Nile Valley expansion so future blocks target the remaining gaps rather than already-completed work.
+
+CONTENT ADDED:
+
+- Block 3 location key
+- FULL coverage classifications for Egypt / Kemet, Ma'at, Nubia, Kush, 25th Dynasty, and Kandakes
+- updated partial coverage for African kings, queens, government, writing, medicine, mathematics, and astronomy
+
+CONTENT PRESERVED:
+
+- Existing inventory structure and priority model
+
+SOURCES ADDED:
+
+- Live-page inventory plus Block 3 evidence stack
+
+RUNTIME COMMIT:
+
+- `46dbd98d227cfb794b1eaf4c4120adec9856c619`
+
+VALIDATION:
+
+- documentation integrity review PASS
+
+STATUS:
+
+- `COMMITTED`
+
 - `POST-BASELINE DELETED`: `0`
 - `POST-BASELINE RENAMED`: `0`
 - `POST-BASELINE DB WRITES`: `0`
