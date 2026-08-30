@@ -161,6 +161,82 @@ STATUS:
 
 - `COMMITTED`
 
+## Workstream 001 Correction
+
+Name: `FOUNDING PRINCIPLE WORDING-FIDELITY + UI CORRECTION`
+
+Date: `2026-08-30`
+
+Status:
+
+- Corrected the public Founding Principle presentation without undoing the Workstream 001 recovery.
+- Preserved `src/lib/foundingContent.ts`, `/about`, `/founding-principle`, `/library-of-black-history`, homepage History link, learning History link, footer History link, and the existing post-baseline ledger.
+
+Wording-fidelity audit summary:
+
+- `FOUNDING WORDING DIFFERENCES FOUND`: `8`
+- `FORMATTING ONLY`: `1`
+- `GRAMMAR / TYPOGRAPHY`: `1`
+- `SUBSTANTIVE EDITORIAL CHANGE`: `6`
+- `UNAPPROVED SUBSTANTIVE DIFFERENCES RESTORED`: `6`
+
+Substantive differences restored to owner wording:
+
+- `A deliberate, strategic stand` -> `A deliberate and strategic stand`
+- `rightfully given` -> `freely given`
+- `foundations that were never permitted to exist` -> `foundations never permitted to exist`
+- `mimic unity` -> `perform unity`
+- `sacred bond` -> `bond`
+- `economic disparities we face today` -> `every economic disparity we face today`
+
+Formatting / grammar retained or corrected:
+
+- Restored the comma structure in `our voices, our dollars, our vision`
+- Preserved the grammar correction `history's denial` in place of the historical source typo `histories denial`
+
+Internal public engineering copy:
+
+- Removed `This route preserves the founder-authored declaration at the core of BWE and keeps it separate from the platform's broader history library.` from the public Founding Principle page.
+
+Presentation correction summary:
+
+- Rebuilt the Founding Principle hero into a two-line premium headline plus a separate declaration lead paragraph.
+- Moved related links to a quieter `Related Paths` section near the bottom of the page.
+- Shifted the page from stacked cards to long-form editorial sections with restrained separators, narrower reading width, and controlled rhetorical callouts.
+- Restructured `/about` so it remains distinct from `/founding-principle` while preserving owner-authored language where quoted or excerpted.
+
+Correction file set:
+
+- `src/lib/foundingContent.ts`
+- `src/pages/about.tsx`
+- `src/pages/founding-principle.tsx`
+- `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md`
+
+Post-baseline counters after correction:
+
+- `POST-BASELINE UNIQUE APPLICATION FILE COUNT`: `6`
+- `POST-BASELINE UNIQUE REPOSITORY FILE COUNT`: `7`
+- `POST-BASELINE ADDED`: `2`
+- `POST-BASELINE MODIFIED`: `5`
+- `POST-BASELINE DELETED`: `0`
+- `POST-BASELINE RENAMED`: `0`
+- `POST-BASELINE DB WRITES`: `0`
+- `CURRENT TOTAL DB OPERATIONS`: `35`
+
+Validation:
+
+- `npm run typecheck` PASS
+- `npm run runtime:check` PASS
+- `npm run check:critical-paths` PASS
+- `/about` `200`
+- `/founding-principle` `200`
+- `/library-of-black-history` `200`
+- Desktop browser validation PASS
+- Mobile browser validation PASS
+- No horizontal overflow PASS
+- History links PASS
+- Regression PASS
+
 ### 2. About page restoration
 
 DATE:
