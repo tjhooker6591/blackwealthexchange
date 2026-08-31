@@ -21,6 +21,12 @@ import {
   block4SchoolGaps,
   block4Sections,
 } from "@/lib/black-history-block4";
+import {
+  block5ClaimChecks,
+  block5RulerProfiles,
+  block5SchoolGaps,
+  block5Sections,
+} from "@/lib/black-history-block5";
 
 type Region =
   | "Global"
@@ -399,6 +405,81 @@ const libraryItems: LibraryItem[] = [
       {
         label: "Met - African Lost-Wax Casting",
         url: "https://www.metmuseum.org/essays/african-lost-wax-casting",
+        type: "Museum",
+      },
+    ],
+  },
+  {
+    id: 105,
+    title: "West African Empires, Trade Networks, and State Power",
+    summary:
+      "A starting source path for Ghana or Wagadu, Mali, Songhai, caravan taxation, gold, salt, and the political geography of the western Sudan.",
+    category: "Truth & Context",
+    region: "Africa",
+    links: [
+      {
+        label: "Met - The Empires of the Western Sudan",
+        url: "https://www.metmuseum.org/essays/the-empires-of-the-western-sudan",
+        type: "Museum",
+      },
+      {
+        label: "Met - The Trans-Saharan Gold Trade",
+        url: "https://www.metmuseum.org/essays/the-trans-saharan-gold-trade-7th-14th-century",
+        type: "Academic",
+      },
+      {
+        label: "Fordham - Internet African History Sourcebook",
+        url: "https://sourcebooks.web.fordham.edu/africa/africasbook.asp",
+        type: "Primary Sources",
+      },
+    ],
+  },
+  {
+    id: 106,
+    title: "Timbuktu, Manuscripts, and Scholarly Networks",
+    summary:
+      "A focused research trail for Timbuktu as market, manuscript center, legal culture, and educational network rather than a loose legend.",
+    category: "Research Tools",
+    region: "Africa",
+    links: [
+      {
+        label: "UNESCO - Timbuktu",
+        url: "https://whc.unesco.org/en/list/119/",
+        type: "Open Access",
+      },
+      {
+        label: "Library of Congress - Ancient Manuscripts from Timbuktu",
+        url: "https://www.loc.gov/exhibits/mali/mali-exhibit.html",
+        type: "Archive",
+      },
+      {
+        label: "Library of Congress - Islamic Manuscripts from Mali",
+        url: "https://www.loc.gov/collections/islamic-manuscripts-from-mali/about-this-collection/",
+        type: "Archive",
+      },
+    ],
+  },
+  {
+    id: 107,
+    title: "Gao, Djenné, and Sahelian Urban History",
+    summary:
+      "Use this cluster for Askia, Gao, the Tomb of Askia, Djenné-Djeno, later Djenné, urban continuity, and Sudano-Sahelian architecture.",
+    category: "Culture & Contribution",
+    region: "Africa",
+    links: [
+      {
+        label: "UNESCO - Tomb of Askia",
+        url: "https://whc.unesco.org/en/list/1139/",
+        type: "Open Access",
+      },
+      {
+        label: "UNESCO - Old Towns of Djenne",
+        url: "https://whc.unesco.org/en/list/116/",
+        type: "Open Access",
+      },
+      {
+        label: "Met - Sahel: Art and Empires on the Shores of the Sahara",
+        url: "https://www.metmuseum.org/exhibitions/sahel-art-empire-sahara/inside-the-exhibition",
         type: "Museum",
       },
     ],
@@ -826,14 +907,14 @@ const historyJourneys: JourneyBlock[] = [
   {
     block: "Block 4",
     title: "Government, rulers, knowledge systems, writing, science, education",
-    status: "Active now",
-    note: "This build restores institutional diversity: government, law, women in power, writing systems, oral knowledge, education, and technical history.",
+    status: "Completed checkpoint",
+    note: "This accepted build restores institutional diversity: government, law, women in power, writing systems, oral knowledge, education, and technical history.",
   },
   {
     block: "Block 5",
     title: "West African civilizations: Ghana, Mali, Songhai, Timbuktu",
-    status: "Queued next",
-    note: "Trade, scholarship, governance, and wealth networks.",
+    status: "Active now",
+    note: "This build develops Ghana or Wagadu, Mali, Songhai, Timbuktu, manuscript culture, cities, scholarship, trade, and wealth claims with source caution.",
   },
   {
     block: "Block 6",
@@ -1704,9 +1785,9 @@ export default function LibraryOfBlackHistory() {
                 summaries and recycled social content.
               </Callout>
               <Callout title="What comes next" tone="red">
-                The current active build is Block 4: African government, rulers,
-                women in power, writing systems, education, and evidence-based
-                science and technology.
+                The current active build is Block 5: Ghana or Wagadu, Mali,
+                Sundiata, Mansa Musa, Timbuktu, Songhai, trade, cities, and
+                manuscript culture.
               </Callout>
             </div>
           </Card>
@@ -2074,7 +2155,7 @@ export default function LibraryOfBlackHistory() {
 
         <div className="mt-8">
           <Card
-            kicker="CURRENT ACTIVE BUILD"
+            kicker="COMPLETED CHECKPOINT"
             title="Block 4: government, rulers, knowledge systems, writing, science, and education"
             icon={<LibraryBig className="h-5 w-5 text-[#D4AF37]" />}
           >
@@ -2351,6 +2432,328 @@ export default function LibraryOfBlackHistory() {
               </h3>
               <div className="mt-5 grid grid-cols-1 xl:grid-cols-2 gap-4">
                 {block4SchoolGaps.map((item) => (
+                  <div
+                    key={item.title}
+                    className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+                  >
+                    <div className="text-sm font-extrabold text-white">
+                      {item.title}
+                    </div>
+                    <div className="mt-3 space-y-2 text-sm leading-relaxed text-white/75">
+                      <div>
+                        <span className="font-extrabold text-white">
+                          Commonly taught:
+                        </span>{" "}
+                        {item.commonlyTaught}
+                      </div>
+                      <div>
+                        <span className="font-extrabold text-white">
+                          Missing context:
+                        </span>{" "}
+                        {item.missingContext}
+                      </div>
+                      <div>
+                        <span className="font-extrabold text-white">
+                          The evidence:
+                        </span>{" "}
+                        {item.evidence}
+                      </div>
+                      <div>
+                        <span className="font-extrabold text-white">
+                          Why it matters:
+                        </span>{" "}
+                        {item.whyItMatters}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        <div className="mt-8">
+          <Card
+            kicker="CURRENT ACTIVE BUILD"
+            title="Block 5: West African civilizations, trade, scholarship, and manuscript cultures"
+            icon={<LibraryBig className="h-5 w-5 text-[#D4AF37]" />}
+          >
+            <p className="text-white/75">
+              This block corrects another durable lie: that precolonial West
+              Africa was only villages, caravans, or one spectacularly wealthy
+              king. The evidence shows cities, taxation, law, scholarship,
+              manuscript culture, agrarian production, river power, and major
+              political systems that changed over time.
+            </p>
+
+            <div className="mt-5 space-y-4">
+              {block5Sections.map((section) => (
+                <section
+                  key={section.id}
+                  className="rounded-[28px] border border-white/10 bg-black/30 p-5 sm:p-6"
+                >
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="max-w-3xl">
+                      <div className="text-[11px] uppercase tracking-[0.24em] text-white/45 font-extrabold">
+                        {section.kicker}
+                      </div>
+                      <h3 className="mt-2 text-2xl font-extrabold tracking-tight text-white">
+                        {section.title}
+                      </h3>
+                      <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-extrabold">
+                        <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-white/65">
+                          {section.coverage}
+                        </span>
+                        <span className="rounded-full border border-[#D4AF37]/25 bg-[#D4AF37]/10 px-3 py-1 text-[#D4AF37]">
+                          Evidence class {section.evidenceClass}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="max-w-sm text-sm leading-relaxed text-white/70">
+                      {section.summary}
+                    </div>
+                  </div>
+
+                  <div className="mt-5 grid grid-cols-1 xl:grid-cols-[0.92fr_1.08fr] gap-4">
+                    <div className="space-y-4">
+                      <Callout title="Commonly taught" tone="red">
+                        {section.commonlyTaught}
+                      </Callout>
+                      <Callout title="Missing context" tone="gold">
+                        {section.missingContext}
+                      </Callout>
+                      <Callout title="Why it matters" tone="emerald">
+                        {section.whyItMatters}
+                      </Callout>
+                      {section.caution ? (
+                        <Callout title="Evidence caution" tone="red">
+                          {section.caution}
+                        </Callout>
+                      ) : null}
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                        <div className="text-[11px] uppercase tracking-widest text-white/45 font-extrabold">
+                          The evidence
+                        </div>
+                        <List
+                          items={section.evidence.map((item) => (
+                            <>{item}</>
+                          ))}
+                        />
+                      </div>
+
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                        <div className="text-[11px] uppercase tracking-widest text-white/45 font-extrabold">
+                          Source path
+                        </div>
+                        <div className="mt-3 grid grid-cols-1 gap-2">
+                          {section.sources.map((source) => (
+                            <ExternalA
+                              key={source.url}
+                              href={source.url}
+                              className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 transition hover:bg-white/[0.06]"
+                            >
+                              <span className="min-w-0">
+                                <span className="text-[#D4AF37] font-extrabold text-[12px]">
+                                  {source.type}
+                                </span>{" "}
+                                <span className="text-white/80">-</span>{" "}
+                                <span className="font-semibold">
+                                  {source.label}
+                                </span>
+                              </span>
+                              <ExternalLink className="h-4 w-4 shrink-0 text-white/50" />
+                            </ExternalA>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              ))}
+            </div>
+
+            <div className="mt-6 grid grid-cols-1 xl:grid-cols-[1.08fr_0.92fr] gap-4">
+              <div className="rounded-[28px] border border-white/10 bg-black/30 p-5 sm:p-6">
+                <div className="text-[11px] uppercase tracking-[0.24em] text-white/45 font-extrabold">
+                  Rulers in context
+                </div>
+                <h3 className="mt-2 text-2xl font-extrabold tracking-tight text-white">
+                  Founders, emperors, conquerors, and legal consolidators
+                </h3>
+                <p className="mt-3 max-w-3xl text-white/70 leading-relaxed">
+                  These ruler profiles stay tied to political systems, oral
+                  tradition, trade, law, and source limits. West African history
+                  is bigger than any one king.
+                </p>
+                <div className="mt-5 space-y-4">
+                  {block5RulerProfiles.map((profile: RulerProfile) => (
+                    <div
+                      key={profile.name}
+                      className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+                    >
+                      <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                          <div className="text-lg font-extrabold text-white">
+                            {profile.name}
+                          </div>
+                          <div className="text-sm text-[#D4AF37] font-extrabold">
+                            {profile.period}
+                          </div>
+                        </div>
+                        <div className="text-sm text-white/60">
+                          {profile.region}
+                        </div>
+                      </div>
+                      <div className="mt-3 grid grid-cols-1 gap-2 text-sm leading-relaxed text-white/75">
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Political system:
+                          </span>{" "}
+                          {profile.politicalSystem}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Economic base:
+                          </span>{" "}
+                          {profile.economicBase}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Religious / cultural context:
+                          </span>{" "}
+                          {profile.religiousContext}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Governance:
+                          </span>{" "}
+                          {profile.governance}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Diplomacy:
+                          </span>{" "}
+                          {profile.diplomacy}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Military role:
+                          </span>{" "}
+                          {profile.militaryRole}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Achievements:
+                          </span>{" "}
+                          {profile.achievements}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Conflicts:
+                          </span>{" "}
+                          {profile.conflicts}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Limitations:
+                          </span>{" "}
+                          {profile.limitations}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Legacy:
+                          </span>{" "}
+                          {profile.legacy}
+                        </div>
+                      </div>
+                      <div className="mt-4 grid grid-cols-1 gap-2">
+                        {profile.sources.map((source) => (
+                          <ExternalA
+                            key={`${profile.name}-${source.url}`}
+                            href={source.url}
+                            className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 transition hover:bg-white/[0.06]"
+                          >
+                            <span className="min-w-0">
+                              <span className="text-[#D4AF37] font-extrabold text-[12px]">
+                                {source.type}
+                              </span>{" "}
+                              <span className="text-white/80">-</span>{" "}
+                              <span className="font-semibold">
+                                {source.label}
+                              </span>
+                            </span>
+                            <ExternalLink className="h-4 w-4 shrink-0 text-white/50" />
+                          </ExternalA>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-[28px] border border-white/10 bg-black/30 p-5 sm:p-6">
+                <div className="text-[11px] uppercase tracking-[0.24em] text-white/45 font-extrabold">
+                  Myth, claim & evidence
+                </div>
+                <h3 className="mt-2 text-2xl font-extrabold tracking-tight text-white">
+                  Ghana, Mali, Timbuktu, and wealth claims without fake
+                  precision
+                </h3>
+                <div className="mt-5 space-y-4">
+                  {block5ClaimChecks.map((item) => (
+                    <div
+                      key={item.claim}
+                      className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+                    >
+                      <div className="text-sm font-extrabold text-[#D4AF37]">
+                        {item.claim}
+                      </div>
+                      <div className="mt-3 space-y-3 text-sm leading-relaxed text-white/75">
+                        <div>
+                          <span className="font-extrabold text-white">
+                            What is true:
+                          </span>{" "}
+                          {item.truth}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            What is uncertain:
+                          </span>{" "}
+                          {item.uncertain}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            What is unsupported:
+                          </span>{" "}
+                          {item.unsupported}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Why it matters:
+                          </span>{" "}
+                          {item.whyItMatters}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-[28px] border border-white/10 bg-black/30 p-5 sm:p-6">
+              <div className="text-[11px] uppercase tracking-[0.24em] text-white/45 font-extrabold">
+                What school often left out
+              </div>
+              <h3 className="mt-2 text-2xl font-extrabold tracking-tight text-white">
+                Ghana or Wagadu, manuscript trade, Songhai government, and West
+                African cities
+              </h3>
+              <div className="mt-5 grid grid-cols-1 xl:grid-cols-2 gap-4">
+                {block5SchoolGaps.map((item) => (
                   <div
                     key={item.title}
                     className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
