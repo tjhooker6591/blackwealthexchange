@@ -1,6 +1,6 @@
 # BWE Black History Content Architecture
 
-Date: 2026-08-30
+Date: 2026-08-31
 Workstream: POST-BASELINE WORKSTREAM 002
 
 Purpose:
@@ -15,8 +15,8 @@ Purpose:
 | ----- | ------------------------------------------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------ |
 | 1     | Current library inventory, research/source ledger, gap matrix, content architecture               | ACTIVE FOUNDATION        | Completed in this pass as docs plus live-page framing                    |
 | 2     | Humanity's African Beginning / Africa Before Captivity / African Sacred Worlds / Yoruba Worldview | ACTIVE RUNTIME EXPANSION | First substantive public expansion in this pass                          |
-| 3     | Egypt / Kemet / Nile Valley / Nubia / Kush                                                        | NEXT                     | Must be evidence-heavy and complexity-forward                            |
-| 4     | Government / kings / queens / knowledge / writing / science / education                           | QUEUED                   | Build after Nile Valley foundation exists                                |
+| 3     | Egypt / Kemet / Nile Valley / Nubia / Kush                                                        | COMPLETED CHECKPOINT     | Preserved as the accepted Nile Valley foundation                         |
+| 4     | Government / kings / queens / knowledge / writing / science / education                           | ACTIVE RUNTIME EXPANSION | Added on the live page with ruler profiles, writing, law, and science    |
 | 5     | West African civilizations / Ghana / Mali / Songhai / Timbuktu                                    | QUEUED                   | Include trade, scholarship, and statecraft                               |
 | 6     | East Africa / Aksum / Ethiopia / Swahili world                                                    | QUEUED                   | Link Red Sea and Indian Ocean networks                                   |
 | 7     | North Africa / Amazigh history / Moors / al-Andalus                                               | QUEUED                   | Must foreground complexity without flattening identity                   |
@@ -63,3 +63,4 @@ Use these labels in public when needed:
 - The current `src/pages/library-of-black-history.tsx` remains the canonical foundation page.
 - New routes should only be added when a block becomes substantial enough to stand on its own.
 - Until then, ship major new sections into the library page with strong source pathways and clear evidence language.
+- Block 4 justified a small safe architecture step: new structured content now lives in `src/lib/black-history-block4.ts` while the existing route, search, filters, and page identity remain preserved.

@@ -238,6 +238,62 @@ Post-baseline counters after correction:
 - `POST-BASELINE ADDED`: `2`
 - `POST-BASELINE MODIFIED`: `5`
 
+## Workstream 002 Checkpoint
+
+Name: `LIBRARY OF BLACK HISTORY — BLOCK 4`
+
+Date: `2026-08-31`
+
+Status:
+
+- Added Block 4 to the live `library-of-black-history` route without replacing Blocks 1-3, the Truth Mirror, route identity, search, or filters.
+- Preserved the accepted Egypt / Kemet / Nile Valley / Nubia / Kush material and advanced the active build into African government, rulers, women and queen-mother power, writing systems, oral knowledge, education, science, technology, Benin, Igbo-Ukwu, and Great Zimbabwe.
+- Made the smallest safe architecture improvement by moving new Block 4 content into a dedicated source module while keeping the existing route and navigation intact.
+
+Runtime/content file set:
+
+- `src/lib/black-history-block4.ts`
+- `src/pages/library-of-black-history.tsx`
+- `docs/BWE_BLACK_HISTORY_CONTENT_ARCHITECTURE.md`
+- `docs/BWE_BLACK_HISTORY_COVERAGE_GAP_MATRIX.md`
+- `docs/BWE_BLACK_HISTORY_RESEARCH_AND_SOURCE_LEDGER.md`
+- `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md`
+- `docs/BWE_WORLD_CLASS_MEASUREMENT_HISTORY.md`
+
+Functional changes:
+
+- Added seven new substantive Block 4 public sections.
+- Added contextual ruler profiles for Hatshepsut, Taharqa, Amanirenas, Ezana, Idia, and Ana Nzinga.
+- Added Block 4 myth/claim/evidence material and `What school often left out` material.
+- Expanded the source grid with new Block 4 research cards.
+
+Functionality preserved:
+
+- `/library-of-black-history` route identity
+- Truth Mirror
+- search
+- filters
+- Blocks 1-3
+- Egypt / Kemet
+- Nile Valley chronology
+- Ma'at
+- Nubia / Kush
+- 25th Dynasty
+- Kandakes
+- Taharqa
+- Meroitic writing
+
+Post-baseline counters after Block 4:
+
+- `POST-BASELINE UNIQUE APPLICATION FILE COUNT`: `8`
+- `POST-BASELINE UNIQUE REPOSITORY FILE COUNT`: `14`
+- `POST-BASELINE ADDED`: `3`
+- `POST-BASELINE MODIFIED`: `11`
+- `POST-BASELINE DELETED`: `0`
+- `POST-BASELINE RENAMED`: `0`
+- `POST-BASELINE DB WRITES`: `0`
+- `CURRENT TOTAL DB OPERATIONS`: `35`
+
 ## Workstream 002
 
 Name: `LIBRARY OF BLACK HISTORY - COMPREHENSIVE RESEARCH, EXPANSION, AND UNTOLD HISTORY`

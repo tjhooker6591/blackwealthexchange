@@ -2,6 +2,38 @@
 
 Last updated: 2026-08-30
 
+## Entry 2026-08-31 — Workstream 002 Block 4 substantive checkpoint
+
+- WORKSTREAM: `POST-BASELINE WORKSTREAM 002 — LIBRARY OF BLACK HISTORY / BLOCK 4`
+- SCORE BEFORE: `381 / 1000`
+- SCORE AFTER: `381 / 1000`
+- POINTS EARNED: `0`
+- RELEASE COMPLETION BEFORE: `67%`
+- RELEASE COMPLETION AFTER: `67%`
+- GAPS CLOSED: `0`
+- GAPS CREATED: `0`
+- PROGRAM ITEMS COMPLETED: `0`
+- NEW PROGRAM ITEMS IDENTIFIED: `0`
+- DEPENDENCIES CLOSED: `0`
+- ENGINEERING GAIN: `YES — the history route now carries a structured Block 4 content module and larger evidence-backed public treatment without route sprawl`
+- EVIDENCE GAIN: `YES — Block 4 now documents African political diversity, rulers, women in power, writing systems, oral knowledge, education, science, technology, Benin, Igbo-Ukwu, and Great Zimbabwe with linked source pathways`
+- METHODOLOGY ADJUSTMENT: `YES — content/data separation was introduced only for the new Block 4 payload while preserving the existing route identity`
+- REVENUE GAIN: `0`
+- REVENUE ENABLEMENT: `UNCHANGED — this strengthens trust and educational seriousness, but no new revenue proof exists`
+- REVENUE PROTECTION: `YES — world-class maturity, release closure, BI stage, BWE-10, BWE-13, DB operations, and BMEV remain unchanged`
+- EVIDENCE:
+  - `src/lib/black-history-block4.ts`
+  - `src/pages/library-of-black-history.tsx`
+  - `docs/BWE_BLACK_HISTORY_CONTENT_ARCHITECTURE.md`
+  - `docs/BWE_BLACK_HISTORY_COVERAGE_GAP_MATRIX.md`
+  - `docs/BWE_BLACK_HISTORY_RESEARCH_AND_SOURCE_LEDGER.md`
+  - `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md`
+- NOTES:
+  - Block 3 remains preserved and accepted
+  - the current active history build is now Block 4
+  - Phase 0 and Phase 1 stay complete; Phase 2 remains outstanding
+  - no DB writes, revenue claims, or BMEV claims were added in this checkpoint
+
 ## Entry 2026-08-30 — Workstream 002 master-program re-anchor
 
 - WORKSTREAM: `POST-BASELINE WORKSTREAM 002 — LIBRARY OF BLACK HISTORY / MASTER PROGRAM RE-ANCHOR`
