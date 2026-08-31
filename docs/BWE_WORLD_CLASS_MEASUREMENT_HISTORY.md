@@ -2,6 +2,39 @@
 
 Last updated: 2026-08-31
 
+## Entry 2026-08-31 — Workstream 002 history public experience correction
+
+- WORKSTREAM: `POST-BASELINE WORKSTREAM 002 — LIBRARY OF BLACK HISTORY / PUBLIC EXPERIENCE CORRECTION`
+- SCORE BEFORE: `381 / 1000`
+- SCORE AFTER: `381 / 1000`
+- POINTS EARNED: `0`
+- RELEASE COMPLETION BEFORE: `67%`
+- RELEASE COMPLETION AFTER: `67%`
+- GAPS CLOSED: `0`
+- GAPS CREATED: `0`
+- PROGRAM ITEMS COMPLETED: `0`
+- NEW PROGRAM ITEMS IDENTIFIED: `0`
+- DEPENDENCIES CLOSED: `0`
+- ENGINEERING GAIN: `YES — the public history surface now separates the landing experience from completed chapter reading while preserving search, source access, and accepted historical depth`
+- EVIDENCE GAIN: `YES — completed Blocks 2-5 are now reachable through stable chapter routes with story-first reading and optional evidence layers`
+- METHODOLOGY ADJUSTMENT: `YES — internal workstream language has been removed from the public history UI while remaining preserved in committed control records`
+- REVENUE GAIN: `0`
+- REVENUE ENABLEMENT: `UNCHANGED — this improves clarity, trust, and mobile readability, but no new revenue proof exists`
+- REVENUE PROTECTION: `YES — world-class maturity, release completion, BI stage, BWE-10, BWE-13, DB operations, and BMEV remain unchanged`
+- EVIDENCE:
+  - runtime commit `ac6920bdd26ebd550fb2418735e8a6c8db3d34c9`
+  - `src/pages/library-of-black-history.tsx`
+  - `src/pages/library-of-black-history/[chapter].tsx`
+  - `src/components/history/black-history-ui.tsx`
+  - `src/lib/black-history-foundations.ts`
+  - `docs/BWE_BLACK_HISTORY_CONTENT_ARCHITECTURE.md`
+  - `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md`
+- NOTES:
+  - Block 5 remains preserved and owner-reviewable through its own public chapter route
+  - Block 6 did not begin
+  - Phase 0 and Phase 1 stay complete; Phase 2 remains outstanding
+  - no DB writes, revenue claims, or BMEV claims were added in this checkpoint
+
 ## Entry 2026-08-31 — Workstream 002 Block 5 substantive checkpoint
 
 - WORKSTREAM: `POST-BASELINE WORKSTREAM 002 — LIBRARY OF BLACK HISTORY / BLOCK 5`

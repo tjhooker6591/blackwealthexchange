@@ -258,6 +258,75 @@ Runtime/content file set:
 - `docs/BWE_BLACK_HISTORY_COVERAGE_GAP_MATRIX.md`
 - `docs/BWE_BLACK_HISTORY_RESEARCH_AND_SOURCE_LEDGER.md`
 - `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md`
+
+## Workstream 002 Checkpoint
+
+Name: `LIBRARY OF BLACK HISTORY — BLOCK 5 PUBLIC EXPERIENCE CORRECTION`
+
+Date: `2026-08-31`
+
+Status:
+
+- Preserved the already-started Block 5 history slice and left its accepted runtime and control checkpoints intact.
+- Converted `/library-of-black-history` from one giant public history page into a shorter library entrance with search, chapter pathways, and a reduced Truth Mirror footprint.
+- Promoted completed history into real chapter routes for reading without exposing internal workstream or block language on the public surface.
+- Kept all completed history content and source access while moving myth/evidence, school-gap, and source-heavy material behind cleaner disclosures.
+- Stopped after the public/mobile architecture correction and did not begin Block 6.
+
+Runtime/content file set:
+
+- `src/pages/library-of-black-history.tsx`
+- `src/pages/library-of-black-history/[chapter].tsx`
+- `src/components/history/black-history-ui.tsx`
+- `src/lib/black-history-foundations.ts`
+
+Control file set:
+
+- `docs/BWE_BLACK_HISTORY_CONTENT_ARCHITECTURE.md`
+- `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md`
+- `docs/BWE_WORLD_CLASS_MEASUREMENT_HISTORY.md`
+
+Public-structure correction:
+
+- Old public problem:
+  - the route exposed internal build language, roadmap framing, full blocks, and long evidence/source material together on one page
+  - mobile visitors entered a history wall instead of a navigable library
+- New public structure:
+  - `/library-of-black-history` is now the entrance
+  - completed chapters live at `/library-of-black-history/origins`, `/library-of-black-history/nile-valley`, `/library-of-black-history/government-knowledge`, and `/library-of-black-history/west-africa`
+  - the Truth Mirror remains available as a featured learning tool instead of dominating the first screen
+  - search, filters, and source paths remain available without leading the page with an always-open wall of material
+
+Runtime commit:
+
+- `ac6920bdd26ebd550fb2418735e8a6c8db3d34c9` `feat(history): restructure black history into chapter routes`
+
+Validation:
+
+- `npm run typecheck` PASS
+- `node scripts/runtime-check.mjs` PASS
+- `node scripts/check-critical-paths.mjs` PASS (`35/35`)
+- Browser route validation PASS on:
+  - `/library-of-black-history`
+  - `/library-of-black-history/origins`
+  - `/library-of-black-history/nile-valley`
+  - `/library-of-black-history/government-knowledge`
+  - `/library-of-black-history/west-africa`
+- Mobile and responsive checks PASS at:
+  - `375px`
+  - `390px`
+  - `430px`
+  - `768px`
+  - desktop
+- No console errors or failed requests observed during the chapter-route validation pass.
+- Internal build/workstream language removed from the public history surface in the validated routes.
+
+Post-baseline counters after history UX correction:
+
+- `POST-BASELINE UNIQUE APPLICATION FILE COUNT`: `12`
+- `POST-BASELINE UNIQUE REPOSITORY FILE COUNT`: `21`
+- `POST-BASELINE ADDED`: `10`
+- `POST-BASELINE MODIFIED`: `11`
 - `docs/BWE_WORLD_CLASS_MEASUREMENT_HISTORY.md`
 
 Functional changes:
