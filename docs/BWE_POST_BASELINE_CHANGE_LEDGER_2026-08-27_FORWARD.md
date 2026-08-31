@@ -119,6 +119,113 @@ POST-BASELINE RENAMED:
 
 - `0`
 
+## 8. Seller payout onboarding public-quality correction
+
+DATE:
+
+- `2026-08-31`
+
+WORKSTREAM:
+
+- `BWE EXPERIENCE 2.0 PUBLIC QUALITY`
+
+CHANGE TYPE:
+
+- `FIXED`
+
+FILES:
+
+- `src/pages/api/stripe/create-account-link.ts`
+- `src/pages/api/stripe/account-status.ts`
+- `src/pages/marketplace/become-a-seller.tsx`
+- `src/components/dashboards/SellerDashboard.tsx`
+- `src/components/StripeSetupCard.tsx`
+
+WHY CHANGED:
+
+- Correct the seller Stripe onboarding handoff so customer-facing seller pages stop leaking raw technical errors and can handle payout setup failures safely.
+
+FUNCTIONALITY CHANGED:
+
+- Aligned the Stripe account-link API response with the existing seller onboarding clients.
+- Added customer-safe payout error messages on seller setup and seller dashboard surfaces.
+- Preserved signed-out redirects and safe incomplete/invalid seller handling without changing Stripe ownership, webhook configuration, or payment architecture.
+
+FUNCTIONALITY PRESERVED:
+
+- Seller setup progress remains intact.
+- Stripe Connect onboarding path remains intact.
+- No production deployment, live transaction, or DB migration was performed.
+
+RUNTIME COMMIT:
+
+- `745740050f2fe7476452f43abdab090d23203577`
+
+VALIDATION:
+
+- `npm run typecheck`
+- `node scripts/runtime-check.mjs`
+- `node scripts/check-critical-paths.mjs`
+- Browser proof on seller mobile states at `375px`, `390px`, and `430px`
+- Signed-out Stripe endpoint behavior verified locally
+
+STATUS:
+
+- `COMMITTED`
+
+## 9. Public internal-language and copy-hygiene sweep
+
+DATE:
+
+- `2026-08-31`
+
+WORKSTREAM:
+
+- `BWE EXPERIENCE 2.0 PUBLIC QUALITY`
+
+CHANGE TYPE:
+
+- `FIXED`
+
+FILES:
+
+- `src/components/NavBar.tsx`
+- `src/pages/index.tsx`
+- `src/pages/marketplace/index.tsx`
+- `src/pages/resources/index.tsx`
+
+WHY CHANGED:
+
+- Remove customer-facing internal operating language and improve first-time clarity on the homepage without redesigning the accepted Experience 2.0 foundation.
+
+FUNCTIONALITY CHANGED:
+
+- Replaced internal phase/preservation/status language with customer-facing copy.
+- Added a concise BWE introduction and three clear entry paths on the homepage.
+- Repositioned Founding Membership lower in the homepage hierarchy.
+- Removed internal-language badges from marketplace and resources public surfaces.
+
+FUNCTIONALITY PRESERVED:
+
+- Existing hero/search behavior remains intact.
+- Existing Explore BWE and Start Here paths remain intact.
+- Existing marketplace/resources routes remain intact.
+
+RUNTIME COMMIT:
+
+- `99e8a8f958a13b0ae50707b2eabaf31ba2441133`
+
+VALIDATION:
+
+- `npm run typecheck`
+- `node scripts/runtime-check.mjs`
+- `node scripts/check-critical-paths.mjs`
+- Browser proof on `/`, `/library-of-black-history`, and `/library-of-black-history/west-africa` at `375px`, `390px`, `430px`, and desktop
+
+STATUS:
+
+- `COMMITTED`
+
 POST-BASELINE DB WRITES:
 
 - `0`
