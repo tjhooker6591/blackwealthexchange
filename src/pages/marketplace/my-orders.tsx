@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type TimelineStep = {
   key: string;
@@ -59,13 +60,20 @@ export default function BuyerOrdersPage() {
             res.status === 401
               ? "Please sign in to view your marketplace orders."
               : "We could not load your marketplace orders. Please refresh and try again.";
-          throw new Error(data?.error || fallback);
+          throw new Error(
+            toPublicErrorMessage(data?.error, {
+              fallback,
+              authFallback: "Please sign in to view your marketplace orders.",
+            }),
+          );
         }
         setOrders(Array.isArray(data?.orders) ? data.orders : []);
       } catch (e: any) {
         setError(
-          e?.message ||
-            "We could not load your marketplace orders. Please refresh and try again.",
+          toPublicErrorMessage(e?.message, {
+            fallback:
+              "We could not load your marketplace orders. Please refresh and try again.",
+          }),
         );
       } finally {
         setLoading(false);

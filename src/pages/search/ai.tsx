@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type AnyResult = Record<string, any>;
 
@@ -55,7 +56,10 @@ export default function SearchAI() {
 
         const res = await fetch(url);
         const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data?.error || "Search failed");
+        if (!res.ok)
+          throw new Error(
+            "We couldn't load AI search results right now. Please try again.",
+          );
 
         const found =
           data?.items ||
@@ -66,7 +70,12 @@ export default function SearchAI() {
 
         setItems(Array.isArray(found) ? found : []);
       } catch (e: any) {
-        setError(e?.message || "Could not load AI results.");
+        setError(
+          toPublicErrorMessage(e?.message, {
+            fallback:
+              "We couldn't load AI search results right now. Please try again.",
+          }),
+        );
         setItems([]);
       } finally {
         setLoading(false);

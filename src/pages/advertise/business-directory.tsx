@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { getAdQuote } from "@/lib/advertising/pricing";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type PlanType = "standard" | "featured";
 
@@ -153,7 +154,7 @@ export default function BusinessDirectoryAdPage() {
       const submitData = await submitRes.json().catch(() => ({}));
       if (!submitRes.ok) {
         throw new Error(
-          submitData?.error || "Failed to save directory request",
+          "We couldn't save your directory campaign details right now. Please try again.",
         );
       }
 
@@ -163,7 +164,13 @@ export default function BusinessDirectoryAdPage() {
 
       router.push(`${url.pathname}${url.search}`);
     } catch (e: any) {
-      setError(e?.message || "Unable to continue to checkout");
+      setError(
+        toPublicErrorMessage(e?.message, {
+          fallback:
+            "We couldn't continue to checkout right now. Please try again.",
+          authFallback: "Please sign in to continue to secure checkout.",
+        }),
+      );
     } finally {
       setSubmitting(false);
     }
@@ -193,18 +200,17 @@ export default function BusinessDirectoryAdPage() {
           </div>
         ) : businessId ? (
           <div className="rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-200">
-            Your purchase will be linked to your business record for tracking
-            and admin review.
+            Your purchase will be linked to your business listing for campaign
+            review and setup.
           </div>
         ) : (
           <div className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-200">
-            We could not detect a linked business ID for your session. You can
-            still continue, but the payment may show as{" "}
-            <span className="font-semibold">paid but unlinked</span> in admin
-            until manually attached.
+            We could not match this session to a business listing yet. You can
+            still continue, and our team will confirm the right listing during
+            campaign review.
             {userAccountType && (
               <span className="block mt-1 text-yellow-100/90">
-                Current account type detected:{" "}
+                Signed in as{" "}
                 <span className="font-semibold">{userAccountType}</span>
               </span>
             )}

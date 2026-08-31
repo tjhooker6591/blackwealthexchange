@@ -5,6 +5,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type OrgItem = {
   _id: string;
@@ -97,7 +98,10 @@ export default function OrganizationDetailPage() {
         if (!res.ok || !data?.ok) {
           setItem(null);
           setError(
-            data?.error || `Failed to load organization (${res.status}).`,
+            toPublicErrorMessage(data?.error, {
+              fallback:
+                "We couldn't load this organization right now. Please try again.",
+            }),
           );
           setLoading(false);
           return;
@@ -108,7 +112,12 @@ export default function OrganizationDetailPage() {
       } catch (e: any) {
         if (!alive) return;
         setItem(null);
-        setError(e?.message || "Failed to load organization.");
+        setError(
+          toPublicErrorMessage(e?.message, {
+            fallback:
+              "We couldn't load this organization right now. Please try again.",
+          }),
+        );
         setLoading(false);
       }
     }

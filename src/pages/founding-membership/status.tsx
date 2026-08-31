@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type MembershipStatusPayload = {
   ok: boolean;
@@ -67,10 +68,18 @@ export default function FoundingMembershipStatusPage() {
         });
         const json = await res.json().catch(() => ({}));
         if (!res.ok)
-          throw new Error(json?.error || "Unable to load membership status");
+          throw new Error(
+            "We couldn't load your membership status right now. Please try again.",
+          );
         setData(json);
       } catch (e: any) {
-        setError(e?.message || "Unable to load membership status");
+        setError(
+          toPublicErrorMessage(e?.message, {
+            fallback:
+              "We couldn't load your membership status right now. Please try again.",
+            authFallback: "Please sign in to view your membership status.",
+          }),
+        );
       } finally {
         setLoading(false);
       }
@@ -106,8 +115,8 @@ export default function FoundingMembershipStatusPage() {
             </h1>
             <p className="mt-3 max-w-3xl text-white/75">
               Track membership status, claim progress, ownership verification,
-              profile fulfillment, baseline setup, monthly reporting, and
-              billing access in one place.
+              profile fulfillment, performance baseline setup, monthly
+              reporting, and billing access in one place.
             </p>
           </section>
 
@@ -353,9 +362,9 @@ export default function FoundingMembershipStatusPage() {
                     </a>
                   </div>
                   <p className="mt-4 text-xs text-white/50">
-                    Billing changes and cancellation continue through the
-                    existing canonical process. Payment and ownership
-                    verification remain separate states.
+                    Billing changes and cancellation continue through your BWE
+                    billing process. Payment and ownership verification remain
+                    separate states.
                   </p>
                 </div>
               </section>

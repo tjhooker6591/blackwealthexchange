@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 interface ProductFormData {
   name: string;
@@ -36,7 +37,11 @@ export default function EditProductPage() {
         const res = await fetch(`/api/marketplace/product?id=${productId}`);
         const data = await res.json();
 
-        if (!res.ok) throw new Error(data.error || "Failed to fetch product");
+        if (!res.ok) {
+          throw new Error(
+            "We couldn't load this product right now. Please try again.",
+          );
+        }
 
         // Adjust based on your API response structure
         setFormData({
@@ -47,7 +52,12 @@ export default function EditProductPage() {
           category: data.category || "",
         });
       } catch (err: any) {
-        setError(err.message || "An unexpected error occurred.");
+        setError(
+          toPublicErrorMessage(err?.message, {
+            fallback:
+              "We couldn't load this product right now. Please try again.",
+          }),
+        );
       } finally {
         setLoading(false);
       }
@@ -78,11 +88,20 @@ export default function EditProductPage() {
         }),
       });
 
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.error || "Update failed");
+      await res.json();
+      if (!res.ok) {
+        throw new Error(
+          "We couldn't save your product changes right now. Please try again.",
+        );
+      }
       setSuccess(true);
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+      setError(
+        toPublicErrorMessage(err?.message, {
+          fallback:
+            "We couldn't save your product changes right now. Please try again.",
+        }),
+      );
     }
   };
 

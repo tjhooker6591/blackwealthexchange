@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type Readiness = {
   sellerExists: boolean;
@@ -42,7 +43,13 @@ export default function CreatorDashboardPage() {
         if (!res.ok) throw new Error(data?.error || "Failed to load readiness");
         setState(data);
       } catch (e: any) {
-        setError(e?.message || "Failed to load creator readiness");
+        setError(
+          toPublicErrorMessage(e?.message, {
+            fallback:
+              "We couldn't load creator readiness right now. Please try again.",
+            authFallback: "Please sign in to continue.",
+          }),
+        );
       } finally {
         setLoading(false);
       }
@@ -67,8 +74,8 @@ export default function CreatorDashboardPage() {
               calmer creator workspace.
             </p>
             <p className="mt-3 text-xs text-white/50">
-              Launch scope: readiness plus product-management continuity.
-              Advanced creator fan and analytics modules are post-launch.
+              Review your current setup and move into the next creator step from
+              here.
             </p>
           </div>
         </section>

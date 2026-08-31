@@ -4,6 +4,7 @@ import Link from "next/link";
 import Head from "next/head";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type Result = {
   _id: string;
@@ -133,7 +134,10 @@ export default function SearchResults() {
         });
         const res = await fetch(`/api/search/businesses?${params.toString()}`);
         const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data?.error || "Failed to load results");
+        if (!res.ok)
+          throw new Error(
+            "We couldn't load search results right now. Please try again.",
+          );
 
         if (!cancelled) {
           const items = Array.isArray(data?.items) ? data.items : [];
@@ -148,7 +152,12 @@ export default function SearchResults() {
         if (!cancelled) {
           setResults([]);
           setTotal(0);
-          setError(e?.message || "Could not load results");
+          setError(
+            toPublicErrorMessage(e?.message, {
+              fallback:
+                "We couldn't load search results right now. Please try again.",
+            }),
+          );
         }
       } finally {
         if (!cancelled) setLoading(false);

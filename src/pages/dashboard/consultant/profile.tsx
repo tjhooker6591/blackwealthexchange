@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CONSULTANT_CATEGORIES } from "@/lib/consultants/catalog";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 const DEFAULT = {
   name: "",
@@ -38,7 +39,11 @@ export default function ConsultantProfileAuthoringPage() {
           credentials: "include",
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data?.error || "Failed to load profile");
+        if (!res.ok) {
+          throw new Error(
+            "We couldn't load your consultant profile right now. Please try again.",
+          );
+        }
         const p = data?.profile;
         if (p) {
           setForm({
@@ -69,7 +74,13 @@ export default function ConsultantProfileAuthoringPage() {
           );
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load profile");
+        setError(
+          toPublicErrorMessage(err instanceof Error ? err.message : "", {
+            fallback:
+              "We couldn't load your consultant profile right now. Please try again.",
+            authFallback: "Please sign in to manage your consultant profile.",
+          }),
+        );
       } finally {
         setLoading(false);
       }
@@ -112,7 +123,12 @@ export default function ConsultantProfileAuthoringPage() {
       setCompleteness(data?.profile?.completenessScore ?? null);
       setOk("Consultant profile saved.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Save failed");
+      setError(
+        toPublicErrorMessage(err instanceof Error ? err.message : "", {
+          fallback:
+            "We couldn't save your consultant profile right now. Please try again.",
+        }),
+      );
     } finally {
       setSaving(false);
     }
@@ -132,7 +148,7 @@ export default function ConsultantProfileAuthoringPage() {
         <div className="mb-6 flex items-center justify-between gap-3">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-yellow-300">
-              Consultant profile authoring
+              Consultant profile
             </p>
             <h1 className="text-3xl font-extrabold">
               Build your consultant profile

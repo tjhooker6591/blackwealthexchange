@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 const PLAN_LABELS: Record<string, string> = {
   premium: "Premium Plan",
@@ -104,11 +105,21 @@ export default function CheckoutPage({
         }
 
         if (res.status === 409) {
-          setMessage(data?.error || "Your Premium account is already active.");
+          setMessage(
+            toPublicErrorMessage(data?.error, {
+              fallback: "Your Premium account is already active.",
+            }),
+          );
           return;
         }
 
-        setMessage(data?.error || "Checkout failed.");
+        setMessage(
+          toPublicErrorMessage(data?.error, {
+            fallback:
+              "Checkout could not be started right now. Please try again.",
+            authFallback: "Please sign in to continue to secure checkout.",
+          }),
+        );
         return;
       }
 
@@ -117,9 +128,9 @@ export default function CheckoutPage({
         return;
       }
 
-      setMessage("Checkout unavailable: missing Stripe redirect URL.");
+      setMessage("Checkout could not be started right now. Please try again.");
     } catch {
-      setMessage("Checkout failed due to a network/runtime error.");
+      setMessage("Checkout could not be started right now. Please try again.");
     } finally {
       setLoading(false);
     }

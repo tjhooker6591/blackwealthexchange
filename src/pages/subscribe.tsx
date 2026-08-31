@@ -4,6 +4,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ArrowLeft, ArrowRight, Mail, ShieldCheck } from "lucide-react";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 export default function SubscribePage() {
   const router = useRouter();
@@ -28,15 +29,23 @@ export default function SubscribePage() {
         body: JSON.stringify({ email, role }),
       });
 
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || "Unable to join waitlist.");
+      await res.json().catch(() => ({}));
+      if (!res.ok)
+        throw new Error(
+          "We couldn't join the waitlist right now. Please try again.",
+        );
 
       setStatus("ok");
       setMessage("You're on the waitlist. We'll email you when gigs go live.");
       setEmail("");
     } catch (e: any) {
       setStatus("err");
-      setMessage(e?.message || "Something went wrong.");
+      setMessage(
+        toPublicErrorMessage(e?.message, {
+          fallback:
+            "We couldn't join the waitlist right now. Please try again.",
+        }),
+      );
     }
   };
 

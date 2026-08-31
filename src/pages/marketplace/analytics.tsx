@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 export default function MarketplaceAnalyticsPage() {
   const [stats, setStats] = useState({ products: 0, orders: 0, revenue: 0 });
@@ -21,7 +22,14 @@ export default function MarketplaceAnalyticsPage() {
           revenue: Number(data?.revenue || 0),
         });
       } catch (e: any) {
-        setError(e?.message || "Failed to load analytics");
+        setError(
+          toPublicErrorMessage(e?.message, {
+            fallback:
+              "We couldn't load seller analytics right now. Please try again.",
+            authFallback:
+              "Please sign in with your seller account to continue.",
+          }),
+        );
       } finally {
         setLoading(false);
       }

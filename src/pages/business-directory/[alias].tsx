@@ -657,7 +657,7 @@ export default function BusinessDetail({
                       <div className="mt-1">
                         Payment starts membership and opens ownership
                         verification, unless ownership has already been verified
-                        through the canonical review flow.
+                        through the existing verification review process.
                       </div>
                       <div className="mt-2 flex flex-wrap gap-2">
                         <Link

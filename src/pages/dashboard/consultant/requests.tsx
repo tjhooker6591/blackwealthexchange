@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 const STATUS_LABELS: Record<string, string> = {
   submitted: "Waiting on consultant response",
@@ -38,10 +39,19 @@ export default function ConsultantRequestInboxPage() {
         credentials: "include",
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to load inbox");
+      if (!res.ok) {
+        throw new Error(
+          "We couldn't load employer requests right now. Please try again.",
+        );
+      }
       setItems(Array.isArray(data?.items) ? data.items : []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load inbox");
+      setError(
+        toPublicErrorMessage(err instanceof Error ? err.message : "", {
+          fallback:
+            "We couldn't load employer requests right now. Please try again.",
+        }),
+      );
     } finally {
       setLoading(false);
     }
@@ -69,7 +79,11 @@ export default function ConsultantRequestInboxPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to update request");
+      if (!res.ok) {
+        throw new Error(
+          "We couldn't update this request right now. Please try again.",
+        );
+      }
 
       setItems((prev) =>
         prev.map((x) =>
@@ -87,7 +101,10 @@ export default function ConsultantRequestInboxPage() {
       setResponseNotes((prev) => ({ ...prev, [requestId]: "" }));
     } catch (err) {
       setActionMessage(
-        err instanceof Error ? err.message : "Failed to update request",
+        toPublicErrorMessage(err instanceof Error ? err.message : "", {
+          fallback:
+            "We couldn't update this request right now. Please try again.",
+        }),
       );
     } finally {
       setBusyId(null);

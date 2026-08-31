@@ -4,6 +4,7 @@
 import Head from "next/head";
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { toPublicErrorMessage } from "@/lib/publicError";
 import {
   Calendar,
   ExternalLink,
@@ -411,10 +412,19 @@ export default function EventsPage() {
     try {
       const res = await fetch("/api/events/rss");
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || "Failed to load RSS feeds.");
+      if (!res.ok) {
+        throw new Error(
+          "We couldn't load additional event feeds right now. Please try again.",
+        );
+      }
       setRssItems(Array.isArray(data?.items) ? data.items : []);
     } catch (e: any) {
-      setRssError(e?.message || "RSS error");
+      setRssError(
+        toPublicErrorMessage(e?.message, {
+          fallback:
+            "We couldn't load additional event feeds right now. Please try again.",
+        }),
+      );
     } finally {
       setRssLoading(false);
     }
@@ -586,8 +596,8 @@ export default function EventsPage() {
                       Community Events (RSS)
                     </h2>
                     <p className="text-sm text-gray-400">
-                      Auto-updated feeds (you control the allowlist). This is
-                      how we “add everything” without manual work.
+                      Auto-updated feeds help surface more community events in
+                      one place.
                     </p>
                   </div>
 
@@ -606,15 +616,6 @@ export default function EventsPage() {
                 {rssError ? (
                   <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-5 text-red-200">
                     {rssError}
-                    <div className="text-xs text-gray-300 mt-2">
-                      Add{" "}
-                      <code className="text-gray-100">BWE_EVENTS_RSS_URLS</code>{" "}
-                      +{" "}
-                      <code className="text-gray-100">
-                        BWE_EVENTS_RSS_ALLOWLIST
-                      </code>{" "}
-                      to enable feeds.
-                    </div>
                   </div>
                 ) : rssLoading ? (
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-gray-300">

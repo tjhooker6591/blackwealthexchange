@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 interface Product {
   _id: string;
@@ -69,7 +70,11 @@ export default function ExplorePage() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Checkout failed");
+      if (!res.ok) {
+        throw new Error(
+          "We couldn't start checkout right now. Please try again.",
+        );
+      }
 
       // Stripe Checkout URL
       if (data?.url) {
@@ -77,10 +82,16 @@ export default function ExplorePage() {
         return;
       }
 
-      throw new Error("Missing checkout URL");
+      throw new Error(
+        "We couldn't start checkout right now. Please try again.",
+      );
     } catch (e: any) {
       console.error(e);
-      alert(e?.message || "Could not start checkout.");
+      alert(
+        toPublicErrorMessage(e?.message, {
+          fallback: "We couldn't start checkout right now. Please try again.",
+        }),
+      );
       setBuyingId(null);
     }
   }

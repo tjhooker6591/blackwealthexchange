@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 export default function SellerLoginPage() {
   const router = useRouter();
@@ -26,7 +27,11 @@ export default function SellerLoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Login failed");
+        setError(
+          toPublicErrorMessage(data?.error, {
+            fallback: "We couldn't sign you in right now. Please try again.",
+          }),
+        );
       } else {
         router.push("/marketplace/dashboard");
       }

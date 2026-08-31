@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import { getAdDurationOptions } from "@/lib/advertising/pricing";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type BannerPlacement = "sidebar";
 type BannerDuration = "14" | "30";
@@ -164,7 +165,9 @@ export default function BannerAdsPage() {
 
       const submitData = await submitRes.json().catch(() => ({}));
       if (!submitRes.ok) {
-        throw new Error(submitData?.error || "Failed to save banner request");
+        throw new Error(
+          "We couldn't save your banner campaign right now. Please try again.",
+        );
       }
 
       const requestId = submitData?.requestId || submitData?.adId;
@@ -190,7 +193,13 @@ export default function BannerAdsPage() {
 
       router.push(`/advertising/checkout?${query.toString()}`);
     } catch (e: any) {
-      setError(e?.message || "Unable to proceed to checkout");
+      setError(
+        toPublicErrorMessage(e?.message, {
+          fallback:
+            "We couldn't continue to checkout right now. Please try again.",
+          authFallback: "Please sign in to continue to secure checkout.",
+        }),
+      );
     } finally {
       setSubmitting(false);
     }

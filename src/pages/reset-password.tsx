@@ -5,6 +5,7 @@ import Link from "next/link";
 import Head from "next/head";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/router";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -80,11 +81,12 @@ export default function ResetPasswordPage() {
       setPassword("");
       setConfirmPassword("");
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unknown error occurred.");
-      }
+      setError(
+        toPublicErrorMessage(err instanceof Error ? err.message : "", {
+          fallback:
+            "We couldn't reset your password right now. Please try again.",
+        }),
+      );
     } finally {
       setLoading(false);
     }
