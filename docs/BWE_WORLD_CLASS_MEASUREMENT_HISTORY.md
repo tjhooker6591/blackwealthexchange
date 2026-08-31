@@ -2,6 +2,38 @@
 
 Last updated: 2026-08-31
 
+## Entry 2026-08-31 — Workstream 002 Block 5 substantive checkpoint
+
+- WORKSTREAM: `POST-BASELINE WORKSTREAM 002 — LIBRARY OF BLACK HISTORY / BLOCK 5`
+- SCORE BEFORE: `381 / 1000`
+- SCORE AFTER: `381 / 1000`
+- POINTS EARNED: `0`
+- RELEASE COMPLETION BEFORE: `67%`
+- RELEASE COMPLETION AFTER: `67%`
+- GAPS CLOSED: `0`
+- GAPS CREATED: `0`
+- PROGRAM ITEMS COMPLETED: `0`
+- NEW PROGRAM ITEMS IDENTIFIED: `0`
+- DEPENDENCIES CLOSED: `0`
+- ENGINEERING GAIN: `YES — the history route now carries a second narrow content module for Block 5 while preserving the live route, search, filters, and earlier accepted blocks`
+- EVIDENCE GAIN: `YES — Block 5 now documents Ghana or Wagadu, Mali, Sundiata, Mansa Musa, Timbuktu, manuscripts, Songhai, Gao, Djenné, trans-Saharan trade, gold, salt, and source-method cautions with linked source pathways`
+- METHODOLOGY ADJUSTMENT: `YES — Block 5 extends the small content-module pattern through a single additional file rather than refactoring the route into a new framework`
+- REVENUE GAIN: `0`
+- REVENUE ENABLEMENT: `UNCHANGED — this strengthens trust, educational seriousness, and historical depth, but no new revenue proof exists`
+- REVENUE PROTECTION: `YES — world-class maturity, release closure, BI stage, BWE-10, BWE-13, DB operations, and BMEV remain unchanged`
+- EVIDENCE:
+  - `src/lib/black-history-block5.ts`
+  - `src/pages/library-of-black-history.tsx`
+  - `docs/BWE_BLACK_HISTORY_CONTENT_ARCHITECTURE.md`
+  - `docs/BWE_BLACK_HISTORY_COVERAGE_GAP_MATRIX.md`
+  - `docs/BWE_BLACK_HISTORY_RESEARCH_AND_SOURCE_LEDGER.md`
+  - `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md`
+- NOTES:
+  - Block 4 remains preserved and accepted
+  - the current active history build is now Block 5
+  - Phase 0 and Phase 1 stay complete; Phase 2 remains outstanding
+  - no DB writes, revenue claims, or BMEV claims were added in this checkpoint
+
 ## Entry 2026-08-31 — Workstream 002 Block 4 substantive checkpoint
 
 - WORKSTREAM: `POST-BASELINE WORKSTREAM 002 — LIBRARY OF BLACK HISTORY / BLOCK 4`

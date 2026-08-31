@@ -11,23 +11,23 @@ Purpose:
 
 ## Program architecture
 
-| Block | Title                                                                                             | Current Status           | Notes                                                                    |
-| ----- | ------------------------------------------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------ |
-| 1     | Current library inventory, research/source ledger, gap matrix, content architecture               | ACTIVE FOUNDATION        | Completed in this pass as docs plus live-page framing                    |
-| 2     | Humanity's African Beginning / Africa Before Captivity / African Sacred Worlds / Yoruba Worldview | ACTIVE RUNTIME EXPANSION | First substantive public expansion in this pass                          |
-| 3     | Egypt / Kemet / Nile Valley / Nubia / Kush                                                        | COMPLETED CHECKPOINT     | Preserved as the accepted Nile Valley foundation                         |
-| 4     | Government / kings / queens / knowledge / writing / science / education                           | ACTIVE RUNTIME EXPANSION | Added on the live page with ruler profiles, writing, law, and science    |
-| 5     | West African civilizations / Ghana / Mali / Songhai / Timbuktu                                    | QUEUED                   | Include trade, scholarship, and statecraft                               |
-| 6     | East Africa / Aksum / Ethiopia / Swahili world                                                    | QUEUED                   | Link Red Sea and Indian Ocean networks                                   |
-| 7     | North Africa / Amazigh history / Moors / al-Andalus                                               | QUEUED                   | Must foreground complexity without flattening identity                   |
-| 8     | Christianity / Islam / Bible                                                                      | QUEUED                   | Separate text, history, tradition, and interpretation                    |
-| 9     | Slave trades / colonialism / extraction                                                           | QUEUED                   | Cover trans-Saharan, Indian Ocean, Atlantic, and colonial regimes        |
-| 10    | Diaspora / Haiti / Caribbean / Latin America                                                      | QUEUED                   | Build broad diaspora map, not just U.S. focus                            |
-| 11    | Black America before emancipation through Reconstruction                                          | QUEUED                   | Include resistance, war service, officeholding, and institution-building |
-| 12    | Land / towns / enterprise / HBCUs                                                                 | QUEUED                   | Tie historical institution-building to modern ownership logic            |
-| 13    | Racial violence / Jim Crow / housing / redlining                                                  | QUEUED                   | Treat as economic history, not side notes                                |
-| 14    | Civil Rights / economic movements / invention / culture                                           | QUEUED                   | Show the ownership and policy layer                                      |
-| 15    | Modern economics / restoration / BWE                                                              | QUEUED                   | Close the bridge from history to present action honestly                 |
+| Block | Title                                                                                             | Current Status           | Notes                                                                     |
+| ----- | ------------------------------------------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------- |
+| 1     | Current library inventory, research/source ledger, gap matrix, content architecture               | ACTIVE FOUNDATION        | Completed in this pass as docs plus live-page framing                     |
+| 2     | Humanity's African Beginning / Africa Before Captivity / African Sacred Worlds / Yoruba Worldview | ACTIVE RUNTIME EXPANSION | First substantive public expansion in this pass                           |
+| 3     | Egypt / Kemet / Nile Valley / Nubia / Kush                                                        | COMPLETED CHECKPOINT     | Preserved as the accepted Nile Valley foundation                          |
+| 4     | Government / kings / queens / knowledge / writing / science / education                           | COMPLETED CHECKPOINT     | Accepted live-page build with ruler profiles, writing, law, and science   |
+| 5     | West African civilizations / Ghana / Mali / Songhai / Timbuktu                                    | ACTIVE RUNTIME EXPANSION | Added on the live page with trade, scholarship, manuscript, and city work |
+| 6     | East Africa / Aksum / Ethiopia / Swahili world                                                    | QUEUED                   | Link Red Sea and Indian Ocean networks                                    |
+| 7     | North Africa / Amazigh history / Moors / al-Andalus                                               | QUEUED                   | Must foreground complexity without flattening identity                    |
+| 8     | Christianity / Islam / Bible                                                                      | QUEUED                   | Separate text, history, tradition, and interpretation                     |
+| 9     | Slave trades / colonialism / extraction                                                           | QUEUED                   | Cover trans-Saharan, Indian Ocean, Atlantic, and colonial regimes         |
+| 10    | Diaspora / Haiti / Caribbean / Latin America                                                      | QUEUED                   | Build broad diaspora map, not just U.S. focus                             |
+| 11    | Black America before emancipation through Reconstruction                                          | QUEUED                   | Include resistance, war service, officeholding, and institution-building  |
+| 12    | Land / towns / enterprise / HBCUs                                                                 | QUEUED                   | Tie historical institution-building to modern ownership logic             |
+| 13    | Racial violence / Jim Crow / housing / redlining                                                  | QUEUED                   | Treat as economic history, not side notes                                 |
+| 14    | Civil Rights / economic movements / invention / culture                                           | QUEUED                   | Show the ownership and policy layer                                       |
+| 15    | Modern economics / restoration / BWE                                                              | QUEUED                   | Close the bridge from history to present action honestly                  |
 
 ## Repeating public structures
 
@@ -64,3 +64,4 @@ Use these labels in public when needed:
 - New routes should only be added when a block becomes substantial enough to stand on its own.
 - Until then, ship major new sections into the library page with strong source pathways and clear evidence language.
 - Block 4 justified a small safe architecture step: new structured content now lives in `src/lib/black-history-block4.ts` while the existing route, search, filters, and page identity remain preserved.
+- Block 5 follows the same narrow pattern through `src/lib/black-history-block5.ts` without introducing a new content framework or splitting the public route.
