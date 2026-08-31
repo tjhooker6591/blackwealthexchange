@@ -33,7 +33,7 @@ const RESOURCE_TRACKS = [
 
 const RESOURCE_SIGNALS = [
   "Public learning and employer guidance",
-  "Existing route contracts preserved",
+  "Clear routes into learning and action",
   "Mobile-friendly scanning and next steps",
 ] as const;
 
@@ -201,9 +201,8 @@ export default function ResourcesIndex() {
               <section className="bwe-soft-tile p-5">
                 <div className="bwe-eyebrow">Why this section exists</div>
                 <p className="mt-3 text-sm leading-6 text-white/64">
-                  The resources lane should help people learn and act faster.
-                  This update keeps the existing content and routes intact while
-                  making article discovery and next-step choices easier to scan.
+                  The resources section should help people learn and act faster,
+                  with clearer article discovery and next-step choices.
                 </p>
               </section>
             </aside>

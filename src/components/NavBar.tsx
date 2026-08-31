@@ -78,8 +78,8 @@ export default function NavBar() {
           <div className="flex items-center gap-2 text-[11px] font-medium text-white/70">
             <span className="bwe-status-dot" aria-hidden="true" />
             <span>
-              Phase 1 foundation active. Proven marketplace and trust flows
-              preserved.
+              Discover Black-owned businesses, opportunities, and ways to grow
+              with BWE.
             </span>
           </div>
           <Link
