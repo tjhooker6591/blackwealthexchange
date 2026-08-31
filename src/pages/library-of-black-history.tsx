@@ -15,6 +15,12 @@ import {
   Filter,
   X,
 } from "lucide-react";
+import {
+  block4ClaimChecks,
+  block4RulerProfiles,
+  block4SchoolGaps,
+  block4Sections,
+} from "@/lib/black-history-block4";
 
 type Region =
   | "Global"
@@ -99,6 +105,23 @@ interface CurriculumGap {
   missingContext: string;
   evidence: string;
   whyItMatters: string;
+}
+
+interface RulerProfile {
+  name: string;
+  period: string;
+  region: string;
+  politicalSystem: string;
+  economicBase: string;
+  religiousContext: string;
+  governance: string;
+  diplomacy: string;
+  militaryRole: string;
+  achievements: string;
+  conflicts: string;
+  limitations: string;
+  legacy: string;
+  sources: ResourceLink[];
 }
 
 function cx(...classes: Array<string | false | null | undefined>) {
@@ -270,6 +293,116 @@ function Expandable({
  *  GLOBAL, MULTI-SOURCE LIBRARY
  *  ---------------------------- */
 const libraryItems: LibraryItem[] = [
+  {
+    id: 101,
+    title: "African Government & Political Systems",
+    summary:
+      "Comparative starting points for kingdoms, councils, acephalous systems, title societies, and institutional diversity across the continent.",
+    category: "Truth & Context",
+    region: "Africa",
+    links: [
+      {
+        label: "UNESCO overview (volumes & project)",
+        url: "https://www.unesco.org/en/general-history-africa",
+        type: "Open Access",
+      },
+      {
+        label: "Met - Ways of Recording African History",
+        url: "https://www.metmuseum.org/essays/ways-of-recording-african-history",
+        type: "Museum",
+      },
+      {
+        label: "Met - Origins and Empire: Benin, Owo, and Ijebu",
+        url: "https://www.metmuseum.org/essays/origins-and-empire-the-benin-owo-and-ijebu-kingdoms",
+        type: "Academic",
+      },
+    ],
+  },
+  {
+    id: 102,
+    title: "African Writing Systems & Manuscript Cultures",
+    summary:
+      "A research trail for Egyptian scripts, Meroitic, Ge'ez, Arabic manuscript cultures, Nsibidi, Libyco-Berber/Tifinagh, and later script innovation.",
+    category: "Research Tools",
+    region: "Africa",
+    links: [
+      {
+        label: "UCL - The Meroitic Period",
+        url: "https://www.ucl.ac.uk/museums-static/digitalegypt/nubia/meroitic.html",
+        type: "Education",
+      },
+      {
+        label: "Met - Monumental Architecture of the Aksumite Empire",
+        url: "https://www.metmuseum.org/essays/monumental-architecture-and-stelae-of-the-aksumite-empire",
+        type: "Museum",
+      },
+      {
+        label: "Library of Congress - Islamic Manuscripts from Mali",
+        url: "https://www.loc.gov/collections/islamic-manuscripts-from-mali/about-this-collection/",
+        type: "Archive",
+      },
+      {
+        label: "Met - Akwanshi Stone Monoliths and Nsibidi context",
+        url: "https://www.metmuseum.org/essays/akwanshi-stone-monoliths",
+        type: "Museum",
+      },
+      {
+        label: "Library of Congress - Bamum Script Guide",
+        url: "https://guides.loc.gov/bamum-script",
+        type: "Education",
+      },
+    ],
+  },
+  {
+    id: 103,
+    title: "Benin Kingdom, Court Art, and 1897 Looting",
+    summary:
+      "Historical Edo statecraft, guild production, Portuguese contact, palace archives, and the violent dispersal of royal art in 1897.",
+    category: "Colonialism & Extraction",
+    region: "Africa",
+    links: [
+      {
+        label: "Met - Benin Chronology",
+        url: "https://www.metmuseum.org/essays/benin-chronology",
+        type: "Museum",
+      },
+      {
+        label: "Met - Idia, First Queen Mother of Benin",
+        url: "https://www.metmuseum.org/essays/idia-the-first-queen-mother-of-benin",
+        type: "Museum",
+      },
+      {
+        label: "British Museum - Benin Bronzes",
+        url: "https://www.britishmuseum.org/about-us/british-museum-story/contested-objects-collection/benin-bronzes",
+        type: "Museum",
+      },
+    ],
+  },
+  {
+    id: 104,
+    title: "Igbo-Ukwu, Great Zimbabwe, and African Technology",
+    summary:
+      "Archaeology, trade, stone architecture, metallurgy, and the caution required when the evidence is strong but popular retellings overshoot it.",
+    category: "Culture & Contribution",
+    region: "Africa",
+    links: [
+      {
+        label: "Met - Igbo-Ukwu",
+        url: "https://www.metmuseum.org/essays/igbo-ukwu-ca-9th-century",
+        type: "Museum",
+      },
+      {
+        label: "UNESCO - Great Zimbabwe National Monument",
+        url: "https://whc.unesco.org/en/list/364/",
+        type: "Open Access",
+      },
+      {
+        label: "Met - African Lost-Wax Casting",
+        url: "https://www.metmuseum.org/essays/african-lost-wax-casting",
+        type: "Museum",
+      },
+    ],
+  },
   {
     id: 1,
     title: "UNESCO — General History of Africa (multi-volume)",
@@ -687,14 +820,14 @@ const historyJourneys: JourneyBlock[] = [
   {
     block: "Block 3",
     title: "Egypt / Kemet / Nile Valley / Nubia / Kush",
-    status: "Active now",
+    status: "Completed checkpoint",
     note: "This evidence-heavy build treats chronology, language, statecraft, women, Nubia, Kush, and disputed identity claims with explicit caution.",
   },
   {
     block: "Block 4",
     title: "Government, rulers, knowledge systems, writing, science, education",
-    status: "Queued next",
-    note: "This block will connect political institutions to intellectual production.",
+    status: "Active now",
+    note: "This build restores institutional diversity: government, law, women in power, writing systems, oral knowledge, education, and technical history.",
   },
   {
     block: "Block 5",
@@ -1571,9 +1704,9 @@ export default function LibraryOfBlackHistory() {
                 summaries and recycled social content.
               </Callout>
               <Callout title="What comes next" tone="red">
-                The current active build is Egypt, Nubia, Kush, and the Nile
-                Valley. It treats chronology, writing, women, statecraft, and
-                identity claims as core content rather than optional notes.
+                The current active build is Block 4: African government, rulers,
+                women in power, writing systems, education, and evidence-based
+                science and technology.
               </Callout>
             </div>
           </Card>
@@ -1726,7 +1859,7 @@ export default function LibraryOfBlackHistory() {
 
         <div className="mt-8">
           <Card
-            kicker="CURRENT ACTIVE BUILD"
+            kicker="COMPLETED CHECKPOINT"
             title="Block 3: Egypt, Kemet, the Nile Valley, Nubia, and Kush"
             icon={<Landmark className="h-5 w-5 text-[#D4AF37]" />}
           >
@@ -1934,6 +2067,325 @@ export default function LibraryOfBlackHistory() {
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        <div className="mt-8">
+          <Card
+            kicker="CURRENT ACTIVE BUILD"
+            title="Block 4: government, rulers, knowledge systems, writing, science, and education"
+            icon={<LibraryBig className="h-5 w-5 text-[#D4AF37]" />}
+          >
+            <p className="text-white/75">
+              This block corrects a durable lie: that precolonial Africa lacked
+              institutions, scholarship, technical knowledge, or organized
+              authority. It does that by showing diversity rather than swapping
+              one false simplification for another.
+            </p>
+
+            <div className="mt-5 space-y-4">
+              {block4Sections.map((section) => (
+                <section
+                  key={section.id}
+                  className="rounded-[28px] border border-white/10 bg-black/30 p-5 sm:p-6"
+                >
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="max-w-3xl">
+                      <div className="text-[11px] uppercase tracking-[0.24em] text-white/45 font-extrabold">
+                        {section.kicker}
+                      </div>
+                      <h3 className="mt-2 text-2xl font-extrabold tracking-tight text-white">
+                        {section.title}
+                      </h3>
+                      <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-extrabold">
+                        <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-white/65">
+                          {section.coverage}
+                        </span>
+                        <span className="rounded-full border border-[#D4AF37]/25 bg-[#D4AF37]/10 px-3 py-1 text-[#D4AF37]">
+                          Evidence class {section.evidenceClass}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="max-w-sm text-sm leading-relaxed text-white/70">
+                      {section.summary}
+                    </div>
+                  </div>
+
+                  <div className="mt-5 grid grid-cols-1 xl:grid-cols-[0.92fr_1.08fr] gap-4">
+                    <div className="space-y-4">
+                      <Callout title="Commonly taught" tone="red">
+                        {section.commonlyTaught}
+                      </Callout>
+                      <Callout title="Missing context" tone="gold">
+                        {section.missingContext}
+                      </Callout>
+                      <Callout title="Why it matters" tone="emerald">
+                        {section.whyItMatters}
+                      </Callout>
+                      {section.caution ? (
+                        <Callout title="Evidence caution" tone="red">
+                          {section.caution}
+                        </Callout>
+                      ) : null}
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                        <div className="text-[11px] uppercase tracking-widest text-white/45 font-extrabold">
+                          The evidence
+                        </div>
+                        <List
+                          items={section.evidence.map((item) => (
+                            <>{item}</>
+                          ))}
+                        />
+                      </div>
+
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                        <div className="text-[11px] uppercase tracking-widest text-white/45 font-extrabold">
+                          Source path
+                        </div>
+                        <div className="mt-3 grid grid-cols-1 gap-2">
+                          {section.sources.map((source) => (
+                            <ExternalA
+                              key={source.url}
+                              href={source.url}
+                              className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 transition hover:bg-white/[0.06]"
+                            >
+                              <span className="min-w-0">
+                                <span className="text-[#D4AF37] font-extrabold text-[12px]">
+                                  {source.type}
+                                </span>{" "}
+                                <span className="text-white/80">-</span>{" "}
+                                <span className="font-semibold">
+                                  {source.label}
+                                </span>
+                              </span>
+                              <ExternalLink className="h-4 w-4 shrink-0 text-white/50" />
+                            </ExternalA>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              ))}
+            </div>
+
+            <div className="mt-6 grid grid-cols-1 xl:grid-cols-[1.08fr_0.92fr] gap-4">
+              <div className="rounded-[28px] border border-white/10 bg-black/30 p-5 sm:p-6">
+                <div className="text-[11px] uppercase tracking-[0.24em] text-white/45 font-extrabold">
+                  Rulers in context
+                </div>
+                <h3 className="mt-2 text-2xl font-extrabold tracking-tight text-white">
+                  Profiles tied to systems, not celebrity alone
+                </h3>
+                <p className="mt-3 max-w-3xl text-white/70 leading-relaxed">
+                  These rulers matter because they reveal political structures,
+                  economic bases, diplomatic worlds, and real limitations. They
+                  are not here as a disconnected gallery of famous names.
+                </p>
+                <div className="mt-5 space-y-4">
+                  {block4RulerProfiles.map((profile: RulerProfile) => (
+                    <div
+                      key={profile.name}
+                      className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+                    >
+                      <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                          <div className="text-lg font-extrabold text-white">
+                            {profile.name}
+                          </div>
+                          <div className="text-sm text-[#D4AF37] font-extrabold">
+                            {profile.period}
+                          </div>
+                        </div>
+                        <div className="text-sm text-white/60">
+                          {profile.region}
+                        </div>
+                      </div>
+                      <div className="mt-3 grid grid-cols-1 gap-2 text-sm leading-relaxed text-white/75">
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Political system:
+                          </span>{" "}
+                          {profile.politicalSystem}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Economic base:
+                          </span>{" "}
+                          {profile.economicBase}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Religious / cultural context:
+                          </span>{" "}
+                          {profile.religiousContext}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Governance:
+                          </span>{" "}
+                          {profile.governance}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Diplomacy:
+                          </span>{" "}
+                          {profile.diplomacy}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Military role:
+                          </span>{" "}
+                          {profile.militaryRole}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Achievements:
+                          </span>{" "}
+                          {profile.achievements}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Conflicts:
+                          </span>{" "}
+                          {profile.conflicts}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Limitations:
+                          </span>{" "}
+                          {profile.limitations}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Legacy:
+                          </span>{" "}
+                          {profile.legacy}
+                        </div>
+                      </div>
+                      <div className="mt-4 grid grid-cols-1 gap-2">
+                        {profile.sources.map((source) => (
+                          <ExternalA
+                            key={`${profile.name}-${source.url}`}
+                            href={source.url}
+                            className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 transition hover:bg-white/[0.06]"
+                          >
+                            <span className="min-w-0">
+                              <span className="text-[#D4AF37] font-extrabold text-[12px]">
+                                {source.type}
+                              </span>{" "}
+                              <span className="text-white/80">-</span>{" "}
+                              <span className="font-semibold">
+                                {source.label}
+                              </span>
+                            </span>
+                            <ExternalLink className="h-4 w-4 shrink-0 text-white/50" />
+                          </ExternalA>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-[28px] border border-white/10 bg-black/30 p-5 sm:p-6">
+                <div className="text-[11px] uppercase tracking-[0.24em] text-white/45 font-extrabold">
+                  Myth, claim & evidence
+                </div>
+                <h3 className="mt-2 text-2xl font-extrabold tracking-tight text-white">
+                  Government, writing, and knowledge beyond the myths
+                </h3>
+                <div className="mt-5 space-y-4">
+                  {block4ClaimChecks.map((item) => (
+                    <div
+                      key={item.claim}
+                      className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+                    >
+                      <div className="text-sm font-extrabold text-[#D4AF37]">
+                        {item.claim}
+                      </div>
+                      <div className="mt-3 space-y-3 text-sm leading-relaxed text-white/75">
+                        <div>
+                          <span className="font-extrabold text-white">
+                            What is true:
+                          </span>{" "}
+                          {item.truth}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            What is uncertain:
+                          </span>{" "}
+                          {item.uncertain}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            What is unsupported:
+                          </span>{" "}
+                          {item.unsupported}
+                        </div>
+                        <div>
+                          <span className="font-extrabold text-white">
+                            Why it matters:
+                          </span>{" "}
+                          {item.whyItMatters}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-[28px] border border-white/10 bg-black/30 p-5 sm:p-6">
+              <div className="text-[11px] uppercase tracking-[0.24em] text-white/45 font-extrabold">
+                What school often left out
+              </div>
+              <h3 className="mt-2 text-2xl font-extrabold tracking-tight text-white">
+                Institutions, manuscripts, women, and African authorship
+              </h3>
+              <div className="mt-5 grid grid-cols-1 xl:grid-cols-2 gap-4">
+                {block4SchoolGaps.map((item) => (
+                  <div
+                    key={item.title}
+                    className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+                  >
+                    <div className="text-sm font-extrabold text-white">
+                      {item.title}
+                    </div>
+                    <div className="mt-3 space-y-2 text-sm leading-relaxed text-white/75">
+                      <div>
+                        <span className="font-extrabold text-white">
+                          Commonly taught:
+                        </span>{" "}
+                        {item.commonlyTaught}
+                      </div>
+                      <div>
+                        <span className="font-extrabold text-white">
+                          Missing context:
+                        </span>{" "}
+                        {item.missingContext}
+                      </div>
+                      <div>
+                        <span className="font-extrabold text-white">
+                          The evidence:
+                        </span>{" "}
+                        {item.evidence}
+                      </div>
+                      <div>
+                        <span className="font-extrabold text-white">
+                          Why it matters:
+                        </span>{" "}
+                        {item.whyItMatters}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </Card>
