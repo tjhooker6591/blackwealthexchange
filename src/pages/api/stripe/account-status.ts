@@ -102,6 +102,8 @@ export default async function handler(
           "Payout status is temporarily unavailable. You can continue managing products and orders.",
       });
     }
-    return res.status(500).json({ error: message });
+    return res.status(500).json({
+      error: "We couldn't load payout status right now. Please try again.",
+    });
   }
 }

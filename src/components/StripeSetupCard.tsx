@@ -9,7 +9,14 @@ type Status = {
   chargesEnabled: boolean;
   payoutsEnabled: boolean;
   requirements: string[];
+  statusUnavailable?: boolean;
+  statusMessage?: string;
 };
+
+const STRIPE_STATUS_CARD_ERROR =
+  "We couldn't load payout status right now. Please try again.";
+const STRIPE_SETUP_CARD_ERROR =
+  "We couldn't start payout setup right now. Please try again.";
 
 export default function StripePayoutStatusCard() {
   const [status, setStatus] = useState<Status | null>(null);
@@ -45,11 +52,12 @@ export default function StripePayoutStatusCard() {
     setError(null);
     try {
       const r = await fetch("/api/stripe/account-status");
-      const data = await r.json();
-      if (!r.ok) throw new Error(data?.error || "Failed to load Stripe status");
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(STRIPE_STATUS_CARD_ERROR);
       setStatus(data);
     } catch (e: any) {
-      setError(e?.message || "Failed to load Stripe status");
+      console.error("Stripe setup card status error:", e);
+      setError(STRIPE_STATUS_CARD_ERROR);
     } finally {
       setLoading(false);
     }
@@ -62,12 +70,26 @@ export default function StripePayoutStatusCard() {
       const r = await fetch("/api/stripe/create-account-link", {
         method: "POST",
       });
-      const data = await r.json();
-      if (!r.ok) throw new Error(data?.error || "Failed to start Stripe setup");
-      if (!data?.url) throw new Error("Missing onboarding URL");
-      window.location.assign(data.url);
+      const data = await r.json().catch(() => ({}));
+      const onboardingUrl =
+        typeof data?.url === "string"
+          ? data.url
+          : typeof data?.data?.url === "string"
+            ? data.data.url
+            : "";
+      if (r.status === 401) {
+        window.location.assign(
+          `/login?redirect=${encodeURIComponent(window.location.pathname)}`,
+        );
+        return;
+      }
+      if (!r.ok || !onboardingUrl) {
+        throw new Error(STRIPE_SETUP_CARD_ERROR);
+      }
+      window.location.assign(onboardingUrl);
     } catch (e: any) {
-      setError(e?.message || "Stripe setup failed");
+      console.error("Stripe setup card onboarding error:", e);
+      setError(STRIPE_SETUP_CARD_ERROR);
       setWorking(false);
     }
   }
@@ -85,6 +107,11 @@ export default function StripePayoutStatusCard() {
             Stripe payouts must be enabled before you can receive funds to your
             bank.
           </p>
+          {status?.statusUnavailable && status?.statusMessage ? (
+            <p className="mt-2 text-sm text-yellow-200">
+              {status.statusMessage}
+            </p>
+          ) : null}
           {error ? <p className="mt-2 text-sm text-red-300">{error}</p> : null}
         </div>
 
