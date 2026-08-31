@@ -1,6 +1,6 @@
 # BWE World-Class Measurement History
 
-Last updated: 2026-08-30
+Last updated: 2026-08-31
 
 ## Entry 2026-08-31 — Workstream 002 Block 4 substantive checkpoint
 
