@@ -173,6 +173,90 @@ STATUS:
 
 - `COMMITTED`
 
+### 8. Public message and error hygiene sweep
+
+DATE:
+
+- `2026-08-31`
+
+WORKSTREAM:
+
+- `PUBLIC QUALITY / CUSTOMER COPY / ERROR HYGIENE`
+
+CHANGE TYPE:
+
+- `MODIFIED`
+
+FILES:
+
+- `src/lib/publicError.ts`
+- `src/components/BuyNowButton.tsx`
+- `src/pages/checkout/index.tsx`
+- `src/pages/creator/dashboard.tsx`
+- `src/pages/events/index.tsx`
+- `src/pages/financial-literacy.tsx`
+- `src/pages/login.tsx`
+- `src/pages/marketplace/analytics.tsx`
+- `src/pages/music/join.tsx`
+- `src/pages/music/pricing.tsx`
+- `src/pages/reset-password.tsx`
+- `src/pages/founding-membership.tsx`
+- `src/pages/founding-membership/status.tsx`
+- `src/pages/founding-membership/evidence.tsx`
+- `src/pages/advertise/business-directory.tsx`
+- `src/pages/advertise/banner-ads.tsx`
+- `src/pages/advertise/featured-sponsor.tsx`
+- `src/pages/advertising/index.tsx`
+- `src/pages/auth/seller-login.tsx`
+- `src/pages/business-directory/[alias].tsx`
+- `src/pages/dashboard/consultant/profile.tsx`
+- `src/pages/dashboard/consultant/requests.tsx`
+- `src/pages/dashboard/employer/consulting-interest.tsx`
+- `src/pages/employer/applicants.tsx`
+- `src/pages/explore.tsx`
+- `src/pages/marketplace/orders.tsx`
+- `src/pages/marketplace/my-orders.tsx`
+- `src/pages/marketplace/edit/[id].tsx`
+- `src/pages/news.tsx`
+- `src/pages/organizations/[slug].tsx`
+- `src/pages/recruiting-consulting/status.tsx`
+- `src/pages/search-results.tsx`
+- `src/pages/search/ai.tsx`
+- `src/pages/subscribe.tsx`
+
+WHY CHANGED:
+
+- Remove internal operational language from customer-facing pages.
+- Replace public raw exception leaks with customer-safe recovery copy.
+- Preserve the previously committed seller Stripe onboarding fix while extending error hygiene to other public flows.
+
+FUNCTIONALITY CHANGED:
+
+- Added shared public error normalization for customer-facing routes.
+- Rewrote customer copy that exposed internal workflow, implementation, or account-linking language.
+- Removed public console noise on `/news` by stabilizing item keys and ignoring blocked insecure image URLs.
+
+FUNCTIONALITY PRESERVED:
+
+- Seller onboarding flow remains on the previously fixed Stripe path.
+- Existing account, checkout, advertising, history, and learning routes remain live.
+- No production deploy, payment, or DB mutation was performed for this sweep.
+
+RUNTIME COMMIT:
+
+- `d6d1f88e4dc67ee250e38c5fd4d008ac1543a7cb`
+
+VALIDATION:
+
+- `npm run typecheck` PASS
+- `node scripts/runtime-check.mjs` PASS
+- `node scripts/check-critical-paths.mjs` PASS (`35/35`)
+- Browser route proof PASS for homepage, history, west-africa chapter, seller entry, founding membership, advertising, events, support, about, search results, news, and recruiting status at mobile and desktop checkpoints.
+
+STATUS:
+
+- `COMMITTED AFTER RUNTIME + CONTROL COMMITS`
+
 ## 9. Public internal-language and copy-hygiene sweep
 
 DATE:
