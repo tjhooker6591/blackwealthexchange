@@ -40,6 +40,7 @@ If an older continuity note conflicts with newer canonical repo/control evidence
 
 ## What is still open
 
+- Phase 2 Workstream 1 read-only unified entity inventory is active until the current-state artifact is accepted.
 - BWE-10 owner-authorized live transaction proof.
 - End-to-end paid fulfillment proof remains an external evidence task, not a currently proven code defect.
 - Cross-machine runtime parity evidence.
@@ -76,8 +77,8 @@ Apply the Revenue Gate before starting any task. If a task does not help acquire
 ## First 3 actions to resume immediately
 
 1. **Verify current Git truth:** confirm canonical branch, `HEAD`, recent history, port `3000`, and that the canonical repo is the process serving localhost before trusting any older note.
-2. **Read the current status artifact:** preserve the accepted control checkpoint and the accepted runtime/public-quality checkpoints; keep the world-class metrics unchanged at `381 / 1000`, `67%`, `BI-0`, and `PRE-ES-0` unless new durable evidence justifies movement.
-3. **Stay on the real priority stack:** owner acceptance only for actual defects, `BWE-10` owner/live transaction proof, `BWE-13` second-machine proof, then `PHASE 2 — UNIFIED PLATFORM CORE` starting with a read-only entity/relationship inventory for Person 360 and Business 360.
+2. **Read the current status artifact and Phase 2 inventory artifact:** preserve the accepted control checkpoint and the accepted runtime/public-quality checkpoints; keep the world-class metrics unchanged at `381 / 1000`, `67%`, `BI-0`, and `PRE-ES-0` unless new durable evidence justifies movement.
+3. **Stay on the real priority stack:** complete and accept `docs/PHASE2_WORKSTREAM1_UNIFIED_ENTITY_INVENTORY_2026-09-01.md`, then move to the smallest safe Phase 2 resolver slice, while keeping `BWE-10` owner/live transaction proof and `BWE-13` second-machine proof visible as master-program proof gaps.
 
 ## Guardrail
 

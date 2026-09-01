@@ -315,6 +315,60 @@ STATUS:
 
 - `COMMITTED AFTER CONTROL UPDATE`
 
+## 11. Phase 2 Workstream 1 - unified entity inventory
+
+DATE:
+
+- `2026-09-01`
+
+WORKSTREAM:
+
+- `PHASE 2 — UNIFIED PLATFORM CORE / WORKSTREAM 1 — READ-ONLY CURRENT-STATE ENTITY / RELATIONSHIP INVENTORY`
+
+CHANGE TYPE:
+
+- `ADDED`
+
+FILES:
+
+- `docs/PHASE2_WORKSTREAM1_UNIFIED_ENTITY_INVENTORY_2026-09-01.md`
+- `docs/CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md`
+- `docs/BLACK_NEXT_SESSION_START_HERE.md`
+
+WHY CHANGED:
+
+- Begin Phase 2 with a source-first current-state inventory before any Person 360 or Business 360 design or implementation work.
+- Record the exact current person, business, role, relationship, transaction, and event architecture without changing runtime code or schema.
+- Preserve the master-program metrics and release-proof gaps while moving engineering sequencing into `PHASE 2 — WORKSTREAM 1`.
+
+FUNCTIONALITY CHANGED:
+
+- No application functionality changed.
+- Added a durable current-state entity map covering person sources, business sources, role/capability mixing, person-to-business links, business-to-platform links, transaction relationships, event storage, identifier fragmentation, and current authoritative sources.
+- Re-anchored the restart docs so the active engineering lane is now the read-only Phase 2 inventory workstream.
+
+FUNCTIONALITY PRESERVED:
+
+- Existing auth, directory, claims, seller, marketplace, Stripe, jobs, founding membership, Black Card, advertising, student, support, and accepted history systems remain unchanged.
+- No runtime code changed.
+- No schema changed.
+- No DB writes or migrations were performed.
+- No deployment was performed.
+
+RUNTIME COMMIT:
+
+- `d6d1f88e4dc67ee250e38c5fd4d008ac1543a7cb`
+
+VALIDATION:
+
+- source inspection only across auth, profile, business, claim, marketplace, membership, support, jobs, consultant, checkout, webhook, and analytics/event files
+- confirmed the canonical repo remained on `friday-release-candidate`
+- localhost verification required before checkpoint closeout
+
+STATUS:
+
+- `READY TO COMMIT AS CONTROL ARTIFACT`
+
 DATE:
 
 - `2026-08-31`

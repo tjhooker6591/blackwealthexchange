@@ -5,7 +5,7 @@
 - PROGRAM PHASE: `POST-BASELINE EXECUTION ON TOP OF COMPLETED PHASE 0 + PHASE 1`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- CURRENT CONTROL HEAD: `d67bd02ecea80632060e9b3c1390d15288000953`
+- CURRENT CONTROL HEAD: `a0ee4650f844e868f68138f44569c338027e2277`
 - LATEST RUNTIME HEAD: `d6d1f88e4dc67ee250e38c5fd4d008ac1543a7cb`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
@@ -27,7 +27,7 @@
 - DB OPERATIONS: `35`
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
 - AUTH/ENV PARITY STATUS: `LOCAL PROOF COMPLETED — business-session role drift fixed; production-safe config parity remains partial`
-- ACTIVE POST-BASELINE WORKSTREAM: `WORKSTREAM 002 — LIBRARY OF BLACK HISTORY`
+- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 1 — READ-ONLY CURRENT-STATE ENTITY / RELATIONSHIP INVENTORY`
 - BWE-10 INTERNAL TRANSACTION READINESS: `GO`
 - OWNER TRANSACTION: `PENDING`
 - BWE-10 LIVE PROOF: `PENDING`
@@ -36,7 +36,7 @@
 - CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
-- PHASE 2 — UNIFIED PLATFORM CORE: `OUTSTANDING`
+- PHASE 2 — UNIFIED PLATFORM CORE: `ACTIVE — WORKSTREAM 1`
 - PHASE 3 — DISCOVERY & COMMERCE: `OUTSTANDING`
 - PHASE 4 — PERSONALIZED PLATFORM: `OUTSTANDING`
 - PHASE 5 — NETWORK EFFECTS: `OUTSTANDING`
@@ -44,7 +44,7 @@
 - PHASE 7 — AI / MOBILE / SCALE: `OUTSTANDING`
 - EXTERNAL / OWNER PROOFS: `PENDING`
 - CURRENT BLOCKER: `no new release defect is currently proven; remaining closure depends on owner/live proof for BWE-10 and separate-machine proof for BWE-13`
-- CURRENT NEXT WORK: `continue owner acceptance only for real defects; preserve the accepted post-baseline checkpoint; then begin Phase 2 only after owner-authorized release proof work is satisfied or intentionally deferred`
+- CURRENT NEXT WORK: `complete the read-only current-state entity / relationship inventory artifact for Person 360, Business 360, role/capability truth, business/platform links, transaction links, and event links; do not change runtime code or schema in this workstream`
 - BWE-10 OWNER ACTION: `PENDING — Pamfa hoodies owner-only live proof`
 - STRIPE STATUS: `existing architecture preserved`
 - REAL TRANSACTION RULE: `OWNER ONLY`
@@ -79,7 +79,9 @@
   - do not reopen accepted History or public-quality work without proven regression
   - record the local Home -> Directory delay as deferred backlog only; no optimization authorized without customer evidence
   - keep BWE-10 owner/live proof and BWE-13 separate-machine proof as the real remaining release-evidence items
-  - begin Phase 2 with a read-only entity and relationship inventory for `Person 360`, `Business 360`, and the unified identity model; do not replace working systems
+  - preserve the Phase 2 Workstream 1 artifact at `docs/PHASE2_WORKSTREAM1_UNIFIED_ENTITY_INVENTORY_2026-09-01.md`
+  - keep this workstream read-only: no runtime code changes, no schema changes, no DB writes
+  - use the inventory to identify the smallest safe future resolver layer before any implementation
 - ENGINEERING RULE: `VERIFY DELTA -> WORK -> VALIDATE -> COMMIT -> UPDATE RECORDS -> VERIFY LOCALHOST -> CONTINUE`
 
 ## Accepted 2026-09-01 preservation checkpoint
