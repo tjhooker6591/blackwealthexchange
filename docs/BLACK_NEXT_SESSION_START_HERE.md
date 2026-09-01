@@ -40,11 +40,12 @@ If an older continuity note conflicts with newer canonical repo/control evidence
 
 ## What is still open
 
-- Pamfa seller-to-business canonical attribution ambiguity for the current marketplace proof candidate.
-- End-to-end paid fulfillment proofs across core funnels after owner review resolves canonical attribution.
+- BWE-10 owner-authorized live transaction proof.
+- End-to-end paid fulfillment proof remains an external evidence task, not a currently proven code defect.
 - Cross-machine runtime parity evidence.
 - Auth/session + env consistency proof across environments remains partial even though local auth proof is complete.
-- Revenue-first reorientation and backlog reclassification under the owner directive effective 2026-06-28.
+- Block 6 Black History work remains outstanding, but History must not replace the master engineering roadmap.
+- Home -> Directory local delay remains deferred backlog only unless customer or production evidence proves a real performance defect.
 
 ## Governing directive, effective immediately
 
@@ -59,13 +60,28 @@ Apply the Revenue Gate before starting any task. If a task does not help acquire
 - Profile persistence + avatar/resume upload-display-manage slice (commit `676aae2`).
 - Business Directory search/filtering scenario matrix and confirmed UI mismatch defect (commit `8e0be1b`).
 
+## Accepted closed work to preserve
+
+- Black History Blocks `1` through `5` are complete at the current checkpoint.
+- The history mobile / information-architecture correction is complete.
+- The seller payout / API-contract defect is corrected and preserved.
+- Customer-safe public error handling is in place.
+- The public internal-language / error sweep is complete.
+- `18` internal public messages were rewritten.
+- `27` raw technical-error exposures were corrected.
+- Critical-path validation passed.
+- Localhost customer experience was visually accepted by the owner.
+- Do not reopen any of the above without proven regression.
+
 ## First 3 actions to resume immediately
 
-1. **Verify current Git truth:** confirm canonical branch, `HEAD`, recent history, and whether any tracked runtime changes actually exist before trusting continuity notes.
-2. **Read the current status artifact:** preserve accepted control head `1ec2aaa1931ca9a64f929d639b24394db99ec9ee` and runtime head `665a1193d180d9c3c2bc79dda6bba8310d477416`.
-3. **Build the Pamfa owner decision packet:** assemble read-only evidence linking product, seller, business, user, claim, ownership, and marketplace records without mutating MongoDB or touching Stripe.
+1. **Verify current Git truth:** confirm canonical branch, `HEAD`, recent history, port `3000`, and that the canonical repo is the process serving localhost before trusting any older note.
+2. **Read the current status artifact:** preserve the accepted control checkpoint and the accepted runtime/public-quality checkpoints; keep the world-class metrics unchanged at `381 / 1000`, `67%`, `BI-0`, and `PRE-ES-0` unless new durable evidence justifies movement.
+3. **Stay on the real priority stack:** owner acceptance only for actual defects, `BWE-10` owner/live transaction proof, `BWE-13` second-machine proof, then `PHASE 2 — UNIFIED PLATFORM CORE` starting with a read-only entity/relationship inventory for Person 360 and Business 360.
 
 ## Guardrail
 
 - Do not claim closure without explicit event/session/DB evidence.
 - Do not reopen targeted admin proof, local auth proof, or Stripe preservation-first remediation without new reproducible evidence.
+- Do not optimize the local Home -> Directory delay without customer-impact evidence.
+- Do not let History become the master engineering roadmap.

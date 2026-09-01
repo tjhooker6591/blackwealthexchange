@@ -259,6 +259,62 @@ STATUS:
 
 ## 9. Public internal-language and copy-hygiene sweep
 
+## 10. End-of-day state lock and world-class re-anchor
+
+DATE:
+
+- `2026-09-01`
+
+WORKSTREAM:
+
+- `CONTROL / CONTINUITY / END-OF-DAY LOCK`
+
+CHANGE TYPE:
+
+- `MODIFIED`
+
+FILES:
+
+- `docs/CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md`
+- `docs/BLACK_NEXT_SESSION_START_HERE.md`
+- `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md`
+
+WHY CHANGED:
+
+- Re-anchor tomorrow's restart point to the actual canonical repo truth after the accepted history, seller, and public-quality checkpoints.
+- Prevent the older Phase 1-active wording from overriding the completed Phase 1 baseline and the next-major-phase sequencing.
+- Preserve the explicit decision that the local Home -> Directory delay is backlog only and not authorized for optimization work tonight.
+
+FUNCTIONALITY CHANGED:
+
+- No application functionality changed.
+- Canonical control records now point to the current accepted control head and preserved runtime/public-quality checkpoints.
+- The next-session instructions now explicitly preserve accepted History Blocks `1` through `5`, the history mobile correction, the seller payout/API-contract fix, and the full public error/copy sweep.
+- The master roadmap is re-anchored at `PHASE 0 COMPLETE`, `PHASE 1 COMPLETE`, and `PHASE 2 — UNIFIED PLATFORM CORE` as the next major engineering phase.
+
+FUNCTIONALITY PRESERVED:
+
+- All accepted runtime work remains unchanged.
+- Unrelated pre-existing dirt remains untouched.
+- No production deploy, payment, profiling, optimization, or DB mutation was performed.
+
+RUNTIME COMMIT:
+
+- `d6d1f88e4dc67ee250e38c5fd4d008ac1543a7cb`
+
+VALIDATION:
+
+- `git rev-parse HEAD`
+- `git branch --show-current`
+- `git status --short --branch`
+- `lsof -nP -iTCP:3000 -sTCP:LISTEN`
+- `curl -I http://127.0.0.1:3000`
+- confirmed serving process cwd is `/Users/blackforge/workspace/bwe/repos/repo_clean`
+
+STATUS:
+
+- `COMMITTED AFTER CONTROL UPDATE`
+
 DATE:
 
 - `2026-08-31`

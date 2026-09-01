@@ -1,12 +1,12 @@
 # Current Build — Canonical All-Workstreams Status
 
-## CURRENT CHECKPOINT — 2026-08-27
+## CURRENT CHECKPOINT — 2026-09-01
 
-- PROGRAM PHASE: `PHASE 1 — BWE EXPERIENCE 2.0 (Phase 0 internal execution complete; external proofs still pending)`
+- PROGRAM PHASE: `POST-BASELINE EXECUTION ON TOP OF COMPLETED PHASE 0 + PHASE 1`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- CURRENT CONTROL HEAD: `see latest docs(control) baseline commit on friday-release-candidate`
-- LATEST RUNTIME HEAD: `80c971734635b57b2921a0b31918acb5868faa8d`
+- CURRENT CONTROL HEAD: `d67bd02ecea80632060e9b3c1390d15288000953`
+- LATEST RUNTIME HEAD: `d6d1f88e4dc67ee250e38c5fd4d008ac1543a7cb`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -27,16 +27,24 @@
 - DB OPERATIONS: `35`
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
 - AUTH/ENV PARITY STATUS: `LOCAL PROOF COMPLETED — business-session role drift fixed; production-safe config parity remains partial`
+- ACTIVE POST-BASELINE WORKSTREAM: `WORKSTREAM 002 — LIBRARY OF BLACK HISTORY`
 - BWE-10 INTERNAL TRANSACTION READINESS: `GO`
 - OWNER TRANSACTION: `PENDING`
 - BWE-10 LIVE PROOF: `PENDING`
 - PAYMENT PROOF STATUS: `READY FOR OWNER EXECUTION — existing Stripe architecture preserved; live owner-only proof still pending`
 - CROSS-MACHINE PARITY STATUS: `EXTERNAL PROOF PENDING`
 - CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
-- INTERNAL PHASE 0: `COMPLETE`
+- PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
+- PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
+- PHASE 2 — UNIFIED PLATFORM CORE: `OUTSTANDING`
+- PHASE 3 — DISCOVERY & COMMERCE: `OUTSTANDING`
+- PHASE 4 — PERSONALIZED PLATFORM: `OUTSTANDING`
+- PHASE 5 — NETWORK EFFECTS: `OUTSTANDING`
+- PHASE 6 — ECONOMIC INTELLIGENCE: `OUTSTANDING`
+- PHASE 7 — AI / MOBILE / SCALE: `OUTSTANDING`
 - EXTERNAL / OWNER PROOFS: `PENDING`
-- CURRENT BLOCKER: `intentional owner review hold for the completed Experience 2.0 baseline and exact 2026-08-10-to-baseline inventory; external owner-only BWE-10 live proof plus BWE-13 second-machine proof still remain pending outside the completed UI lane`
-- CURRENT NEXT WORK: `owner review of the completed Experience 2.0 baseline, baseline report, and exact Git-derived file inventory before any Phase 2 or new runtime lane begins`
+- CURRENT BLOCKER: `no new release defect is currently proven; remaining closure depends on owner/live proof for BWE-10 and separate-machine proof for BWE-13`
+- CURRENT NEXT WORK: `continue owner acceptance only for real defects; preserve the accepted post-baseline checkpoint; then begin Phase 2 only after owner-authorized release proof work is satisfied or intentionally deferred`
 - BWE-10 OWNER ACTION: `PENDING — Pamfa hoodies owner-only live proof`
 - STRIPE STATUS: `existing architecture preserved`
 - REAL TRANSACTION RULE: `OWNER ONLY`
@@ -61,13 +69,40 @@
   - preserve the approved deterministic Pamfa attribution links:
     - `sellers/67fd9ed3acdef9011c60ff99 -> businessId 6a45de2d3278d888ed5d0730`
     - `products/680d23a3dc57cdf2efedf784 -> businessId 6a45de2d3278d888ed5d0730`
-  - return exact owner-only live transaction instructions; do not execute the transaction autonomously
-  - continue independent approved engineering in Phase 1 while owner proof is pending
-  - preserve the completed support Experience 2.0 route family, advertising shell/placements/checkout routes, and creator dashboard shell
-  - preserve the completed resources/articles Experience 2.0 lane and the corrected public homepage hero copy
-  - stop after the exact Experience 2.0 baseline and exact 2026-08-10-to-baseline inventory so the owner can review the full touched-file inventory before the next runtime lane
-  - preserve the accepted compact homepage wayfinding treatment and Student Hub Experience 2.0 checkpoint
-- ENGINEERING RULE: `PHASE 1 ACTIVE — continue Experience 2.0 foundation work while BWE-10 owner proof and BWE-13 external proof remain pending`
+  - preserve completed Black History Blocks `1` through `5` at the current checkpoint
+  - preserve the history mobile / information-architecture correction
+  - preserve the seller payout / API-contract correction
+  - preserve customer-safe public error handling
+  - preserve the complete public internal-language / error sweep
+  - preserve the rewritten `18` public internal messages
+  - preserve the corrected `27` raw technical-error exposures
+  - do not reopen accepted History or public-quality work without proven regression
+  - record the local Home -> Directory delay as deferred backlog only; no optimization authorized without customer evidence
+  - keep BWE-10 owner/live proof and BWE-13 separate-machine proof as the real remaining release-evidence items
+  - begin Phase 2 with a read-only entity and relationship inventory for `Person 360`, `Business 360`, and the unified identity model; do not replace working systems
+- ENGINEERING RULE: `VERIFY DELTA -> WORK -> VALIDATE -> COMMIT -> UPDATE RECORDS -> VERIFY LOCALHOST -> CONTINUE`
+
+## Accepted 2026-09-01 preservation checkpoint
+
+- TODAY'S ACCEPTED WORK:
+  - Black History Blocks `1` through `5` completed to the current checkpoint
+  - history mobile / information-architecture correction completed
+  - seller payout / API-contract defect corrected
+  - customer-safe public error handling added
+  - complete public internal-language / error sweep completed
+  - `18` internal public messages rewritten
+  - `27` raw technical-error exposures corrected
+  - seller fix preserved
+  - critical-path validation passing
+  - localhost customer experience visually accepted by owner
+- DEFERRED:
+  - local Home -> Directory navigation delay of approximately `1 second`
+  - likely related to destination API / auth / session request work
+  - no functional defect proven
+  - no performance code change authorized
+  - reassess later only against production or customer evidence
+- NEXT MAJOR ENGINEERING PHASE: `PHASE 2 — UNIFIED PLATFORM CORE`
+- FIRST PHASE 2 WORKSTREAM: `read-only inventory of current person, business, account, role, membership, claim, transaction, and event records to define the smallest safe Person 360 / Business 360 relationship map before any schema or runtime changes`
 
 ## Master program anchors — 2026-08-25
 
