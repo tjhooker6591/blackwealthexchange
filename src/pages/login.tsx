@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type AccountType = "user" | "seller" | "business" | "employer";
 
@@ -169,7 +170,10 @@ export default function Login() {
       router.push(role ? defaultRouteForRole(role) : "/dashboard");
     } catch (err: unknown) {
       setError(
-        err instanceof Error ? err.message : "An unknown error occurred.",
+        toPublicErrorMessage(err instanceof Error ? err.message : "", {
+          fallback: "We couldn't sign you in right now. Please try again.",
+          authFallback: "Please check your account details and try again.",
+        }),
       );
     } finally {
       setLoading(false);

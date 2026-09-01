@@ -416,7 +416,7 @@ export default function Marketplace({
               </div>
               <div className="mt-3 flex flex-wrap gap-2 text-left text-xs text-white/70">
                 <span className="bwe-badge" data-tone="success">
-                  Checkout path preserved
+                  Secure checkout available
                 </span>
                 <span className="bwe-badge">Pricing verified server-side</span>
                 <span className="bwe-badge">

@@ -13,7 +13,16 @@ type AccountStatus = {
   charges_enabled: boolean;
   payouts_enabled: boolean;
   details_submitted?: boolean;
+  statusUnavailable?: boolean;
+  statusMessage?: string;
 };
+
+const SELLER_PAYOUT_STATUS_ERROR =
+  "We couldn't load payout status right now. Please try again.";
+const SELLER_PAYOUT_START_ERROR =
+  "We couldn't start payout setup right now. Please try again.";
+const SELLER_REGISTRATION_ERROR =
+  "We couldn't complete seller setup right now. Please try again.";
 
 export default function BecomeASellerPage() {
   const router = useRouter();
@@ -76,6 +85,8 @@ export default function BecomeASellerPage() {
         if (acctRes.ok) {
           const acctData = await acctRes.json();
           setAcctStatus(acctData);
+        } else {
+          setError(SELLER_PAYOUT_STATUS_ERROR);
         }
       }
 
@@ -150,13 +161,29 @@ export default function BecomeASellerPage() {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Onboarding error");
+      const data = await res.json().catch(() => ({}));
+      const onboardingUrl =
+        typeof data?.url === "string"
+          ? data.url
+          : typeof data?.data?.url === "string"
+            ? data.data.url
+            : "";
 
-      router.replace(data.url);
+      if (res.status === 401) {
+        router.replace(
+          `/login?redirect=${encodeURIComponent("/marketplace/become-a-seller")}`,
+        );
+        return;
+      }
+
+      if (!res.ok || !onboardingUrl) {
+        throw new Error(SELLER_PAYOUT_START_ERROR);
+      }
+
+      router.replace(onboardingUrl);
     } catch (e: any) {
       console.error(e);
-      setError(e.message || "Stripe onboarding failed.");
+      setError(SELLER_PAYOUT_START_ERROR);
     } finally {
       setOnboardingLoading(false);
     }
@@ -195,13 +222,13 @@ export default function BecomeASellerPage() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Registration failed");
+      if (!res.ok) throw new Error(SELLER_REGISTRATION_ERROR);
 
       setSeller(data.seller);
       await startOnboarding(data.seller);
     } catch (e: any) {
       console.error(e);
-      setError(e.message || "Registration failed.");
+      setError(SELLER_REGISTRATION_ERROR);
     } finally {
       setSubmitting(false);
     }
@@ -316,6 +343,12 @@ export default function BecomeASellerPage() {
             {router.query.stripe === "return" ? (
               <p className="text-green-300 mb-3 text-sm">
                 Welcome back from Stripe. We rechecked your readiness above.
+              </p>
+            ) : null}
+
+            {acctStatus?.statusUnavailable && acctStatus?.statusMessage ? (
+              <p className="text-yellow-200 mb-3 text-sm">
+                {acctStatus.statusMessage}
               </p>
             ) : null}
 

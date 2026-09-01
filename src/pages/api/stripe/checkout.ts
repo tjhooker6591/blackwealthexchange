@@ -33,6 +33,7 @@ import {
   checkoutTypeToRevenueType,
   computeRevenueSplit,
 } from "@/lib/payments/revenue";
+import { validateSponsorBusinessLink } from "@/lib/advertising/sponsorListings";
 
 const stripeSecret = getStripeSecretKey();
 const stripe = new Stripe(stripeSecret || "sk_missing", {
@@ -355,6 +356,26 @@ export default async function handler(
       }
 
       isPlatformAccount = true;
+
+      if (adItemId === "featured-sponsor") {
+        const sponsorValidation = await validateSponsorBusinessLink(
+          db,
+          normalizedBusinessId,
+        );
+        if (!sponsorValidation.ok) {
+          const status =
+            sponsorValidation.reason === "missing_business_id"
+              ? 400
+              : sponsorValidation.reason === "business_not_found"
+                ? 404
+                : 409;
+          return res.status(status).json({
+            error:
+              "Featured sponsorship requires a linked public BWE business listing",
+            code: sponsorValidation.reason,
+          });
+        }
+      }
     } else if (type === "plan") {
       const planMap: Record<
         string,
@@ -372,7 +393,7 @@ export default async function handler(
         founder: {
           amount: 4900,
           name: "Plan Upgrade (founder)",
-          billingInterval: "annual",
+          billingInterval: "monthly",
         },
         "music-creator-starter": {
           amount: 2900,
@@ -585,7 +606,8 @@ export default async function handler(
     ) {
       metadata.productKey = "bwe_membership";
       metadata.tier = finalItemId === "founder" ? "founding" : "premium";
-      metadata.billingInterval = "annual";
+      metadata.billingInterval =
+        finalItemId === "founder" ? "monthly" : "annual";
     }
 
     if (type === "plan" && isBlackCardPlanItemId(finalItemId)) {
@@ -847,7 +869,7 @@ export default async function handler(
       `${checkoutFingerprint}|${minuteBucket}`,
     )}`;
 
-    const isAnnualMembershipSubscription =
+    const isPlanMembershipSubscription =
       type === "plan" &&
       (finalItemId === "premium" || finalItemId === "founder");
 
@@ -856,7 +878,7 @@ export default async function handler(
 
     const baseParams: Stripe.Checkout.SessionCreateParams = {
       mode:
-        isAnnualMembershipSubscription || isFoundingMembershipSubscription
+        isPlanMembershipSubscription || isFoundingMembershipSubscription
           ? "subscription"
           : "payment",
       payment_method_types: ["card"],
@@ -866,8 +888,16 @@ export default async function handler(
             currency: "usd",
             product_data: { name: itemName },
             unit_amount: unitAmount,
-            ...(isAnnualMembershipSubscription
-              ? { recurring: { interval: "year" as const, interval_count: 1 } }
+            ...(isPlanMembershipSubscription
+              ? {
+                  recurring: {
+                    interval:
+                      finalItemId === "founder"
+                        ? ("month" as const)
+                        : ("year" as const),
+                    interval_count: 1,
+                  },
+                }
               : isFoundingMembershipSubscription
                 ? {
                     recurring: {
@@ -885,7 +915,7 @@ export default async function handler(
       success_url: successUrl,
       cancel_url: cancelUrl,
       client_reference_id: sessionUserId,
-      ...(isAnnualMembershipSubscription || isFoundingMembershipSubscription
+      ...(isPlanMembershipSubscription || isFoundingMembershipSubscription
         ? {
             subscription_data: {
               metadata,
@@ -982,7 +1012,9 @@ export default async function handler(
             billingInterval:
               type === "plan" &&
               (finalItemId === "premium" || finalItemId === "founder")
-                ? "annual"
+                ? finalItemId === "founder"
+                  ? "monthly"
+                  : "annual"
                 : type === "plan" &&
                     finalItemId === "wealth-builder-premium-annual"
                   ? "annual"

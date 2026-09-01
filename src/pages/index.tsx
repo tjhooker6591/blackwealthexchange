@@ -164,13 +164,12 @@ const EconomicImpactSimulator = () => {
             {formatCurrency(annualBenchmark2026)}
           </div>
           <p className="text-[10px] uppercase tracking-[0.08em] text-white/65 sm:text-xs">
-            WORKING 2026 BLACK BUYING-POWER BENCHMARK
+            2026 public buying-power benchmark
           </p>
           <p className="mt-2 max-w-xl text-xs leading-5 text-white/58 sm:text-sm">
-            This public benchmark is the current strategic context BWE is using
-            for 2026. Historical references and challenge percentages are shown
-            below with separate labels so they do not compete with the current
-            benchmark.
+            This benchmark helps frame the scale of the opportunity. Historical
+            references and challenge percentages are shown separately so the
+            numbers stay clear.
           </p>
 
           <div className="mt-4 grid gap-2 text-[11px] text-white/80 sm:grid-cols-3 sm:text-[12px]">
@@ -217,7 +216,7 @@ const EconomicImpactSimulator = () => {
               Challenge is the public behavior campaign: search Black first,
               buy, review, refer, repeat. The{" "}
               <span className="font-extrabold text-[#D4AF37]">1%-5%</span> range
-              is the longer-term BWE circulation objective.
+              reflects a longer-term circulation goal.
             </p>
             <p className="mt-3 break-words text-[1.35rem] font-black leading-tight tracking-tight text-[#D4AF37]">
               0.5% = {formatCurrency(challengeValue)} • 5% ={" "}
@@ -883,14 +882,13 @@ export default function Home() {
                   </div>
                   <div className="mt-2 flex items-center justify-between gap-3 text-[11px] text-white/48">
                     <span>
-                      Active scope:{" "}
+                      Search in{" "}
                       <span className="font-semibold text-white/78">
                         {activeScopeConfig.label}
                       </span>
                     </span>
                     <span className="hidden sm:inline">
-                      Query is preserved when you continue into that
-                      destination.
+                      Choose a path, then continue your search there.
                     </span>
                   </div>
                 </div>
@@ -943,12 +941,6 @@ export default function Home() {
                 <div className="hidden h-4 w-px bg-white/10 sm:block" />
                 <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-white/58">
                   <Link
-                    href="/founding-membership"
-                    className="bwe-open-link bwe-focus-ring text-sm"
-                  >
-                    Founding membership
-                  </Link>
-                  <Link
                     href="/business-directory/add-business"
                     className="bwe-open-link bwe-focus-ring text-sm"
                   >
@@ -985,6 +977,89 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          <section className="mx-auto mt-8 max-w-5xl">
+            <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5 text-left sm:p-6">
+              <div className="bwe-eyebrow">Start with BWE</div>
+              <h2 className="bwe-section-title mt-2 max-w-3xl">
+                Black Wealth Exchange connects Black-owned business, commerce,
+                opportunity, and ownership.
+              </h2>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-white/68 sm:text-[15px]">
+                Discover businesses, shop, find opportunities, grow a business,
+                and connect with an economic platform built to strengthen Black
+                ownership and prosperity.
+              </p>
+
+              <div className="mt-5 grid gap-3 md:grid-cols-3">
+                <article className="rounded-2xl border border-white/10 bg-black/28 p-4">
+                  <div className="bwe-card-title">Discover &amp; Support</div>
+                  <p className="mt-2 text-sm leading-6 text-white/68">
+                    Find Black-owned businesses, shop products, explore jobs,
+                    and discover opportunities.
+                  </p>
+                  <Link
+                    href="#search-dominant"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "start_with_bwe",
+                        ctaId: "homepage_explore",
+                        ctaLabel: "Explore BWE",
+                        destination: "#search-dominant",
+                      })
+                    }
+                    className="bwe-open-link bwe-focus-ring mt-4 text-[var(--accent)]"
+                  >
+                    Explore BWE
+                  </Link>
+                </article>
+
+                <article className="rounded-2xl border border-white/10 bg-black/28 p-4">
+                  <div className="bwe-card-title">Own a Business?</div>
+                  <p className="mt-2 text-sm leading-6 text-white/68">
+                    Get discovered, manage your business presence, and explore
+                    ways to grow through BWE.
+                  </p>
+                  <Link
+                    href="/start-here"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "start_with_bwe",
+                        ctaId: "homepage_business_owner_start",
+                        ctaLabel: "Business Owner — Start Here",
+                        destination: "/start-here",
+                      })
+                    }
+                    className="bwe-open-link bwe-focus-ring mt-4 text-[var(--accent)]"
+                  >
+                    Business Owner — Start Here
+                  </Link>
+                </article>
+
+                <article className="rounded-2xl border border-white/10 bg-black/28 p-4">
+                  <div className="bwe-card-title">Join BWE</div>
+                  <p className="mt-2 text-sm leading-6 text-white/68">
+                    Create your account to save opportunities, shop,
+                    participate, and continue your BWE journey.
+                  </p>
+                  <Link
+                    href="/signup?intent=join-bwe"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "start_with_bwe",
+                        ctaId: "homepage_join",
+                        ctaLabel: "Join BWE",
+                        destination: "/signup?intent=join-bwe",
+                      })
+                    }
+                    className="bwe-open-link bwe-focus-ring mt-4 text-[var(--accent)]"
+                  >
+                    Join BWE
+                  </Link>
+                </article>
+              </div>
+            </div>
+          </section>
 
           {showHomepageBanner ? (
             <section className="bwe-shell-panel mx-auto mt-4 max-w-5xl overflow-hidden rounded-[28px] p-3 shadow-[0_0_0_1px_rgba(212,175,55,0.12)]">
@@ -1050,6 +1125,37 @@ export default function Home() {
                   </Link>
                 ))}
               </div>
+
+              <div className="mt-4 rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/10 p-4 text-left">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <div className="bwe-eyebrow">History and context</div>
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-white/72">
+                      Our history does not begin with slavery. The Library of
+                      Black History restores the longer story of what Black
+                      people built, what survived, and why ownership work still
+                      matters now.
+                    </p>
+                  </div>
+                  <Link
+                    href="/library-of-black-history"
+                    onClick={() =>
+                      trackHomepageEvent(
+                        "homepage_history_truth_entry_clicked",
+                        {
+                          section: "homepage",
+                          ctaId: "quick_path_history_restore",
+                          ctaLabel: "Explore the Library of Black History",
+                          destination: "/library-of-black-history",
+                        },
+                      )
+                    }
+                    className="bwe-cta-secondary bwe-focus-ring px-5"
+                  >
+                    Explore Black History
+                  </Link>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -1099,25 +1205,53 @@ export default function Home() {
           <section className="mx-auto mt-10 max-w-5xl">
             <div className="grid gap-5 border-t border-white/8 pt-6 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:items-start">
               <div className="text-left">
-                <p className="bwe-eyebrow">Claim your existing listing</p>
+                <p className="bwe-eyebrow">Business growth</p>
                 <h3 className="bwe-section-title mt-2 max-w-2xl">
-                  Claim your listing and move into the ownership and growth
-                  path.
+                  Start with your business path, then grow your BWE presence.
                 </h3>
                 <p className="mt-3 max-w-xl text-sm leading-6 text-white/62">
-                  Preserve the existing business path, but give it less visual
-                  competition with the main discovery experience above.
+                  Start Here helps business owners find the right next step:
+                  claim and verify an existing listing, add a business, explore
+                  selling, or review growth options.
                 </p>
+                <div className="mt-4">
+                  <Link
+                    href="/start-here"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "business_growth",
+                        ctaId: "business_growth_start_here",
+                        ctaLabel: "Business Owner — Start Here",
+                        destination: "/start-here",
+                      })
+                    }
+                    className="bwe-cta-primary bwe-focus-ring inline-flex px-4 py-2.5 text-sm"
+                  >
+                    Business Owner — Start Here
+                  </Link>
+                </div>
               </div>
               <div className="bwe-soft-tile p-4 text-left">
                 <div className="text-[10px] uppercase tracking-[0.12em] text-white/40">
-                  Founding membership path
+                  Founding Membership
+                </div>
+                <div className="mt-2 text-lg font-bold text-white">
+                  Ready to grow your BWE presence?
+                </div>
+                <p className="mt-2 text-sm leading-6 text-white/72">
+                  For business owners ready for hands-on support strengthening
+                  their verified BWE presence, profile, and performance
+                  baseline.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-white/82">
+                  <span>$49/month</span>
+                  <span>10 pilot positions</span>
                 </div>
                 <ul className="mt-3 space-y-2 text-sm text-white/72">
                   <li>• Find your existing listing in the directory</li>
-                  <li>• Claim the listing and start ownership review</li>
-                  <li>• Activate the $49/month founding membership</li>
-                  <li>• Move into baseline setup and monthly growth support</li>
+                  <li>• Start claim verification and ownership review</li>
+                  <li>• Strengthen your verified BWE presence</li>
+                  <li>• Get support with profile and performance baseline</li>
                 </ul>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Link
@@ -1128,11 +1262,23 @@ export default function Home() {
                   </Link>
                   <Link
                     href="/founding-membership"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "business_growth",
+                        ctaId: "homepage_founding_membership",
+                        ctaLabel: "Learn About Founding Membership",
+                        destination: "/founding-membership",
+                      })
+                    }
                     className="bwe-open-link bwe-focus-ring text-[var(--accent)]"
                   >
-                    Review Membership
+                    Learn About Founding Membership
                   </Link>
                 </div>
+                <p className="mt-3 text-xs leading-5 text-white/58">
+                  Founding Membership does not automatically verify ownership.
+                  Claim verification and ownership verification remain distinct.
+                </p>
               </div>
             </div>
           </section>
@@ -1241,8 +1387,7 @@ export default function Home() {
             <div className="mb-3">
               <div className="bwe-eyebrow">Primary economic paths</div>
               <p className="mt-2 text-sm text-white/62">
-                These are the highest-value platform actions after the main
-                homepage entry.
+                Continue into more of the BWE platform from here.
               </p>
             </div>
             <div className="grid gap-4 md:grid-cols-3">

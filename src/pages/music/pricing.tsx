@@ -16,6 +16,7 @@ import useAuth from "@/hooks/useAuth";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import { getJwtSecret } from "@/lib/env";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type Readiness = {
   sellerExists: boolean;
@@ -210,7 +211,12 @@ export default function MusicPricingPage() {
       }
       window.location.href = data.url;
     } catch (err: any) {
-      setError(err?.message || "Checkout failed");
+      setError(
+        toPublicErrorMessage(err?.message, {
+          fallback: "We couldn't start checkout right now. Please try again.",
+          authFallback: "Please sign in to continue checkout.",
+        }),
+      );
       setBusy("");
     }
   }

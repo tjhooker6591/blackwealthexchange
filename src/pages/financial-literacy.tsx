@@ -12,6 +12,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type MeUser = {
   _id?: string;
@@ -237,7 +238,10 @@ export default function FinancialLiteracy() {
 
       setCtaState("failed");
       setCtaError(
-        data?.message || data?.error || "Unable to start checkout session.",
+        toPublicErrorMessage(data?.message || data?.error, {
+          fallback: "We couldn't start checkout right now. Please try again.",
+          authFallback: "Please sign in to continue to secure checkout.",
+        }),
       );
     } catch {
       setCtaState("failed");
@@ -491,8 +495,8 @@ export default function FinancialLiteracy() {
             <div className="grid gap-4 sm:grid-cols-2">
               <DetailBox
                 icon={<ShieldCheck className="h-4 w-4" />}
-                title="What is preserved"
-                copy="Existing course routes, entitlement checks, and checkout contracts stay intact in this Experience 2.0 pass."
+                title="How access works"
+                copy="Course routes, access checks, and secure checkout continue through the existing BWE flow."
               />
               <DetailBox
                 icon={<Lock className="h-4 w-4" />}
@@ -500,7 +504,7 @@ export default function FinancialLiteracy() {
                 copy={
                   meChecked && !userId
                     ? "You can browse now and log in before checkout to link access to your profile."
-                    : "Your account can continue through checkout or enrollment details using the current route contracts."
+                    : "Your account can continue into checkout or enrollment details from here."
                 }
               />
               <div className="sm:col-span-2 rounded-[24px] border border-white/8 bg-white/[0.03] p-5">

@@ -11,6 +11,7 @@ import useAuth from "@/hooks/useAuth";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import { getJwtSecret } from "@/lib/env";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type Seller = {
   _id: string;
@@ -170,7 +171,13 @@ export default function MusicCreatorJoinPage() {
       if (!res.ok) throw new Error(data?.error || "Onboarding failed");
       await refreshState();
     } catch (err: any) {
-      setError(err?.message || "Onboarding failed");
+      setError(
+        toPublicErrorMessage(err?.message, {
+          fallback:
+            "We couldn't continue creator onboarding right now. Please try again.",
+          authFallback: "Please sign in to continue creator onboarding.",
+        }),
+      );
     } finally {
       setBusy(false);
     }

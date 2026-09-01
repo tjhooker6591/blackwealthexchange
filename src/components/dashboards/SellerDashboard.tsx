@@ -31,6 +31,11 @@ type StripeStatus = {
   statusMessage?: string;
 };
 
+const STRIPE_STATUS_ERROR_MESSAGE =
+  "We couldn't load payout status right now. Please try again.";
+const STRIPE_ONBOARDING_ERROR_MESSAGE =
+  "We couldn't start payout setup right now. Please try again.";
+
 type SellerUser = {
   fullName?: string;
   email?: string;
@@ -175,7 +180,7 @@ export default function SellerDashboard() {
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
-        throw new Error(data?.error || `Stripe status failed (${r.status})`);
+        throw new Error(STRIPE_STATUS_ERROR_MESSAGE);
       }
 
       setStripeStatus(data);
@@ -184,7 +189,7 @@ export default function SellerDashboard() {
 
       console.error("Stripe status error:", e);
       setStripeStatus(null);
-      setStripeError(e?.message || "Failed to load Stripe payout status");
+      setStripeError(STRIPE_STATUS_ERROR_MESSAGE);
     } finally {
       setStripeLoading(false);
     }
@@ -201,18 +206,28 @@ export default function SellerDashboard() {
       });
 
       const data = await r.json().catch(() => ({}));
+      const onboardingUrl =
+        typeof data?.url === "string"
+          ? data.url
+          : typeof data?.data?.url === "string"
+            ? data.data.url
+            : "";
 
-      if (!r.ok) {
-        throw new Error(
-          data?.error || `Stripe onboarding failed (${r.status})`,
+      if (r.status === 401) {
+        router.push(
+          `/login?redirect=${encodeURIComponent("/marketplace/dashboard")}`,
         );
+        return;
       }
 
-      if (!data?.url) throw new Error("Missing Stripe onboarding URL");
+      if (!r.ok || !onboardingUrl) {
+        throw new Error(STRIPE_ONBOARDING_ERROR_MESSAGE);
+      }
 
-      window.location.assign(data.url);
+      window.location.assign(onboardingUrl);
     } catch (e: any) {
-      setStripeError(e?.message || "Unable to start Stripe onboarding");
+      console.error("Stripe onboarding error:", e);
+      setStripeError(STRIPE_ONBOARDING_ERROR_MESSAGE);
       setStripeWorking(false);
     }
   }
