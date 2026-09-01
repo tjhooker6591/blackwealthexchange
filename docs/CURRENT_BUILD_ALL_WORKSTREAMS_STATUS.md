@@ -5,8 +5,8 @@
 - PROGRAM PHASE: `POST-BASELINE EXECUTION ON TOP OF COMPLETED PHASE 0 + PHASE 1`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- CURRENT CONTROL HEAD: `a0ee4650f844e868f68138f44569c338027e2277`
-- LATEST RUNTIME HEAD: `d6d1f88e4dc67ee250e38c5fd4d008ac1543a7cb`
+- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-01 WORKSTREAM 2 CLOSEOUT COMMIT`
+- LATEST RUNTIME HEAD: `ad29cf44034830551df070f4bc4b42ee0a7b0d8b`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -27,7 +27,7 @@
 - DB OPERATIONS: `35`
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
 - AUTH/ENV PARITY STATUS: `LOCAL PROOF COMPLETED — business-session role drift fixed; production-safe config parity remains partial`
-- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 1 — READ-ONLY CURRENT-STATE ENTITY / RELATIONSHIP INVENTORY`
+- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 2 — READ-ONLY BUSINESS360 RESOLUTION`
 - BWE-10 INTERNAL TRANSACTION READINESS: `GO`
 - OWNER TRANSACTION: `PENDING`
 - BWE-10 LIVE PROOF: `PENDING`
@@ -36,7 +36,7 @@
 - CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
-- PHASE 2 — UNIFIED PLATFORM CORE: `ACTIVE — WORKSTREAM 1`
+- PHASE 2 — UNIFIED PLATFORM CORE: `ACTIVE — WORKSTREAM 2`
 - PHASE 3 — DISCOVERY & COMMERCE: `OUTSTANDING`
 - PHASE 4 — PERSONALIZED PLATFORM: `OUTSTANDING`
 - PHASE 5 — NETWORK EFFECTS: `OUTSTANDING`
@@ -44,7 +44,7 @@
 - PHASE 7 — AI / MOBILE / SCALE: `OUTSTANDING`
 - EXTERNAL / OWNER PROOFS: `PENDING`
 - CURRENT BLOCKER: `no new release defect is currently proven; remaining closure depends on owner/live proof for BWE-10 and separate-machine proof for BWE-13`
-- CURRENT NEXT WORK: `complete the read-only current-state entity / relationship inventory artifact for Person 360, Business 360, role/capability truth, business/platform links, transaction links, and event links; do not change runtime code or schema in this workstream`
+- CURRENT NEXT WORK: `preserve the accepted Workstream 1 inventory and Workstream 2 Business360 resolver, then select the next smallest shared resolver or relationship slice without changing existing authoritative systems`
 - BWE-10 OWNER ACTION: `PENDING — Pamfa hoodies owner-only live proof`
 - STRIPE STATUS: `existing architecture preserved`
 - REAL TRANSACTION RULE: `OWNER ONLY`
@@ -80,8 +80,14 @@
   - record the local Home -> Directory delay as deferred backlog only; no optimization authorized without customer evidence
   - keep BWE-10 owner/live proof and BWE-13 separate-machine proof as the real remaining release-evidence items
   - preserve the Phase 2 Workstream 1 artifact at `docs/PHASE2_WORKSTREAM1_UNIFIED_ENTITY_INVENTORY_2026-09-01.md`
-  - keep this workstream read-only: no runtime code changes, no schema changes, no DB writes
-  - use the inventory to identify the smallest safe future resolver layer before any implementation
+  - preserve the Phase 2 Workstream 2 contract at `docs/PHASE2_WORKSTREAM2_BUSINESS360_CONTRACT_2026-09-01.md`
+  - preserve the read-only Business360 runtime adapter:
+    - `src/lib/business360.ts`
+    - `src/pages/api/admin/business360.ts`
+    - `src/lib/__tests__/business360-tests.mjs`
+  - preserve runtime checkpoint `ad29cf44034830551df070f4bc4b42ee0a7b0d8b`
+  - keep Business360 read-only: no schema changes, no DB writes, no backfills, no customer-facing dependency by default
+  - use Business360 as an adapter layer around existing systems, not as a replacement for Directory, Seller, Claims, Membership, Jobs, Support, or Organizations
 - ENGINEERING RULE: `VERIFY DELTA -> WORK -> VALIDATE -> COMMIT -> UPDATE RECORDS -> VERIFY LOCALHOST -> CONTINUE`
 
 ## Accepted 2026-09-01 preservation checkpoint
@@ -104,7 +110,9 @@
   - no performance code change authorized
   - reassess later only against production or customer evidence
 - NEXT MAJOR ENGINEERING PHASE: `PHASE 2 — UNIFIED PLATFORM CORE`
-- FIRST PHASE 2 WORKSTREAM: `read-only inventory of current person, business, account, role, membership, claim, transaction, and event records to define the smallest safe Person 360 / Business 360 relationship map before any schema or runtime changes`
+- FIRST PHASE 2 WORKSTREAM: `accepted at docs/PHASE2_WORKSTREAM1_UNIFIED_ENTITY_INVENTORY_2026-09-01.md`
+- CURRENT PHASE 2 WORKSTREAM: `accepted read-only Business360 resolver anchored on businesses._id with explicit relationship states and provenance, proven through internal/admin-safe diagnostics and tests`
+- NEXT PHASE 2 SLICE CANDIDATE: `shared Person <-> Business relationship resolver that consumes verified ownership plus existing managed-business and seller overlays without rewriting auth or schema`
 
 ## Master program anchors — 2026-08-25
 

@@ -15,7 +15,7 @@ Runtime baseline preserved:
 
 ## Master program anchor
 
-- ACTIVE POST-BASELINE WORKSTREAM: `WORKSTREAM 002 — LIBRARY OF BLACK HISTORY`
+- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 2 — READ-ONLY BUSINESS360 RESOLUTION`
 - CURRENT PHASE: `POST-BASELINE EXECUTION`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
@@ -30,7 +30,7 @@ Runtime baseline preserved:
 - BWE-13: `EXTERNAL PROOF PENDING`
 - REVENUE EVIDENCE: `NONE NEW`
 - BMEV EVIDENCE: `NONE NEW`
-- RULE: `the active Black History workstream remains approved but does not replace the broader BWE master roadmap`
+- RULE: `accepted History work remains preserved, but the active engineering workstream is now the read-only Business360 resolver adapter on top of the accepted Phase 2 inventory`
 
 ## Workstream 001
 
@@ -368,6 +368,68 @@ VALIDATION:
 STATUS:
 
 - `READY TO COMMIT AS CONTROL ARTIFACT`
+
+## 12. Phase 2 Workstream 2 - Business360 read-only resolver
+
+DATE:
+
+- `2026-09-01`
+
+WORKSTREAM:
+
+- `PHASE 2 — UNIFIED PLATFORM CORE / WORKSTREAM 2 — READ-ONLY BUSINESS360 RESOLUTION`
+
+CHANGE TYPE:
+
+- `ADDED`
+
+FILES:
+
+- `src/lib/business360.ts`
+- `src/pages/api/admin/business360.ts`
+- `src/lib/__tests__/business360-tests.mjs`
+- `docs/PHASE2_WORKSTREAM2_BUSINESS360_CONTRACT_2026-09-01.md`
+- `docs/CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md`
+- `docs/BLACK_NEXT_SESSION_START_HERE.md`
+
+WHY CHANGED:
+
+- Implement the first safe Phase 2 runtime slice established by the accepted unified entity inventory.
+- Create one shared read-only resolver anchored on `businesses._id` that can report current cross-platform business linkage without rewriting existing systems.
+- Preserve the existing ownership, seller, marketplace, membership, jobs, support, and organization logic while exposing explicit relationship states and provenance.
+
+FUNCTIONALITY CHANGED:
+
+- Added `resolveBusiness360(db, { businessId, sections? })` as a read-only resolver and adapter contract.
+- Added an admin-only diagnostic route at `/api/admin/business360` so the resolver can be validated internally without becoming a public dependency.
+- Added dedicated tests that prove verified ownership linkage, seller and marketplace linkage, membership linkage, partial seller linkage, no-overlay behavior, invalid and missing business handling, jobs non-inference, and non-merged organizations.
+- Added a durable contract document that defines the anchor, fields, lane states, provenance rules, unknown behavior, and explicit non-goals.
+
+FUNCTIONALITY PRESERVED:
+
+- No runtime collection, schema, or authentication model changed.
+- No DB writes, backfills, migrations, or production deploys were performed.
+- Existing Directory, managed business, claim verification, seller, marketplace, founding membership, advertising, jobs, support, and organization systems remain authoritative within their own lanes.
+
+RUNTIME COMMIT:
+
+- `ad29cf44034830551df070f4bc4b42ee0a7b0d8b`
+
+VALIDATION:
+
+- `npm run typecheck` PASS
+- `node src/lib/__tests__/business360-tests.mjs` PASS
+- `node scripts/runtime-check.mjs` PASS
+- `node scripts/check-critical-paths.mjs` PASS (`35/35`)
+- `/api/admin/business360?businessId=test` unauthenticated boundary PASS (`401 Unauthorized`)
+- `/api/jobs/list?limit=20` PASS with live job payload
+- `/api/search/businesses?...` PASS with live directory results
+- `/api/support/status` PASS with operational payload
+- localhost route validation PASS for `/`, `/marketplace`, `/job-listings`, `/business-directory`, `/support`, `/black-entertainment-news`, `/pricing`, and `/travel-map`
+
+STATUS:
+
+- `COMMITTED AFTER RUNTIME + CONTROL UPDATE`
 
 DATE:
 
