@@ -977,7 +977,8 @@ export default function Home() {
                 <span>
                   <span className="font-semibold text-white">
                     {formatStat(
-                      trustStats.businesses + trustStats.organizations,
+                      (trustStats.businesses ?? 0) +
+                        (trustStats.organizations ?? 0),
                     )}
                   </span>{" "}
                   Directory Listings to Discover
