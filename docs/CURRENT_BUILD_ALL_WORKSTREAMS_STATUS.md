@@ -5,8 +5,8 @@
 - PROGRAM PHASE: `POST-BASELINE EXECUTION ON TOP OF COMPLETED PHASE 0 + PHASE 1`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-03 RUNTIME RULE CONTROL COMMIT`
-- LATEST RUNTIME HEAD: `5fb6ce481734c1d9ad0b5817c8cc0e37be171a27`
+- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-03 ACTIVITY360 CONTROL COMMIT`
+- LATEST RUNTIME HEAD: `8ce2d60332cbc8ea954f9417b2edba286458c8bc`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -27,7 +27,7 @@
 - DB OPERATIONS: `35`
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
 - AUTH/ENV PARITY STATUS: `LOCAL PROOF COMPLETED — business-session role drift fixed; production-safe config parity remains partial`
-- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 4 — READ-ONLY PERSON360 RESOLUTION (RESUMED AFTER LOCAL RUNTIME STABILIZATION)`
+- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 5 — SHARED ACTIVITY360 FOUNDATION`
 - BWE-10 INTERNAL TRANSACTION READINESS: `GO`
 - OWNER TRANSACTION: `PENDING`
 - BWE-10 LIVE PROOF: `PENDING`
@@ -36,7 +36,7 @@
 - CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
-- PHASE 2 — UNIFIED PLATFORM CORE: `ACTIVE — WORKSTREAM 4`
+- PHASE 2 — UNIFIED PLATFORM CORE: `ACTIVE — WORKSTREAM 5`
 - PHASE 3 — DISCOVERY & COMMERCE: `OUTSTANDING`
 - PHASE 4 — PERSONALIZED PLATFORM: `OUTSTANDING`
 - PHASE 5 — NETWORK EFFECTS: `OUTSTANDING`
@@ -44,7 +44,7 @@
 - PHASE 7 — AI / MOBILE / SCALE: `OUTSTANDING`
 - EXTERNAL / OWNER PROOFS: `PENDING`
 - CURRENT BLOCKER: `no new release defect is currently proven; remaining closure depends on owner/live proof for BWE-10 and separate-machine proof for BWE-13`
-- CURRENT NEXT WORK: `preserve the accepted runtime incident resolution rule, keep localhost stable by never running build against the active dev server, and resume Phase 2 Workstream 4 Person360 work unless the runtime failure returns outside that proven sequence`
+- CURRENT NEXT WORK: `preserve the accepted runtime incident resolution rule, keep localhost stable by never running build against the active dev server, preserve the completed Person360 foundation, and extend the shared activity layer beneath Person360 and Business360`
 - BWE-10 OWNER ACTION: `PENDING — Pamfa hoodies owner-only live proof`
 - STRIPE STATUS: `existing architecture preserved`
 - REAL TRANSACTION RULE: `OWNER ONLY`
@@ -87,8 +87,10 @@
     - `src/lib/__tests__/business360-tests.mjs`
   - preserve runtime checkpoint `ad29cf44034830551df070f4bc4b42ee0a7b0d8b`
   - preserve the accepted customer-conversion runtime checkpoint `e4cac87`
+  - preserve the homepage conversion closeout null-guard runtime checkpoint `cb5d0d65f31491584808a596a80a98501c81dfd2`
   - preserve the accepted Phase 2 Workstream 3 runtime checkpoint `bef090926badaab7ce82810f39f316dd3a21d99f`
   - preserve the accepted Phase 2 Workstream 4 runtime checkpoint `5fb6ce481734c1d9ad0b5817c8cc0e37be171a27`
+  - preserve the accepted Phase 2 Workstream 5 runtime checkpoint `8ce2d605cfc5414f058c225c1a02df75c4b92764`
   - preserve homepage conversion outcomes:
     - member-value / homepage conversion complete
     - hero simplified and mobile pass
@@ -148,6 +150,11 @@
   - build PASS
   - critical paths PASS (`35/35`)
   - regression PASS
+- HOMEPAGE CONVERSION CLOSEOUT:
+  - runtime commit `cb5d0d65f31491584808a596a80a98501c81dfd2`
+  - homepage metrics-strip null-guard preserved
+  - `npm run typecheck` PASS
+  - build PASS
 - COMPLETED PHASE 2 WORKSTREAM 3 CHECKPOINT:
   - runtime commit `bef090926badaab7ce82810f39f316dd3a21d99f`
   - Person <-> Business resolver operational
@@ -171,6 +178,21 @@
   - phase 2 regression PASS
   - vertical regression PASS
   - localhost runtime PASS on `127.0.0.1:3000`
+- COMPLETED PHASE 2 WORKSTREAM 5 CHECKPOINT:
+  - runtime commit `8ce2d605cfc5414f058c225c1a02df75c4b92764`
+  - shared Activity360 read-only resolver added beneath Business360 and Person360
+  - Business360 activity now resolves through the shared adapter instead of inline duplication
+  - Person360 now exposes direct person activity from authoritative `flow_events.userId` evidence
+  - admin-only `/api/admin/person360` route added for internal-safe resolver diagnostics
+  - `npm run typecheck` PASS
+  - `node src/lib/__tests__/person360-tests.mjs` PASS
+  - `node src/lib/__tests__/person-business-relationships-tests.mjs` PASS
+  - `node src/lib/__tests__/business360-tests.mjs` PASS
+  - build PASS
+  - critical paths PASS (`35/35`)
+  - phase 2 regression PASS
+  - vertical regression PASS
+  - localhost runtime PASS on `127.0.0.1:3000`
 - ACCEPTED LOCAL RUNTIME INCIDENT:
   - incident accepted as resolved on Thursday, September 3, 2026
   - proven root cause: running `npm run build` while `next dev` was already active against the same canonical repo / `.next` state
@@ -182,8 +204,8 @@
     - port `3000` PASS
     - canonical repo serving YES
     - results disappearing NO
-- CURRENT PHASE 2 WORKSTREAM: `resume Phase 2 Workstream 4 Person360 unless the runtime failure returns outside the proven build-while-dev-running sequence`
-- NEXT PHASE 2 SLICE CANDIDATE: `Person360 continuation only after current resumed Workstream 4 work is exhausted`
+- CURRENT PHASE 2 WORKSTREAM: `Phase 2 Workstream 5 shared Activity360 foundation`
+- NEXT PHASE 2 SLICE CANDIDATE: `read-only BMEV/economic-activity attribution layer on top of the shared activity and existing payment anchors`
 
 ## Master program anchors — 2026-08-25
 

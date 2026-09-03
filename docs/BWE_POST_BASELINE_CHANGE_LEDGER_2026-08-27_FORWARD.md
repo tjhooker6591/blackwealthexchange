@@ -15,7 +15,7 @@ Runtime baseline preserved:
 
 ## Master program anchor
 
-- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 4 — READ-ONLY PERSON360 RESOLUTION RESUMED AFTER LOCAL RUNTIME STABILIZATION`
+- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 5 — SHARED ACTIVITY360 FOUNDATION`
 - CURRENT PHASE: `POST-BASELINE EXECUTION`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
@@ -188,6 +188,67 @@ VALIDATION:
 STATUS:
 
 - `COMPLETE`
+
+## 13. Homepage conversion closeout + Phase 2 Workstream 5
+
+DATE:
+
+- `2026-09-03`
+
+CHANGE TYPE:
+
+- `ADDED`
+
+FILES:
+
+- `src/pages/index.tsx`
+- `src/lib/activity360.ts`
+- `src/lib/business360.ts`
+- `src/lib/person360.ts`
+- `src/pages/api/admin/person360.ts`
+- `src/lib/__tests__/person360-tests.mjs`
+- `src/lib/__tests__/person-business-relationships-tests.mjs`
+- `src/lib/__tests__/business360-tests.mjs`
+
+RUNTIME COMMITS:
+
+- `cb5d0d65f31491584808a596a80a98501c81dfd2`
+- `8ce2d605cfc5414f058c225c1a02df75c4b92764`
+
+WHY CHANGED:
+
+- Close the accepted homepage conversion work with the smallest safe null-guard correction, then extend the next Phase 2 foundation under the completed Person360 and Business360 layers by creating one shared read-only activity adapter.
+
+FUNCTIONALITY CHANGED:
+
+- Preserved the simplified homepage metrics strip while null-guarding the dynamic directory total.
+- Added `src/lib/activity360.ts` as a shared resolver for business and person activity evidence from existing `flow_events` and `search_quality_events`.
+- Reused the shared activity adapter inside `Business360` so activity is no longer resolved by one-off inline logic.
+- Extended `Person360` with direct person activity from authoritative `flow_events.userId` evidence.
+- Added admin-only `/api/admin/person360` for internal-safe Person360 diagnostics.
+
+FUNCTIONALITY PRESERVED:
+
+- Homepage conversion remains closed with no new UI scope.
+- No schema change, migration, DB write, auth rewrite, or public UI dependency was introduced.
+- Existing Stripe, Directory, Marketplace, Jobs, Claims, Membership, Black Card, and Advertising functionality remain preserved.
+
+VALIDATION:
+
+- `npm run typecheck` PASS
+- `node src/lib/__tests__/person360-tests.mjs` PASS
+- `node src/lib/__tests__/person-business-relationships-tests.mjs` PASS
+- `node src/lib/__tests__/business360-tests.mjs` PASS
+- `npm run build` PASS
+- `node scripts/check-critical-paths.mjs` PASS (`35/35`)
+- `npm run check:p2-regression` PASS
+- `npm run check:vertical-regression` PASS
+- `npm run runtime:check` PASS
+- Canonical repo serving PASS on port `3000`
+
+STATUS:
+
+- `COMPLETE / PRESERVED`
 
 ## 11. Phase 2 Workstream 3 completion
 
