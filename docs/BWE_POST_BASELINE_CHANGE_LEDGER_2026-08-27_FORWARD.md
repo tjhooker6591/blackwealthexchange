@@ -15,7 +15,7 @@ Runtime baseline preserved:
 
 ## Master program anchor
 
-- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 4 — READ-ONLY PERSON360 RESOLUTION COMPLETE`
+- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 4 — READ-ONLY PERSON360 RESOLUTION RESUMED AFTER LOCAL RUNTIME STABILIZATION`
 - CURRENT PHASE: `POST-BASELINE EXECUTION`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
@@ -31,6 +31,56 @@ Runtime baseline preserved:
 - REVENUE EVIDENCE: `NONE NEW`
 - BMEV EVIDENCE: `NONE NEW`
 - RULE: `accepted History work remains preserved, customer-conversion work remains preserved, the accepted Person <-> Business resolver remains preserved, and the active engineering workstream is now the read-only Person360 adapter on top of the accepted Phase 2 inventory`
+- LOCAL DEV RUNTIME RULE: `do not run npm run build while next dev is actively running against the same canonical repo /.next state; stop dev -> run build -> verify -> restart/recover dev before returning to localhost`
+
+## 13. Local runtime incident resolution rule
+
+DATE:
+
+- `2026-09-03`
+
+WORKSTREAM:
+
+- `LOCALHOST RUNTIME STABILIZATION / CONTROL ONLY`
+
+CHANGE TYPE:
+
+- `DOCUMENTED`
+
+WHY RECORDED:
+
+- The accepted local runtime incident was not a proven application-code defect. The proven root cause was running `npm run build` while `next dev` was already active against the same canonical repo and `.next` artifact state.
+
+PROVEN ROOT CAUSE:
+
+- `build -> active dev server on same canonical repo /.next state`
+
+PROVEN EFFECT:
+
+- Results could appear and then disappear after transient missing-module or missing-artifact `500` failures on localhost.
+
+PERMANENT LOCAL RULE:
+
+- Stop dev before `npm run build`.
+- Run build.
+- Verify build result.
+- Restart or recover dev before returning to localhost testing.
+
+NON-CAUSES / NO-AUTHORIZATION:
+
+- No Mongo code change authorized.
+- No Next/runtime code change authorized.
+- Mongo startup timeouts were observed as transient and non-repeatable, not the accepted root cause of the disappearing-results incident.
+
+CURRENT RUNTIME STATE:
+
+- Port `3000` PASS
+- Canonical repo serving `YES`
+- Results disappearing `NO`
+
+STATUS:
+
+- `ACCEPTED / CONTROL ONLY`
 
 ## 10. Member-value / homepage conversion completion
 

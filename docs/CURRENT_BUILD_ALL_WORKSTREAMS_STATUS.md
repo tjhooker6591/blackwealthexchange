@@ -5,7 +5,7 @@
 - PROGRAM PHASE: `POST-BASELINE EXECUTION ON TOP OF COMPLETED PHASE 0 + PHASE 1`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-03 WORKSTREAM 4 CONTROL COMMIT`
+- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-03 RUNTIME RULE CONTROL COMMIT`
 - LATEST RUNTIME HEAD: `5fb6ce481734c1d9ad0b5817c8cc0e37be171a27`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
@@ -27,7 +27,7 @@
 - DB OPERATIONS: `35`
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
 - AUTH/ENV PARITY STATUS: `LOCAL PROOF COMPLETED — business-session role drift fixed; production-safe config parity remains partial`
-- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 4 — READ-ONLY PERSON360 RESOLUTION (COMPLETE)`
+- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 4 — READ-ONLY PERSON360 RESOLUTION (RESUMED AFTER LOCAL RUNTIME STABILIZATION)`
 - BWE-10 INTERNAL TRANSACTION READINESS: `GO`
 - OWNER TRANSACTION: `PENDING`
 - BWE-10 LIVE PROOF: `PENDING`
@@ -36,7 +36,7 @@
 - CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
-- PHASE 2 — UNIFIED PLATFORM CORE: `ACTIVE — WORKSTREAM 4 COMPLETE`
+- PHASE 2 — UNIFIED PLATFORM CORE: `ACTIVE — WORKSTREAM 4`
 - PHASE 3 — DISCOVERY & COMMERCE: `OUTSTANDING`
 - PHASE 4 — PERSONALIZED PLATFORM: `OUTSTANDING`
 - PHASE 5 — NETWORK EFFECTS: `OUTSTANDING`
@@ -44,7 +44,7 @@
 - PHASE 7 — AI / MOBILE / SCALE: `OUTSTANDING`
 - EXTERNAL / OWNER PROOFS: `PENDING`
 - CURRENT BLOCKER: `no new release defect is currently proven; remaining closure depends on owner/live proof for BWE-10 and separate-machine proof for BWE-13`
-- CURRENT NEXT WORK: `preserve the accepted customer-conversion runtime, preserve the accepted Person <-> Business and Person360 resolvers, then select the next smallest read-only relationship slice without rewriting auth, schema, or authoritative ownership systems`
+- CURRENT NEXT WORK: `preserve the accepted runtime incident resolution rule, keep localhost stable by never running build against the active dev server, and resume Phase 2 Workstream 4 Person360 work unless the runtime failure returns outside that proven sequence`
 - BWE-10 OWNER ACTION: `PENDING — Pamfa hoodies owner-only live proof`
 - STRIPE STATUS: `existing architecture preserved`
 - REAL TRANSACTION RULE: `OWNER ONLY`
@@ -107,6 +107,14 @@
   - use Business360 as an adapter layer around existing systems, not as a replacement for Directory, Seller, Claims, Membership, Jobs, Support, or Organizations
   - keep Person <-> Business and Person360 read-only: no schema changes, no DB writes, no migrations, no auth rewrite, no email-only identity inference
 - ENGINEERING RULE: `VERIFY DELTA -> WORK -> VALIDATE -> COMMIT -> UPDATE RECORDS -> VERIFY LOCALHOST -> CONTINUE`
+- LOCAL DEV RUNTIME RULE:
+  - do not run `npm run build` while `next dev` is actively running against the same canonical repo / `.next` state
+  - for dev testing:
+    - stop dev before `npm run build`
+    - run build
+    - verify build result
+    - restart or recover dev before returning to localhost
+  - if results appear and then disappear after a local build/dev overlap, treat that as the known `.next` runtime corruption sequence first and recover localhost before reopening broader investigation
 
 ## Accepted 2026-09-03 preservation checkpoint
 
@@ -163,8 +171,19 @@
   - phase 2 regression PASS
   - vertical regression PASS
   - localhost runtime PASS on `127.0.0.1:3000`
-- CURRENT PHASE 2 WORKSTREAM: `none active inside this checkpoint; Workstream 4 closeout pending control/docs commit only`
-- NEXT PHASE 2 SLICE CANDIDATE: `Person <-> Organization relationship foundation`
+- ACCEPTED LOCAL RUNTIME INCIDENT:
+  - incident accepted as resolved on Thursday, September 3, 2026
+  - proven root cause: running `npm run build` while `next dev` was already active against the same canonical repo / `.next` state
+  - proven effect: transient missing-module / missing-artifact `500` errors and disappearing results on localhost
+  - Mongo startup timeouts were transient and non-repeatable
+  - no Mongo code change authorized
+  - no Next/runtime code change authorized
+  - current runtime state:
+    - port `3000` PASS
+    - canonical repo serving YES
+    - results disappearing NO
+- CURRENT PHASE 2 WORKSTREAM: `resume Phase 2 Workstream 4 Person360 unless the runtime failure returns outside the proven build-while-dev-running sequence`
+- NEXT PHASE 2 SLICE CANDIDATE: `Person360 continuation only after current resumed Workstream 4 work is exhausted`
 
 ## Master program anchors — 2026-08-25
 
