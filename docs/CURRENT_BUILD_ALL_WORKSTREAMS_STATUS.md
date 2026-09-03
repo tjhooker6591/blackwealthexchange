@@ -1,12 +1,12 @@
 # Current Build — Canonical All-Workstreams Status
 
-## CURRENT CHECKPOINT — 2026-09-01
+## CURRENT CHECKPOINT — 2026-09-03
 
 - PROGRAM PHASE: `POST-BASELINE EXECUTION ON TOP OF COMPLETED PHASE 0 + PHASE 1`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-01 WORKSTREAM 2 CLOSEOUT COMMIT`
-- LATEST RUNTIME HEAD: `ad29cf44034830551df070f4bc4b42ee0a7b0d8b`
+- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-03 CONTROL CHECKPOINT COMMIT`
+- LATEST RUNTIME HEAD: `bef090926badaab7ce82810f39f316dd3a21d99f`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -27,7 +27,7 @@
 - DB OPERATIONS: `35`
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
 - AUTH/ENV PARITY STATUS: `LOCAL PROOF COMPLETED — business-session role drift fixed; production-safe config parity remains partial`
-- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 2 — READ-ONLY BUSINESS360 RESOLUTION`
+- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 4 — READ-ONLY PERSON360 RESOLUTION`
 - BWE-10 INTERNAL TRANSACTION READINESS: `GO`
 - OWNER TRANSACTION: `PENDING`
 - BWE-10 LIVE PROOF: `PENDING`
@@ -36,7 +36,7 @@
 - CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
-- PHASE 2 — UNIFIED PLATFORM CORE: `ACTIVE — WORKSTREAM 2`
+- PHASE 2 — UNIFIED PLATFORM CORE: `ACTIVE — WORKSTREAM 4`
 - PHASE 3 — DISCOVERY & COMMERCE: `OUTSTANDING`
 - PHASE 4 — PERSONALIZED PLATFORM: `OUTSTANDING`
 - PHASE 5 — NETWORK EFFECTS: `OUTSTANDING`
@@ -44,7 +44,7 @@
 - PHASE 7 — AI / MOBILE / SCALE: `OUTSTANDING`
 - EXTERNAL / OWNER PROOFS: `PENDING`
 - CURRENT BLOCKER: `no new release defect is currently proven; remaining closure depends on owner/live proof for BWE-10 and separate-machine proof for BWE-13`
-- CURRENT NEXT WORK: `preserve the accepted Workstream 1 inventory and Workstream 2 Business360 resolver, then select the next smallest shared resolver or relationship slice without changing existing authoritative systems`
+- CURRENT NEXT WORK: `preserve the accepted customer-conversion runtime, preserve the accepted Person <-> Business resolver, then add the next read-only Person360 layer without rewriting auth, schema, or authoritative ownership systems`
 - BWE-10 OWNER ACTION: `PENDING — Pamfa hoodies owner-only live proof`
 - STRIPE STATUS: `existing architecture preserved`
 - REAL TRANSACTION RULE: `OWNER ONLY`
@@ -86,11 +86,25 @@
     - `src/pages/api/admin/business360.ts`
     - `src/lib/__tests__/business360-tests.mjs`
   - preserve runtime checkpoint `ad29cf44034830551df070f4bc4b42ee0a7b0d8b`
+  - preserve the accepted customer-conversion runtime checkpoint `e4cac87`
+  - preserve the accepted Phase 2 Workstream 3 runtime checkpoint `bef090926badaab7ce82810f39f316dd3a21d99f`
+  - preserve homepage conversion outcomes:
+    - member-value / homepage conversion complete
+    - hero simplified and mobile pass
+    - Businesses and Organizations remain separate truthful metrics
+    - hero Opportunities metric corrected to Jobs
+    - Join BWE Free preserved
+    - `/start-here` business-owner path preserved
+  - preserve Black Card and Affiliate background console noise as pre-existing deferred work only
+  - preserve the operational Person <-> Business resolver:
+    - `src/lib/personBusinessRelationships.ts`
+    - `src/lib/__tests__/person-business-relationships-tests.mjs`
   - keep Business360 read-only: no schema changes, no DB writes, no backfills, no customer-facing dependency by default
   - use Business360 as an adapter layer around existing systems, not as a replacement for Directory, Seller, Claims, Membership, Jobs, Support, or Organizations
+  - keep Person <-> Business and Person360 read-only: no schema changes, no DB writes, no migrations, no auth rewrite, no email-only identity inference
 - ENGINEERING RULE: `VERIFY DELTA -> WORK -> VALIDATE -> COMMIT -> UPDATE RECORDS -> VERIFY LOCALHOST -> CONTINUE`
 
-## Accepted 2026-09-01 preservation checkpoint
+## Accepted 2026-09-03 preservation checkpoint
 
 - TODAY'S ACCEPTED WORK:
   - Black History Blocks `1` through `5` completed to the current checkpoint
@@ -112,7 +126,25 @@
 - NEXT MAJOR ENGINEERING PHASE: `PHASE 2 — UNIFIED PLATFORM CORE`
 - FIRST PHASE 2 WORKSTREAM: `accepted at docs/PHASE2_WORKSTREAM1_UNIFIED_ENTITY_INVENTORY_2026-09-01.md`
 - CURRENT PHASE 2 WORKSTREAM: `accepted read-only Business360 resolver anchored on businesses._id with explicit relationship states and provenance, proven through internal/admin-safe diagnostics and tests`
-- NEXT PHASE 2 SLICE CANDIDATE: `shared Person <-> Business relationship resolver that consumes verified ownership plus existing managed-business and seller overlays without rewriting auth or schema`
+- COMPLETED CUSTOMER-CONVERSION CHECKPOINT:
+  - runtime commit `e4cac87`
+  - member-value / homepage conversion complete
+  - hero simplified and mobile PASS
+  - Businesses / Organizations remain separate
+  - hero Opportunities metric corrected to Jobs
+  - Black Card / Affiliate background errors confirmed pre-existing and deferred
+  - build PASS
+  - critical paths PASS (`35/35`)
+  - regression PASS
+- COMPLETED PHASE 2 WORKSTREAM 3 CHECKPOINT:
+  - runtime commit `bef090926badaab7ce82810f39f316dd3a21d99f`
+  - Person <-> Business resolver operational
+  - verified owner, managed business, seller/business link, multiple businesses, unresolved weak links, and Business360 integration covered in focused tests
+  - build PASS
+  - critical paths PASS (`35/35`)
+  - regression PASS
+- CURRENT PHASE 2 WORKSTREAM: `begin read-only Person360 resolution anchored on users._id and layered on top of the accepted Person <-> Business resolver`
+- NEXT PHASE 2 SLICE CANDIDATE: `Person360 read-only resolver that reports legitimate roles, memberships, capabilities, and business relationships with provenance`
 
 ## Master program anchors — 2026-08-25
 

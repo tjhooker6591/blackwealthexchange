@@ -15,7 +15,7 @@ Runtime baseline preserved:
 
 ## Master program anchor
 
-- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 2 — READ-ONLY BUSINESS360 RESOLUTION`
+- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 4 — READ-ONLY PERSON360 RESOLUTION`
 - CURRENT PHASE: `POST-BASELINE EXECUTION`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
@@ -30,7 +30,112 @@ Runtime baseline preserved:
 - BWE-13: `EXTERNAL PROOF PENDING`
 - REVENUE EVIDENCE: `NONE NEW`
 - BMEV EVIDENCE: `NONE NEW`
-- RULE: `accepted History work remains preserved, but the active engineering workstream is now the read-only Business360 resolver adapter on top of the accepted Phase 2 inventory`
+- RULE: `accepted History work remains preserved, customer-conversion work remains preserved, the accepted Person <-> Business resolver remains preserved, and the active engineering workstream is now the read-only Person360 adapter on top of the accepted Phase 2 inventory`
+
+## 10. Member-value / homepage conversion completion
+
+DATE:
+
+- `2026-09-03`
+
+WORKSTREAM:
+
+- `CUSTOMER CONVERSION / HOMEPAGE HERO`
+
+CHANGE TYPE:
+
+- `MODIFIED`
+
+RUNTIME COMMIT:
+
+- `e4cac87`
+
+WHY CHANGED:
+
+- Reduce first-viewport cognitive load while making the free-join value, exploration paths, and business-owner start path clearer without breaking public discovery or the existing search/routing model.
+
+FUNCTIONALITY CHANGED:
+
+- Simplified the homepage hero around the approved headline and supporting copy.
+- Reduced homepage, signup, and Start Here copy density while preserving `Join BWE Free`.
+- Preserved all four search modes and their existing dynamic routing behavior.
+- Kept Businesses and Organizations as separate truthful metrics.
+- Corrected the hero opportunity metric to Jobs and preserved the underlying opportunity/product count logic.
+
+FUNCTIONALITY PRESERVED:
+
+- Existing public discovery remains intact.
+- Existing `/start-here` business-owner path remains intact.
+- Black Card and Affiliate customer-facing behavior still works; background console noise was confirmed pre-existing and deferred.
+- No production deploy, schema change, migration, or DB write was performed.
+
+VALIDATION:
+
+- `npm run build` PASS
+- `node scripts/check-critical-paths.mjs` PASS (`35/35`)
+- `npm run check:p2-regression` PASS
+- `npm run check:vertical-regression` PASS
+- Local runtime PASS on port `3000`
+- Canonical repo serving PASS
+- Mobile checkpoints PASS at `375`, `390`, and `430`
+
+STATUS:
+
+- `COMPLETE / PRESERVED`
+
+## 11. Phase 2 Workstream 3 completion
+
+DATE:
+
+- `2026-09-03`
+
+WORKSTREAM:
+
+- `PHASE 2 — WORKSTREAM 3 — PERSON <-> BUSINESS RELATIONSHIP FOUNDATION`
+
+CHANGE TYPE:
+
+- `ADDED`
+
+FILES:
+
+- `src/lib/personBusinessRelationships.ts`
+- `src/lib/__tests__/person-business-relationships-tests.mjs`
+
+RUNTIME COMMIT:
+
+- `bef090926badaab7ce82810f39f316dd3a21d99f`
+
+WHY CHANGED:
+
+- Establish a shared read-only person-to-business resolver that reuses verified ownership, managed-business state, seller business linkage, and Business360 without creating a competing ownership system.
+
+FUNCTIONALITY CHANGED:
+
+- Added `listPersonBusinessRelationships(userId)` and `resolvePersonBusinessRelationship(userId, businessId)`.
+- Reports `OWNER`, `VERIFIED_REPRESENTATIVE`, `MANAGER`, and `SELLER` relationship types with trust and provenance.
+- Distinguishes authoritative/supported relationships from unresolved weak links such as email-only employer or seller matches.
+- Supports one person having multiple legitimate business relationships.
+
+FUNCTIONALITY PRESERVED:
+
+- Business360 remains the existing business anchor.
+- No schema change, migration, auth rewrite, DB write, or public UI dependency was introduced.
+
+VALIDATION:
+
+- `npm run build` PASS
+- `node src/lib/__tests__/person-business-relationships-tests.mjs` PASS
+- `node src/lib/__tests__/business360-tests.mjs` PASS
+- `node scripts/check-critical-paths.mjs` PASS (`35/35`)
+- `npm run check:p2-regression` PASS
+- `npm run check:vertical-regression` PASS
+- Local runtime PASS on port `3000`
+- Canonical repo serving PASS
+
+STATUS:
+
+- `COMPLETE / PRESERVED`
 
 ## Workstream 001
 
