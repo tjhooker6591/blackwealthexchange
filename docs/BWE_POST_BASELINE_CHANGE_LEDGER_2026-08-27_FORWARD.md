@@ -15,7 +15,7 @@ Runtime baseline preserved:
 
 ## Master program anchor
 
-- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 4 — READ-ONLY PERSON360 RESOLUTION`
+- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 4 — READ-ONLY PERSON360 RESOLUTION COMPLETE`
 - CURRENT PHASE: `POST-BASELINE EXECUTION`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
@@ -82,6 +82,62 @@ VALIDATION:
 STATUS:
 
 - `COMPLETE / PRESERVED`
+
+## 12. Phase 2 Workstream 4 completion
+
+DATE:
+
+- `2026-09-03`
+
+WORKSTREAM:
+
+- `PHASE 2 — WORKSTREAM 4 — READ-ONLY PERSON360 RESOLUTION`
+
+CHANGE TYPE:
+
+- `ADDED`
+
+FILES:
+
+- `src/lib/person360.ts`
+- `src/lib/__tests__/person360-tests.mjs`
+
+RUNTIME COMMIT:
+
+- `5fb6ce481734c1d9ad0b5817c8cc0e37be171a27`
+
+WHY CHANGED:
+
+- Establish the next shared person-layer foundation so BWE can answer who one canonical person is across legitimate roles, memberships, capabilities, and business relationships without creating duplicate identities or rewriting existing authoritative systems.
+
+FUNCTIONALITY CHANGED:
+
+- Added `resolvePerson360(userId)` anchored on `users._id`.
+- Reused the accepted Person <-> Business resolver for multiple relationship support.
+- Reports proven membership, seller, affiliate, consultant, creator, Black Card, and direct employer activity overlays with provenance.
+- Preserves weak email-only employer linkage as non-authoritative.
+
+FUNCTIONALITY PRESERVED:
+
+- No schema change, migration, auth rewrite, DB write, or public UI dependency was introduced.
+- Business360 remains the business anchor beneath the accepted Person <-> Business layer.
+
+VALIDATION:
+
+- `npm run typecheck` PASS
+- `node src/lib/__tests__/person360-tests.mjs` PASS
+- `node src/lib/__tests__/person-business-relationships-tests.mjs` PASS
+- `node src/lib/__tests__/business360-tests.mjs` PASS
+- `npm run build` PASS
+- `node scripts/check-critical-paths.mjs` PASS (`35/35`)
+- `npm run check:p2-regression` PASS
+- `npm run check:vertical-regression` PASS
+- `npm run runtime:check` PASS
+- Canonical repo serving PASS on port `3000`
+
+STATUS:
+
+- `COMPLETE`
 
 ## 11. Phase 2 Workstream 3 completion
 

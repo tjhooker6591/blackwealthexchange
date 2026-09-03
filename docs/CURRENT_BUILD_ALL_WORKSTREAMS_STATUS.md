@@ -5,8 +5,8 @@
 - PROGRAM PHASE: `POST-BASELINE EXECUTION ON TOP OF COMPLETED PHASE 0 + PHASE 1`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-03 CONTROL CHECKPOINT COMMIT`
-- LATEST RUNTIME HEAD: `bef090926badaab7ce82810f39f316dd3a21d99f`
+- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-03 WORKSTREAM 4 CONTROL COMMIT`
+- LATEST RUNTIME HEAD: `5fb6ce481734c1d9ad0b5817c8cc0e37be171a27`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -27,7 +27,7 @@
 - DB OPERATIONS: `35`
 - ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
 - AUTH/ENV PARITY STATUS: `LOCAL PROOF COMPLETED — business-session role drift fixed; production-safe config parity remains partial`
-- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 4 — READ-ONLY PERSON360 RESOLUTION`
+- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 4 — READ-ONLY PERSON360 RESOLUTION (COMPLETE)`
 - BWE-10 INTERNAL TRANSACTION READINESS: `GO`
 - OWNER TRANSACTION: `PENDING`
 - BWE-10 LIVE PROOF: `PENDING`
@@ -36,7 +36,7 @@
 - CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
-- PHASE 2 — UNIFIED PLATFORM CORE: `ACTIVE — WORKSTREAM 4`
+- PHASE 2 — UNIFIED PLATFORM CORE: `ACTIVE — WORKSTREAM 4 COMPLETE`
 - PHASE 3 — DISCOVERY & COMMERCE: `OUTSTANDING`
 - PHASE 4 — PERSONALIZED PLATFORM: `OUTSTANDING`
 - PHASE 5 — NETWORK EFFECTS: `OUTSTANDING`
@@ -44,7 +44,7 @@
 - PHASE 7 — AI / MOBILE / SCALE: `OUTSTANDING`
 - EXTERNAL / OWNER PROOFS: `PENDING`
 - CURRENT BLOCKER: `no new release defect is currently proven; remaining closure depends on owner/live proof for BWE-10 and separate-machine proof for BWE-13`
-- CURRENT NEXT WORK: `preserve the accepted customer-conversion runtime, preserve the accepted Person <-> Business resolver, then add the next read-only Person360 layer without rewriting auth, schema, or authoritative ownership systems`
+- CURRENT NEXT WORK: `preserve the accepted customer-conversion runtime, preserve the accepted Person <-> Business and Person360 resolvers, then select the next smallest read-only relationship slice without rewriting auth, schema, or authoritative ownership systems`
 - BWE-10 OWNER ACTION: `PENDING — Pamfa hoodies owner-only live proof`
 - STRIPE STATUS: `existing architecture preserved`
 - REAL TRANSACTION RULE: `OWNER ONLY`
@@ -88,6 +88,7 @@
   - preserve runtime checkpoint `ad29cf44034830551df070f4bc4b42ee0a7b0d8b`
   - preserve the accepted customer-conversion runtime checkpoint `e4cac87`
   - preserve the accepted Phase 2 Workstream 3 runtime checkpoint `bef090926badaab7ce82810f39f316dd3a21d99f`
+  - preserve the accepted Phase 2 Workstream 4 runtime checkpoint `5fb6ce481734c1d9ad0b5817c8cc0e37be171a27`
   - preserve homepage conversion outcomes:
     - member-value / homepage conversion complete
     - hero simplified and mobile pass
@@ -99,6 +100,9 @@
   - preserve the operational Person <-> Business resolver:
     - `src/lib/personBusinessRelationships.ts`
     - `src/lib/__tests__/person-business-relationships-tests.mjs`
+  - preserve the operational Person360 resolver:
+    - `src/lib/person360.ts`
+    - `src/lib/__tests__/person360-tests.mjs`
   - keep Business360 read-only: no schema changes, no DB writes, no backfills, no customer-facing dependency by default
   - use Business360 as an adapter layer around existing systems, not as a replacement for Directory, Seller, Claims, Membership, Jobs, Support, or Organizations
   - keep Person <-> Business and Person360 read-only: no schema changes, no DB writes, no migrations, no auth rewrite, no email-only identity inference
@@ -143,8 +147,24 @@
   - build PASS
   - critical paths PASS (`35/35`)
   - regression PASS
-- CURRENT PHASE 2 WORKSTREAM: `begin read-only Person360 resolution anchored on users._id and layered on top of the accepted Person <-> Business resolver`
-- NEXT PHASE 2 SLICE CANDIDATE: `Person360 read-only resolver that reports legitimate roles, memberships, capabilities, and business relationships with provenance`
+- COMPLETED PHASE 2 WORKSTREAM 4 CHECKPOINT:
+  - runtime commit `5fb6ce481734c1d9ad0b5817c8cc0e37be171a27`
+  - Person360 read-only resolver operational
+  - users.\_id anchor preserved
+  - multiple business relationships preserved through the accepted Person <-> Business resolver
+  - membership state, seller state, affiliate state, consultant profile state, creator state, Black Card state, and direct employer activity now resolve with provenance
+  - weak email-only employer relationships remain explicitly non-authoritative
+  - `npm run typecheck` PASS
+  - `node src/lib/__tests__/person360-tests.mjs` PASS
+  - `node src/lib/__tests__/person-business-relationships-tests.mjs` PASS
+  - `node src/lib/__tests__/business360-tests.mjs` PASS
+  - build PASS
+  - critical paths PASS (`35/35`)
+  - phase 2 regression PASS
+  - vertical regression PASS
+  - localhost runtime PASS on `127.0.0.1:3000`
+- CURRENT PHASE 2 WORKSTREAM: `none active inside this checkpoint; Workstream 4 closeout pending control/docs commit only`
+- NEXT PHASE 2 SLICE CANDIDATE: `Person <-> Organization relationship foundation`
 
 ## Master program anchors — 2026-08-25
 
