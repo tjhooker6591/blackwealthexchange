@@ -72,6 +72,19 @@ await fs.writeFile(
 
 const business360SourcePath = path.join(repoRoot, "src/lib/business360.ts");
 const business360TargetPath = path.join(tmpDir, "business360-testable.mjs");
+const activity360SourcePath = path.join(repoRoot, "src/lib/activity360.ts");
+const activity360TargetPath = path.join(tmpDir, "activity360-testable.mjs");
+const activity360Source = await fs.readFile(activity360SourcePath, "utf8");
+await fs.writeFile(
+  activity360TargetPath,
+  ts.transpileModule(activity360Source, {
+    compilerOptions: {
+      module: ts.ModuleKind.ESNext,
+      target: ts.ScriptTarget.ES2020,
+    },
+  }).outputText,
+  "utf8",
+);
 const business360Source = await fs.readFile(business360SourcePath, "utf8");
 const business360Transpiled = ts.transpileModule(
   business360Source
@@ -82,7 +95,8 @@ const business360Transpiled = ts.transpileModule(
     .replace(
       'from "./marketplace/businessAttribution";',
       'from "./businessAttribution-business360-testable.mjs";',
-    ),
+    )
+    .replace('from "./activity360";', 'from "./activity360-testable.mjs";'),
   {
     compilerOptions: {
       module: ts.ModuleKind.ESNext,

@@ -48,6 +48,11 @@ await transpileFile({
 });
 
 await transpileFile({
+  sourcePath: path.join(repoRoot, "src/lib/activity360.ts"),
+  targetPath: path.join(tmpDir, "activity360-pbr-testable.mjs"),
+});
+
+await transpileFile({
   sourcePath: path.join(repoRoot, "src/lib/business360.ts"),
   targetPath: path.join(tmpDir, "business360-pbr-testable.mjs"),
   replacements: [
@@ -59,6 +64,7 @@ await transpileFile({
       'from "./marketplace/businessAttribution";',
       'from "./businessAttribution-pbr-testable.mjs";',
     ],
+    ['from "./activity360";', 'from "./activity360-pbr-testable.mjs";'],
   ],
 });
 

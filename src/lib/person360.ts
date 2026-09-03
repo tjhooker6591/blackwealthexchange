@@ -1,6 +1,10 @@
 import { ObjectId, type Db } from "mongodb";
 import { resolveBlackCardState } from "./black-card-state";
 import {
+  resolvePersonActivity360,
+  type Activity360Summary,
+} from "./activity360";
+import {
   listPersonBusinessRelationships,
   type ListPersonBusinessRelationshipsResult,
 } from "./personBusinessRelationships";
@@ -131,6 +135,8 @@ export type Person360Employer = {
   provenance: Person360Provenance[];
 };
 
+export type Person360Activity = Activity360Summary;
+
 export type Person360Resolved = {
   ok: true;
   anchor: "users._id";
@@ -143,6 +149,7 @@ export type Person360Resolved = {
   consultant: Person360Consultant;
   creator: Person360Creator;
   employer: Person360Employer;
+  activity: Person360Activity;
   businessRelationships: Extract<
     ListPersonBusinessRelationshipsResult,
     { ok: true }
@@ -829,6 +836,10 @@ export async function resolvePerson360(
       s(user.accountType).toLowerCase() === "employer",
   );
 
+  const activity = await resolvePersonActivity360(db, metrics, {
+    userId: personId,
+  });
+
   const overlays = uniq([
     "business_relationships",
     "membership",
@@ -838,6 +849,7 @@ export async function resolvePerson360(
     ...(consultantProfile ? ["consultant"] : []),
     ...(creatorSources.length ? ["creator"] : []),
     ...(jobsByUser.length || employersByUser.length ? ["employer"] : []),
+    ...(activity.state === "LINKED" ? ["activity"] : []),
   ]);
 
   metrics.latencyMs = Date.now() - startedAt;
@@ -860,6 +872,7 @@ export async function resolvePerson360(
     consultant,
     creator,
     employer,
+    activity,
     businessRelationships: relationshipsResult.relationships,
     unresolvedRelationships: relationshipsResult.unresolvedCandidates,
     overlays,

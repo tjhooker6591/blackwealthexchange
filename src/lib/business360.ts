@@ -1,6 +1,7 @@
 import { ObjectId, type Db } from "mongodb";
 import { buildObjectIdOrStringFilter } from "./directoryOwnership";
 import { resolveCanonicalMarketplaceBusinessId } from "./marketplace/businessAttribution";
+import { resolveBusinessActivity360 } from "./activity360";
 
 export type Business360Section =
   | "identity"
@@ -1223,50 +1224,34 @@ export async function resolveBusiness360(
   }
 
   if (shouldResolve(requestedSet, "activity")) {
-    const [flowEvents, searchEvents] = await Promise.all([
-      findManyTracked(
-        db,
-        metrics,
-        "activity",
-        "flow_events",
-        { businessId: canonicalBusinessId },
-        { sort: { createdAt: -1 }, limit: 100 },
-      ),
-      findManyTracked(
-        db,
-        metrics,
-        "activity",
-        "search_quality_events",
-        { selectedBusinessId: canonicalBusinessId },
-        { sort: { createdAt: -1 }, limit: 100 },
-      ),
-    ]);
+    const activity = await resolveBusinessActivity360(db, metrics, {
+      businessId: canonicalBusinessId,
+    });
 
     result.activity = {
-      state: flowEvents.length || searchEvents.length ? "LINKED" : "NOT_LINKED",
-      provenance:
-        flowEvents.length || searchEvents.length
-          ? [
-              {
-                kind: "DIRECT_BUSINESS_ID",
-                source:
-                  "flow_events.businessId + search_quality_events.selectedBusinessId",
-                authoritative: false,
-              },
-            ]
-          : [
-              {
-                kind: "UNKNOWN",
-                source: "no_activity_overlay",
-                authoritative: false,
-              },
-            ],
+      state: activity.state,
+      provenance: activity.provenance.length
+        ? activity.provenance.map((entry) => ({
+            kind:
+              entry.source === "search_quality_events.selectedBusinessId" ||
+              entry.source === "flow_events.businessId"
+                ? ("DIRECT_BUSINESS_ID" as const)
+                : ("UNKNOWN" as const),
+            source: entry.source,
+            authoritative: entry.authoritative,
+            note: entry.note || null,
+          }))
+        : [
+            {
+              kind: "UNKNOWN",
+              source: "no_activity_overlay",
+              authoritative: false,
+            },
+          ],
       data: {
-        flowEventCount: flowEvents.length,
-        searchEventCount: searchEvents.length,
-        recentEventTypes: uniq(
-          flowEvents.map((row) => s((row as any).eventType)).filter(Boolean),
-        ).slice(0, 10),
+        flowEventCount: activity.flowEventCount,
+        searchEventCount: activity.searchEventCount,
+        recentEventTypes: activity.recentEventTypes,
       },
     };
     metrics.sectionsResolved.push("activity");

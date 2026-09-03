@@ -54,6 +54,11 @@ await transpileFile({
 });
 
 await transpileFile({
+  sourcePath: path.join(repoRoot, "src/lib/activity360.ts"),
+  targetPath: path.join(tmpDir, "activity360-person360-testable.mjs"),
+});
+
+await transpileFile({
   sourcePath: path.join(repoRoot, "src/lib/business360.ts"),
   targetPath: path.join(tmpDir, "business360-person360-testable.mjs"),
   replacements: [
@@ -65,6 +70,7 @@ await transpileFile({
       'from "./marketplace/businessAttribution";',
       'from "./businessAttribution-person360-testable.mjs";',
     ],
+    ['from "./activity360";', 'from "./activity360-person360-testable.mjs";'],
   ],
 });
 
@@ -105,6 +111,7 @@ await transpileFile({
       'from "./personBusinessRelationships-person360-testable.mjs";',
     ],
     ['from "./business360";', 'from "./business360-person360-testable.mjs";'],
+    ['from "./activity360";', 'from "./activity360-person360-testable.mjs";'],
   ],
 });
 
@@ -528,7 +535,24 @@ const fixtures = {
       createdAt: "2026-09-01T00:00:00.000Z",
     },
   ],
-  flow_events: [],
+  flow_events: [
+    {
+      _id: "flow-seller-1",
+      userId: "user-seller",
+      eventType: "marketplace_checkout_completed",
+      pageRoute: "/marketplace",
+      source: "stripe_webhook",
+      createdAt: "2026-09-03T01:00:00.000Z",
+    },
+    {
+      _id: "flow-seller-2",
+      userId: "user-seller",
+      eventType: "seller_profile_created",
+      pageRoute: "/marketplace/become-a-seller",
+      source: "marketplace",
+      createdAt: "2026-09-03T02:00:00.000Z",
+    },
+  ],
   search_quality_events: [],
   directory_listings: [],
   payments: [],
@@ -578,6 +602,13 @@ const db = new MockDb(fixtures);
   assert.equal(result.roles.includes("AFFILIATE"), true);
   assert.equal(result.roles.includes("CONSULTANT"), true);
   assert.equal(result.roles.includes("CREATOR"), true);
+  assert.equal(result.activity.state, "LINKED");
+  assert.equal(result.activity.flowEventCount, 2);
+  assert.equal(
+    result.activity.recentEventTypes.includes("marketplace_checkout_completed"),
+    true,
+  );
+  assert.equal(result.overlays.includes("activity"), true);
 }
 
 {
