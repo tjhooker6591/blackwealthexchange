@@ -963,13 +963,6 @@ export default function Home() {
 
             <div className="mx-auto mt-4 flex w-full max-w-5xl flex-col gap-3 border-t border-white/8 pt-4 text-left lg:flex-row lg:items-center lg:justify-between">
               <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
-                <div className="text-sm text-white/78">
-                  Founded by{" "}
-                  <span className="font-semibold text-white">
-                    Thomas James Hooker Sr.
-                  </span>
-                </div>
-                <div className="hidden h-4 w-px bg-white/10 sm:block" />
                 <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-white/58">
                   <Link
                     href="/business-directory/add-business"
@@ -983,27 +976,11 @@ export default function Home() {
               <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-white/60 sm:justify-end">
                 <span>
                   <span className="font-semibold text-white">
-                    {formatStat(trustStats.businesses)}
+                    {formatStat(
+                      trustStats.businesses + trustStats.organizations,
+                    )}
                   </span>{" "}
-                  Businesses
-                </span>
-                <span>
-                  <span className="font-semibold text-white">
-                    {formatStat(trustStats.organizations)}
-                  </span>{" "}
-                  Organizations
-                </span>
-                <span>
-                  <span className="font-semibold text-white">
-                    {formatStat(trustStats.products)}
-                  </span>{" "}
-                  Products
-                </span>
-                <span>
-                  <span className="font-semibold text-white">
-                    {formatStat(trustStats.opportunities)}
-                  </span>{" "}
-                  Jobs
+                  Directory Listings to Discover
                 </span>
               </div>
             </div>
