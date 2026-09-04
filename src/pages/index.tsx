@@ -10,6 +10,7 @@ import {
   ShoppingBag,
   BriefcaseBusiness,
   GraduationCap,
+  Sparkles,
 } from "lucide-react";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
@@ -252,7 +253,12 @@ const EconomicImpactSimulator = () => {
   );
 };
 
-type HomeSearchScope = "directory" | "marketplace" | "jobs" | "students";
+type HomeSearchScope =
+  | "all"
+  | "directory"
+  | "marketplace"
+  | "jobs"
+  | "students";
 
 const HOME_SCOPE_CONFIG: Record<
   HomeSearchScope,
@@ -265,6 +271,14 @@ const HOME_SCOPE_CONFIG: Record<
     destinationLabel: string;
   }
 > = {
+  all: {
+    label: "All BWE",
+    placeholder: "Search businesses, products, jobs, opportunities...",
+    href: "/search",
+    queryBuilder: (q) => ({ q }),
+    icon: Sparkles,
+    destinationLabel: "Search all of BWE",
+  },
   directory: {
     label: "Directory",
     placeholder: "Search Black-owned businesses...",
