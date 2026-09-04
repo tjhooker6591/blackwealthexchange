@@ -991,7 +991,8 @@ export default function Home() {
             <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5 text-left sm:p-6">
               <div className="bwe-eyebrow">What you can do here</div>
               <h2 className="bwe-section-title mt-2 max-w-3xl">
-                Explore freely. Join BWE free to save your place.
+                Explore freely. Join BWE free when you&apos;re ready for your
+                own dashboard.
               </h2>
               <p className="mt-3 max-w-3xl text-sm leading-6 text-white/68 sm:text-[15px]">
                 Public visitors can explore right away. Free accounts help you
@@ -1025,8 +1026,9 @@ export default function Home() {
                 <article className="rounded-2xl border border-white/10 bg-black/28 p-4">
                   <div className="bwe-card-title">Free</div>
                   <p className="mt-2 text-sm leading-6 text-white/68">
-                    Create a free account to keep your place and continue from
-                    one dashboard.
+                    Create your free BWE account and get your own dashboard—a
+                    single place to manage your account and access member
+                    features as you explore BWE.
                   </p>
                   <Link
                     href="/signup?intent=join-bwe-free"
