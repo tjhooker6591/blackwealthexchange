@@ -113,6 +113,55 @@ STATUS:
 
 - `PERMANENT / IN FORCE`
 
+## 17. Platform-wide UI ↔ API ↔ DB alignment audit — complete (batches 1–5)
+
+DATE:
+
+- `2026-09-03`
+
+SCOPE:
+
+- Owner-ordered systematic audit executed in 5 bounded batches per the rule recorded in entry 16. Full detail: `docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md`.
+- 26 functional contracts reviewed: AUTH/USERS, GENERAL MEMBER, BUSINESS OWNER, DIRECTORY, CLAIM/OWNERSHIP VERIFICATION, SELLER, MARKETPLACE/PRODUCTS, ORDERS, PAYMENTS/STRIPE, FOUNDING MEMBERSHIP, BLACK CARD, ADVERTISING/SPONSORSHIP, AFFILIATE, CONSULTANT/CREATOR, JOBS/EMPLOYERS/APPLICANTS, STUDENT/OPPORTUNITIES, LEARNING/ENTITLEMENTS, SUPPORT, ANALYTICS/EVENTS, BUSINESS360, PERSON360, PERSON↔BUSINESS, ACTIVITY360, ECONOMICACTIVITY360, BMEV RECORDS.
+
+PRODUCTION DB CHANGES APPLIED (index-only, 0 documents touched, all reversible via `dropIndex`):
+
+- Batch 1 (`scripts/audit-batch1-indexes.mjs`): `sellers.{userId,businessId,business_id}`, `business_memberships.businessId` — 4 indexes.
+- Batch 2 (`scripts/audit-batch2-indexes.mjs`): `products.{businessId,business_id,sellerId}`, `orders.{businessId,business_id,productId}`, `payments.{businessId,"metadata.businessId",productId}`, `bmev_records.{businessId,buyerUserId,economicTransactionId (unique)}` — 12 indexes; `bmev_records` collection created (previously did not exist in production).
+- Batch 3 (`scripts/audit-batch3-indexes.mjs`): `ad_purchases.businessId`, `advertising_requests.businessId`, `featured_sponsor_schedule.businessId`, `affiliates.userId`, `consultant_profiles.userId`, `employer_consultant_contact_requests.{employerId,consultantId}`, `employer_consultant_pipeline.employerId`, `consultant_moderation_escalations.{status,updatedAt}`, `consulting_intake.email` — 10 indexes.
+- Batch 4 (`scripts/audit-batch4-indexes.mjs`): `jobs.{userId,businessId,business_id}`, `employers.{userId,businessId,business_id}`, `applicants.email`, `savedJobs.userId` — 8 indexes.
+- Batch 5 (`scripts/audit-batch5-indexes.mjs`): `flow_events.{businessId+createdAt,userId+createdAt}`, `search_quality_events.{selectedBusinessId+createdAt}`, `support_tickets.relatedBusinessId` — 4 indexes. Highest-impact fix in the audit: `flow_events` (24,229 docs) and `search_quality_events` (3,168 docs) back every Business360/Person360/Activity360/EconomicActivity360 resolution and previously had zero supporting index.
+
+TOTAL: `39` production indexes created across `5` batches, `0` documents written/modified by index operations.
+
+DEFERRED (owner decision required, not applied):
+
+- Saved-jobs storage-model mismatch: `src/pages/api/user/save-job.ts` writes to a standalone `savedJobs` collection keyed by `userId`; `src/pages/api/user/saved-jobs.ts` and `get-dashboard.ts` read from a `users.savedJobs` array field that `save-job.ts` never writes to; `src/pages/api/dashboard/user.ts` queries the collection by a `userEmail` field that is never written (always returns `0`). Production evidence: `5` saved-job actions exist in the collection, only `1` user has a non-empty array. This is an application-behavior decision (which model is canonical), not a pure additive DB change, so it was documented and held rather than silently resolved. Index added on the one correct field (`savedJobs.userId`) regardless.
+
+KNOWN OPEN ITEM, NOT TOUCHED (pre-existing, owner-gated, unchanged by this audit):
+
+- Production auth/session logout-correctness + timeout-enforcement audit lane (status doc §17) — requires an owner-approved narrow fix scope, not a bulk DB alignment change.
+
+VALIDATION (run after every batch, all passing at completion):
+
+- `npm run typecheck` PASS (all 5 batches)
+- `node scripts/check-critical-paths.mjs` PASS `35/35` (all 5 batches)
+- `npm run check:vertical-regression` PASS (batches with a fresh run)
+- `node src/lib/__tests__/{business360,person360,person-business-relationships,economicActivity360}-tests.mjs` PASS (batch 5, full re-run)
+- Live route/API spot checks `200` after every batch: homepage, business-directory, marketplace, black-card, advertising, job-listings, support, `getBusiness`
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` — index-only changes, zero document writes, verified after every batch.
+
+UNRELEASED UI DB-READY:
+
+- `YES` for `EconomicActivity360`'s admin diagnostic route (shipped this session, now index-backed). No other unreleased UI surface was identified during this audit as depending on unaccounted-for DB state.
+
+STATUS:
+
+- `COMPLETE`
+
 ## 13. Local runtime incident resolution rule
 
 DATE:

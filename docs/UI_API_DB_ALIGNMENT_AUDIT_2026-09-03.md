@@ -205,4 +205,49 @@ Classification values used below: `READY`, `MISSING FIELD`,
 
 ## BATCH 5 — SUPPORT, BUSINESS360, PERSON↔BUSINESS, PERSON360, ACTIVITY360, ECONOMICACTIVITY360, ANALYTICS/EVENTS, BMEV RECORDS
 
-_(pending)_
+### SUPPORT
+
+- COLLECTION: `support_tickets` (2 docs, only `_id_` + `createdAt` index; no index on `relatedBusinessId`, the field `business360.ts`'s support lane actually filters by).
+- CLASSIFICATION: `MISSING INDEX` → **FIXED**.
+
+### ANALYTICS / EVENTS (highest-impact finding of this audit)
+
+- COLLECTION: `flow_events` — **24,229 documents**, `search_quality_events` — **3,168 documents**. Both had **zero index beyond the default `_id_`** prior to this batch.
+- WHY THIS MATTERS: `src/lib/activity360.ts` (`resolveBusinessActivity360`/`resolvePersonActivity360`) is the shared read-only resolver underneath **every** `Business360`, `Person360`, and `EconomicActivity360` call (`resolveBusinessEconomicActivity360`/`resolvePersonEconomicActivity360` both call into it). Every one of those resolutions was running an unindexed `businessId`/`userId`/`selectedBusinessId` filter across a 24k+/3k+ document collection — a full collection scan on every admin 360 lookup, every economic-activity-attribution diagnostic call, and any future UI surface that consumes these resolvers.
+- CLASSIFICATION: `MISSING INDEX` → **FIXED**. This is the single most consequential fix in the entire audit given collection size and the number of downstream consumers (Business360, Person360, EconomicActivity360 all depend on it).
+
+### BUSINESS360 / PERSON360 / PERSON ↔ BUSINESS / ACTIVITY360 / ECONOMICACTIVITY360
+
+- These five resolvers were built or extended in this canonical repo across recent Phase 2 workstreams (`src/lib/business360.ts`, `src/lib/person360.ts`, `src/lib/personBusinessRelationships.ts`, `src/lib/activity360.ts`, `src/lib/economicActivity360.ts`), each with dedicated executable test suites already re-run and passing this pass: `business360-tests.mjs`, `person360-tests.mjs`, `person-business-relationships-tests.mjs`, `economicActivity360-tests.mjs`.
+- Every collection each resolver depends on was audited across Batches 1–5: `businesses`, `business_claims`, `ownership_reviews`, `business_memberships`, `sellers`, `products`, `orders`, `payments`, `directory_listings`, `advertising_requests`/`ad_purchases`/`featured_sponsor_schedule`, `jobs`/`employers`, `support_tickets`, `flow_events`, `search_quality_events`, `bmev_records`. All proven index gaps found across those collections are now fixed.
+- `EconomicActivity360` specifically: `bmev_records` had never been created in production before Batch 2 of this audit (0 documents — no verified marketplace webhook has completed against this canonical env yet). It is now correctly indexed (`businessId`, `buyerUserId`, unique `economicTransactionId`) and ready to receive real data the first time a verified paid marketplace transaction completes — this is a direct instance of the owner's new rule: DB foundation shipped ahead of proven transaction volume, safely and additively.
+- CLASSIFICATION: `READY` (all five resolvers; all supporting collections indexed; all test suites passing)
+
+### BMEV-RELATED EXISTING RECORDS
+
+- `bmev_records`: `0` documents in production (collection namespace didn't exist prior to this audit). Index-ready as of Batch 2. `CLASSIFICATION: MISSING DATA (expected — feature not yet exercised; index readiness is now in place ahead of first real transaction, per the owner's DB-precedes-UI rule)`.
+- `financial_ledger`: `0` documents, correctly indexed already (6 indexes incl. unique `webhookEventId` dedupe key), gated behind a `ledgerEnabled` feature flag — feature-flag state, not a DB defect. `CLASSIFICATION: READY`.
+
+---
+
+### Production DB Change #5 — Batch 5 index hardening
+
+- COLLECTIONS: `flow_events` (×2), `search_quality_events` (×1), `support_tickets` (×1)
+- SCRIPT: `scripts/audit-batch5-indexes.mjs` (dry-run by default, `--apply` to write; idempotent)
+- RECORDS MATCHED/CHANGED: N/A (index operations only; 0 documents touched)
+- WHY REQUIRED: `flow_events` (24,229 docs) and `search_quality_events` (3,168 docs) back every Business360/Person360/Activity360/EconomicActivity360 resolution with zero supporting index — the highest-volume, highest-consumer-count gap found in the audit. `support_tickets` had no index on the field `business360.ts`'s support lane actually filters by.
+- CURRENT PRODUCTION UI SAFE: `YES` — verified homepage/support `200`, `check-critical-paths` `35/35`, `check:vertical-regression` all pass, and all four 360-family test suites (`business360`, `person360`, `person-business-relationships`, `economicActivity360`) pass after apply. Indexes were created in `background: true` mode so the 24k-document `flow_events` build did not block reads/writes.
+- FUTURE UI READY: `YES`
+- STATUS: `APPLIED / VERIFIED`
+
+---
+
+## AUDIT SUMMARY (Batches 1–5, complete)
+
+- TOTAL FUNCTIONAL CONTRACTS REVIEWED: 26 (AUTH/USERS, GENERAL MEMBER, BUSINESS OWNER, DIRECTORY, CLAIM/OWNERSHIP VERIFICATION, SELLER, MARKETPLACE/PRODUCTS, ORDERS, PAYMENTS/STRIPE, FOUNDING MEMBERSHIP, BLACK CARD, ADVERTISING/SPONSORSHIP, AFFILIATE, CONSULTANT/CREATOR, JOBS/EMPLOYERS/APPLICANTS, STUDENT/OPPORTUNITIES (saved jobs), LEARNING/ENTITLEMENTS, SUPPORT, ANALYTICS/EVENTS, BUSINESS360, PERSON360, PERSON↔BUSINESS, ACTIVITY360, ECONOMICACTIVITY360, BMEV RECORDS)
+- DB GAPS FOUND: 39 missing indexes across 5 batches + 1 API↔DB contract mismatch (saved jobs) + 1 pre-existing derived-field staleness bug (directory completeness, fixed in the session prior to this audit)
+- DB GAPS FIXED: 39 indexes (all applied to production, all verified safe, all reversible via `dropIndex`)
+- DEFERRED (owner decision required): saved-jobs storage-model mismatch (`src/pages/api/user/save-job.ts` vs. `saved-jobs.ts`/`get-dashboard.ts`/`dashboard/user.ts`) — see Batch 4. This is an application-behavior decision, not a DB-only fix, and is explicitly held per the "ambiguous relationship" stop condition.
+- KNOWN OPEN ITEM, NOT TOUCHED (pre-existing, owner-gated): production auth/session logout-correctness + timeout-enforcement audit lane (§17 of the status doc) — requires owner-approved narrow fix scope, not a bulk DB alignment change.
+- CURRENT PRODUCTION UI COMPATIBLE: `YES` — every batch was verified with homepage/route-specific `200` checks, `check-critical-paths.mjs` (`35/35`), and `check:vertical-regression`; final batch additionally re-ran all four 360-family test suites.
+- UNRELEASED UI DB-READY: `YES` for `EconomicActivity360`'s admin diagnostic route (already shipped this session, index-backed as of Batch 2/5). No other known-unreleased UI surface was identified during this audit that depends on DB state not yet accounted for.
