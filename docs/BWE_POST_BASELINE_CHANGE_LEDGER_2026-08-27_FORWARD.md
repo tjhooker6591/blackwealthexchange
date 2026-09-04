@@ -15,7 +15,7 @@ Runtime baseline preserved:
 
 ## Master program anchor
 
-- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 6 — READ-ONLY ECONOMIC ACTIVITY ATTRIBUTION FOUNDATION`
+- ACTIVE POST-BASELINE WORKSTREAM: `PLATFORM-WIDE UI ↔ API ↔ DB ALIGNMENT AUDIT (OWNER-ORDERED, 2026-09-03)`
 - CURRENT PHASE: `POST-BASELINE EXECUTION`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
@@ -32,6 +32,86 @@ Runtime baseline preserved:
 - BMEV EVIDENCE: `NONE NEW`
 - RULE: `accepted History work remains preserved, customer-conversion work remains preserved, the accepted Person <-> Business resolver remains preserved, and the active engineering workstream is now the read-only Person360 adapter on top of the accepted Phase 2 inventory`
 - LOCAL DEV RUNTIME RULE: `do not run npm run build while next dev is actively running against the same canonical repo /.next state; stop dev -> run build -> verify -> restart/recover dev before returning to localhost`
+
+## 15. Directory completeness recompute — production DB write (owner-accepted)
+
+DATE:
+
+- `2026-09-03`
+
+CHANGE TYPE:
+
+- `PRODUCTION DB WRITE (DERIVED-FIELD RECOMPUTE, ADDITIVE, NON-DESTRUCTIVE)`
+
+COLLECTION:
+
+- `businesses` (production `bwes-cluster`)
+
+FILES:
+
+- `scripts/recompute-directory-completeness-all.mjs` (new; dry-run by default, `--apply` to write)
+
+RUNTIME COMMIT:
+
+- `b234b97eafbe1d49bd6d55a86f08573e0fc49f7c`
+
+WHY REQUIRED:
+
+- Root cause: the public search gate (`src/lib/directory/publicBusinessQuery.ts`) requires `completenessScore >= 70` (or `isComplete`/`qualityScore`/`directoryVisibilityApproved`). It does not check the `approved` boolean field. The existing `scripts/restamp-recent-directory-completeness.mjs` only recomputes `completenessScore`/`missingFields`/`isComplete` for records touched in the last 180 minutes, so businesses genuinely enriched with real field data in earlier cleanup sessions kept a stale, out-of-date `completenessScore` and stayed hidden from public search even though their data now qualified.
+
+CHANGE:
+
+- Recomputed `completenessScore`, `missingFields`, `isComplete` for every `businesses` record from the record's own current field values, using the same deterministic scoring function the live public-search query already depends on (`src/lib/directory/completeness.ts`).
+
+RECORDS MATCHED (scanned):
+
+- `2286`
+
+RECORDS CHANGED:
+
+- `36`
+
+BEFORE-APPLY SAFETY CHECK:
+
+- Verified via a read-only pass that zero records would drop from `completenessScore >= 70` to `< 70` — confirms no currently-visible business could be hidden by this write.
+
+RESULT:
+
+- `8` businesses crossed the public-search completeness threshold (`44 -> 78` or `44 -> 89`) purely from already-present, previously-enriched field data: Sipwell Wine Co., CurlyKids Hair Care, Matriarch Coffee, Zach & Zoe Sweet Bee Farm, Johanna Howard Home, Eve Milan New York, We Dream in Colour, Little Muffincakes.
+- Verified after apply: all `8` now return via `/api/search/businesses`.
+- Queue movement: `hiddenNamedCount 989 -> 981`, `good_web_enrichment_candidate 99 -> 91`, `approval_state_mismatch` unchanged at `71` (correctly untouched — the `approved` boolean is not part of the public visibility gate, so that bucket does not affect search visibility and should not be treated as a visibility blocker in future cleanup passes).
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` — `npm run check:vertical-regression`, `node scripts/check-critical-paths.mjs` (`35/35`), and live homepage/business-directory `200` checks all passed after the write.
+
+FUTURE UI READY:
+
+- `N/A` — no UI change; derived-field integrity fix only.
+
+STATUS:
+
+- `COMPLETE / APPLIED / VERIFIED`
+
+## 16. Permanent UI ↔ API ↔ DB synchronization rule
+
+DATE:
+
+- `2026-09-03`
+
+RULE (PERMANENT, applies to all future BWE functional work):
+
+- Every functional change must identify, before implementation is considered complete: `UI CHANGE`, `API CHANGE`, `DB CHANGE`, `MIGRATION / BACKFILL`, `INDEX CHANGE`, `PRODUCTION DB READINESS`, and `RELEASE ORDER`.
+- A workstream is not complete if its UI/API requires DB state (fields, relationships, indexes, status values, default values) that has not been accounted for and verified against the actual production collection shape.
+- Preferred release order when safe: `DB FOUNDATION -> API / DOMAIN SUPPORT -> VALIDATION -> UI -> PREVIEW -> OWNER REVIEW -> PRODUCTION UI`.
+- The DB does not need to wait for the UI release. If a required DB change is proven necessary, additive/backward-compatible, safe for the currently deployed production application, based on authoritative data (never inferred from name/email alone), validated, and reversible or otherwise safely recoverable, it SHOULD be applied to production ahead of the UI release so production data is ready when the UI ships.
+- Every production DB write must be dry-run first, must show affected record count, must prove current-production-UI compatibility before and after, and must be recorded in this ledger with a before/after proof block (collection, change, records matched, records changed, before, after, why required, current-UI-safe, future-UI-ready).
+- No blind bulk writes. No destructive, speculative, inferred, or ambiguous production DB changes without explicit owner review.
+- This rule supersedes no prior data-safety guardrail (no deletes, no hides, no unapprovals, no downgrades of currently-visible/approved records) — it only adds the requirement that additive DB readiness work is not gated on UI release timing.
+
+STATUS:
+
+- `PERMANENT / IN FORCE`
 
 ## 13. Local runtime incident resolution rule
 
