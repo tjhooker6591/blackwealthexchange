@@ -76,7 +76,48 @@ Classification values used below: `READY`, `MISSING FIELD`,
 
 ## BATCH 2 — SELLER, MARKETPLACE, PRODUCTS, ORDERS, PAYMENTS/STRIPE
 
-_(pending)_
+### SELLER
+
+- COLLECTION: `sellers` (21 docs). Fields observed populated: `stripeAccountId`, `userId`, `businessId`.
+- INDEXES: after Batch 1 fix, `userId`, `businessId`, `business_id`, `email` (unique) all present.
+- CLASSIFICATION: `READY`
+
+### MARKETPLACE / PRODUCTS
+
+- UI/ROUTE: `/marketplace`, `/sellers/add-product`
+- API: `src/pages/api/marketplace/*`
+- COLLECTION: `products` (3 docs)
+- OBSERVATION: 2 of 3 sampled products have `sellerId` but no direct `businessId` field. This is **not** a gap — `src/lib/marketplace/businessAttribution.ts` (`resolveCanonicalMarketplaceBusinessId`) already deterministically resolves product → business via the seller's `businessId` as a designed fallback, and `business360.ts` already uses this resolver rather than assuming `product.businessId` is always populated.
+- INDEXES: `businessId`, `business_id`, `sellerId` created this batch (previously only `_id_`).
+- CLASSIFICATION: `READY` (fallback resolution already implemented; index gap fixed)
+
+### ORDERS
+
+- COLLECTION: `orders` (152 docs), unique `orderId` index pre-existing.
+- OBSERVATION: sampled orders are sparse — some carry only `userId`, others only `productId`+`status`, several lack `businessId`/`business_id` directly. `business360.ts` already compensates via `productLinkedOrders` (resolves orders by `productId` when `businessId` is absent), so business-level order visibility is not broken.
+- INDEXES: `businessId`, `business_id`, `productId` created this batch (previously only the unique `orderId` index — meaning every `business360.ts` commerce-lane query against 152 orders was doing a full collection scan).
+- CLASSIFICATION: `MISSING INDEX` → **FIXED**. Field-level `orders.businessId` backfill (deriving it once via the same product→seller→business chain the code already trusts) is a legitimate future optimization but not applied now — current fallback path is already correct, so this is deferred as non-urgent rather than a proven-necessary gap.
+
+### PAYMENTS / STRIPE-STORED BWE DATA
+
+- COLLECTION: `payments` (25 docs), `financial_ledger` (0 docs, feature-flag gated via `ledgerEnabled`), `user_entitlements` (5 indexes, in use)
+- INDEXES: `payments` already had `stripeSessionId`, `paymentIntentId`, `userId+createdAt`, `type+itemId+status`, `fulfillmentStatus+entitlementStatus+updatedAt`. Added `businessId`, `metadata.businessId`, `productId` this batch (proven by `business360.ts` commerce-lane query patterns).
+- `financial_ledger` has 6 indexes including a unique `webhookEventId` dedupe key (correct idempotency design) and `stripeSessionId`/`revenueStream`/`createdAt`/`paymentStatus`. `0` documents currently — the ledger write path exists in `webhook-handler.ts` but is gated behind a `ledgerEnabled` flag, so this is a feature-flag/rollout state, not a DB defect. `CLASSIFICATION: READY (correctly indexed, currently inactive by design)`.
+- `bmev_records`: collection did not exist in production at all (0 docs, namespace not yet created) prior to this batch. Added `businessId`, `buyerUserId`, and a unique `economicTransactionId` index (matching the dedupe key `src/lib/economics/marketplaceBmev.ts` already uses for its `updateOne(..., {upsert:true})` call) so the collection is index-ready the first time a verified marketplace webhook writes to it. `CLASSIFICATION: MISSING INDEX` → **FIXED**. `CLASSIFICATION: MISSING DATA (expected — no verified paid marketplace webhook has completed against this canonical repo/env yet; not a defect, just unproven volume)`.
+
+---
+
+### Production DB Change #2 — Batch 2 index hardening
+
+- COLLECTIONS: `products` (×3), `orders` (×3), `payments` (×3), `bmev_records` (×3, incl. 1 unique)
+- SCRIPT: `scripts/audit-batch2-indexes.mjs` (dry-run by default, `--apply` to write; idempotent)
+- RECORDS MATCHED/CHANGED: N/A (index operations only; 0 documents touched)
+- WHY REQUIRED: `orders` (152 docs) had zero supporting index for the `businessId`/`business_id`/`productId` query patterns `business360.ts` already runs in production on every commerce-lane resolution — every such query was a full collection scan. `products`/`payments` had partial coverage; `bmev_records` had none because the collection had never been created.
+- CURRENT PRODUCTION UI SAFE: `YES` — verified homepage/marketplace/`getBusiness`/`check:vertical-regression` all pass after apply; index creation changes no query results.
+- FUTURE UI READY: `YES` — `bmev_records` is now index-ready ahead of the first real verified marketplace transaction.
+- STATUS: `APPLIED / VERIFIED`
+
+---
 
 ## BATCH 3 — FOUNDING MEMBERSHIP, BLACK CARD, ADVERTISING/SPONSORSHIP, AFFILIATE, CONSULTANT/CREATOR
 
