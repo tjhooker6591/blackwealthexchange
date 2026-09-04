@@ -991,7 +991,7 @@ export default function Home() {
             <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5 text-left sm:p-6">
               <div className="bwe-eyebrow">What you can do here</div>
               <h2 className="bwe-section-title mt-2 max-w-3xl">
-                Search Black first. Join free when you want to keep moving.
+                Explore freely. Join BWE free to save your place.
               </h2>
               <p className="mt-3 max-w-3xl text-sm leading-6 text-white/68 sm:text-[15px]">
                 Public visitors can explore right away. Free accounts help you
