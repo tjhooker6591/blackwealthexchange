@@ -5,11 +5,13 @@
 - PROGRAM PHASE: `POST-BASELINE EXECUTION ON TOP OF COMPLETED PHASE 0 + PHASE 1`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-03 SAVED-JOBS CONTRACT CLOSURE CONTROL COMMIT`
-- LATEST RUNTIME HEAD: `PENDING CURRENT 2026-09-03 SAVED-JOBS CONTRACT CLOSURE RUNTIME COMMIT` (supersedes `46790a0`/`02c84c2`)
-- PRODUCTION DB WRITE LOG: `b234b97 directory completeness recompute (36/2286 businesses, 8 crossed public-search threshold, 0 demotions); 39 additive/reversible production indexes created across 5 audit batches; saved-jobs reconciliation pass (0 backfill needed, 0 duplicates, 1 pre-existing invalid record left untouched) via scripts/reconcile-saved-jobs.mjs; see docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md #15, #18 and docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md`
+- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-03 PHASE 2 CLOSURE CONTROL COMMIT`
+- LATEST RUNTIME HEAD: `6d3ecf5` (homepage free-account copy update; supersedes `f5d738f`/`46790a0`/`02c84c2`)
+- PRODUCTION DB WRITE LOG: `b234b97 directory completeness recompute (36/2286 businesses, 8 crossed public-search threshold, 0 demotions); 39 additive/reversible production indexes created across 5 audit batches; saved-jobs reconciliation pass (0 backfill needed, 0 duplicates, 1 pre-existing invalid record left untouched, tracked as data-hygiene backlog) via scripts/reconcile-saved-jobs.mjs; see docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md #15, #18, #19 and docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md`
 - PLATFORM-WIDE UI/API/DB ALIGNMENT AUDIT: `COMPLETE — see docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md (26 functional contracts reviewed, 39 index gaps fixed, 1 API<->DB contract mismatch (saved jobs) closed per explicit owner decision — savedJobs collection canonical). No open items remain from this audit's DB-alignment scope.`
 - PERMANENT UI/API/DB SYNC RULE: `RECORDED — see docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md #16`
+- PHASE 2 — UNIFIED PLATFORM CORE: `COMPLETE (2026-09-03)` — see `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #19 and `docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md` P2-01/P2-02
+- NEXT MAJOR PHASE: `PHASE 3 — DISCOVERY & COMMERCE` — implementation not started; awaiting highest-value customer/business outcome selection before engineering begins
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -39,8 +41,8 @@
 - CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
-- PHASE 2 — UNIFIED PLATFORM CORE: `ACTIVE — WORKSTREAM 5`
-- PHASE 3 — DISCOVERY & COMMERCE: `OUTSTANDING`
+- PHASE 2 — UNIFIED PLATFORM CORE: `COMPLETE (2026-09-03)` — see ledger entry #19
+- PHASE 3 — DISCOVERY & COMMERCE: `NOT STARTED — awaiting highest-value outcome selection`
 - PHASE 4 — PERSONALIZED PLATFORM: `OUTSTANDING`
 - PHASE 5 — NETWORK EFFECTS: `OUTSTANDING`
 - PHASE 6 — ECONOMIC INTELLIGENCE: `OUTSTANDING`
@@ -140,9 +142,9 @@
   - no functional defect proven
   - no performance code change authorized
   - reassess later only against production or customer evidence
-- NEXT MAJOR ENGINEERING PHASE: `PHASE 2 — UNIFIED PLATFORM CORE`
+- NEXT MAJOR ENGINEERING PHASE: `PHASE 3 — DISCOVERY & COMMERCE` (PHASE 2 — UNIFIED PLATFORM CORE closed 2026-09-03, ledger entry #19)
 - FIRST PHASE 2 WORKSTREAM: `accepted at docs/PHASE2_WORKSTREAM1_UNIFIED_ENTITY_INVENTORY_2026-09-01.md`
-- CURRENT PHASE 2 WORKSTREAM: `accepted read-only Business360 resolver anchored on businesses._id with explicit relationship states and provenance, proven through internal/admin-safe diagnostics and tests`
+- FINAL PHASE 2 WORKSTREAM: `Person <-> Business, Person360, Activity360, EconomicActivity360, platform-wide UI/API/DB alignment audit (39 indexes), saved-jobs canonicalization -- see docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md and ledger entries #16-#19`
 - COMPLETED CUSTOMER-CONVERSION CHECKPOINT:
   - runtime commit `e4cac87`
   - member-value / homepage conversion complete

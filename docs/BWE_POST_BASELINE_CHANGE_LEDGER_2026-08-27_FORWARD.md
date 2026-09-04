@@ -15,7 +15,7 @@ Runtime baseline preserved:
 
 ## Master program anchor
 
-- ACTIVE POST-BASELINE WORKSTREAM: `PLATFORM-WIDE UI ↔ API ↔ DB ALIGNMENT AUDIT (OWNER-ORDERED, 2026-09-03)`
+- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 CLOSED — AWAITING PHASE 3 (DISCOVERY & COMMERCE) HIGHEST-VALUE OUTCOME SELECTION`
 - CURRENT PHASE: `POST-BASELINE EXECUTION`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
@@ -210,6 +210,46 @@ CURRENT PRODUCTION UI SAFE:
 STATUS:
 
 - `COMPLETE / CLOSES the saved-jobs deferred item from ledger entry 17`
+
+## 19. PHASE 2 — UNIFIED PLATFORM CORE — closed
+
+DATE:
+
+- `2026-09-03`
+
+DECISION:
+
+- Phase 2 (Unified Platform Core) is `COMPLETE`, evaluated directly against the owner-defined Phase 2 core in `docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md`:
+  - `P2-01 — Person 360 and Business 360`: map person, business, membership, transaction, and opportunity relationships.
+  - `P2-02 — Canonical identity relationships and unified event system`: define canonical relationships and event taxonomy.
+
+EVIDENCE (accept and preserve, per owner instruction):
+
+- Saved-jobs canonicalization: commit `f5d738f`. Standalone `savedJobs` collection confirmed canonical; production already holds the required records and unique compound index (`uniq_savedJobs_userId_jobId`); no further production DB migration required for that fix.
+- Platform-wide UI ↔ API ↔ DB alignment: `COMPLETE` (ledger entry #17) — 26 functional contracts reviewed across 5 batches, 39 additive/reversible production indexes applied, 0 destructive writes, 1 real API↔DB contract mismatch found and closed (saved jobs, ledger entry #18).
+- Permanent UI ↔ API ↔ DB synchronization rule recorded (ledger entry #16) — every future functional change must account for UI/API/DB/migration/index/production-readiness/release-order before being considered complete.
+- Unified entity foundation shipped and tested: `Unified Entity Inventory` (`docs/PHASE2_WORKSTREAM1_UNIFIED_ENTITY_INVENTORY_2026-09-01.md`), `Business360` (`src/lib/business360.ts`), `Person ↔ Business` (`src/lib/personBusinessRelationships.ts`), `Person360` (`src/lib/person360.ts`), `Activity360` (`src/lib/activity360.ts`), `EconomicActivity360` (`src/lib/economicActivity360.ts`) — all with passing dedicated test suites (`business360-tests.mjs`, `person360-tests.mjs`, `person-business-relationships-tests.mjs`, `economicActivity360-tests.mjs`).
+
+RESIDUAL ITEM (not a Phase 2 blocker, tracked for future scope):
+
+- Person360 does not yet have a dedicated "opportunity" lane (job applications, saved jobs, entitlements/course enrollment) mirroring Business360's existing "jobs"/"employer" lane. The underlying collections (`applicants`, `savedJobs`, `user_entitlements`) are now correctly indexed and canonically shaped as of this audit, so building that lane later is a straightforward extension of the existing Person360 pattern, not new architecture. This does not block Phase 3 (Discovery & Commerce), since Phase 3's search/discovery/marketplace scope operates on business/product/job content, not on a person's own relationship dashboard.
+
+DATA-HYGIENE BACKLOG (not fixed in this workstream, per explicit owner instruction):
+
+- `savedJobs` document `_id: 680814d03105a101ca1b590e` (`userId: "USER123"`, `jobId: "JOB789"`) is invalid/orphaned — not a valid ObjectId pair, structurally impossible for the current write path to have produced. Left untouched, non-destructive. To be addressed only in a future, explicitly-approved data-hygiene pass, not as part of this or any DB-alignment workstream.
+
+NEXT MAJOR PHASE:
+
+- `PHASE 3 — DISCOVERY & COMMERCE` (`docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md` P3-01 Universal BWE search, P3-02 Multi-domain discovery and trust-rich result experiences, P3-03 World-class marketplace experience).
+- Implementation has **not** started. Per owner instruction, stopping after this closure to select the highest-value customer/business outcome first before any Phase 3 engineering begins.
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` — no code or DB change in this entry; documentation/control closure only.
+
+STATUS:
+
+- `COMPLETE`
 
 ## 13. Local runtime incident resolution rule
 

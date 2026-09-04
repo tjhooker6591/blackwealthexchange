@@ -7,10 +7,11 @@ Last updated: 2026-08-30
 - VERIFIED CURRENT PHASE: `POST-BASELINE EXECUTION`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
-- CURRENT ACTIVE WORKSTREAM: `POST-BASELINE WORKSTREAM 002 — LIBRARY OF BLACK HISTORY`
-- NEXT MAJOR PHASE: `PHASE 2 — UNIFIED PLATFORM CORE`
-- PHASE 2 STATUS: `NOT STARTED`
-- PHASE 3 STATUS: `OUTSTANDING`
+- CURRENT ACTIVE WORKSTREAM: `PHASE 2 CLOSED — SELECTING PHASE 3 HIGHEST-VALUE OUTCOME`
+- PHASE 2 — UNIFIED PLATFORM CORE: `COMPLETE (2026-09-03)` — see `docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md` and `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #17–#19
+- NEXT MAJOR PHASE: `PHASE 3 — DISCOVERY & COMMERCE`
+- PHASE 2 STATUS: `COMPLETE`
+- PHASE 3 STATUS: `NOT STARTED — awaiting highest-value outcome selection before implementation`
 - PHASE 4 STATUS: `OUTSTANDING`
 - PHASE 5 STATUS: `OUTSTANDING`
 - PHASE 6 STATUS: `OUTSTANDING`
@@ -20,13 +21,13 @@ Last updated: 2026-08-30
 ## Program state summary
 
 - TOTAL PROGRAM ITEMS: `26`
-- COMPLETE: `4`
+- COMPLETE: `6` (includes P2-01, P2-02 closed 2026-09-03)
 - IN PROGRESS: `2`
 - READY: `2`
-- PENDING: `3`
+- PENDING: `2`
 - BLOCKED: `1`
 - EXTERNAL PROOF PENDING: `2`
-- FUTURE: `12`
+- FUTURE: `11`
 
 ## Scope summary
 
@@ -364,35 +365,35 @@ Every major project should report:
 
 ### P2-01 — Person 360 and Business 360
 
-- STATE: `FUTURE`
+- STATE: `COMPLETE`
 - PHASE: `PHASE 2`
 - DOMAIN: `Data / Admin / Operations`
 - WORK TYPE: `DATA`, `PLATFORM / ENGINEERING`
 - RELEASE SCOPE: `NO`
 - WORLD-CLASS SCOPE: `YES`
 - DEPENDENCIES: `Phase 1 completion`
-- BLOCKERS: `canonical model not yet defined`
-- NEXT ACTION: `map person, business, membership, transaction, and opportunity relationships`
+- BLOCKERS: `none`
+- NEXT ACTION: `none — closed`
 - OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `90`
-- POINTS EARNED: `0`
-- EVIDENCE: `owner-defined Phase 2 core`
+- POINTS EARNED: `90`
+- EVIDENCE: `src/lib/business360.ts, src/lib/person360.ts, src/lib/personBusinessRelationships.ts — person, business, membership, and transaction relationships resolved and tested (business360-tests.mjs, person360-tests.mjs, person-business-relationships-tests.mjs, economicActivity360-tests.mjs, all passing). Person-side "opportunity" relationships (job applications, saved jobs, entitlements) are not yet a dedicated Person360 lane -- tracked as a non-blocking follow-up under Phase 3 (Student/Opportunities discovery), not a Phase 2 blocker: the underlying collections (applicants, savedJobs, user_entitlements) are now correctly indexed and canonically shaped as of the 2026-09-03 UI<->API<->DB alignment audit and saved-jobs closure.`
 
 ### P2-02 — Canonical identity relationships and unified event system
 
-- STATE: `PENDING`
+- STATE: `COMPLETE`
 - PHASE: `PHASE 2`
 - DOMAIN: `Identity & Accounts`
 - WORK TYPE: `DATA`, `PLATFORM / ENGINEERING`
 - RELEASE SCOPE: `NO`
 - WORLD-CLASS SCOPE: `YES`
 - DEPENDENCIES: `P2-01`
-- BLOCKERS: `entity model not yet stabilized`
-- NEXT ACTION: `define canonical relationships and event taxonomy`
+- BLOCKERS: `none`
+- NEXT ACTION: `none — closed`
 - OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `80`
-- POINTS EARNED: `0`
-- EVIDENCE: `identity and activity are still fragmented across systems`
+- POINTS EARNED: `80`
+- EVIDENCE: `src/lib/activity360.ts (flow_events/search_quality_events canonical resolution, now indexed on businessId/userId/selectedBusinessId), src/lib/economicActivity360.ts (bmev_records canonical resolution, indexed and collection-ready). docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md: 26 functional contracts reviewed across 5 batches, 39 additive/reversible production indexes applied, 1 real API<->DB contract mismatch found and closed (saved-jobs storage model, commit f5d738f). Permanent UI<->API<->DB synchronization rule recorded (ledger entry #16) so identity/event drift cannot silently recur.`
 
 ### P3-01 — Universal BWE search
 
