@@ -15,7 +15,7 @@ Runtime baseline preserved:
 
 ## Master program anchor
 
-- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 5 — SHARED ACTIVITY360 FOUNDATION`
+- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 6 — READ-ONLY ECONOMIC ACTIVITY ATTRIBUTION FOUNDATION`
 - CURRENT PHASE: `POST-BASELINE EXECUTION`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
@@ -245,6 +245,59 @@ VALIDATION:
 - `npm run check:vertical-regression` PASS
 - `npm run runtime:check` PASS
 - Canonical repo serving PASS on port `3000`
+
+STATUS:
+
+- `COMPLETE / PRESERVED`
+
+## 14. Phase 2 Workstream 6 completion — read-only economic activity attribution foundation
+
+DATE:
+
+- `2026-09-03`
+
+CHANGE TYPE:
+
+- `ADDED`
+
+FILES:
+
+- `src/lib/economicActivity360.ts`
+- `src/lib/__tests__/economicActivity360-tests.mjs`
+- `src/pages/api/admin/economic-activity360.ts`
+
+RUNTIME COMMITS:
+
+- `ca96ee6116c858c0a200af1c4f486b350d9900e8`
+
+WHY CHANGED:
+
+- Close the accepted Phase 2 Workstream 6 slice candidate: a read-only BMEV/economic-activity attribution layer on top of the shared Activity360 foundation and the existing `bmev_records` verified-payment anchors.
+
+FUNCTIONALITY CHANGED:
+
+- Added `src/lib/economicActivity360.ts` with `resolveBusinessEconomicActivity360` and `resolvePersonEconomicActivity360`, each joining verified `bmev_records` (paymentVerified === true) with the existing Activity360 overlay to produce a linked/not-linked attribution summary (transaction count, verified revenue cents, business lines, sources, latest transaction date, provenance).
+- Added admin-only `/api/admin/economic-activity360` diagnostic route (businessId or userId anchor), gated by `requireAdminFromRequest`.
+
+FUNCTIONALITY PRESERVED:
+
+- Business360 and Person360 core types/resolvers were not modified; this is a standalone additive resolver, same pattern as the Workstream 5 admin-only `/api/admin/person360` diagnostic route.
+- No schema change, migration, or DB write was introduced — resolver is read-only against `bmev_records`, `flow_events`, and `search_quality_events`.
+- Existing Stripe, Directory, Marketplace, Jobs, Claims, Membership, Black Card, and Advertising functionality remain preserved.
+
+VALIDATION:
+
+- `node src/lib/__tests__/economicActivity360-tests.mjs` PASS
+- `npm run typecheck` PASS
+- `node src/lib/__tests__/person360-tests.mjs` PASS
+- `node src/lib/__tests__/person-business-relationships-tests.mjs` PASS
+- `node src/lib/__tests__/business360-tests.mjs` PASS
+- `npm run build` PASS
+- `node scripts/check-critical-paths.mjs` PASS (`35/35`)
+- `npm run check:p2-regression` PASS (`26/26`)
+- `npm run check:vertical-regression` PASS
+- `npm run runtime:check` PASS
+- Canonical repo serving PASS on port `3000` (homepage `200`, `/api/admin/economic-activity360` returns `401` unauthenticated as expected)
 
 STATUS:
 

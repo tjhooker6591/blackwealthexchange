@@ -5,8 +5,8 @@
 - PROGRAM PHASE: `POST-BASELINE EXECUTION ON TOP OF COMPLETED PHASE 0 + PHASE 1`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-03 ACTIVITY360 CONTROL COMMIT`
-- LATEST RUNTIME HEAD: `8ce2d60332cbc8ea954f9417b2edba286458c8bc`
+- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-03 ECONOMIC ACTIVITY ATTRIBUTION CONTROL COMMIT`
+- LATEST RUNTIME HEAD: `ca96ee6116c858c0a200af1c4f486b350d9900e8`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -204,8 +204,20 @@
     - port `3000` PASS
     - canonical repo serving YES
     - results disappearing NO
-- CURRENT PHASE 2 WORKSTREAM: `Phase 2 Workstream 5 shared Activity360 foundation`
-- NEXT PHASE 2 SLICE CANDIDATE: `read-only BMEV/economic-activity attribution layer on top of the shared activity and existing payment anchors`
+- CURRENT PHASE 2 WORKSTREAM: `Phase 2 Workstream 6 read-only economic activity attribution foundation`
+- COMPLETED PHASE 2 WORKSTREAM 6 CHECKPOINT:
+  - runtime commit `ca96ee6116c858c0a200af1c4f486b350d9900e8`
+  - shared `EconomicActivity360` read-only resolver added (`src/lib/economicActivity360.ts`), joining verified `bmev_records` payment truth with the existing Activity360 overlay for both business and person anchors
+  - admin-only `/api/admin/economic-activity360` route added for internal-safe diagnostics (businessId or userId)
+  - `node src/lib/__tests__/economicActivity360-tests.mjs` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - critical paths PASS (`35/35`)
+  - phase 2 regression PASS (`26/26`)
+  - vertical regression PASS
+  - `npm run runtime:check` PASS
+  - localhost runtime PASS on `127.0.0.1:3000`
+- NEXT PHASE 2 SLICE CANDIDATE: `surface EconomicActivity360 as an optional read-only section inside Business360/Person360 (or a dedicated admin UI), once an owner-approved consumer/UI use case is defined`
 
 ## Master program anchors — 2026-08-25
 
