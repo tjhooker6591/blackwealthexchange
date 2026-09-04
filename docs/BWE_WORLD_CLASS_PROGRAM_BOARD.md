@@ -7,11 +7,11 @@ Last updated: 2026-08-30
 - VERIFIED CURRENT PHASE: `POST-BASELINE EXECUTION`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
-- CURRENT ACTIVE WORKSTREAM: `PHASE 2 CLOSED — SELECTING PHASE 3 HIGHEST-VALUE OUTCOME`
+- CURRENT ACTIVE WORKSTREAM: `PHASE 3 — P3-01 UNIVERSAL BWE SEARCH (FIRST SLICE SHIPPED)`
 - PHASE 2 — UNIFIED PLATFORM CORE: `COMPLETE (2026-09-03)` — see `docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md` and `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #17–#19
 - NEXT MAJOR PHASE: `PHASE 3 — DISCOVERY & COMMERCE`
 - PHASE 2 STATUS: `COMPLETE`
-- PHASE 3 STATUS: `NOT STARTED — awaiting highest-value outcome selection before implementation`
+- PHASE 3 STATUS: `IN PROGRESS — P3-01 first slice shipped 2026-09-04 (runtime commit 0ea2cfe); see ledger entry #20`
 - PHASE 4 STATUS: `OUTSTANDING`
 - PHASE 5 STATUS: `OUTSTANDING`
 - PHASE 6 STATUS: `OUTSTANDING`
@@ -397,19 +397,19 @@ Every major project should report:
 
 ### P3-01 — Universal BWE search
 
-- STATE: `FUTURE`
+- STATE: `IN PROGRESS — first slice shipped 2026-09-04`
 - PHASE: `PHASE 3`
 - DOMAIN: `Search & Discovery`
 - WORK TYPE: `FUNCTIONAL`, `DATA`, `PLATFORM / ENGINEERING`
 - RELEASE SCOPE: `NO`
 - WORLD-CLASS SCOPE: `YES`
 - DEPENDENCIES: `Phase 1`, `Phase 2`
-- BLOCKERS: `no unified discovery index yet`
-- NEXT ACTION: `design universal search after entity and event foundations land`
+- BLOCKERS: `none for the first slice`
+- NEXT ACTION: `add a lightweight cross-domain search event/analytics review once real query volume exists; revisit ranking sophistication and a dedicated discovery index only if volume/quality data proves it necessary (see docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md-style proof-first rule)`
 - OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `100`
-- POINTS EARNED: `0`
-- EVIDENCE: `owner-defined Phase 3 core`
+- POINTS EARNED: `35`
+- EVIDENCE: `owner-defined Phase 3 core. First working slice: src/lib/search/universalSearch.ts (shared cross-domain contract composing the existing publicBusinessBaseQuery/buildPublicMarketplaceVisibilityFilter/getStudentHubResolvedCatalog visibility rules -- not a parallel search system), src/pages/api/search/universal.ts, src/pages/search.tsx, one new "All BWE" tab on the existing homepage scope-tab pattern. All four domains (business/product/job/opportunity) covered with normalized results that preserve full domain-specific data. Existing domain-specific search paths (business-directory, marketplace, job-listings, black-student-opportunities, search-results) verified unaffected. Runtime commit 0ea2cfe.`
 
 ### P3-02 — Multi-domain discovery and trust-rich result experiences
 

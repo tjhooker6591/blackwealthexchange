@@ -5,13 +5,14 @@
 - PROGRAM PHASE: `POST-BASELINE EXECUTION ON TOP OF COMPLETED PHASE 0 + PHASE 1`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-03 PHASE 2 CLOSURE CONTROL COMMIT`
-- LATEST RUNTIME HEAD: `6d3ecf5` (homepage free-account copy update; supersedes `f5d738f`/`46790a0`/`02c84c2`)
+- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-04 P3-01 CONTROL COMMIT`
+- LATEST RUNTIME HEAD: `0ea2cfe` (P3-01 universal BWE search, first slice; supersedes `6d3ecf5`/`f5d738f`/`46790a0`/`02c84c2`)
 - PRODUCTION DB WRITE LOG: `b234b97 directory completeness recompute (36/2286 businesses, 8 crossed public-search threshold, 0 demotions); 39 additive/reversible production indexes created across 5 audit batches; saved-jobs reconciliation pass (0 backfill needed, 0 duplicates, 1 pre-existing invalid record left untouched, tracked as data-hygiene backlog) via scripts/reconcile-saved-jobs.mjs; see docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md #15, #18, #19 and docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md`
 - PLATFORM-WIDE UI/API/DB ALIGNMENT AUDIT: `COMPLETE — see docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md (26 functional contracts reviewed, 39 index gaps fixed, 1 API<->DB contract mismatch (saved jobs) closed per explicit owner decision — savedJobs collection canonical). No open items remain from this audit's DB-alignment scope.`
 - PERMANENT UI/API/DB SYNC RULE: `RECORDED — see docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md #16`
 - PHASE 2 — UNIFIED PLATFORM CORE: `COMPLETE (2026-09-03)` — see `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #19 and `docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md` P2-01/P2-02
-- NEXT MAJOR PHASE: `PHASE 3 — DISCOVERY & COMMERCE` — implementation not started; awaiting highest-value customer/business outcome selection before engineering begins
+- PHASE 3 — DISCOVERY & COMMERCE: `IN PROGRESS` — P3-01 Universal BWE Search first slice shipped 2026-09-04 (runtime commit `0ea2cfe`); see ledger entry #20. `src/lib/search/universalSearch.ts` + `/api/search/universal` + `/search` page + new "All BWE" homepage tab. No DB/index changes required for this slice.
+- NEXT MAJOR ENGINEERING FOCUS: continue P3-01 (review real search-quality-event volume before deepening ranking) or select the next Phase 3 outcome (P3-02 multi-domain discovery UX, P3-03 marketplace experience)
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`

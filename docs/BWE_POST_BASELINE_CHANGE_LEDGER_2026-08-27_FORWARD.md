@@ -251,6 +251,75 @@ STATUS:
 
 - `COMPLETE`
 
+## 20. PHASE 3 — P3-01 Universal BWE Search — first slice
+
+DATE:
+
+- `2026-09-04`
+
+WORKSTREAM:
+
+- `PHASE 3 — DISCOVERY & COMMERCE — P3-01 UNIVERSAL BWE SEARCH`
+
+CUSTOMER OUTCOME:
+
+- A visitor can search once and discover relevant businesses, products, jobs, and student/opportunity content without knowing which BWE section holds the result.
+
+INSPECTION BEFORE BUILDING (per the permanent UI ↔ API ↔ DB sync rule — compose, don't duplicate):
+
+- Homepage search: scope-tab router (`src/pages/index.tsx`, `HOME_SCOPE_CONFIG`) that redirects to each domain's dedicated page — no inline cross-domain results existed.
+- Directory search: `src/pages/api/search/businesses.ts` — full-featured (text index, token relevance scoring, sponsor injection, caching). Left untouched; its ranking/caching complexity is out of scope for a lightweight universal preview.
+- Marketplace search: `src/pages/api/marketplace/get-products.ts` — real server-side `q` param search using `buildPublicMarketplaceVisibilityFilter()`.
+- Jobs: no search API existed at all. `jobs/list.ts` returns all approved jobs; `job-listings.tsx` did client-side substring filtering over the full loaded list.
+- Student/opportunities: `src/pages/api/student-hub/opportunities.ts` + `src/lib/studentHub/repository.ts` — static in-memory catalog, `page`/`status` filters only, no search.
+- Search event tracking: `search_quality_events` collection, directory-specific fields (`query`, `resultCount`, `selectedBusinessId`, `filters`).
+
+IMPLEMENTATION (first working slice):
+
+- `src/lib/search/universalSearch.ts` (new) — shared `UniversalSearchResult` contract: `domain`, `type`, `id`, `title`, `description`, `url`, `location`, `image`, `trust`, `relevanceScore`, plus a `data` field carrying the full domain-specific document (nothing flattened away). Four domain adapters run in parallel via `Promise.allSettled` (one domain failing doesn't break the others). Composes the actual shared visibility-filter functions each domain already trusts: `publicBusinessBaseQuery()`, `buildPublicMarketplaceVisibilityFilter()`, `getStudentHubResolvedCatalog()` — not a re-derived or parallel ruleset.
+- `src/pages/api/search/universal.ts` (new) — `GET`, rate-limited via the existing `apiRateLimit` lib, optional `domains=` filter, customer-safe error messages (no raw technical errors surfaced).
+- `src/pages/search.tsx` (new) — universal results page. Domain badges, verified/featured trust badges, customer-facing empty/loading/error states, links straight into each domain's existing destination route (`/business/[alias]`, `/marketplace/product/[id]`, `/job/[id]`, external `applicationUrl` for opportunities — all pre-existing routes, unchanged).
+- `src/pages/index.tsx` — added one `"All BWE"` tab to the existing `HOME_SCOPE_CONFIG` scope-tab pattern, routing to `/search`. Existing default scope (`directory`) and all other tabs/routes/behavior unchanged.
+- `src/pages/api/search/quality-events/index.ts` — additive optional fields (`source`, `resultsByDomain`, `selectedResultDomain`, `selectedResultId`) so universal search logs into the existing collection without changing the meaning of existing directory-search fields.
+
+RANKING APPROACH:
+
+- Purely textual relevance (exact match > starts-with > word-boundary contains > substring contains) within each domain. No domain is artificially boosted or capped to "balance" the visible mix — ranking reflects actual match strength only.
+
+DB / INDEX CHANGES:
+
+- `NONE`. Current collection volumes (2,286 businesses, single-digit products/jobs, static in-memory student-hub catalog) don't justify a new index for this first slice; the query patterns reuse indexes/visibility filters that already exist. Will revisit only if real query volume/latency proves it's needed, per the "prove the requirement" rule.
+
+VALIDATION:
+
+- `npm run typecheck` PASS
+- `node scripts/check-critical-paths.mjs` PASS (`35/35`)
+- `npm run check:vertical-regression` PASS
+- `npm run build` PASS (dev server stopped/restarted around the build per the local runtime rule)
+- Direct API validation: universal mixed query (`black` → `28` results across `business`/`job`/`opportunity`), business-only domain filter (`coffee` → `14`), product-only domain filter (`hoodie` → `1`), jobs-only domain filter (`developer` → `4`), opportunity-only domain filter (`scholarship` → `5`, all verified), no-result query (`0` results, no error), empty query (`0` results, no error)
+- Playwright screenshots confirmed correct rendering and the `"All BWE"` homepage tab on both desktop (`1440x900`) and mobile (`390x844`)
+- Existing routes reconfirmed unaffected: `/business-directory?q=`, `/api/search/businesses`, `/api/marketplace/get-products?q=`, `/job-listings`, `/black-student-opportunities`, `/search-results` (business-only, untouched)
+
+FILES:
+
+- `src/lib/search/universalSearch.ts` (new)
+- `src/pages/api/search/universal.ts` (new)
+- `src/pages/search.tsx` (new)
+- `src/pages/index.tsx` (modified — one new scope tab)
+- `src/pages/api/search/quality-events/index.ts` (modified — additive optional fields)
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` — new page/API additive; existing search paths, homepage default scope, and all other routes unaffected. No production UI deployed.
+
+NEXT P3-01 SLICE:
+
+- Add a lightweight review of `search_quality_events` (now carrying `source: "universal_search"` and `resultsByDomain`) once real customer query volume exists, to see which domains/queries underperform before investing in a dedicated discovery index or more advanced ranking.
+
+STATUS:
+
+- `IN PROGRESS — first slice COMPLETE`
+
 ## 13. Local runtime incident resolution rule
 
 DATE:
