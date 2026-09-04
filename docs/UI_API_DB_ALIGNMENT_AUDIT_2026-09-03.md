@@ -166,7 +166,42 @@ Classification values used below: `READY`, `MISSING FIELD`,
 
 ## BATCH 4 — JOBS, EMPLOYERS, APPLICANTS, STUDENT/OPPORTUNITIES, LEARNING/ENTITLEMENTS
 
-_(pending)_
+### JOBS / EMPLOYERS / APPLICANTS
+
+- COLLECTION: `jobs` (9 docs, only had a partial 2dsphere geo index), `employers` (15 docs, only `_id_`), `applicants` (10 docs, correct unique `jobId+userId` index already present but no `email` index despite `dashboard/user.ts` querying `applicants.countDocuments({ email })`).
+- INDEXES BEFORE THIS PASS: none of `jobs.userId`, `jobs.businessId`/`business_id`, `employers.userId`, `employers.businessId`/`business_id`, `applicants.email` existed, despite all six being active query patterns in `person360.ts`/`business360.ts`/`dashboard/user.ts`.
+- CLASSIFICATION: `MISSING INDEX` (7 fields) → **FIXED**. See Production DB Change #4.
+
+### STUDENT / OPPORTUNITIES (saved jobs)
+
+- UI/ROUTE: `/saved-jobs`
+- API: `POST /api/user/save-job`, `GET /api/user/saved-jobs`, `GET /api/user/get-dashboard`, `GET /api/dashboard/user`
+- **FINDING — real, proven `API ↔ DB CONTRACT MISMATCH` (not fixed this pass, flagged for owner decision):**
+  - `src/pages/api/user/save-job.ts` (the only write path) inserts into a **standalone `savedJobs` collection**: `{ userId: ObjectId, jobId: ObjectId, savedAt }`.
+  - `src/pages/api/user/saved-jobs.ts` (the read path backing the `/saved-jobs` page) reads from a **`savedJobs` array field embedded on the `users` document** — a completely different storage model that `save-job.ts` never writes to.
+  - `src/pages/api/user/get-dashboard.ts` also reads the `users.savedJobs` array field (consistent with `saved-jobs.ts`, inconsistent with `save-job.ts`).
+  - `src/pages/api/dashboard/user.ts` queries the `savedJobs` collection with `countDocuments({ userEmail: email })` — but `save-job.ts` never writes a `userEmail` field, only `userId`. This call will always return `0` regardless of actual saved-job activity.
+  - Production data confirms real user impact: the `savedJobs` collection has `5` documents (real save actions), but only `1` user document currently has a non-empty `users.savedJobs` array — meaning most "save job" actions are invisible on `/saved-jobs` and in `get-dashboard.ts`'s saved-job count, and `dashboard/user.ts`'s saved-job count is permanently `0`.
+  - CLASSIFICATION: `API ↔ DB CONTRACT MISMATCH`. **Not fixed this pass** — this requires picking a canonical storage model (dual-write `save-job.ts` into `users.savedJobs` via `$addToSet`, or migrate the read paths onto the `savedJobs` collection and fix `dashboard/user.ts`'s field name) and is an application-behavior change, not a pure additive DB-only fix. Per the owner's stop conditions ("ambiguous relationship" / "genuinely new scope"), this is held for explicit owner direction on which model is canonical before any write path is changed. Index added on the existing `savedJobs.userId` field regardless, since that field is correct and used by the collection's one working writer.
+
+### LEARNING / ENTITLEMENTS
+
+- COLLECTION: `user_entitlements` (1 doc, already well-indexed: unique `userId+accountType+productKey`, `productKey+status+tier`, unique `stripeSubscriptionId`, `updatedAt`). `courses` (1 doc, only `_id_`). `course_enrollments` collection does not exist yet in production (0 docs, matches `docs/CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md` §15 "Digital-product access" being `BLOCKED BY PAYMENT COMPLETION` — no canonical paid course run has completed yet, so this is expected absence, not a defect).
+- CLASSIFICATION: `user_entitlements` → `READY`. `courses`/`course_enrollments` → `MISSING DATA (expected — feature not yet exercised end-to-end in production; matches known status-doc blocker, not a new gap)`.
+
+---
+
+### Production DB Change #4 — Batch 4 index hardening
+
+- COLLECTIONS: `jobs` (×3), `employers` (×3), `applicants` (×1), `savedJobs` (×1)
+- SCRIPT: `scripts/audit-batch4-indexes.mjs` (dry-run by default, `--apply` to write; idempotent)
+- RECORDS MATCHED/CHANGED: N/A (index operations only; 0 documents touched)
+- WHY REQUIRED: proven production query patterns in `person360.ts`, `business360.ts`, and `dashboard/user.ts` with zero supporting index.
+- CURRENT PRODUCTION UI SAFE: `YES` — verified homepage/job-listings `200`, `check-critical-paths` `35/35` after apply.
+- FUTURE UI READY: `YES` for the indexed fields. The `savedJobs` contract mismatch remains open and is explicitly **not** future-UI-ready until an owner decision is made on the canonical storage model.
+- STATUS: `APPLIED / VERIFIED` (indexes); `savedJobs` contract mismatch `DEFERRED — OWNER DECISION REQUIRED`.
+
+---
 
 ## BATCH 5 — SUPPORT, BUSINESS360, PERSON↔BUSINESS, PERSON360, ACTIVITY360, ECONOMICACTIVITY360, ANALYTICS/EVENTS, BMEV RECORDS
 
