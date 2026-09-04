@@ -121,7 +121,48 @@ Classification values used below: `READY`, `MISSING FIELD`,
 
 ## BATCH 3 — FOUNDING MEMBERSHIP, BLACK CARD, ADVERTISING/SPONSORSHIP, AFFILIATE, CONSULTANT/CREATOR
 
-_(pending)_
+### FOUNDING MEMBERSHIP
+
+- Already covered under Batch 1 CLAIM/OWNERSHIP VERIFICATION — this lane is `COMPLETE` per `CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md` §18. `CLASSIFICATION: READY`.
+
+### BLACK CARD
+
+- COLLECTION: `black_card_memberships` (6 indexes incl. unique `sourceStripeSessionId`, `userId+status`, `tier+status`), `black_card_cards` (7 indexes incl. unique `cardIdCanonical`, unique `publicVerificationId`, `userId+issuedAt`, `membershipId+issueVersion`), `black_card_digital_requests` (4 indexes incl. `userId+status`, `email+status`, `createdAt`).
+- CLASSIFICATION: `READY` — already fully indexed to the query patterns `person360.ts` uses (`blackCard` lane), including at only 2 documents per collection. No gap found.
+
+### ADVERTISING / SPONSORSHIP
+
+- UI/ROUTE: `/advertising`, `/advertise-with-us`, `/dashboard` sponsor views
+- API: advertising checkout/admin routes; `src/lib/business360.ts` `advertising` lane
+- COLLECTION: `ad_purchases` (5 docs), `advertising_requests` (24 docs), `featured_sponsor_schedule` (10 docs)
+- INDEXES BEFORE THIS PASS: all three had only the default `_id_` index, despite `business360.ts` querying all three by `businessId` in production on every advertising-lane resolution.
+- CLASSIFICATION: `MISSING INDEX` → **FIXED**. See Production DB Change #3.
+
+### AFFILIATE
+
+- COLLECTION: `affiliates` (3 docs) — `person360.ts` resolves the affiliate overlay via `findOneTracked('affiliates', { userId })`, but `affiliates` had no `userId` index (only `_id_`).
+- `affiliate_conversions`/`affiliate_payouts` collections referenced in `docs/CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md` §12 do not exist as literal collection names in the current codebase — actual attribution/payout state lives inside `affiliates` itself plus the admin payout routes (`src/pages/api/admin/{get-payouts,complete-payout}.ts`), which were not re-audited field-by-field this pass (already logged as hardened in §12 with duplicate-request/double-complete protection).
+- CLASSIFICATION: `MISSING INDEX` → **FIXED** (`affiliates.userId`). Full conversion→payout field contract deferred to a future batch if the owner wants deeper affiliate-specific review; not blocking.
+
+### CONSULTANT / CREATOR
+
+- COLLECTION: `consultant_profiles` (7 indexes, but **no `userId` index** despite `person360.ts` querying `findOneTracked('consultant_profiles', { userId })`), `consultant_moderation_escalations` (renamed/actual collection behind the `/admin/consultant-escalations` API — 0 docs, 0 indexes beyond `_id_`, despite the API always filtering by `status` and sorting by `updatedAt`/`escalatedAt`/`createdAt`), `consulting_intake` (5 docs, queried by `email` and `type`, no supporting index), `employer_consultant_contact_requests` (8 docs, queried by both `employerId` and `consultantId` with no index), `employer_consultant_pipeline` (8 docs, queried by `employerId` with no index).
+- CLASSIFICATION: `MISSING INDEX` (5 collections) → **FIXED**. See Production DB Change #3.
+- "CREATOR" (music/creator commerce) fields live inside `sellers`/`users` (`creatorSubtype`, `creatorPlanStatus`, `creatorReady`, `creatorOnboardingStatus`) and were already covered by the Batch 1/2 `sellers` index fixes plus the pre-existing `users` collection shape. `CLASSIFICATION: READY`.
+
+---
+
+### Production DB Change #3 — Batch 3 index hardening
+
+- COLLECTIONS: `ad_purchases`, `advertising_requests`, `featured_sponsor_schedule`, `affiliates`, `consultant_profiles`, `employer_consultant_contact_requests` (×2), `employer_consultant_pipeline`, `consultant_moderation_escalations`, `consulting_intake`
+- SCRIPT: `scripts/audit-batch3-indexes.mjs` (dry-run by default, `--apply` to write; idempotent)
+- RECORDS MATCHED/CHANGED: N/A (index operations only; 0 documents touched)
+- WHY REQUIRED: every one of these 10 index gaps corresponds to a query filter/sort already running in production code (`business360.ts` advertising lane; `person360.ts` affiliate/consultant lanes; admin consultant-escalation and employer-consultant APIs) against a collection that previously had no supporting index beyond `_id_`.
+- CURRENT PRODUCTION UI SAFE: `YES` — verified homepage/black-card/advertising `200`, `check-critical-paths` `35/35` after apply.
+- FUTURE UI READY: `YES`
+- STATUS: `APPLIED / VERIFIED`
+
+---
 
 ## BATCH 4 — JOBS, EMPLOYERS, APPLICANTS, STUDENT/OPPORTUNITIES, LEARNING/ENTITLEMENTS
 
