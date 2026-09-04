@@ -318,6 +318,61 @@ NEXT P3-01 SLICE:
 
 STATUS:
 
+- `COMPLETE` (visually reviewed and closed 2026-09-04, see ledger entry #21)
+
+## 21. PHASE 3 — P3-01 closure review + P3-02 trust-rich results first slice
+
+DATE:
+
+- `2026-09-04`
+
+P3-01 CLOSURE REVIEW:
+
+- Visually reviewed `/search` on desktop (`1440x900`) and mobile (`390x844`) against the acceptance checklist: query is obvious, result types are understandable, result cards are readable, destination links work, empty state is customer-friendly, no internal/dev copy appears.
+- ONE clear defect found: the image-placeholder box used `DOMAIN_LABEL` ("BUSINESS", "OPPORTUNITY") while the badge chip above the same card used `DOMAIN_ROUTE_LABEL` ("DIRECTORY", "STUDENT HUB") — two different labels for the same result. Fixed by removing `DOMAIN_LABEL` and using `DOMAIN_ROUTE_LABEL` consistently everywhere.
+- Compared against the owner-defined Phase 3 core (`docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md` P3-01): customer outcome (search once, discover businesses/products/jobs/opportunities without knowing the section) is met; existing domain search paths are preserved; no discovery index or deepened ranking was required for this acceptance bar, per the owner's explicit instruction that `search_quality_events` volume should inform that decision later.
+- P3-01 marked `COMPLETE`. Runtime commit `a97bfe4`.
+
+P3-02 — MULTI-DOMAIN DISCOVERY + TRUST-RICH RESULTS (FIRST SLICE):
+
+- CUSTOMER OUTCOME: a user should quickly understand what a result is, why it's relevant, where it is, and what trust signals BWE can legitimately show — using existing authoritative data only.
+- Extended the P3-01 `UniversalSearchResult` contract (no parallel search architecture) with optional, domain-specific fields:
+  - `business`: `category` (from `display_categories`/`category`), `trust.claimed` (from the real `claimStage === "ownership_verified"` field — distinct from, and additive to, the existing `trust.verified` signal)
+  - `product`: `sellerName` (via the existing `getPublicMarketplaceSellerName` helper plus a seller hydration lookup matching `get-products.ts`'s own pattern), `price`
+  - `job`: `jobType` (the job's own `type` field)
+  - `opportunity`: `opportunityType`, `eligibility` (`targetAudience` or `eligibilitySummary`, truncated for a compact card), `deadline`
+- No fabrication: verified live against real data that a product whose seller has no `storeName`/`businessName`/`ownerName` correctly renders no seller line rather than a guessed name; opportunities with no stored `deadline` correctly show no deadline line.
+- UI: one compact meta line per result card (location + domain-specific facts, joined with a middot separator), restrained styling matching the existing P3-01 card design. No homepage redesign, no new page.
+
+DB / INDEX CHANGES:
+
+- `NONE`. All new fields already existed on already-indexed collections. The one new query (seller lookup for product results) reuses the `sellers.userId`/`sellers.businessId` indexes already created in the Batch 1/2 UI ↔ API ↔ DB alignment audit.
+
+VALIDATION:
+
+- `npm run typecheck` PASS
+- `node scripts/check-critical-paths.mjs` PASS (`35/35`)
+- `npm run check:vertical-regression` PASS
+- `npm run build` PASS (dev server stopped/restarted around the build per the local runtime rule)
+- Direct API validation confirmed the new fields populate correctly per domain: business `category`/`claimed` (e.g. `Black Classic Press` → category `Bookstores and Educational`, `claimed: false`), product `sellerName`/`price` (`Pamfa hoodies` → `price: 49.99`, `sellerName: null` because the seller genuinely has no stored name — correct, not a bug), job `jobType` (`Contract`, `Full-Time`), opportunity `opportunityType`/`eligibility`/`deadline` (`TMCF Scholarships` → `scholarship`, eligibility text, `deadline: 2027-04-23`; others correctly show `deadline: null` when not stored)
+- Playwright screenshots confirmed compact, readable rendering on desktop for scholarship (opportunity), hoodie (product), and developer (jobs) queries, and mobile for a mixed query
+- Existing routes reconfirmed unaffected: `/business-directory`, `/api/marketplace/get-products`, `/job-listings`, `/black-student-opportunities`
+
+FILES:
+
+- `src/lib/search/universalSearch.ts` (modified — extended contract, domain adapters)
+- `src/pages/search.tsx` (modified — P3-01 label fix + P3-02 meta line rendering)
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` — additive fields and UI only; no code path removed, no existing behavior changed. No production UI deployed.
+
+NEXT P3-02 SLICE:
+
+- Consider surfacing the business `claimed`/`verified` distinction inside the dedicated directory search UI too (currently only visible in universal search), if the owner wants that consistency across both surfaces; otherwise wait for real usage signal before adding further trust fields.
+
+STATUS:
+
 - `IN PROGRESS — first slice COMPLETE`
 
 ## 13. Local runtime incident resolution rule

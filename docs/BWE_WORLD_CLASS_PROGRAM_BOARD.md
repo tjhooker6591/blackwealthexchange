@@ -7,11 +7,11 @@ Last updated: 2026-08-30
 - VERIFIED CURRENT PHASE: `POST-BASELINE EXECUTION`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
-- CURRENT ACTIVE WORKSTREAM: `PHASE 3 — P3-01 UNIVERSAL BWE SEARCH (FIRST SLICE SHIPPED)`
+- CURRENT ACTIVE WORKSTREAM: `PHASE 3 — P3-01 COMPLETE, P3-02 FIRST SLICE SHIPPED`
 - PHASE 2 — UNIFIED PLATFORM CORE: `COMPLETE (2026-09-03)` — see `docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md` and `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #17–#19
 - NEXT MAJOR PHASE: `PHASE 3 — DISCOVERY & COMMERCE`
 - PHASE 2 STATUS: `COMPLETE`
-- PHASE 3 STATUS: `IN PROGRESS — P3-01 first slice shipped 2026-09-04 (runtime commit 0ea2cfe); see ledger entry #20`
+- PHASE 3 STATUS: `IN PROGRESS — P3-01 COMPLETE (2026-09-04), P3-02 first slice shipped (runtime commit a97bfe4); see ledger entries #20–#21`
 - PHASE 4 STATUS: `OUTSTANDING`
 - PHASE 5 STATUS: `OUTSTANDING`
 - PHASE 6 STATUS: `OUTSTANDING`
@@ -397,34 +397,35 @@ Every major project should report:
 
 ### P3-01 — Universal BWE search
 
-- STATE: `IN PROGRESS — first slice shipped 2026-09-04`
+- STATE: `COMPLETE (2026-09-04)`
 - PHASE: `PHASE 3`
 - DOMAIN: `Search & Discovery`
 - WORK TYPE: `FUNCTIONAL`, `DATA`, `PLATFORM / ENGINEERING`
 - RELEASE SCOPE: `NO`
 - WORLD-CLASS SCOPE: `YES`
 - DEPENDENCIES: `Phase 1`, `Phase 2`
-- BLOCKERS: `none for the first slice`
-- NEXT ACTION: `add a lightweight cross-domain search event/analytics review once real query volume exists; revisit ranking sophistication and a dedicated discovery index only if volume/quality data proves it necessary (see docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md-style proof-first rule)`
+- BLOCKERS: `none`
+- NEXT ACTION: `none — closed. Future ranking/discovery-index work is now owned by P3-02 and is explicitly gated on real search_quality_events volume, not built speculatively.`
 - OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `100`
-- POINTS EARNED: `35`
-- EVIDENCE: `owner-defined Phase 3 core. First working slice: src/lib/search/universalSearch.ts (shared cross-domain contract composing the existing publicBusinessBaseQuery/buildPublicMarketplaceVisibilityFilter/getStudentHubResolvedCatalog visibility rules -- not a parallel search system), src/pages/api/search/universal.ts, src/pages/search.tsx, one new "All BWE" tab on the existing homepage scope-tab pattern. All four domains (business/product/job/opportunity) covered with normalized results that preserve full domain-specific data. Existing domain-specific search paths (business-directory, marketplace, job-listings, black-student-opportunities, search-results) verified unaffected. Runtime commit 0ea2cfe.`
+- POINTS EARNED: `100`
+- EVIDENCE: `owner-defined Phase 3 core. src/lib/search/universalSearch.ts (shared cross-domain contract composing the existing publicBusinessBaseQuery/buildPublicMarketplaceVisibilityFilter/getStudentHubResolvedCatalog visibility rules -- not a parallel search system), src/pages/api/search/universal.ts, src/pages/search.tsx, one new "All BWE" tab on the existing homepage scope-tab pattern. All four domains (business/product/job/opportunity) covered with normalized results that preserve full domain-specific data. Existing domain-specific search paths (business-directory, marketplace, job-listings, black-student-opportunities, search-results) verified unaffected. Visually reviewed on desktop/mobile against the acceptance checklist (obvious query, understandable result types, readable cards, working destination links, customer-friendly empty state, no internal/dev copy) -- one labeling inconsistency found and fixed. Runtime commit a97bfe4.`
 
 ### P3-02 — Multi-domain discovery and trust-rich result experiences
 
-- STATE: `FUTURE`
+- STATE: `IN PROGRESS — first slice shipped 2026-09-04`
 - PHASE: `PHASE 3`
 - DOMAIN: `Search & Discovery`
 - WORK TYPE: `DESIGN`, `FUNCTIONAL`, `DATA`
 - RELEASE SCOPE: `NO`
 - WORLD-CLASS SCOPE: `YES`
 - DEPENDENCIES: `P3-01`
-- BLOCKERS: `Phase sequencing`
-- NEXT ACTION: `design domain-specific result ranking and trust signals`
+- BLOCKERS: `none for this slice`
+- NEXT ACTION: `consider surfacing business "claimed"/"verified" distinction inside the dedicated directory search UI too (currently only in universal search), if the owner wants that consistency; otherwise await real usage signal before adding more trust fields`
 - OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `70`
-- POINTS EARNED: `0`
+- POINTS EARNED: `25`
+- EVIDENCE: `Extended the P3-01 UniversalSearchResult contract (no parallel architecture) with optional, domain-specific fields populated only from existing authoritative data: business category + claimed (real claimStage field, distinct from existing verified signal); product sellerName (via the existing getPublicMarketplaceSellerName helper) + price; job jobType; opportunity opportunityType + eligibility + deadline. No fabrication -- verified live that a seller with no stored name renders no seller line rather than a guessed one. Compact one-line "what/why/where" meta row added per result card, restrained styling, no homepage/page redesign. No DB/index changes -- all fields already existed on already-indexed collections. Runtime commit a97bfe4.`
 - EVIDENCE: `directory, marketplace, jobs, student, services, and creator discovery need convergence`
 
 ### P3-03 — World-class marketplace experience
