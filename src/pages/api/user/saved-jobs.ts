@@ -56,14 +56,17 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
-    // Fetch user document to get savedJobs array
-    const userDoc = await db
-      .collection("users")
-      .findOne({ _id: new ObjectId(userId) }, { projection: { savedJobs: 1 } });
+    // Canonical saved-job source of truth is the standalone savedJobs
+    // collection, keyed by { userId, jobId }.
+    const savedDocs = await db
+      .collection("savedJobs")
+      .find({ userId: new ObjectId(userId) })
+      .project({ jobId: 1 })
+      .toArray();
 
-    const savedIds = Array.isArray(userDoc?.savedJobs)
-      ? userDoc.savedJobs.map((id: any) => new ObjectId(id))
-      : [];
+    const savedIds = savedDocs
+      .filter((doc: any) => ObjectId.isValid(String(doc.jobId)))
+      .map((doc: any) => new ObjectId(String(doc.jobId)));
 
     // Fetch job details
     const jobs = await db

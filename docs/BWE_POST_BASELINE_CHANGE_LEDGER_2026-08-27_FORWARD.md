@@ -162,6 +162,55 @@ STATUS:
 
 - `COMPLETE`
 
+## 18. Saved-jobs API ↔ DB contract mismatch — closed (owner decision: savedJobs collection canonical)
+
+DATE:
+
+- `2026-09-03`
+
+OWNER DECISION:
+
+- The standalone `savedJobs` collection is the canonical saved-job source of truth. No permanent dual-write into `users.savedJobs`.
+
+FILES:
+
+- `src/pages/api/user/save-job.ts` — write path: `insertOne` → idempotent upsert (`updateOne` + `$setOnInsert` + `upsert:true`); added `DELETE` handler for unsave (no unsave capability existed anywhere in the codebase before this change).
+- `src/pages/api/user/saved-jobs.ts` — read path: `users.savedJobs` array → `savedJobs.find({ userId })`.
+- `src/pages/api/user/get-dashboard.ts` — count path: `users.savedJobs.length` → `savedJobs.countDocuments({ userId })`.
+- `src/pages/api/dashboard/user.ts` — count path: dead `savedJobs.countDocuments({ userEmail })` (always `0`, field never written) → resolves canonical `userId` from the session JWT (falls back to a `users` lookup by email for older tokens) and queries `savedJobs.countDocuments({ userId })`.
+- `src/pages/user-dashboard.tsx` — audited only, no change required; already read the canonical `savedJobs` collection correctly.
+- `scripts/reconcile-saved-jobs.mjs` — new, dry-run by default / `--apply` to write; reconciliation + additive backfill tool.
+
+RECONCILIATION (run before any code change):
+
+- `savedJobs` collection: `5` documents scanned. Duplicate `{userId,jobId}` pairs: `0`. Invalid/orphaned entries: `1` (`userId:"USER123"`/`jobId:"JOB789"` — not valid ObjectIds, structurally impossible for the current writer to have produced; left in place, untouched, non-destructive).
+- `users.savedJobs` array entries found: `2`, on exactly `1` user (`680c1e52770af2064fe4c7ad`). **Both already present** in the `savedJobs` collection — backfill candidates: `0`, backfilled: `0`. No legitimate historical save was at risk.
+
+PRODUCTION DB CHANGE:
+
+- None required beyond the reconciliation dry-run/apply pass (0 writes). The compound unique index `uniq_savedJobs_userId_jobId` on `{userId:1, jobId:1}` was found **already present** in production prior to this slice — not created by this change.
+
+VALIDATION:
+
+- `npm run typecheck` PASS
+- `node scripts/check-critical-paths.mjs` PASS (`35/35`)
+- `npm run check:vertical-regression` PASS
+- `npm run build` PASS (dev server stopped first per the local runtime rule, restarted after)
+- End-to-end functional validation (temporary script, cleaned up after run, `savedJobs` collection confirmed returned to its exact original 5-document state): save job (`201`), duplicate save is idempotent (list stays at 1 item, no duplicate row), saved-jobs list reflects the save, dashboard count correct on both `get-dashboard.ts` and `dashboard/user.ts` (previously stuck at `0` on the latter), unsave removes the row, a second test user's actions never affected the first user's list (auth isolation), saving a nonexistent `jobId` succeeds at the write layer but is gracefully omitted from the rendered list, unauthenticated request rejected `401`.
+- Canonical repo serving PASS on port `3000` (homepage, `/job-listings`, `/saved-jobs` all `200`).
+
+COMPATIBILITY:
+
+- `users.savedJobs` left in place as legacy data, untouched, not removed or renamed. No remaining production code reads or writes it after this change.
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES`
+
+STATUS:
+
+- `COMPLETE / CLOSES the saved-jobs deferred item from ledger entry 17`
+
 ## 13. Local runtime incident resolution rule
 
 DATE:

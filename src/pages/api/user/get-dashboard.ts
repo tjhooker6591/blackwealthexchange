@@ -59,12 +59,16 @@ export default async function handler(
       .collection("applicants")
       .countDocuments({ userId: new ObjectId(userId) });
 
-    // 4) Count saved jobs from user's savedJobs array
     const userDoc = await db
       .collection("users")
-      .findOne({ email }, { projection: { savedJobs: 1, fullName: 1 } });
-    const savedJobs = Array.isArray(userDoc?.savedJobs)
-      ? userDoc!.savedJobs.length
+      .findOne({ email }, { projection: { fullName: 1 } });
+
+    // Canonical saved-job source of truth is the standalone savedJobs
+    // collection, keyed by { userId, jobId }.
+    const savedJobs = ObjectId.isValid(userId)
+      ? await db
+          .collection("savedJobs")
+          .countDocuments({ userId: new ObjectId(userId) })
       : 0;
 
     // 5) Count messages addressed to this user

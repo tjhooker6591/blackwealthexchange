@@ -172,17 +172,30 @@ Classification values used below: `READY`, `MISSING FIELD`,
 - INDEXES BEFORE THIS PASS: none of `jobs.userId`, `jobs.businessId`/`business_id`, `employers.userId`, `employers.businessId`/`business_id`, `applicants.email` existed, despite all six being active query patterns in `person360.ts`/`business360.ts`/`dashboard/user.ts`.
 - CLASSIFICATION: `MISSING INDEX` (7 fields) → **FIXED**. See Production DB Change #4.
 
-### STUDENT / OPPORTUNITIES (saved jobs)
+### STUDENT / OPPORTUNITIES (saved jobs) — CLOSED 2026-09-03 (owner decision: `savedJobs` collection is canonical)
 
-- UI/ROUTE: `/saved-jobs`
-- API: `POST /api/user/save-job`, `GET /api/user/saved-jobs`, `GET /api/user/get-dashboard`, `GET /api/dashboard/user`
-- **FINDING — real, proven `API ↔ DB CONTRACT MISMATCH` (not fixed this pass, flagged for owner decision):**
-  - `src/pages/api/user/save-job.ts` (the only write path) inserts into a **standalone `savedJobs` collection**: `{ userId: ObjectId, jobId: ObjectId, savedAt }`.
-  - `src/pages/api/user/saved-jobs.ts` (the read path backing the `/saved-jobs` page) reads from a **`savedJobs` array field embedded on the `users` document** — a completely different storage model that `save-job.ts` never writes to.
-  - `src/pages/api/user/get-dashboard.ts` also reads the `users.savedJobs` array field (consistent with `saved-jobs.ts`, inconsistent with `save-job.ts`).
-  - `src/pages/api/dashboard/user.ts` queries the `savedJobs` collection with `countDocuments({ userEmail: email })` — but `save-job.ts` never writes a `userEmail` field, only `userId`. This call will always return `0` regardless of actual saved-job activity.
-  - Production data confirms real user impact: the `savedJobs` collection has `5` documents (real save actions), but only `1` user document currently has a non-empty `users.savedJobs` array — meaning most "save job" actions are invisible on `/saved-jobs` and in `get-dashboard.ts`'s saved-job count, and `dashboard/user.ts`'s saved-job count is permanently `0`.
-  - CLASSIFICATION: `API ↔ DB CONTRACT MISMATCH`. **Not fixed this pass** — this requires picking a canonical storage model (dual-write `save-job.ts` into `users.savedJobs` via `$addToSet`, or migrate the read paths onto the `savedJobs` collection and fix `dashboard/user.ts`'s field name) and is an application-behavior change, not a pure additive DB-only fix. Per the owner's stop conditions ("ambiguous relationship" / "genuinely new scope"), this is held for explicit owner direction on which model is canonical before any write path is changed. Index added on the existing `savedJobs.userId` field regardless, since that field is correct and used by the collection's one working writer.
+- UI/ROUTE: `/saved-jobs`, `/user-dashboard`
+- API: `POST/DELETE /api/user/save-job`, `GET /api/user/saved-jobs`, `GET /api/user/get-dashboard`, `GET /api/dashboard/user`
+- ORIGINAL FINDING (batch 4): three competing storage models for the same feature — `save-job.ts` wrote a standalone `savedJobs` collection (`{userId, jobId, savedAt}`), `saved-jobs.ts`/`get-dashboard.ts` read a `users.savedJobs` array field `save-job.ts` never wrote to, and `dashboard/user.ts` queried the collection by a `userEmail` field that was never written (always returned `0`).
+- OWNER DECISION: standalone `savedJobs` collection is canonical. No permanent dual-write into `users.savedJobs`.
+- RECONCILIATION (read-only, before any change — `scripts/reconcile-saved-jobs.mjs`, dry-run then `--apply`):
+  - `savedJobs` collection: `5` total documents.
+  - Duplicate `{userId,jobId}` pairs: `0`.
+  - Invalid/orphaned entries: `1` (`userId:"USER123"`, `jobId:"JOB789"` — not valid ObjectIds, pre-dates the current write path, structurally impossible for `save-job.ts` to have written; left in place untouched, non-destructive, invisible to any real ObjectId-keyed query).
+  - `users.savedJobs` array entries: exactly `1` user (`680c1e52770af2064fe4c7ad`) with `2` entries — **both already present** in the `savedJobs` collection.
+  - Backfill candidates found: `0`. Backfill applied: `0`. Every legitimate historical save was already present in the canonical collection; no data was at risk of being lost by switching readers.
+  - All `3` valid job references confirmed to still exist in `jobs` (no orphaned job references among real data).
+- IDENTITY CONTRACT CONFIRMED: `savedJobs.{userId, jobId}` (both `ObjectId`), matching the one working writer (`save-job.ts`) exactly — not inferred from email.
+- INDEX: compound unique index `uniq_savedJobs_userId_jobId` on `{userId:1, jobId:1}` was **already present** in production prior to this slice (pre-existing, not created by this audit) — duplicate-save protection already existed at the DB layer; the application layer just wasn't using it idempotently.
+- WRITE PATH FIXED: `src/pages/api/user/save-job.ts` — switched `insertOne` to an upsert (`updateOne` + `$setOnInsert` + `upsert:true`) so repeat saves are idempotent instead of surfacing a duplicate-key error; added a `DELETE` handler (same route, same auth/validation) for unsave, since no unsave capability existed anywhere in the codebase before this slice.
+- READ PATHS FIXED (now query the canonical `savedJobs` collection by `userId`):
+  - `src/pages/api/user/saved-jobs.ts` — was reading `users.savedJobs` array; now queries `savedJobs.find({ userId })`.
+  - `src/pages/api/user/get-dashboard.ts` — was reading `users.savedJobs.length`; now `savedJobs.countDocuments({ userId })`.
+  - `src/pages/api/dashboard/user.ts` — was querying the dead `savedJobs.userEmail` field (always `0`); now resolves canonical `userId` (from the session JWT, falling back to a `users` lookup by email for older tokens) and queries `savedJobs.countDocuments({ userId })`.
+  - `src/pages/user-dashboard.tsx` (`getServerSideProps`) — audited, already correctly queried the canonical `savedJobs` collection by `userId`; no change needed.
+- END-TO-END VALIDATION (`tmp/validate-saved-jobs-e2e.mjs`, run against local dev, cleaned up after, verified collection returned to its exact original 5-document state): save job (`201`), duplicate save is idempotent (`201`, no duplicate row created — list stayed at 1 item), saved-jobs list reflects the save, dashboard count reflects the save on **both** `get-dashboard.ts` and `dashboard/user.ts` (previously stuck at `0`), unsave removes the row and the list drops back to `0`, a second test user's actions never affected the first user's list (auth isolation), saving a nonexistent `jobId` succeeds at the write layer but is silently omitted from the rendered list (graceful missing/deleted-job handling, matching prior behavior), and an unauthenticated request is rejected with `401`.
+- CLASSIFICATION: `READY` (was `API ↔ DB CONTRACT MISMATCH` — now closed).
+- COMPATIBILITY: `users.savedJobs` left in place untouched as legacy data per the owner's instruction — not removed, not renamed, no code still reads or writes it after this fix.
 
 ### LEARNING / ENTITLEMENTS
 
@@ -246,8 +259,8 @@ Classification values used below: `READY`, `MISSING FIELD`,
 
 - TOTAL FUNCTIONAL CONTRACTS REVIEWED: 26 (AUTH/USERS, GENERAL MEMBER, BUSINESS OWNER, DIRECTORY, CLAIM/OWNERSHIP VERIFICATION, SELLER, MARKETPLACE/PRODUCTS, ORDERS, PAYMENTS/STRIPE, FOUNDING MEMBERSHIP, BLACK CARD, ADVERTISING/SPONSORSHIP, AFFILIATE, CONSULTANT/CREATOR, JOBS/EMPLOYERS/APPLICANTS, STUDENT/OPPORTUNITIES (saved jobs), LEARNING/ENTITLEMENTS, SUPPORT, ANALYTICS/EVENTS, BUSINESS360, PERSON360, PERSON↔BUSINESS, ACTIVITY360, ECONOMICACTIVITY360, BMEV RECORDS)
 - DB GAPS FOUND: 39 missing indexes across 5 batches + 1 API↔DB contract mismatch (saved jobs) + 1 pre-existing derived-field staleness bug (directory completeness, fixed in the session prior to this audit)
-- DB GAPS FIXED: 39 indexes (all applied to production, all verified safe, all reversible via `dropIndex`)
-- DEFERRED (owner decision required): saved-jobs storage-model mismatch (`src/pages/api/user/save-job.ts` vs. `saved-jobs.ts`/`get-dashboard.ts`/`dashboard/user.ts`) — see Batch 4. This is an application-behavior decision, not a DB-only fix, and is explicitly held per the "ambiguous relationship" stop condition.
+- DB GAPS FIXED: 39 indexes (all applied to production, all verified safe, all reversible via `dropIndex`) + 1 API↔DB contract mismatch (saved jobs — closed 2026-09-03 per explicit owner decision, see updated STUDENT/OPPORTUNITIES section above)
+- DEFERRED: none remaining from this audit's DB-alignment scope.
 - KNOWN OPEN ITEM, NOT TOUCHED (pre-existing, owner-gated): production auth/session logout-correctness + timeout-enforcement audit lane (§17 of the status doc) — requires owner-approved narrow fix scope, not a bulk DB alignment change.
-- CURRENT PRODUCTION UI COMPATIBLE: `YES` — every batch was verified with homepage/route-specific `200` checks, `check-critical-paths.mjs` (`35/35`), and `check:vertical-regression`; final batch additionally re-ran all four 360-family test suites.
+- CURRENT PRODUCTION UI COMPATIBLE: `YES` — every batch was verified with homepage/route-specific `200` checks, `check-critical-paths.mjs` (`35/35`), and `check:vertical-regression`; final batch additionally re-ran all four 360-family test suites; the saved-jobs closure was additionally validated end-to-end (save/duplicate-save/unsave/list/dashboard-count-both-endpoints/multi-user isolation/missing-job handling/unauthenticated rejection).
 - UNRELEASED UI DB-READY: `YES` for `EconomicActivity360`'s admin diagnostic route (already shipped this session, index-backed as of Batch 2/5). No other known-unreleased UI surface was identified during this audit that depends on DB state not yet accounted for.

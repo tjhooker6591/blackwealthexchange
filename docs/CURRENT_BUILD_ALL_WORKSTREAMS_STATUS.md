@@ -5,10 +5,10 @@
 - PROGRAM PHASE: `POST-BASELINE EXECUTION ON TOP OF COMPLETED PHASE 0 + PHASE 1`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-03 PLATFORM-WIDE UI-API-DB ALIGNMENT AUDIT COMPLETION CONTROL COMMIT`
-- LATEST RUNTIME HEAD: `46790a0` (batch 4/5 index scripts; batch 5 index script committed alongside this checkpoint)
-- PRODUCTION DB WRITE LOG: `b234b97 directory completeness recompute (36/2286 businesses, 8 crossed public-search threshold, 0 demotions); 39 additive/reversible production indexes created across 5 audit batches (sellers/business_memberships/products/orders/payments/bmev_records/ad_purchases/advertising_requests/featured_sponsor_schedule/affiliates/consultant_profiles/employer_consultant_contact_requests/employer_consultant_pipeline/consultant_moderation_escalations/consulting_intake/jobs/employers/applicants/savedJobs/flow_events/search_quality_events/support_tickets); see docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md #15 and docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md`
-- PLATFORM-WIDE UI/API/DB ALIGNMENT AUDIT: `COMPLETE — see docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md (26 functional contracts reviewed, 39 index gaps fixed, 1 API<->DB contract mismatch documented and deferred for owner decision: saved-jobs storage model)`
+- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-03 SAVED-JOBS CONTRACT CLOSURE CONTROL COMMIT`
+- LATEST RUNTIME HEAD: `PENDING CURRENT 2026-09-03 SAVED-JOBS CONTRACT CLOSURE RUNTIME COMMIT` (supersedes `46790a0`/`02c84c2`)
+- PRODUCTION DB WRITE LOG: `b234b97 directory completeness recompute (36/2286 businesses, 8 crossed public-search threshold, 0 demotions); 39 additive/reversible production indexes created across 5 audit batches; saved-jobs reconciliation pass (0 backfill needed, 0 duplicates, 1 pre-existing invalid record left untouched) via scripts/reconcile-saved-jobs.mjs; see docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md #15, #18 and docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md`
+- PLATFORM-WIDE UI/API/DB ALIGNMENT AUDIT: `COMPLETE — see docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md (26 functional contracts reviewed, 39 index gaps fixed, 1 API<->DB contract mismatch (saved jobs) closed per explicit owner decision — savedJobs collection canonical). No open items remain from this audit's DB-alignment scope.`
 - PERMANENT UI/API/DB SYNC RULE: `RECORDED — see docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md #16`
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
