@@ -1,6 +1,9 @@
-import type { Db } from "mongodb";
+import { ObjectId, type Db } from "mongodb";
 import { publicBusinessBaseQuery } from "@/lib/directory/publicBusinessQuery";
-import { buildPublicMarketplaceVisibilityFilter } from "@/lib/marketplace/publicCatalog";
+import {
+  buildPublicMarketplaceVisibilityFilter,
+  getPublicMarketplaceSellerName,
+} from "@/lib/marketplace/publicCatalog";
 import { getStudentHubResolvedCatalog } from "@/lib/studentHub/repository";
 import { deriveStudentHubLifecycle } from "@/lib/studentHub/lifecycle";
 
@@ -12,6 +15,7 @@ export type UniversalSearchDomain =
 
 export type UniversalSearchTrust = {
   verified?: boolean;
+  claimed?: boolean;
   sponsored?: boolean;
   approved?: boolean;
   source?: string | null;
@@ -29,6 +33,15 @@ export type UniversalSearchResult = {
   trust?: UniversalSearchTrust | null;
   relevanceScore: number;
   data: Record<string, unknown>;
+  // Domain-specific "what/why/where" fields (P3-02). All optional and only
+  // populated from existing authoritative fields -- never inferred.
+  category?: string | null;
+  price?: number | null;
+  sellerName?: string | null;
+  jobType?: string | null;
+  opportunityType?: string | null;
+  eligibility?: string | null;
+  deadline?: string | null;
 };
 
 export type UniversalSearchResponse = {
@@ -126,6 +139,7 @@ async function searchBusinessesDomain(
       status: 1,
       category: 1,
       display_categories: 1,
+      claimStage: 1,
     })
     .limit(limit)
     .toArray();
@@ -135,6 +149,7 @@ async function searchBusinessesDomain(
       s(doc.business_name) || s(doc.businessName) || s(doc.name) || "Business";
     const publicRouteIdentity = s(doc.alias) || s(doc.slug);
     const location = [s(doc.city), s(doc.state)].filter(Boolean).join(", ");
+    const category = s(doc.display_categories) || s(doc.category);
     return {
       domain: "business" as const,
       type: "business" as const,
@@ -146,8 +161,10 @@ async function searchBusinessesDomain(
         : "/business-directory",
       location: location || null,
       image: s(doc.image) || null,
+      category: category || null,
       trust: {
         verified: Boolean(doc.isVerified || doc.verified),
+        claimed: s(doc.claimStage) === "ownership_verified",
         sponsored: Boolean(doc.sponsored),
         source: "businesses",
       },
@@ -191,12 +208,52 @@ async function searchProductsDomain(
       price: 1,
       isFeatured: 1,
       slug: 1,
+      sellerId: 1,
     })
     .limit(limit)
     .toArray();
 
+  const sellerIds = Array.from(
+    new Set(docs.map((doc: any) => s(doc.sellerId)).filter(Boolean)),
+  );
+  const sellerObjectIds = sellerIds.filter((id) => ObjectId.isValid(id));
+  const sellers = sellerIds.length
+    ? await db
+        .collection("sellers")
+        .find({
+          $or: [
+            { userId: { $in: sellerIds } },
+            ...(sellerObjectIds.length
+              ? [
+                  {
+                    _id: { $in: sellerObjectIds.map((id) => new ObjectId(id)) },
+                  },
+                ]
+              : []),
+          ],
+        })
+        .project({
+          _id: 1,
+          userId: 1,
+          storeName: 1,
+          businessName: 1,
+          ownerName: 1,
+          name: 1,
+        })
+        .toArray()
+    : [];
+  const sellerByKey = new Map<string, any>();
+  for (const seller of sellers) {
+    const sid = s(seller?._id);
+    const uid = s(seller?.userId);
+    if (sid) sellerByKey.set(sid, seller);
+    if (uid) sellerByKey.set(uid, seller);
+  }
+
   return docs.map((doc: any) => {
     const title = s(doc.name) || s(doc.title) || "Product";
+    const seller = sellerByKey.get(s(doc.sellerId));
+    const price = Number(doc.price);
     return {
       domain: "product" as const,
       type: "product" as const,
@@ -206,6 +263,9 @@ async function searchProductsDomain(
       url: `/marketplace/product/${String(doc._id)}`,
       location: null,
       image: s(doc.imageUrl) || null,
+      category: s(doc.category) || null,
+      price: Number.isFinite(price) ? price : null,
+      sellerName: getPublicMarketplaceSellerName(seller),
       trust: {
         sponsored: Boolean(doc.isFeatured),
         source: "products",
@@ -243,6 +303,7 @@ async function searchJobsDomain(
       location: 1,
       description: 1,
       isFeatured: 1,
+      type: 1,
     })
     .limit(limit)
     .toArray();
@@ -261,6 +322,7 @@ async function searchJobsDomain(
           ? `Opportunity at ${companyName}.`
           : "No description provided."),
       url: `/job/${String(doc._id)}`,
+      jobType: s(doc.type) || null,
       location: s(doc.location) || null,
       image: null,
       trust: {
@@ -316,6 +378,10 @@ async function searchOpportunitiesDomain(
       "/black-student-opportunities",
     location: record.location || null,
     image: null,
+    opportunityType: record.opportunityType || null,
+    eligibility:
+      s(record.targetAudience) || s(record.eligibilitySummary) || null,
+    deadline: record.deadline || null,
     trust: {
       verified: Boolean(record.sourceVerified && record.applicationUrlVerified),
       source: record.source || "student_hub",

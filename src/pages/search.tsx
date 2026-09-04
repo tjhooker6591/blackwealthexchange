@@ -15,19 +15,67 @@ function safe(v: unknown) {
   return typeof v === "string" ? v : "";
 }
 
-const DOMAIN_LABEL: Record<UniversalSearchDomain, string> = {
-  business: "Business",
-  product: "Product",
-  job: "Job",
-  opportunity: "Opportunity",
-};
-
 const DOMAIN_ROUTE_LABEL: Record<UniversalSearchDomain, string> = {
   business: "Directory",
   product: "Marketplace",
   job: "Jobs",
   opportunity: "Student Hub",
 };
+
+function humanize(value: string) {
+  return value
+    .split("_")
+    .filter(Boolean)
+    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function formatPrice(price: number) {
+  return price.toLocaleString("en-US", { style: "currency", currency: "USD" });
+}
+
+function formatDeadline(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function metaLine(result: UniversalSearchResult): string[] {
+  const parts: string[] = [];
+  if (result.domain === "business" && result.category) {
+    parts.push(result.category);
+  }
+  if (result.domain === "product") {
+    if (result.sellerName) parts.push(`Sold by ${result.sellerName}`);
+    if (typeof result.price === "number") parts.push(formatPrice(result.price));
+  }
+  if (result.domain === "job") {
+    const company = safe((result.data as any)?.company);
+    if (company) parts.push(company);
+    if (result.jobType) parts.push(result.jobType);
+  }
+  if (result.domain === "opportunity") {
+    const organization = safe((result.data as any)?.organization);
+    if (organization) parts.push(organization);
+    if (result.opportunityType) parts.push(humanize(result.opportunityType));
+    if (result.eligibility) {
+      const short =
+        result.eligibility.length > 60
+          ? `${result.eligibility.slice(0, 57).trimEnd()}…`
+          : result.eligibility;
+      parts.push(short);
+    }
+    if (result.deadline) {
+      const formatted = formatDeadline(result.deadline);
+      if (formatted) parts.push(`Deadline ${formatted}`);
+    }
+  }
+  return parts;
+}
 
 export default function UniversalSearch() {
   const router = useRouter();
@@ -242,7 +290,7 @@ export default function UniversalSearch() {
                     />
                   ) : (
                     <div className="flex h-14 w-14 flex-none items-center justify-center rounded-lg bg-white/5 text-[10px] font-semibold uppercase text-white/40">
-                      {DOMAIN_LABEL[result.domain]}
+                      {DOMAIN_ROUTE_LABEL[result.domain]}
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
@@ -253,6 +301,11 @@ export default function UniversalSearch() {
                       {result.trust?.verified ? (
                         <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-300">
                           Verified
+                        </span>
+                      ) : null}
+                      {result.trust?.claimed ? (
+                        <span className="rounded-full border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[10px] font-semibold text-sky-300">
+                          Claimed
                         </span>
                       ) : null}
                       {result.trust?.sponsored ? (
@@ -267,11 +320,17 @@ export default function UniversalSearch() {
                     <p className="mt-1 line-clamp-2 text-xs text-white/60">
                       {result.description}
                     </p>
-                    {result.location ? (
-                      <p className="mt-1 text-[11px] text-white/45">
-                        {result.location}
-                      </p>
-                    ) : null}
+                    {(() => {
+                      const meta = [
+                        result.location,
+                        ...metaLine(result),
+                      ].filter(Boolean);
+                      return meta.length ? (
+                        <p className="mt-1 truncate text-[11px] text-white/45">
+                          {meta.join(" · ")}
+                        </p>
+                      ) : null;
+                    })()}
                   </div>
                 </div>
               </Link>
