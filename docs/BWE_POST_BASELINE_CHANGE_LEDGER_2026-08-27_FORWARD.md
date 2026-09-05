@@ -375,6 +375,59 @@ STATUS:
 
 - `IN PROGRESS — first slice COMPLETE`
 
+## 22. PHASE 3 — P3-02 closed: trust terminology consistency + directory parity-hardening
+
+DATE:
+
+- `2026-09-04`
+
+PARITY-HARDENING SLICE (runtime commit `56a6370`):
+
+- Fixed a real bug: `src/pages/api/getBusiness.js` called an `s()` string-coercion helper throughout the file but never defined it, so every `/api/getBusiness` request would throw `ReferenceError` in production. Added the missing helper.
+- Expanded mixed-schema business-name matching in the canonical `/api/search/businesses` endpoint across `business_name`, `businessName`, `title`, and `name` — relevance scoring, match-quality detection, result-title normalization, the text search field list, and the query projection. Applied the same fallback chain to `business-directory.tsx`'s server-side row title normalization.
+- Regression scripts (`p2-regression-check.mjs`, `smoke-routes.mjs`, `vertical-regression-pass.mjs`) updated to call the canonical `/api/search/businesses` endpoint instead of the retired `/api/searchBusinesses` path; `p2-regression-check.mjs`'s `/job-listings` guest check corrected to expect `200` (public route) instead of a redirect.
+
+TRUST TERMINOLOGY + DIRECTORY CONSISTENCY SLICE (runtime commit `6ab1d25`):
+
+- Reviewed the universal-search business trust labels per owner instruction: `claimStage === "ownership_verified"` represents verified ownership/claim authority only, and must never be presented as broader business verification. "Claim Approval" must never be used; established terms are "Ownership Verified" and "Claim Verification".
+- Found a real, live mislabeling bug while comparing directory and universal search: `business-directory.tsx`'s `getTrustMeta()` OR-combined ownership/claim verification with the generic `isVerified`/`verified`/`status === "verified"` signal into a single `verified` boolean, then always rendered that fused value as the `"Ownership Verified"` badge. Confirmed live against production data: 54 businesses carry the generic signal without `claimStage: "ownership_verified"`; a publicly-visible example, "A Beautiful California Florist Long Beach" (`isVerified: true`, `claimStage: "unclaimed"`), was displayed as `"Ownership Verified"` despite never being claimed.
+- Same conflation caused a second defect: the `"Claim This Listing"` CTA (`canClaim`) and the `"Already Verified"` CTA label both checked the fused `verified` flag, so a legitimately unclaimed business with only the generic signal could not be claimed through the directory UI at all.
+- Fix: `getTrustMeta()` now returns `ownershipVerified` (real claim state) and `verified` (generic signal) as distinct fields. The `"Ownership Verified"` badge now requires `ownershipVerified` specifically; added a separate, visually distinct `"Verified"` badge for businesses that carry only the generic signal. `canClaim` and the `"Already Verified"` CTA label now key off `ownershipVerified`, restoring the claim path for previously-blocked legitimate businesses.
+- Directory consistency: universal search already kept these two signals separate (`trust.verified` vs `trust.claimed`) from the P3-02 first slice, but labeled the ownership signal `"Claimed"`. Renamed to `"Ownership Verified"` so the same authoritative signal reads identically on both surfaces — smallest change needed, no redesign of either card layout.
+- No fabrication: businesses without either signal show neither badge and the existing `"Unclaimed"` state, unchanged.
+
+DB / INDEX CHANGES:
+
+- `NONE`. Both signals already existed on already-indexed fields; this was a pure UI/logic correction.
+
+VALIDATION:
+
+- `npm run typecheck` PASS, `npm run smoke:routes` PASS (`6/6`), `node scripts/p2-regression-check.mjs` PASS (`26/26`), `npm run check:vertical-regression` PASS, `npm run build` PASS (dev server stopped/restarted per the local runtime rule)
+- Live-verified against real production data via Playwright screenshots: the unclaimed-but-generically-verified business now shows `"Verified"` + `"Unclaimed"` (not `"Ownership Verified"`) with an active `"Claim This Listing"` CTA; a genuinely ownership-verified business (`Pamfa United Citizens`) still shows `"Ownership Verified"` + `"Already Verified"` correctly; universal search API confirms the same distinction (`claimed: true, verified: false` for the ownership-verified case)
+- Existing search preserved: `/business-directory`, `/api/search/businesses`, `/api/searchOrganizations` all unaffected
+
+PHASE-BOARD COMPARISON:
+
+- Compared against the owner-defined P3-02 acceptance criteria (`docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md`): trust-rich fields surfaced per domain from existing authoritative data only (first slice), directory/universal-search trust-signal consistency achieved, no fabricated trust badges anywhere, no parallel search architecture, no DB change required, existing search fully preserved. All criteria satisfied.
+- `P3-02 — Multi-domain discovery and trust-rich result experiences`: marked `COMPLETE` (`70/70` points).
+
+FILES:
+
+- `src/pages/api/getBusiness.js`, `src/pages/api/search/businesses.ts`, `src/pages/business-directory.tsx`, `scripts/p2-regression-check.mjs`, `scripts/smoke-routes.mjs`, `scripts/vertical-regression-pass.mjs` (parity-hardening slice)
+- `src/pages/business-directory.tsx`, `src/pages/search.tsx` (trust terminology slice)
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` — bug fixes and label/logic corrections only; no existing working behavior removed. No production UI deployed.
+
+NEXT MAJOR PHASE-3 ACTION:
+
+- `P3-03 — WORLD-CLASS MARKETPLACE EXPERIENCE` (`docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md` P3-03). Scope not yet selected — awaiting the highest-value customer/business outcome decision before implementation begins.
+
+STATUS:
+
+- `COMPLETE`
+
 ## 13. Local runtime incident resolution rule
 
 DATE:

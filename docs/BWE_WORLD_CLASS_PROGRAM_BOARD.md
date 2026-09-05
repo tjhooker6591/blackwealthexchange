@@ -7,11 +7,11 @@ Last updated: 2026-08-30
 - VERIFIED CURRENT PHASE: `POST-BASELINE EXECUTION`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
-- CURRENT ACTIVE WORKSTREAM: `PHASE 3 — P3-01 COMPLETE, P3-02 FIRST SLICE SHIPPED`
+- CURRENT ACTIVE WORKSTREAM: `PHASE 3 — P3-01 COMPLETE, P3-02 COMPLETE — SELECTING P3-03 SCOPE`
 - PHASE 2 — UNIFIED PLATFORM CORE: `COMPLETE (2026-09-03)` — see `docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md` and `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #17–#19
-- NEXT MAJOR PHASE: `PHASE 3 — DISCOVERY & COMMERCE`
+- NEXT MAJOR PHASE: `PHASE 3 — DISCOVERY & COMMERCE (P3-03 — WORLD-CLASS MARKETPLACE EXPERIENCE next)`
 - PHASE 2 STATUS: `COMPLETE`
-- PHASE 3 STATUS: `IN PROGRESS — P3-01 COMPLETE (2026-09-04), P3-02 first slice shipped (runtime commit a97bfe4); see ledger entries #20–#21`
+- PHASE 3 STATUS: `IN PROGRESS — P3-01 COMPLETE, P3-02 COMPLETE (2026-09-04, runtime commit 6ab1d25); see ledger entries #20–#22`
 - PHASE 4 STATUS: `OUTSTANDING`
 - PHASE 5 STATUS: `OUTSTANDING`
 - PHASE 6 STATUS: `OUTSTANDING`
@@ -21,13 +21,13 @@ Last updated: 2026-08-30
 ## Program state summary
 
 - TOTAL PROGRAM ITEMS: `26`
-- COMPLETE: `6` (includes P2-01, P2-02 closed 2026-09-03)
+- COMPLETE: `8` (includes P2-01, P2-02 closed 2026-09-03; P3-01, P3-02 closed 2026-09-04)
 - IN PROGRESS: `2`
 - READY: `2`
 - PENDING: `2`
 - BLOCKED: `1`
 - EXTERNAL PROOF PENDING: `2`
-- FUTURE: `11`
+- FUTURE: `9`
 
 ## Scope summary
 
@@ -413,19 +413,19 @@ Every major project should report:
 
 ### P3-02 — Multi-domain discovery and trust-rich result experiences
 
-- STATE: `IN PROGRESS — first slice shipped 2026-09-04`
+- STATE: `COMPLETE (2026-09-04)`
 - PHASE: `PHASE 3`
 - DOMAIN: `Search & Discovery`
 - WORK TYPE: `DESIGN`, `FUNCTIONAL`, `DATA`
 - RELEASE SCOPE: `NO`
 - WORLD-CLASS SCOPE: `YES`
 - DEPENDENCIES: `P3-01`
-- BLOCKERS: `none for this slice`
-- NEXT ACTION: `consider surfacing business "claimed"/"verified" distinction inside the dedicated directory search UI too (currently only in universal search), if the owner wants that consistency; otherwise await real usage signal before adding more trust fields`
+- BLOCKERS: `none`
+- NEXT ACTION: `none — closed. Future trust-field additions are gated on real usage signal, not built speculatively.`
 - OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `70`
-- POINTS EARNED: `25`
-- EVIDENCE: `Extended the P3-01 UniversalSearchResult contract (no parallel architecture) with optional, domain-specific fields populated only from existing authoritative data: business category + claimed (real claimStage field, distinct from existing verified signal); product sellerName (via the existing getPublicMarketplaceSellerName helper) + price; job jobType; opportunity opportunityType + eligibility + deadline. No fabrication -- verified live that a seller with no stored name renders no seller line rather than a guessed one. Compact one-line "what/why/where" meta row added per result card, restrained styling, no homepage/page redesign. No DB/index changes -- all fields already existed on already-indexed collections. Runtime commit a97bfe4.`
+- POINTS EARNED: `70`
+- EVIDENCE: `Extended the P3-01 UniversalSearchResult contract (no parallel architecture) with optional, domain-specific fields populated only from existing authoritative data: business category + claimed/ownership-verified (real claimStage field, distinct from the generic verified signal); product sellerName (via the existing getPublicMarketplaceSellerName helper) + price; job jobType; opportunity opportunityType + eligibility + deadline. Final consistency pass fixed a real, live mislabeling bug in the dedicated directory UI (getTrustMeta() had OR-combined ownership/claim verification with the generic isVerified/verified/status=="verified" signal and always rendered the fused result as "Ownership Verified" -- confirmed live on real public listings, e.g. "A Beautiful California Florist Long Beach" was shown as ownership-verified despite claimStage: "unclaimed"; the same conflation also silently blocked the "Claim This Listing" CTA for legitimately unclaimed businesses). Fixed by separating ownershipVerified from verified as distinct fields; directory now shows "Ownership Verified" only for real claim state and a separate "Verified" badge for the generic signal, matching universal search's already-correct separation (renamed universal search's "Claimed" badge to "Ownership Verified" for exact terminology consistency). "Claim Approval" is not used anywhere. No fabrication anywhere -- missing optional fields (seller name, deadline) and missing trust signals both render as absent, never guessed. No DB/index changes across either slice. Runtime commits a97bfe4, 56a6370, 6ab1d25.`
 - EVIDENCE: `directory, marketplace, jobs, student, services, and creator discovery need convergence`
 
 ### P3-03 — World-class marketplace experience

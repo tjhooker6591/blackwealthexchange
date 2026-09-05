@@ -5,14 +5,14 @@
 - PROGRAM PHASE: `POST-BASELINE EXECUTION ON TOP OF COMPLETED PHASE 0 + PHASE 1`
 - CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - CANONICAL BRANCH: `friday-release-candidate`
-- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-04 P3-01 CLOSURE / P3-02 CONTROL COMMIT`
-- LATEST RUNTIME HEAD: `a97bfe4` (P3-01 closure fix + P3-02 trust-rich results first slice; supersedes `0ea2cfe`/`6d3ecf5`/`f5d738f`/`46790a0`/`02c84c2`)
+- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-04 P3-02 CLOSURE CONTROL COMMIT`
+- LATEST RUNTIME HEAD: `6ab1d25` (P3-02 trust terminology + directory parity fix; supersedes `56a6370`/`a97bfe4`/`0ea2cfe`/`6d3ecf5`/`f5d738f`/`46790a0`/`02c84c2`)
 - PRODUCTION DB WRITE LOG: `b234b97 directory completeness recompute (36/2286 businesses, 8 crossed public-search threshold, 0 demotions); 39 additive/reversible production indexes created across 5 audit batches; saved-jobs reconciliation pass (0 backfill needed, 0 duplicates, 1 pre-existing invalid record left untouched, tracked as data-hygiene backlog) via scripts/reconcile-saved-jobs.mjs; see docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md #15, #18, #19 and docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md`
 - PLATFORM-WIDE UI/API/DB ALIGNMENT AUDIT: `COMPLETE — see docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md (26 functional contracts reviewed, 39 index gaps fixed, 1 API<->DB contract mismatch (saved jobs) closed per explicit owner decision — savedJobs collection canonical). No open items remain from this audit's DB-alignment scope.`
 - PERMANENT UI/API/DB SYNC RULE: `RECORDED — see docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md #16`
 - PHASE 2 — UNIFIED PLATFORM CORE: `COMPLETE (2026-09-03)` — see `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #19 and `docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md` P2-01/P2-02
-- PHASE 3 — DISCOVERY & COMMERCE: `IN PROGRESS` — P3-01 Universal BWE Search `COMPLETE` (2026-09-04, ledger entry #21); P3-02 Multi-Domain Discovery + Trust-Rich Results first slice shipped (runtime commit `a97bfe4`). `src/lib/search/universalSearch.ts` + `/api/search/universal` + `/search` page + new "All BWE" homepage tab, now carrying business category/claimed, product seller/price, job type, and opportunity type/eligibility/deadline — all from existing authoritative fields only. No DB/index changes required for either slice.
-- NEXT MAJOR ENGINEERING FOCUS: continue P3-02 (directory-search trust-signal consistency, or await real search-quality-event volume before deepening ranking) or select the next Phase 3 outcome (P3-03 marketplace experience)
+- PHASE 3 — DISCOVERY & COMMERCE: `IN PROGRESS` — P3-01 Universal BWE Search `COMPLETE` (2026-09-04, ledger entry #21); P3-02 Multi-Domain Discovery + Trust-Rich Results `COMPLETE` (2026-09-04, ledger entry #22, runtime commit `6ab1d25`). Fixed a real live mislabeling bug where the directory UI showed "Ownership Verified" for businesses that only had generic verification (not an actual ownership claim), which also silently blocked their "Claim This Listing" CTA; both surfaces now consistently distinguish "Ownership Verified" (real claimStage) from "Verified" (generic signal). No DB/index changes required across either P3-01 or P3-02.
+- NEXT MAJOR ENGINEERING FOCUS: select and scope P3-03 — World-Class Marketplace Experience
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
