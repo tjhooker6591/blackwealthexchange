@@ -12,7 +12,7 @@
 - PERMANENT UI/API/DB SYNC RULE: `RECORDED — see docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md #16`
 - PHASE 2 — UNIFIED PLATFORM CORE: `COMPLETE (2026-09-03)` — see `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #19 and `docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md` P2-01/P2-02
 - PHASE 3 — DISCOVERY & COMMERCE: `COMPLETE` — P3-01 Universal BWE Search `COMPLETE` (ledger #21); P3-02 Multi-Domain Discovery + Trust-Rich Results `COMPLETE` (ledger #22); P3-03 World-Class Marketplace Experience `COMPLETE` (2026-09-05, ledger #23–#24, runtime commits `2dd17e9`, `000e25e`) — reviews system (product_reviews collection, verified-purchase computed from real paid orders), seller storefront (`/marketplace/seller/[id]`), reorder ("Buy again"), fulfillment visibility (already solid pre-existing). `P0-06` (paid fulfillment proof) closed the same day on an owner-confirmed live production Stripe transaction, satisfying P3-03's last dependency.
-- NEXT MAJOR ENGINEERING FOCUS: select and scope Phase 4 (Personalization); no Phase 4 work has begun
+- NEXT MAJOR ENGINEERING FOCUS: `PHASE 4 — PERSONALIZED PLATFORM` COMPLETE (2026-09-05, P4-01 through P4-09, see `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #25 and `docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md`); select and scope Phase 5 (Network Effects) next
 - CURRENT DATABASE: `bwes-cluster`
 - LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
 - DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
@@ -44,7 +44,7 @@
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
 - PHASE 2 — UNIFIED PLATFORM CORE: `COMPLETE (2026-09-03)` — see ledger entry #19
 - PHASE 3 — DISCOVERY & COMMERCE: `NOT STARTED — awaiting highest-value outcome selection`
-- PHASE 4 — PERSONALIZED PLATFORM: `OUTSTANDING`
+- PHASE 4 — PERSONALIZED PLATFORM: `COMPLETE (2026-09-05)` — see `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #25
 - PHASE 5 — NETWORK EFFECTS: `OUTSTANDING`
 - PHASE 6 — ECONOMIC INTELLIGENCE: `OUTSTANDING`
 - PHASE 7 — AI / MOBILE / SCALE: `OUTSTANDING`

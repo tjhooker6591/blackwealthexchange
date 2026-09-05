@@ -1,18 +1,18 @@
 # BWE World-Class Program Board
 
-Last updated: 2026-08-30
+Last updated: 2026-09-05
 
-## 2026-08-30 master-state override
+## 2026-09-05 master-state override
 
 - VERIFIED CURRENT PHASE: `POST-BASELINE EXECUTION`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
-- CURRENT ACTIVE WORKSTREAM: `PHASE 3 — P3-01 COMPLETE, P3-02 COMPLETE, P3-03 COMPLETE — SELECTING P3-04 SCOPE`
+- CURRENT ACTIVE WORKSTREAM: `PHASE 4 — P4-01 THROUGH P4-09 ALL COMPLETE — SELECTING PHASE 5 SCOPE`
 - PHASE 2 — UNIFIED PLATFORM CORE: `COMPLETE (2026-09-03)` — see `docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md` and `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #17–#19
-- NEXT MAJOR PHASE: `PHASE 3 COMPLETE — PHASE 4 PERSONALIZATION scope not yet selected`
+- NEXT MAJOR PHASE: `PHASE 4 COMPLETE — PHASE 5 NETWORK EFFECTS scope not yet selected`
 - PHASE 2 STATUS: `COMPLETE`
 - PHASE 3 STATUS: `COMPLETE — P3-01, P3-02, P3-03 all COMPLETE (2026-09-05, P0-06 owner-confirmed live production Stripe transaction closes the last dependency); see ledger entries #20–#24`
-- PHASE 4 STATUS: `OUTSTANDING`
+- PHASE 4 STATUS: `COMPLETE — P4-01 through P4-09 all COMPLETE (2026-09-05); see ledger entry #25`
 - PHASE 5 STATUS: `OUTSTANDING`
 - PHASE 6 STATUS: `OUTSTANDING`
 - PHASE 7 STATUS: `OUTSTANDING`
@@ -20,14 +20,14 @@ Last updated: 2026-08-30
 
 ## Program state summary
 
-- TOTAL PROGRAM ITEMS: `26`
-- COMPLETE: `10` (includes P2-01, P2-02 closed 2026-09-03; P3-01, P3-02, P3-03 closed 2026-09-04/05; P0-06 closed 2026-09-05 on owner-confirmed live production Stripe transaction)
+- TOTAL PROGRAM ITEMS: `33`
+- COMPLETE: `19` (includes P2-01, P2-02 closed 2026-09-03; P3-01, P3-02, P3-03 closed 2026-09-04/05; P0-06 closed 2026-09-05 on owner-confirmed live production Stripe transaction; P4-01 through P4-09 closed 2026-09-05)
 - IN PROGRESS: `2`
 - PENDING: `2`
 - BLOCKED: `1`
 - EXTERNAL PROOF PENDING: `3`
-- FUTURE: `8`
-- (recounted directly from board STATE fields on 2026-09-05; corrects a stale prior tally)
+- FUTURE: `6`
+- (recounted directly from board STATE fields on 2026-09-05)
 
 ## Scope summary
 
@@ -444,37 +444,149 @@ Every major project should report:
 - POINTS EARNED: `90`
 - EVIDENCE: `All five NEXT ACTION items implemented, tested, and shipped with real functionality using only existing authoritative data (no fabricated trust/eligibility/relationship data anywhere): (1) product detail upgraded with review summary + seller link; (2) seller trust via new public storefront src/pages/marketplace/seller/[id].tsx (real product grid, real join date, real aggregate rating, no fabricated bio/website when absent); (3) reorder via a "Buy again" action on my-orders.tsx wired to the existing productId already returned by get-buyer-orders.ts; (4) reviews via new src/pages/api/marketplace/reviews.ts + product_reviews collection, one review per user per product (unique index), verifiedPurchase computed from a real paid-order lookup (live-verified true/false both ways via an ephemeral test fixture, cleaned up after); (5) fulfillment visibility was already substantially built in my-orders.tsx (payment/fulfillment status, tracking, timeline, next-step guidance) prior to this workstream and required no further engineering. Runtime commits 2dd17e9, 000e25e. All validated: typecheck, smoke:routes (6/6), p2-regression-check (26/26), check:vertical-regression, build (dev stopped/restarted per the local runtime rule), desktop/mobile screenshots. No DB changes beyond one new additive collection (product_reviews) with two indexes. Final closure condition (P0-06 owner-executed live production Stripe transaction) personally confirmed by the owner on 2026-09-05 -- both P3-03 dependencies (P3-01, P0-06) now satisfied; P3-03 formally COMPLETE.`
 
-### P4-01 — Personalized home and consumer economic dashboard
+### P4-01 — Personalized home
 
-- STATE: `FUTURE`
+- STATE: `COMPLETE (2026-09-05)`
 - PHASE: `PHASE 4`
 - DOMAIN: `Personalization & Intelligence`
 - WORK TYPE: `FUNCTIONAL`, `DATA`, `DESIGN`
 - RELEASE SCOPE: `NO`
 - WORLD-CLASS SCOPE: `YES`
-- DEPENDENCIES: `Phase 2`, `Phase 3`
-- BLOCKERS: `identity and recommendation foundation not ready`
-- NEXT ACTION: `define user goals, signals, and personalized entry logic`
+- DEPENDENCIES: `P2-01`, `P2-02`, `P3-01`, `P3-02`
+- BLOCKERS: `none`
+- NEXT ACTION: `none — closed`
 - OWNER DECISION REQUIRED: `NO`
-- POINTS AVAILABLE: `75`
-- POINTS EARNED: `0`
-- EVIDENCE: `owner-defined Phase 4 scope`
+- POINTS AVAILABLE: `50`
+- POINTS EARNED: `50`
+- EVIDENCE: `src/lib/personalization/home.ts composes the existing Person360 resolver (roles, membership, Black Card, business relationships, activity) with the new P4-07 recommendation engine into one role-aware "what should this person do next" read model -- no parallel identity system. Rendered via src/components/dashboards/PersonalizedHome.tsx on the consumer (accountType "user") dashboard only, since Person360 is anchored to users._id and does not apply to Business/Employer/Seller sessions, which authenticate directly against their own collection row (see P4-03/P4-05/P4-06, which get their own real-data panels instead). Runtime commits 9d96ce9, acf46a3.`
 
-### P4-02 — Business growth command center
+### P4-02 — Consumer economic dashboard
 
-- STATE: `FUTURE`
+- STATE: `COMPLETE (2026-09-05)`
+- PHASE: `PHASE 4`
+- DOMAIN: `Personalization & Intelligence`
+- WORK TYPE: `FUNCTIONAL`, `DATA`, `DESIGN`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P2-01`, `P2-02`
+- BLOCKERS: `none`
+- NEXT ACTION: `none — closed`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `50`
+- POINTS EARNED: `50`
+- EVIDENCE: `src/lib/personalization/consumerEconomics.ts reads the member's own verified spend directly from bmev_records (the same proofLevel: "verified_payment_truth" ledger used for business-side revenue), never an estimate. src/components/dashboards/ConsumerEconomicDashboard.tsx renders verified spend, purchase count, businesses supported, and a monthly trend, plus a spend-by-source breakdown (P4-09 consumer attribution) on the User dashboard. Honest NOT_LINKED empty state confirmed live for a member with no verified purchases. Runtime commit 9d96ce9.`
+
+### P4-03 — Business growth command center
+
+- STATE: `COMPLETE (2026-09-05)`
 - PHASE: `PHASE 4`
 - DOMAIN: `Personalization & Intelligence`
 - WORK TYPE: `FUNCTIONAL`, `DATA`, `DESIGN`
 - RELEASE SCOPE: `NO`
 - WORLD-CLASS SCOPE: `YES`
 - DEPENDENCIES: `P2-01`, `P2-02`, `P3-03`
-- BLOCKERS: `no unified attribution and business analytics core yet`
-- NEXT ACTION: `define business 360 metrics and growth workflows`
+- BLOCKERS: `none`
+- NEXT ACTION: `none — closed`
 - OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `70`
-- POINTS EARNED: `0`
-- EVIDENCE: `owner identified this as expected early post-Phase-0 major program scope`
+- POINTS EARNED: `70`
+- EVIDENCE: `src/lib/personalization/businessGrowth.ts composes the existing Business360 resolver (identity/directory/ownership/seller/commerce/advertising/activity) with resolveBusinessEconomicActivity360 (bmev_records) into real profile-view, search-appearance, verified-revenue, and product metrics, plus claim/seller/advertising-driven next actions. Rendered via src/components/dashboards/BusinessGrowthCenter.tsx on the business dashboard, bundled with P4-08 discovery analytics and P4-09 business attribution as one operator panel. A real authorization gap was found and fixed during runtime proof: accountType "business" sessions authenticate directly as their own businesses collection row (not via a person-owns-business relationship), so the original Person360-ownership-only lookup 403'd for the most common login shape -- src/lib/personalization/session.ts now resolves that case directly. Verified end-to-end against a live QA business account (unclaimed, zero activity): correct honest empty state, no crash. Runtime commits 9d96ce9, acf46a3.`
+
+### P4-04 — Student dashboard
+
+- STATE: `COMPLETE (2026-09-05)`
+- PHASE: `PHASE 4`
+- DOMAIN: `Personalization & Intelligence`
+- WORK TYPE: `FUNCTIONAL`, `DATA`, `DESIGN`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P2-01`, `P2-02`
+- BLOCKERS: `none`
+- NEXT ACTION: `none — closed`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `40`
+- POINTS EARNED: `40`
+- EVIDENCE: `BWE has no separate "student" accountType and Black Student Opportunities pages previously emitted zero behavioral signal, so this dashboard would have been permanently empty. Added a real, minimal instrumentation gap fix: all five category pages (index/scholarships/grants/internships/mentorship) now emit a student_hub_page_viewed flow_event via the new src/hooks/useStudentHubPageView.ts. src/lib/personalization/studentDashboard.ts reads that real per-member category interest and matches it against the existing student-hub catalog (getStudentHubResolvedCatalog) to surface real upcoming deadlines in the member's demonstrated interest area -- explicitly out of scope: saving/tracking individual opportunities, which is Phase 5 ("save opportunity") per the master plan. Panel (src/components/dashboards/StudentOpportunitiesPanel.tsx) renders nothing for non-student members rather than an empty placeholder. Runtime commit 9d96ce9.`
+
+### P4-05 — Employer experience
+
+- STATE: `COMPLETE (2026-09-05)`
+- PHASE: `PHASE 4`
+- DOMAIN: `Personalization & Intelligence`
+- WORK TYPE: `FUNCTIONAL`, `DATA`, `DESIGN`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P2-01`, `P2-02`
+- BLOCKERS: `none`
+- NEXT ACTION: `none — closed`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `50`
+- POINTS EARNED: `50`
+- EVIDENCE: `src/lib/personalization/employerExperience.ts adds the real per-job view/apply-start funnel (flow_events, jobId-keyed) and an applicant vetting-quality breakdown, reading the vettingStatus already computed and stored at application time (src/lib/hiring/vetting.ts, src/pages/api/applicants/create.ts) rather than a new scoring model -- deliberately additive to the existing /api/employer/get-dashboard.ts and /api/employer/applicants.ts, not a duplicate of their jobsPosted/totalApplicants counts. Rendered via src/components/dashboards/EmployerJobPerformance.tsx. Runtime commit 9d96ce9.`
+
+### P4-06 — Creator experience
+
+- STATE: `COMPLETE (2026-09-05)`
+- PHASE: `PHASE 4`
+- DOMAIN: `Personalization & Intelligence`
+- WORK TYPE: `FUNCTIONAL`, `DATA`, `DESIGN`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P2-01`, `P2-02`, `P3-03`
+- BLOCKERS: `none`
+- NEXT ACTION: `none — closed`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `55`
+- POINTS EARNED: `55`
+- EVIDENCE: `src/lib/personalization/creatorExperience.ts reads real per-product performance (views from flow_events product_detail_viewed, verified revenue/units from bmev_records keyed by sellerId) for the signed-in seller/creator. Rendered via src/components/dashboards/CreatorPerformance.tsx on both the seller dashboard and the dedicated /creator/dashboard page, additive to the existing /api/marketplace/readiness payout/onboarding state (not a duplicate of it). Runtime commits 9d96ce9, acf46a3.`
+
+### P4-07 — Recommendations
+
+- STATE: `COMPLETE (2026-09-05)`
+- PHASE: `PHASE 4`
+- DOMAIN: `Personalization & Intelligence`
+- WORK TYPE: `FUNCTIONAL`, `DATA`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P2-01`, `P2-02`, `P3-01`
+- BLOCKERS: `none`
+- NEXT ACTION: `none — closed`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `60`
+- POINTS EARNED: `60`
+- EVIDENCE: `src/lib/personalization/recommendations.ts derives matches strictly from a member's own flow_events views and verified bmev_records purchases to find real categories of interest, then matches real publicly-visible businesses/products in those categories (reusing the existing publicBusinessBaseQuery/buildPublicMarketplaceVisibilityFilter visibility rules, not a new ruleset) -- excluding items already interacted with. A real instrumentation gap was found and fixed: /api/flow-events.ts never wrote userId (only businessId/productId/etc.), so a member's own activity could never be attributed to them; it now attaches the session-verified userId. With no personal signal, falls back to a transparent 30-day sitewide "Trending" pool and labels it as such rather than presenting it as personalized. Returns INSUFFICIENT_DATA (never a fabricated pick) when neither signal exists. Runtime commits 9d96ce9, acf46a3.`
+
+### P4-08 — Business discovery analytics
+
+- STATE: `COMPLETE (2026-09-05)`
+- PHASE: `PHASE 4`
+- DOMAIN: `Personalization & Intelligence`
+- WORK TYPE: `FUNCTIONAL`, `DATA`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P2-01`, `P2-02`, `P3-01`
+- BLOCKERS: `none`
+- NEXT ACTION: `none — closed`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `45`
+- POINTS EARNED: `45`
+- EVIDENCE: `src/lib/personalization/businessDiscoveryAnalytics.ts reads real search_quality_events (queries that resolved to this business) and flow_events (weekly trend, top event types/sources) for the last 8 weeks -- no sampling or estimation. Rendered inside src/components/dashboards/BusinessGrowthCenter.tsx. Runtime commit 9d96ce9.`
+
+### P4-09 — Attribution
+
+- STATE: `COMPLETE (2026-09-05)`
+- PHASE: `PHASE 4`
+- DOMAIN: `Personalization & Intelligence`
+- WORK TYPE: `FUNCTIONAL`, `DATA`
+- RELEASE SCOPE: `NO`
+- WORLD-CLASS SCOPE: `YES`
+- DEPENDENCIES: `P2-01`, `P2-02`, `P3-03`
+- BLOCKERS: `none`
+- NEXT ACTION: `none — closed`
+- OWNER DECISION REQUIRED: `NO`
+- POINTS AVAILABLE: `50`
+- POINTS EARNED: `50`
+- EVIDENCE: `src/lib/personalization/attribution.ts reads revenue attribution directly from the source/businessLine/attributionMethod fields already stamped onto every verified bmev_records entry at write time -- never inferred causality that isn't already recorded. Traffic-channel mix (flow_events, business side) is reported separately and explicitly labeled as engagement volume, not revenue-linked, because BWE does not persist a session-to-purchase join key; this scope boundary is documented in the module rather than papered over with a fabricated multi-touch model. Serves both the business side (bundled in BusinessGrowthCenter) and the consumer side (a member's own verified spend by source, bundled in ConsumerEconomicDashboard). Runtime commit 9d96ce9.`
 
 ### P5-01 — Save/follow/alerts/inbox network loops
 

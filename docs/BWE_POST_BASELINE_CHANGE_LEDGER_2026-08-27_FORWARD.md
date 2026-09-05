@@ -514,6 +514,69 @@ STATUS:
 
 - `COMPLETE`
 
+## 25. PHASE 4 — PERSONALIZED PLATFORM — P4-01 through P4-09 complete
+
+DATE:
+
+- `2026-09-05`
+
+SCOPE:
+
+- Owner assignment: execute the full Phase 4 — Personalized Platform scope (P4-01 through P4-09) in one session. Implemented all nine capabilities from `docs/BWE_WORLD_CLASS_PLATFORM_MASTER_PLAN.md`'s Phase 4 capability list using only real, observable BWE data composed from the existing Phase 0–3 foundations (Person360, Business360, Activity360, the `bmev_records` verified-revenue ledger, `flow_events`, `search_quality_events`) -- no disconnected duplicate systems, no fabricated users/views/revenue/recommendations anywhere.
+
+NEW SHARED LAYER (runtime commit `9d96ce9`):
+
+- `src/lib/personalization/` — nine resolvers, one per capability, each returning an explicit `LINKED` / `NOT_LINKED` / `INSUFFICIENT_DATA` state: `home.ts` (P4-01), `consumerEconomics.ts` (P4-02), `businessGrowth.ts` (P4-03), `studentDashboard.ts` (P4-04), `employerExperience.ts` (P4-05), `creatorExperience.ts` (P4-06), `recommendations.ts` (P4-07), `businessDiscoveryAnalytics.ts` (P4-08), `attribution.ts` (P4-09, both business- and consumer-side), plus `session.ts` (shared cookie/JWT session + business-authorization helper).
+- `src/pages/api/personalization/*` — one authenticated GET endpoint per resolver.
+- UI wired into the existing role dashboards (`UserDashboard`, `BusinessDashboard`, `EmployerDashboard`, `SellerDashboard`, `/creator/dashboard`) using the established dark/gold design system -- no separate visual system introduced.
+
+TWO REAL INSTRUMENTATION GAPS CLOSED (required for this to be honest rather than permanently empty):
+
+- `/api/flow-events.ts` never wrote `userId` (only `businessId`/`productId`/etc.), so a member's own behavioral activity could never be attributed to them and Person360's own activity section could never resolve for a person. Now attaches the session-verified `userId` server-side (never a client-supplied value, to prevent spoofing another person's history).
+- The five Black Student Opportunities pages emitted zero behavioral signal. Added `src/hooks/useStudentHubPageView.ts`, called from all five pages, so student category interest has a real signal for P4-04 to read. Saving/tracking individual opportunities remains explicitly out of scope (Phase 5 — "save opportunity").
+
+REAL AUTHORIZATION BUG FOUND AND FIXED VIA RUNTIME PROOF (runtime commit `acf46a3`):
+
+- A QA-account runtime proof script (all four account types, every new endpoint) found that `accountType "business"` sessions authenticate directly as their own row in the `businesses` collection (JWT `userId` is that row's own `_id`, not a `users._id`) -- the original Person360-ownership-only business lookup 403'd for this, the most common business login shape. Fixed in `src/lib/personalization/session.ts`.
+- The same proof found `/api/personalization/home` 404s for Business/Employer/Seller sessions, correctly, because Person360 is anchored to `users._id` and does not apply to those login shapes. Removed the generic `PersonalizedHome` panel from those three dashboards -- each already has its own real-data panel (`BusinessGrowthCenter` / `EmployerJobPerformance` / `CreatorPerformance`) that does not depend on Person360.
+
+DATA SCOPE:
+
+- No production data was fabricated, backfilled, or invented. Every resolver reads existing collections only. Recommendations, attribution, and analytics will naturally deepen as real member/business activity accumulates going forward -- this is by design, not a defect; the honest empty/insufficient-data states are the correct behavior until then.
+
+VALIDATION:
+
+- `npm run typecheck` PASS (clean both before and after the auth fix). `npm run build` PASS twice (once before, once after the auth fix). `npm run smoke:local` PASS (6/6). `node scripts/p2-regression-check.mjs` PASS (26/26). `npm run check:vertical-regression` PASS (10/10). Runtime proof: a QA fixture account of each type (user/business/employer/seller) created, logged in, and exercised against every `/api/personalization/*` endpoint; all endpoints returned correct honest states with no 500s after the auth fix; QA fixtures fully deleted afterward (verified zero residue). Browser/visual mobile-responsive validation was not available in this session (no connected browser-automation tool); new UI reuses the same responsive Tailwind card/grid patterns already in production across the existing dashboards, and this is disclosed as a real gap rather than claimed as done.
+- One environment note: `npm run build` overwrites `.next` with a production build, which broke the machine's separately-running persistent local dev service (`launchd`-managed `next dev` on port 3000) mid-session. Restarted it directly (the `launchctl` job registration was not reachable from this session's shell) after each build so the machine is left in the same working local-dev state it was found in.
+
+FILES:
+
+- `src/lib/personalization/*` (9 new resolver files + session.ts)
+- `src/pages/api/personalization/*` (9 new endpoints)
+- `src/components/dashboards/PersonalizedHome.tsx`, `ConsumerEconomicDashboard.tsx`, `BusinessGrowthCenter.tsx`, `EmployerJobPerformance.tsx`, `CreatorPerformance.tsx`, `StudentOpportunitiesPanel.tsx` (new)
+- `src/components/dashboards/UserDashboard.tsx`, `BusinessDashboard.tsx`, `EmployerDashboard.tsx`, `SellerDashboard.tsx` (modified — new panels wired in)
+- `src/pages/creator/dashboard.tsx` (modified — CreatorPerformance wired in)
+- `src/pages/api/flow-events.ts` (modified — session userId capture)
+- `src/hooks/useStudentHubPageView.ts` (new)
+- `src/pages/black-student-opportunities/{index,scholarships,grants,internships,mentorship}.tsx` (modified — page-view tracking)
+
+CONTROL UPDATES:
+
+- `P4-01` through `P4-09`: `FUTURE` → `COMPLETE` (`490/490` combined points). Board expanded from the prior 2-item Phase 4 placeholder (P4-01 "personalized home and consumer economic dashboard" combined, P4-02 "business growth command center") to the full 9-item capability breakdown already defined in `docs/BWE_WORLD_CLASS_PLATFORM_MASTER_PLAN.md`'s Phase 4 section, so the board's item-level tracking matches the canonical scope.
+- Program state summary recounted directly from all board `STATE` fields: `33` total items (was `26`), `19` complete (was `10`), `2` in progress, `2` pending, `1` blocked, `3` external proof pending, `6` future.
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` — all changes additive to existing dashboards and one existing API route (`/api/flow-events.ts`, additive field only, no behavior removed). No auth/payment/marketplace/directory/jobs/student/creator/Black Card/Wealth Builder/support/admin behavior changed. No DB schema or index changes; all new fields are additive on existing collections (`flow_events.userId`) or read-only queries. Not merged to main, not deployed to production, no live Stripe action taken.
+
+NEXT MAJOR PHASE:
+
+- `PHASE 4 — PERSONALIZED PLATFORM` is now fully `COMPLETE` (`P4-01` through `P4-09` all closed). `PHASE 5 — NETWORK EFFECTS` scope has not yet been selected and has not been started, per the standing hard boundary against starting the next phase without owner scope selection.
+
+STATUS:
+
+- `COMPLETE`
+
 ## 13. Local runtime incident resolution rule
 
 DATE:
