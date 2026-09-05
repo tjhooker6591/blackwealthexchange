@@ -2615,6 +2615,8 @@ export const getServerSideProps: GetServerSideProps<
           slug: 1,
           image: 1,
           business_name: 1,
+          businessName: 1,
+          title: 1,
           name: 1,
           description: 1,
           phone: 1,
@@ -2660,9 +2662,13 @@ export const getServerSideProps: GetServerSideProps<
       business_name:
         typeof row?.business_name === "string"
           ? row.business_name
-          : typeof row?.name === "string"
-            ? row.name
-            : "Unnamed business",
+          : typeof row?.businessName === "string"
+            ? row.businessName
+            : typeof row?.title === "string"
+              ? row.title
+              : typeof row?.name === "string"
+                ? row.name
+                : "Unnamed business",
       name: typeof row?.name === "string" ? row.name : null,
       description:
         typeof row?.description === "string" ? row.description : null,

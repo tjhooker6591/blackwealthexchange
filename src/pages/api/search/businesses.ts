@@ -223,7 +223,9 @@ function relevanceScoreBusiness(item: any, search: string) {
 
   const tokens = normalizeSearchTokens(q);
 
-  const name = safeText(item?.business_name).toLowerCase();
+  const name = safeText(
+    item?.business_name || item?.businessName || item?.name || item?.title,
+  ).toLowerCase();
   const alias = safeText(item?.alias).toLowerCase();
   const category =
     `${safeText(item?.category)} ${safeText(item?.categories)} ${safeText(item?.display_categories)}`.toLowerCase();
@@ -272,7 +274,9 @@ function getMatchQuality(
   if (intentTokens.length === 0 && locationTokens.length === 0) {
     return "close";
   }
-  const name = safeText(item?.business_name || item?.name).toLowerCase();
+  const name = safeText(
+    item?.business_name || item?.businessName || item?.name || item?.title,
+  ).toLowerCase();
   const alias = safeText(item?.alias).toLowerCase();
   const category =
     `${safeText(item?.category)} ${safeText(item?.categories)} ${safeText(item?.display_categories)} ${safeText(item?.orgType)} ${safeText(item?.denomination)}`.toLowerCase();
@@ -344,8 +348,10 @@ function listingStrength(item: any) {
 
 function normalizeResultItem(item: any, isOrganizations: boolean) {
   const title = isOrganizations
-    ? safeText(item?.name || item?.business_name)
-    : safeText(item?.business_name || item?.name);
+    ? safeText(item?.name || item?.business_name || item?.businessName)
+    : safeText(
+        item?.business_name || item?.businessName || item?.name || item?.title,
+      );
   const primaryCategory = isOrganizations
     ? safeText(item?.orgType || item?.denomination || item?.category)
     : safeText(item?.display_categories || item?.category || item?.categories);
@@ -583,6 +589,8 @@ export default async function handler(
         ]
       : [
           "business_name",
+          "businessName",
+          "title",
           "alias",
           "description",
           "categories",
@@ -743,6 +751,8 @@ export default async function handler(
     const resultProjection = {
       _id: 1,
       business_name: 1,
+      businessName: 1,
+      title: 1,
       name: 1,
       alias: 1,
       category: 1,

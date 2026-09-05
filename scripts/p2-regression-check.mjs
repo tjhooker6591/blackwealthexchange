@@ -162,7 +162,10 @@ for (const route of [
   out.checks.push({
     name: `guest ${route}`,
     status: r.status,
-    pass: [302, 307, 308].includes(r.status),
+    pass:
+      route === "/job-listings"
+        ? r.status === 200
+        : [302, 307, 308].includes(r.status),
   });
 }
 
@@ -204,7 +207,7 @@ for (const [role, route, expect] of roleChecks) {
 }
 
 // Directory + monetization + jobs checks
-const apiBiz = await http("/api/searchBusinesses?query=food&limit=5");
+const apiBiz = await http("/api/search/businesses?search=food&limit=5");
 out.checks.push({
   name: "search businesses",
   status: apiBiz.status,

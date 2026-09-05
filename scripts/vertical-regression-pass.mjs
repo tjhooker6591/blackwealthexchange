@@ -9,7 +9,7 @@ const checks = [
   ["GET", "/employer/jobs"],
   ["GET", "/admin/dashboard"],
   ["GET", "/business-directory"],
-  ["GET", "/api/searchBusinesses?query=food&limit=3"],
+  ["GET", "/api/search/businesses?search=food&limit=3"],
   ["GET", "/api/searchOrganizations?query=church&limit=3"],
 ];
 
