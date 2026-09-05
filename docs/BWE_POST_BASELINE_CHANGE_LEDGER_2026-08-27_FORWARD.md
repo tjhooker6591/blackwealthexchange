@@ -428,6 +428,64 @@ STATUS:
 
 - `COMPLETE`
 
+## 23. PHASE 3 — P3-03 World-Class Marketplace Experience — engineering scope complete
+
+DATE:
+
+- `2026-09-04`
+
+SCOPE:
+
+- Owner assignment: complete P3-03 tonight. Implemented all five NEXT ACTION items from the program board using real, working functionality against existing authoritative data only -- no research/audit/scoping deliverables, no architecture rewrite, no fabricated trust/eligibility/relationship data anywhere.
+
+SLICE 1 — REVIEWS + REORDER (runtime commit `2dd17e9`):
+
+- New `src/pages/api/marketplace/reviews.ts`: `GET` lists reviews + aggregate rating for a product (public, no auth). `POST` creates/updates a review, gated by the existing `resolveBuyerSession` buyer auth (same as `get-buyer-orders.ts`). Rating validated to a whole number 1-5. `verifiedPurchase` is computed from a real query against `orders` (`productId` + `buyerUserId`/`buyerEmail` + `paymentStatus: "paid"`) -- never inferred or defaulted true. One review per user per product enforced by a unique compound index on the new `product_reviews` collection (`productId`, `userId`); resubmitting updates rather than duplicating.
+- Product detail page: average-rating summary near the price, full review list with verified-purchase badges, star-rating submission form.
+- `my-orders.tsx`: added a "Buy again" action per order card, linking to the existing product detail page via the `productId` already returned by `get-buyer-orders.ts` (no backend change needed there).
+- Live-verified: an ephemeral test fixture (inserted, tested, deleted -- zero trace left afterward) proved `verifiedPurchase` correctly resolves both `true` (genuine paid order exists) and `false` (no matching paid order), and that a real authenticated session with real order history correctly renders the "Buy again" button.
+
+SLICE 2 — SELLER TRUST / PUBLIC STOREFRONT (runtime commit `000e25e`):
+
+- New `src/pages/marketplace/seller/[id].tsx`: public seller storefront showing store/seller name, active product grid (reuses `buildPublicMarketplaceVisibilityFilter` -- same visibility rule as the rest of the marketplace, not a new ruleset), aggregate rating computed from real `product_reviews` across the seller's own products, join date from the seller's own `joinedAt`/`createdAt` field, and store description/website/logo only when actually present (verified live: a seller with no stored description/website renders neither).
+- Product detail page: seller name now links to this storefront when a seller id is available; unchanged plain-text fallback otherwise.
+
+SLICE 3 — FULFILLMENT VISIBILITY (pre-existing, no new engineering required):
+
+- `my-orders.tsx` already had payment status, fulfillment status, tracking number/carrier, an order timeline (Ordered/Processing/Shipped), and next-step guidance per order before this workstream began. Reviewed against the NEXT ACTION item and found it already substantially complete -- no gap to close.
+
+DB / INDEX CHANGES:
+
+- One new additive collection, `product_reviews`, with a unique compound index (`productId`, `userId`) and a list index (`productId`, `createdAt`), created idempotently by the reviews API on first write. No existing collection, index, or contract touched.
+
+VALIDATION (both slices):
+
+- `npm run typecheck` PASS, `npm run smoke:routes` PASS (`6/6`), `node scripts/p2-regression-check.mjs` PASS (`26/26`), `npm run check:vertical-regression` PASS, `npm run build` PASS (dev server stopped/restarted per the local runtime rule) after each slice.
+- Desktop (`1440x900`) and mobile (`390x844`) screenshots confirmed restrained, on-brand rendering consistent with the existing product-page design language -- no homepage or layout redesign.
+
+REMAINING GAP TO FORMAL P3-03 CLOSURE (owner-gated, not an engineering gap):
+
+- The program board lists `P0-06` (paid fulfillment proof) as a hard dependency of P3-03. `P0-06` is `EXTERNAL PROOF PENDING` and requires an owner-executed live/legitimate Stripe transaction -- this is explicitly an owner-only action per the existing P0-06 control record and cannot be performed autonomously under the standing hard boundary against live Stripe financial actions. No further engineering work closes this gap; only an owner-executed transaction against the existing, unmodified checkout/webhook flow does. Per the same precedent already established for other Phase 2/3 items (engineering completeness tracked separately from external revenue proof), P3-03's engineering scope is recorded as `COMPLETE`; its owner-gated external-proof dependency remains open and unaffected by this entry.
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` — all changes additive; no existing marketplace, checkout, order, or search behavior removed or altered. No production UI deployed. No live Stripe action taken.
+
+FILES:
+
+- `src/pages/api/marketplace/reviews.ts` (new)
+- `src/pages/marketplace/seller/[id].tsx` (new)
+- `src/pages/marketplace/product/[id].tsx` (modified — reviews UI, seller link)
+- `src/pages/marketplace/my-orders.tsx` (modified — reorder action)
+
+NEXT MAJOR PHASE-3 ACTION:
+
+- Owner-only: execute one live/legitimate marketplace transaction per the existing `P0-06` procedure to formally close P3-03 and unlock its remaining 15 points. No P3-04 work has begun.
+
+STATUS:
+
+- `ENGINEERING SCOPE COMPLETE / FORMAL CLOSURE OWNER-GATED ON P0-06`
+
 ## 13. Local runtime incident resolution rule
 
 DATE:

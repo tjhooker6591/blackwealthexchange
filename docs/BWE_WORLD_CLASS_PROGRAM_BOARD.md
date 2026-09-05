@@ -7,11 +7,11 @@ Last updated: 2026-08-30
 - VERIFIED CURRENT PHASE: `POST-BASELINE EXECUTION`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
-- CURRENT ACTIVE WORKSTREAM: `PHASE 3 — P3-01 COMPLETE, P3-02 COMPLETE — SELECTING P3-03 SCOPE`
+- CURRENT ACTIVE WORKSTREAM: `PHASE 3 — P3-01 COMPLETE, P3-02 COMPLETE, P3-03 ENGINEERING SCOPE COMPLETE (owner-gated on P0-06 for formal closure)`
 - PHASE 2 — UNIFIED PLATFORM CORE: `COMPLETE (2026-09-03)` — see `docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md` and `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #17–#19
-- NEXT MAJOR PHASE: `PHASE 3 — DISCOVERY & COMMERCE (P3-03 — WORLD-CLASS MARKETPLACE EXPERIENCE next)`
+- NEXT MAJOR PHASE: `PHASE 3 — DISCOVERY & COMMERCE (P3-03 formal closure awaits owner-executed P0-06 transaction; P3-04 not started)`
 - PHASE 2 STATUS: `COMPLETE`
-- PHASE 3 STATUS: `IN PROGRESS — P3-01 COMPLETE, P3-02 COMPLETE (2026-09-04, runtime commit 6ab1d25); see ledger entries #20–#22`
+- PHASE 3 STATUS: `IN PROGRESS — P3-01 COMPLETE, P3-02 COMPLETE, P3-03 engineering scope COMPLETE / formal closure OWNER-GATED (2026-09-04, runtime commits 2dd17e9, 000e25e); see ledger entries #20–#23`
 - PHASE 4 STATUS: `OUTSTANDING`
 - PHASE 5 STATUS: `OUTSTANDING`
 - PHASE 6 STATUS: `OUTSTANDING`
@@ -430,19 +430,19 @@ Every major project should report:
 
 ### P3-03 — World-class marketplace experience
 
-- STATE: `FUTURE`
+- STATE: `IN PROGRESS — engineering scope complete 2026-09-04, formal closure blocked on P0-06`
 - PHASE: `PHASE 3`
 - DOMAIN: `Marketplace & Conversion`
 - WORK TYPE: `FUNCTIONAL`, `DESIGN`, `PLATFORM / ENGINEERING`
 - RELEASE SCOPE: `NO`
 - WORLD-CLASS SCOPE: `YES`
 - DEPENDENCIES: `P0-06`, `P3-01`
-- BLOCKERS: `fulfillment proof and discovery foundation are incomplete`
-- NEXT ACTION: `upgrade product detail, seller trust, reorder, reviews, and fulfillment visibility`
-- OWNER DECISION REQUIRED: `NO`
+- BLOCKERS: `P3-01 discovery foundation is now COMPLETE. P0-06 (paid fulfillment proof) remains OWNER-GATED and EXTERNAL PROOF PENDING -- it requires an owner-executed live Stripe transaction, which cannot and must not be performed autonomously. This is the sole remaining item for formal P3-03 closure per the board's own dependency graph.`
+- NEXT ACTION: `owner to execute one live/legitimate marketplace transaction per the existing P0-06 procedure; no further engineering work is required to reach that point`
+- OWNER DECISION REQUIRED: `YES — a live Stripe transaction is an owner-only action`
 - POINTS AVAILABLE: `90`
-- POINTS EARNED: `0`
-- EVIDENCE: `Phase 3 owner scope plus current marketplace maturity gap`
+- POINTS EARNED: `75`
+- EVIDENCE: `All five NEXT ACTION items implemented, tested, and shipped with real functionality using only existing authoritative data (no fabricated trust/eligibility/relationship data anywhere): (1) product detail upgraded with review summary + seller link; (2) seller trust via new public storefront src/pages/marketplace/seller/[id].tsx (real product grid, real join date, real aggregate rating, no fabricated bio/website when absent); (3) reorder via a "Buy again" action on my-orders.tsx wired to the existing productId already returned by get-buyer-orders.ts; (4) reviews via new src/pages/api/marketplace/reviews.ts + product_reviews collection, one review per user per product (unique index), verifiedPurchase computed from a real paid-order lookup (live-verified true/false both ways via an ephemeral test fixture, cleaned up after); (5) fulfillment visibility was already substantially built in my-orders.tsx (payment/fulfillment status, tracking, timeline, next-step guidance) prior to this workstream and required no further engineering. Runtime commits 2dd17e9, 000e25e. All validated: typecheck, smoke:routes (6/6), p2-regression-check (26/26), check:vertical-regression, build (dev stopped/restarted per the local runtime rule), desktop/mobile screenshots. No DB changes beyond one new additive collection (product_reviews) with two indexes.`
 
 ### P4-01 — Personalized home and consumer economic dashboard
 
