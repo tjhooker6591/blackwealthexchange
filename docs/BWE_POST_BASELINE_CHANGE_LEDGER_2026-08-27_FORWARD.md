@@ -486,6 +486,34 @@ STATUS:
 
 - `ENGINEERING SCOPE COMPLETE / FORMAL CLOSURE OWNER-GATED ON P0-06`
 
+## 24. P0-06 closed by owner confirmation — P3-03 formally COMPLETE
+
+DATE:
+
+- `2026-09-05`
+
+OWNER ACTION:
+
+- The owner personally executed and confirmed a live/legitimate marketplace transaction on the production server, and reviewed the P3-03 engineering work recorded in ledger entry #23. This is the exact owner-only proof `P0-06` required (`OWNER DECISION REQUIRED: YES`) — production Stripe/payment data on the owner's live server is outside this session's access, so the owner's direct attestation is accepted as authoritative for this control item, consistent with how `P0-06` was defined from the start.
+
+CONTROL UPDATES:
+
+- `P0-06 — Paid fulfillment proof`: `EXTERNAL PROOF PENDING` → `COMPLETE` (`60/60` points). No code or DB change required — the existing checkout/webhook flow (preserved unmodified since runtime commit `665a1193d180d9c3c2bc79dda6bba8310d477416`) already supported this; only the owner-executed transaction evidence was outstanding.
+- `P3-03 — World-class marketplace experience`: `ENGINEERING SCOPE COMPLETE / OWNER-GATED` → `COMPLETE` (`90/90` points). Both listed dependencies (`P3-01`, `P0-06`) are now satisfied.
+- Program state summary recounted directly from all board `STATE` fields (found the prior tally was stale): `10` complete, `2` in progress, `2` pending, `1` blocked, `3` external proof pending, `8` future — sums to the full `26` program items.
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` — no code or DB change in this entry; control-record closure only, based on owner attestation of an action already taken outside this session.
+
+NEXT MAJOR PHASE:
+
+- `PHASE 3 — DISCOVERY & COMMERCE` is now fully `COMPLETE` (`P3-01`, `P3-02`, `P3-03` all closed). `PHASE 4` scope has not yet been selected. No `P4-01` work has begun.
+
+STATUS:
+
+- `COMPLETE`
+
 ## 13. Local runtime incident resolution rule
 
 DATE:

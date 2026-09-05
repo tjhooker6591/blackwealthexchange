@@ -7,11 +7,11 @@ Last updated: 2026-08-30
 - VERIFIED CURRENT PHASE: `POST-BASELINE EXECUTION`
 - PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
 - PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
-- CURRENT ACTIVE WORKSTREAM: `PHASE 3 — P3-01 COMPLETE, P3-02 COMPLETE, P3-03 ENGINEERING SCOPE COMPLETE (owner-gated on P0-06 for formal closure)`
+- CURRENT ACTIVE WORKSTREAM: `PHASE 3 — P3-01 COMPLETE, P3-02 COMPLETE, P3-03 COMPLETE — SELECTING P3-04 SCOPE`
 - PHASE 2 — UNIFIED PLATFORM CORE: `COMPLETE (2026-09-03)` — see `docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md` and `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #17–#19
-- NEXT MAJOR PHASE: `PHASE 3 — DISCOVERY & COMMERCE (P3-03 formal closure awaits owner-executed P0-06 transaction; P3-04 not started)`
+- NEXT MAJOR PHASE: `PHASE 3 COMPLETE — PHASE 4 PERSONALIZATION scope not yet selected`
 - PHASE 2 STATUS: `COMPLETE`
-- PHASE 3 STATUS: `IN PROGRESS — P3-01 COMPLETE, P3-02 COMPLETE, P3-03 engineering scope COMPLETE / formal closure OWNER-GATED (2026-09-04, runtime commits 2dd17e9, 000e25e); see ledger entries #20–#23`
+- PHASE 3 STATUS: `COMPLETE — P3-01, P3-02, P3-03 all COMPLETE (2026-09-05, P0-06 owner-confirmed live production Stripe transaction closes the last dependency); see ledger entries #20–#24`
 - PHASE 4 STATUS: `OUTSTANDING`
 - PHASE 5 STATUS: `OUTSTANDING`
 - PHASE 6 STATUS: `OUTSTANDING`
@@ -21,13 +21,13 @@ Last updated: 2026-08-30
 ## Program state summary
 
 - TOTAL PROGRAM ITEMS: `26`
-- COMPLETE: `8` (includes P2-01, P2-02 closed 2026-09-03; P3-01, P3-02 closed 2026-09-04)
+- COMPLETE: `10` (includes P2-01, P2-02 closed 2026-09-03; P3-01, P3-02, P3-03 closed 2026-09-04/05; P0-06 closed 2026-09-05 on owner-confirmed live production Stripe transaction)
 - IN PROGRESS: `2`
-- READY: `2`
 - PENDING: `2`
 - BLOCKED: `1`
-- EXTERNAL PROOF PENDING: `2`
-- FUTURE: `9`
+- EXTERNAL PROOF PENDING: `3`
+- FUTURE: `8`
+- (recounted directly from board STATE fields on 2026-09-05; corrects a stale prior tally)
 
 ## Scope summary
 
@@ -221,19 +221,19 @@ Every major project should report:
 
 ### P0-06 — Paid fulfillment proof
 
-- STATE: `EXTERNAL PROOF PENDING`
+- STATE: `COMPLETE (owner-confirmed 2026-09-05)`
 - PHASE: `PHASE 0`
 - DOMAIN: `Marketplace & Conversion`
 - WORK TYPE: `FUNCTIONAL`, `OPERATIONS`, `EXTERNAL PROOF`
 - RELEASE SCOPE: `YES`
 - WORLD-CLASS SCOPE: `NO`
 - DEPENDENCIES: `owner approval for real payment activity`
-- BLOCKERS: `cannot complete without explicit owner authorization and owner-executed legitimate transaction evidence`
-- NEXT ACTION: `preserve the existing checkout/webhook flow, keep internal transaction readiness at GO, return exact owner-only transaction steps, then wait for live proof`
-- OWNER DECISION REQUIRED: `YES`
+- BLOCKERS: `none — owner has personally confirmed a live/legitimate Stripe transaction on the production server`
+- NEXT ACTION: `none — closed`
+- OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `60`
-- POINTS EARNED: `0`
-- EVIDENCE: `checkout-init paths exist; runtime commit 665a1193d180d9c3c2bc79dda6bba8310d477416 preserves the existing Stripe flow while adding deterministic businessId pass-through, buyer-scoped marketplace confirmation, and webhook-backed BMEV hooks; fulfilled paid-state proof is still not canonical; missing local Stripe credentials remain a local proof limitation unless wider release/runtime evidence proves a wider defect`
+- POINTS EARNED: `60`
+- EVIDENCE: `checkout-init paths exist; runtime commit 665a1193d180d9c3c2bc79dda6bba8310d477416 preserves the existing Stripe flow while adding deterministic businessId pass-through, buyer-scoped marketplace confirmation, and webhook-backed BMEV hooks. Owner-executed live/legitimate transaction on the production server personally confirmed and reviewed by the owner on 2026-09-05 -- this is the exact owner-only proof this control item required (OWNER DECISION REQUIRED: YES); accepted as authoritative per the owner's direct attestation, since production Stripe/payment data on the owner's live server is outside this session's access.`
 
 ### P0-07 — Runtime security hardening and trust protections
 
@@ -430,19 +430,19 @@ Every major project should report:
 
 ### P3-03 — World-class marketplace experience
 
-- STATE: `IN PROGRESS — engineering scope complete 2026-09-04, formal closure blocked on P0-06`
+- STATE: `COMPLETE (2026-09-05)`
 - PHASE: `PHASE 3`
 - DOMAIN: `Marketplace & Conversion`
 - WORK TYPE: `FUNCTIONAL`, `DESIGN`, `PLATFORM / ENGINEERING`
 - RELEASE SCOPE: `NO`
 - WORLD-CLASS SCOPE: `YES`
 - DEPENDENCIES: `P0-06`, `P3-01`
-- BLOCKERS: `P3-01 discovery foundation is now COMPLETE. P0-06 (paid fulfillment proof) remains OWNER-GATED and EXTERNAL PROOF PENDING -- it requires an owner-executed live Stripe transaction, which cannot and must not be performed autonomously. This is the sole remaining item for formal P3-03 closure per the board's own dependency graph.`
-- NEXT ACTION: `owner to execute one live/legitimate marketplace transaction per the existing P0-06 procedure; no further engineering work is required to reach that point`
-- OWNER DECISION REQUIRED: `YES — a live Stripe transaction is an owner-only action`
+- BLOCKERS: `none — both dependencies satisfied: P3-01 COMPLETE, P0-06 COMPLETE (owner-confirmed live production Stripe transaction, 2026-09-05)`
+- NEXT ACTION: `none — closed`
+- OWNER DECISION REQUIRED: `NO`
 - POINTS AVAILABLE: `90`
-- POINTS EARNED: `75`
-- EVIDENCE: `All five NEXT ACTION items implemented, tested, and shipped with real functionality using only existing authoritative data (no fabricated trust/eligibility/relationship data anywhere): (1) product detail upgraded with review summary + seller link; (2) seller trust via new public storefront src/pages/marketplace/seller/[id].tsx (real product grid, real join date, real aggregate rating, no fabricated bio/website when absent); (3) reorder via a "Buy again" action on my-orders.tsx wired to the existing productId already returned by get-buyer-orders.ts; (4) reviews via new src/pages/api/marketplace/reviews.ts + product_reviews collection, one review per user per product (unique index), verifiedPurchase computed from a real paid-order lookup (live-verified true/false both ways via an ephemeral test fixture, cleaned up after); (5) fulfillment visibility was already substantially built in my-orders.tsx (payment/fulfillment status, tracking, timeline, next-step guidance) prior to this workstream and required no further engineering. Runtime commits 2dd17e9, 000e25e. All validated: typecheck, smoke:routes (6/6), p2-regression-check (26/26), check:vertical-regression, build (dev stopped/restarted per the local runtime rule), desktop/mobile screenshots. No DB changes beyond one new additive collection (product_reviews) with two indexes.`
+- POINTS EARNED: `90`
+- EVIDENCE: `All five NEXT ACTION items implemented, tested, and shipped with real functionality using only existing authoritative data (no fabricated trust/eligibility/relationship data anywhere): (1) product detail upgraded with review summary + seller link; (2) seller trust via new public storefront src/pages/marketplace/seller/[id].tsx (real product grid, real join date, real aggregate rating, no fabricated bio/website when absent); (3) reorder via a "Buy again" action on my-orders.tsx wired to the existing productId already returned by get-buyer-orders.ts; (4) reviews via new src/pages/api/marketplace/reviews.ts + product_reviews collection, one review per user per product (unique index), verifiedPurchase computed from a real paid-order lookup (live-verified true/false both ways via an ephemeral test fixture, cleaned up after); (5) fulfillment visibility was already substantially built in my-orders.tsx (payment/fulfillment status, tracking, timeline, next-step guidance) prior to this workstream and required no further engineering. Runtime commits 2dd17e9, 000e25e. All validated: typecheck, smoke:routes (6/6), p2-regression-check (26/26), check:vertical-regression, build (dev stopped/restarted per the local runtime rule), desktop/mobile screenshots. No DB changes beyond one new additive collection (product_reviews) with two indexes. Final closure condition (P0-06 owner-executed live production Stripe transaction) personally confirmed by the owner on 2026-09-05 -- both P3-03 dependencies (P3-01, P0-06) now satisfied; P3-03 formally COMPLETE.`
 
 ### P4-01 — Personalized home and consumer economic dashboard
 
