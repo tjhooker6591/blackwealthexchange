@@ -493,9 +493,18 @@ const ProductDetailPage = ({
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <div className="bwe-soft-tile p-4 text-sm text-gray-200">
                   <p className="bwe-eyebrow">Seller</p>
-                  <p className="mt-2 text-base font-bold text-white">
-                    {sellerName}
-                  </p>
+                  {product?.seller?.id ? (
+                    <Link
+                      href={`/marketplace/seller/${encodeURIComponent(product.seller.id)}`}
+                      className="mt-2 inline-block text-base font-bold text-white underline decoration-white/30 hover:text-[var(--accent)]"
+                    >
+                      {sellerName}
+                    </Link>
+                  ) : (
+                    <p className="mt-2 text-base font-bold text-white">
+                      {sellerName}
+                    </p>
+                  )}
                   <p className="mt-1 text-sm text-white/68">{sellerTrust}</p>
                 </div>
                 <div className="bwe-soft-tile p-4 text-sm text-gray-200">
