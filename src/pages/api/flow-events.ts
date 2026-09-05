@@ -6,6 +6,7 @@ import {
   getClientIp,
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
+import { getPersonalizationSession } from "@/lib/personalization/session";
 
 function s(v: unknown) {
   return typeof v === "string" ? v.trim() : "";
@@ -53,9 +54,16 @@ export default async function handler(
       return res.status(429).json({ error: "Too many requests" });
     }
 
+    // Attach the authenticated user's id from the verified session cookie
+    // only -- never trust a client-supplied userId, to prevent spoofing
+    // another person's behavioral history. Anonymous requests remain
+    // allowed and simply record userId: null, matching prior behavior.
+    const session = getPersonalizationSession(req);
+
     await db.collection("flow_events").insertOne({
       eventType,
 
+      userId: session?.userId || null,
       businessId: s(body.businessId) || null,
       businessAlias: s(body.businessAlias) || null,
       source: s(body.source) || null,

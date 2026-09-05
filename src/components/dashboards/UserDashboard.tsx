@@ -20,6 +20,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import PersonalizedHome from "./PersonalizedHome";
+import ConsumerEconomicDashboard from "./ConsumerEconomicDashboard";
+import StudentOpportunitiesPanel from "./StudentOpportunitiesPanel";
 
 function _cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -384,8 +387,8 @@ export default function UserDashboard() {
               Welcome, <span className="break-all">{displayName}</span>!
             </h1>
             <p className="mt-1 text-xs text-gray-300 sm:text-sm md:text-base">
-              Track your applications, manage saved jobs, and keep your profile
-              ready.
+              Keep your saved jobs, applications, profile, and member activity
+              in one place.
             </p>
             {lastUpdated ? (
               <p className="mt-2 text-xs text-gray-500">
@@ -427,6 +430,13 @@ export default function UserDashboard() {
               Track Applications
             </Link>
           </div>
+        </div>
+
+        <PersonalizedHome />
+
+        <div className="grid gap-4 lg:grid-cols-2 lg:gap-6">
+          <ConsumerEconomicDashboard />
+          <StudentOpportunitiesPanel />
         </div>
 
         {/* Data warning */}

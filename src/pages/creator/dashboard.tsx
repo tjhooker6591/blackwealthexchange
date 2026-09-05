@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
 import { toPublicErrorMessage } from "@/lib/publicError";
+import CreatorPerformance from "@/components/dashboards/CreatorPerformance";
 
 type Readiness = {
   sellerExists: boolean;
@@ -111,6 +112,12 @@ export default function CreatorDashboardPage() {
                 state.musicCreatorReady || state.creatorReady ? "Yes" : "No"
               }
             />
+          </div>
+        ) : null}
+
+        {!loading && !error ? (
+          <div className="mt-8">
+            <CreatorPerformance />
           </div>
         ) : null}
 

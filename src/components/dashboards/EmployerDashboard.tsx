@@ -16,6 +16,8 @@ import {
   BookOpen,
   AlertTriangle,
 } from "lucide-react";
+import PersonalizedHome from "./PersonalizedHome";
+import EmployerJobPerformance from "./EmployerJobPerformance";
 
 interface Stats {
   jobsPosted: number;
@@ -352,6 +354,10 @@ export default function EmployerDashboard() {
             </div>
           </div>
         </div>
+
+        <PersonalizedHome />
+
+        <EmployerJobPerformance />
 
         {/* Quick actions */}
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">

@@ -18,6 +18,7 @@ import {
   getPublicStudentHubPageRecords,
   type PublicStudentHubRecord,
 } from "@/lib/studentHub/public";
+import { useStudentHubPageView } from "@/hooks/useStudentHubPageView";
 
 type FeedItem = {
   title: string;
@@ -120,6 +121,8 @@ export default function Internships({
   initialPrograms: PublicStudentHubRecord[];
 }) {
   const year = 2026;
+
+  useStudentHubPageView("internships");
 
   // Optional live feed
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);

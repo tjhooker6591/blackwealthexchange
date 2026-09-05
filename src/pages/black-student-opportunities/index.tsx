@@ -8,6 +8,7 @@ import {
   getPublicStudentHubPageRecords,
   type PublicStudentHubRecord,
 } from "@/lib/studentHub/public";
+import { useStudentHubPageView } from "@/hooks/useStudentHubPageView";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -148,6 +149,8 @@ export default function StudentOpportunitiesHub({
   const [level, setLevel] = useState<(typeof LEVELS)[number]>("All");
   const [mode, setMode] = useState<(typeof MODES)[number]>("All");
   const [field, setField] = useState<(typeof FIELDS)[number]>("All");
+
+  useStudentHubPageView("hub_home");
 
   React.useEffect(() => {
     if (!router.isReady) return;
