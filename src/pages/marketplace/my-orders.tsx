@@ -11,6 +11,7 @@ type TimelineStep = {
 type BuyerOrder = {
   _id: string;
   createdAt?: string | null;
+  productId?: string;
   productName?: string;
   totalCents?: number;
   paymentState?: string;
@@ -236,6 +237,14 @@ export default function BuyerOrdersPage() {
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-3 text-xs sm:text-sm">
+                    {o.productId ? (
+                      <Link
+                        href={`/marketplace/product/${encodeURIComponent(o.productId)}`}
+                        className="rounded-lg bg-[#D4AF37] px-3 py-2 font-semibold text-black hover:bg-yellow-500"
+                      >
+                        Buy again
+                      </Link>
+                    ) : null}
                     <Link
                       href="/support/marketplace"
                       className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10"

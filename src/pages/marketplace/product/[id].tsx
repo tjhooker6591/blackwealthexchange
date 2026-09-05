@@ -44,6 +44,15 @@ interface Product {
   } | null;
 }
 
+type ProductReview = {
+  id: string;
+  userName: string;
+  rating: number;
+  comment: string | null;
+  verifiedPurchase: boolean;
+  createdAt: string | null;
+};
+
 type ProductDetailPageProps = {
   initialProduct: Product | null;
   initialProductId: string | null;
@@ -64,6 +73,15 @@ const ProductDetailPage = ({
   const [messageText, setMessageText] = useState("");
   const [messageState, setMessageState] = useState<string | null>(null);
   const [sendingMessage, setSendingMessage] = useState(false);
+  const [reviews, setReviews] = useState<ProductReview[]>([]);
+  const [reviewSummary, setReviewSummary] = useState<{
+    count: number;
+    averageRating: number;
+  }>({ count: 0, averageRating: 0 });
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewState, setReviewState] = useState<string | null>(null);
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   const trackMarketplaceProductEvent = (
     eventType: string,
@@ -147,6 +165,65 @@ const ProductDetailPage = ({
 
     fetchRelated();
   }, [product]);
+
+  const loadReviews = async (productId: string) => {
+    try {
+      const res = await fetch(
+        `/api/marketplace/reviews?productId=${encodeURIComponent(productId)}`,
+      );
+      if (!res.ok) return;
+      const data = await res.json();
+      setReviews(Array.isArray(data?.reviews) ? data.reviews : []);
+      setReviewSummary({
+        count: Number(data?.count || 0),
+        averageRating: Number(data?.averageRating || 0),
+      });
+    } catch {
+      // leave reviews empty on fetch failure
+    }
+  };
+
+  useEffect(() => {
+    if (!product?._id) return;
+    loadReviews(product._id);
+  }, [product?._id]);
+
+  async function handleSubmitReview() {
+    if (!product?._id) return;
+    setSubmittingReview(true);
+    setReviewState(null);
+    try {
+      const res = await fetch("/api/marketplace/reviews", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: product._id,
+          rating: reviewRating,
+          comment: reviewComment,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setReviewState(
+          res.status === 401
+            ? "Please sign in to leave a review."
+            : data?.error || "We could not save your review. Please try again.",
+        );
+        return;
+      }
+      setReviewComment("");
+      setReviewState("Thanks! Your review has been saved.");
+      trackMarketplaceProductEvent("product_review_submitted", {
+        rating: reviewRating,
+      });
+      loadReviews(product._id);
+    } catch {
+      setReviewState("We could not save your review. Please try again.");
+    } finally {
+      setSubmittingReview(false);
+    }
+  }
 
   const productName = String(product?.name || "").trim() || "Marketplace item";
   const stockQuantity = Number(product?.stockQuantity ?? 0);
@@ -357,6 +434,31 @@ const ProductDetailPage = ({
                 <p className="mt-3 text-2xl font-semibold text-white sm:text-3xl">
                   ${Number(product.price || 0).toFixed(2)}
                 </p>
+                {reviewSummary.count > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      document
+                        .getElementById("reviews")
+                        ?.scrollIntoView({ behavior: "smooth", block: "start" })
+                    }
+                    className="bwe-focus-ring mt-2 inline-flex items-center gap-1 text-sm text-white/80 hover:text-white"
+                  >
+                    <span className="text-[#D4AF37]">
+                      {"★".repeat(Math.round(reviewSummary.averageRating))}
+                      {"☆".repeat(5 - Math.round(reviewSummary.averageRating))}
+                    </span>
+                    <span>
+                      {reviewSummary.averageRating.toFixed(1)} (
+                      {reviewSummary.count} review
+                      {reviewSummary.count === 1 ? "" : "s"})
+                    </span>
+                  </button>
+                ) : (
+                  <p className="mt-2 text-xs text-white/50">
+                    No reviews yet — be the first to review this listing.
+                  </p>
+                )}
               </div>
 
               <div className="mt-4 border-l border-white/10 pl-4">
@@ -550,6 +652,99 @@ const ProductDetailPage = ({
             {messageState ? (
               <p className="mt-2 text-xs text-gray-300">{messageState}</p>
             ) : null}
+          </div>
+
+          <div id="reviews" className="bwe-soft-tile mt-6 p-4">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-lg font-bold text-white">Customer reviews</h2>
+              {reviewSummary.count > 0 ? (
+                <span className="text-sm text-white/70">
+                  {reviewSummary.averageRating.toFixed(1)} / 5 ·{" "}
+                  {reviewSummary.count} review
+                  {reviewSummary.count === 1 ? "" : "s"}
+                </span>
+              ) : null}
+            </div>
+
+            <div className="mt-4 border-t border-white/10 pt-4">
+              <label className="mb-2 block text-sm font-semibold text-white">
+                Leave a review
+              </label>
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setReviewRating(value)}
+                    aria-label={`Rate ${value} star${value === 1 ? "" : "s"}`}
+                    className="bwe-focus-ring text-2xl leading-none"
+                  >
+                    <span
+                      className={
+                        value <= reviewRating
+                          ? "text-[#D4AF37]"
+                          : "text-white/25"
+                      }
+                    >
+                      ★
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <textarea
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value)}
+                rows={3}
+                placeholder="Share how the product, seller, or delivery experience went (optional)"
+                className="bwe-textarea mt-2"
+              />
+              <button
+                type="button"
+                onClick={handleSubmitReview}
+                disabled={submittingReview}
+                className="bwe-focus-ring mt-3 w-full rounded-full border border-gold px-3 py-3 text-sm font-semibold text-gold transition enabled:hover:bg-gold enabled:hover:text-black disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {submittingReview ? "Saving..." : "Submit Review"}
+              </button>
+              {reviewState ? (
+                <p className="mt-2 text-xs text-gray-300">{reviewState}</p>
+              ) : null}
+            </div>
+
+            <div className="mt-5 space-y-3 border-t border-white/10 pt-4">
+              {reviews.length === 0 ? (
+                <p className="text-sm text-white/60">
+                  No reviews yet for this listing.
+                </p>
+              ) : (
+                reviews.map((review) => (
+                  <div
+                    key={review.id}
+                    className="rounded-xl border border-white/10 bg-black/20 p-3"
+                  >
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-[#D4AF37]">
+                        {"★".repeat(review.rating)}
+                        {"☆".repeat(5 - review.rating)}
+                      </span>
+                      <span className="text-sm font-semibold text-white">
+                        {review.userName}
+                      </span>
+                      {review.verifiedPurchase ? (
+                        <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-300">
+                          Verified purchase
+                        </span>
+                      ) : null}
+                    </div>
+                    {review.comment ? (
+                      <p className="mt-2 text-sm text-white/75">
+                        {review.comment}
+                      </p>
+                    ) : null}
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
 
