@@ -16,7 +16,6 @@ import {
   AlertTriangle,
   UserCircle2,
 } from "lucide-react";
-import PersonalizedHome from "./PersonalizedHome";
 import BusinessGrowthCenter from "./BusinessGrowthCenter";
 
 type AccountType =
@@ -224,8 +223,6 @@ export default function BusinessDashboard({
             </div>
           </div>
         </div>
-
-        <PersonalizedHome />
 
         <BusinessGrowthCenter />
 

@@ -8,7 +8,7 @@
 import type { NextApiRequest } from "next";
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
-import type { Db } from "mongodb";
+import { ObjectId, type Db } from "mongodb";
 import { getJwtSecret } from "@/lib/env";
 import { resolvePerson360, type Person360Resolved } from "@/lib/person360";
 import { resolvePrimaryVerifiedBusinessOwnership } from "@/lib/directoryOwnership";
@@ -91,9 +91,17 @@ export async function authorizeBusinessAccess(
 /**
  * Resolves which businessId a request should act on: an explicit
  * businessId query param (authorized via authorizeBusinessAccess), or --
- * when omitted -- the session user's own primary verified business, which
- * is how business-accountType users already reach their profile/edit APIs
- * (see src/pages/api/business/profile.ts).
+ * when omitted -- the session user's own business.
+ *
+ * BWE has two distinct ways a session can be tied to a business:
+ *   1. A person (users._id) who claimed/manages a business via
+ *      personBusinessRelationships -- resolved through Person360
+ *      ownership, same as src/pages/api/business/profile.ts.
+ *   2. An accountType "business" login, which authenticates directly as
+ *      a row in the `businesses` collection (see
+ *      src/pages/api/auth/login.ts: the JWT userId is that row's own
+ *      _id, not a users._id). For this login shape there is no separate
+ *      person to look up -- the business *is* the session principal.
  */
 export async function resolveRequestedBusinessId(
   db: Db,
@@ -101,12 +109,34 @@ export async function resolveRequestedBusinessId(
   requestedBusinessId: string,
 ): Promise<string | null> {
   if (requestedBusinessId) {
+    if (
+      session.accountType === "business" &&
+      requestedBusinessId === session.userId
+    ) {
+      const business = await db
+        .collection("businesses")
+        .findOne(
+          { _id: new ObjectId(session.userId) },
+          { projection: { _id: 1 } },
+        );
+      return business ? requestedBusinessId : null;
+    }
     const authorized = await authorizeBusinessAccess(
       db,
       session,
       requestedBusinessId,
     );
     return authorized ? requestedBusinessId : null;
+  }
+
+  if (session.accountType === "business" && ObjectId.isValid(session.userId)) {
+    const business = await db
+      .collection("businesses")
+      .findOne(
+        { _id: new ObjectId(session.userId) },
+        { projection: { _id: 1 } },
+      );
+    if (business) return session.userId;
   }
 
   const ownership = await resolvePrimaryVerifiedBusinessOwnership(

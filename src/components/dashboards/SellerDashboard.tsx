@@ -13,7 +13,6 @@ import {
   ArrowRight,
   AlertTriangle,
 } from "lucide-react";
-import PersonalizedHome from "./PersonalizedHome";
 import CreatorPerformance from "./CreatorPerformance";
 
 type Stats = {
@@ -403,8 +402,6 @@ export default function SellerDashboard() {
             </Link>
           </div>
         </div>
-
-        <PersonalizedHome />
 
         <CreatorPerformance />
 

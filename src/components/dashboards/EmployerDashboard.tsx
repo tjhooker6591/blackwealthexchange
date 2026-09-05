@@ -16,7 +16,6 @@ import {
   BookOpen,
   AlertTriangle,
 } from "lucide-react";
-import PersonalizedHome from "./PersonalizedHome";
 import EmployerJobPerformance from "./EmployerJobPerformance";
 
 interface Stats {
@@ -354,8 +353,6 @@ export default function EmployerDashboard() {
             </div>
           </div>
         </div>
-
-        <PersonalizedHome />
 
         <EmployerJobPerformance />
 

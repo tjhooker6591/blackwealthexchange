@@ -1,11 +1,15 @@
 // src/components/dashboards/PersonalizedHome.tsx
 //
 // P4-01 Personalized Home + P4-07 Recommendations UI.
-// Shared strip rendered at the top of every role dashboard
-// (User/Business/Employer/Seller). Fetches /api/personalization/home,
-// which is grounded entirely in Person360 + real activity + real
-// recommendation matches. Renders honest empty states when there isn't
-// enough data yet -- never invented numbers or picks.
+// Rendered at the top of the consumer (User) dashboard. Fetches
+// /api/personalization/home, which is grounded entirely in Person360 +
+// real activity + real recommendation matches. Person360 is anchored to
+// users._id, so this only applies to accountType "user" sessions --
+// Business/Employer/Seller logins authenticate as their own collection's
+// row and get their own tailored panels instead (BusinessGrowthCenter,
+// EmployerJobPerformance, CreatorPerformance). Renders honest empty
+// states when there isn't enough data yet -- never invented numbers or
+// picks.
 
 "use client";
 
