@@ -5,13 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Head from "next/head";
 import { canonicalUrl, getBaseUrl, truncateMeta } from "@/lib/seo";
-import {
-  Search,
-  ShoppingBag,
-  BriefcaseBusiness,
-  GraduationCap,
-  Sparkles,
-} from "lucide-react";
+import { Search, ShoppingBag } from "lucide-react";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
@@ -253,12 +247,7 @@ const EconomicImpactSimulator = () => {
   );
 };
 
-type HomeSearchScope =
-  | "all"
-  | "directory"
-  | "marketplace"
-  | "jobs"
-  | "students";
+type HomeSearchScope = "directory" | "marketplace";
 
 const HOME_SCOPE_CONFIG: Record<
   HomeSearchScope,
@@ -271,14 +260,6 @@ const HOME_SCOPE_CONFIG: Record<
     destinationLabel: string;
   }
 > = {
-  all: {
-    label: "All BWE",
-    placeholder: "Search businesses, products, jobs, opportunities...",
-    href: "/search",
-    queryBuilder: (q) => ({ q }),
-    icon: Sparkles,
-    destinationLabel: "Search all of BWE",
-  },
   directory: {
     label: "Directory",
     placeholder: "Search Black-owned businesses...",
@@ -300,22 +281,6 @@ const HOME_SCOPE_CONFIG: Record<
     queryBuilder: (q) => ({ q }),
     icon: ShoppingBag,
     destinationLabel: "Open marketplace",
-  },
-  jobs: {
-    label: "Jobs",
-    placeholder: "Search jobs...",
-    href: "/job-listings",
-    queryBuilder: (q) => ({ q }),
-    icon: BriefcaseBusiness,
-    destinationLabel: "Open jobs",
-  },
-  students: {
-    label: "Student Opportunities",
-    placeholder: "Search scholarships, internships, grants...",
-    href: "/black-student-opportunities",
-    queryBuilder: (q) => ({ q }),
-    icon: GraduationCap,
-    destinationLabel: "Open student hub",
   },
 };
 
@@ -831,7 +796,7 @@ export default function Home() {
                   <div
                     role="tablist"
                     aria-label="Homepage search scopes"
-                    className="mb-2 grid grid-cols-2 gap-2 text-left sm:grid-cols-4"
+                    className="mb-2 grid grid-cols-2 gap-2 text-left"
                   >
                     {(
                       Object.entries(HOME_SCOPE_CONFIG) as Array<
@@ -908,22 +873,22 @@ export default function Home() {
                 </div>
 
                 <div className="grid w-full gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
-                  <Link
-                    href={activeScopeConfig.href}
-                    className="w-full"
-                    onClick={() =>
+                  <button
+                    type="button"
+                    className="bwe-cta-primary bwe-focus-ring h-12 w-full px-6"
+                    onClick={() => {
                       trackHomepageEvent("homepage_cta_clicked", {
                         section: "hero",
                         ctaId: `hero_open_${activeScope}`,
                         ctaLabel: activeScopeConfig.destinationLabel,
                         destination: activeScopeConfig.href,
-                      })
-                    }
+                        query: searchQuery.trim(),
+                      });
+                      submitHomepageSearch("hero_primary_cta");
+                    }}
                   >
-                    <button className="bwe-cta-primary bwe-focus-ring h-12 w-full px-6">
-                      {activeScopeConfig.destinationLabel}
-                    </button>
-                  </Link>
+                    {activeScopeConfig.destinationLabel}
+                  </button>
                   <Link
                     href="/start-here"
                     className="w-full sm:w-auto"
