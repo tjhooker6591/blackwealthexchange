@@ -577,6 +577,65 @@ STATUS:
 
 - `COMPLETE`
 
+## 26. Post-Phase-4 corrective — homepage search query-loss regression fixed, hero simplified
+
+DATE:
+
+- `2026-09-05`
+
+TRIGGER:
+
+- Owner report, post-Phase-4: the homepage "All BWE" search was failing -- after submitting a term, `/search` showed "Enter a search term to get started" and returned nothing.
+
+ROOT CAUSE (confirmed live with Playwright against the running dev server, not just code review):
+
+- `src/pages/index.tsx`'s homepage hero has two ways to submit a search: a small "Search" button inside the input row (correctly wired to `submitHomepageSearch` → `runSearch`, which attaches the typed query via each scope's `queryBuilder`), and a large, visually primary full-width CTA button below it (labeled "Search all of BWE" / "Open Directory" / "Open Marketplace" depending on the active scope tab). That primary CTA was a static `<Link href={activeScopeConfig.href}>` -- a bare navigation to the destination path that never included the typed query at all. A visitor who typed a term and clicked the prominent primary CTA (the natural action) had their query silently dropped, landing on `/search` (or `/business-directory`, or `/marketplace`) with no query string. Confirmed the same static-href defect existed for every scope, not only "All BWE" -- Directory and Marketplace were equally affected before this fix. This was a pre-existing defect in `index.tsx`, not something introduced by the Phase 4 personalization work (`git diff fa0bab7..9d96ce9 -- src/pages/index.tsx` is empty); it was simply reported and diagnosed in this post-Phase-4 session.
+
+WHAT "ALL BWE" ACTUALLY SEARCHES:
+
+- `/search` (`src/pages/search.tsx`) + `/api/search/universal` (`src/lib/search/universalSearch.ts`) -- a real cross-domain search over `businesses`, `products`, `jobs`, and the student-hub opportunity catalog, reusing the existing `publicBusinessBaseQuery`/`buildPublicMarketplaceVisibilityFilter`/`getStudentHubResolvedCatalog` visibility rules (no parallel search system, no fabricated results). Confirmed still fully functional with real data (verified live: `q=food` → 20 real cross-domain results; `q=developer` → real job postings including "Web developer", "Full-Stack Developer (React / Next.js + MongoDB)"; `q=NSBE` → real student-hub results).
+
+FIX (`src/pages/index.tsx` only):
+
+- The primary hero CTA is now a real `<button>` that calls `submitHomepageSearch` (the same handler the small Search button and Enter key already used), so it always carries the typed query through the active scope's `queryBuilder`. An empty query still just opens the destination unfiltered -- unchanged, intentional "browse without searching" behavior.
+- Per explicit scope decision, the homepage hero was simplified from five scope tabs (`all`, `directory`, `marketplace`, `jobs`, `students`) to exactly two: **Directory** and **Marketplace**. `HomeSearchScope` and `HOME_SCOPE_CONFIG` now only contain those two entries; the tab grid renders 2 columns instead of 4.
+- Universal search (`/search`, `/api/search/universal`) was NOT removed or degraded -- only removed as one of the homepage hero's quick-scope tabs, per instruction, since it still provides useful, working cross-domain search and remains directly reachable.
+- Jobs and Student Opportunities were NOT removed from the platform -- only removed as homepage-hero scope tabs. Both remain fully reachable through their dedicated pages (`/job-listings`, `/black-student-opportunities`, unaffected -- still linked from the homepage's `HOME_PATHWAYS` grid and global nav) and through universal search (`/search`, confirmed above).
+- `/search` already correctly distinguished a missing-query state ("Enter a search term to get started.") from a real no-results state ("No results found for \"...\"." with browse-elsewhere links) -- verified live with a real, deliberately-unmatched query; no change was needed there.
+
+VALIDATION:
+
+- `npm run typecheck`: PASS (clean before and after).
+- `npm run build`: PASS (production build clean).
+- `npm run smoke:local`: PASS (`6/6`).
+- `node scripts/p2-regression-check.mjs`: PASS (`26/26`).
+- `npm run check:vertical-regression`: PASS (`10/10`).
+- Runtime/search proof: no dedicated "search tests" npm script exists in this repo, so a Playwright-driven regression suite was written and run directly against the live dev server (`tmp/search-regression-suite.mjs`, not committed -- local validation artifact only, consistent with the repo's existing `tmp/*.mjs` proof-script convention). `13/13` checks passed, covering: Directory hero search carries the query and returns real filtered results ("hair" → "Alodia Hair Care", "CurlyKids Hair Care"); Marketplace hero search carries the query and returns real filtered results ("Pamfa" → "Pamfa sneakers" $150.00); the hero now shows exactly the Directory and Marketplace tabs; `/search` returns real results for a real query; `/search` results span multiple domains; `/search` with no query shows the missing-query state; `/search` with a real but unmatched query shows the no-results state (not the missing-query state); `/job-listings` and `/black-student-opportunities` load directly; universal search surfaces real jobs-domain and real student-opportunity-domain results. Root cause was reproduced live with the same tool before the fix (primary CTA landed on the bare destination path with no query, for Directory, Marketplace, and "All BWE" alike) and confirmed resolved after.
+
+FILES:
+
+- `src/pages/index.tsx` (modified only -- primary CTA now submits via `submitHomepageSearch`; `HomeSearchScope`/`HOME_SCOPE_CONFIG` reduced to `directory`/`marketplace`; unused `BriefcaseBusiness`/`GraduationCap`/`Sparkles` icon imports removed)
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` -- single-file, additive-behavior fix (the primary CTA now does strictly more than before: it does everything the static link did, plus carries the query). No auth/payment/marketplace/directory/jobs/student/creator/Black Card/Wealth Builder/support/admin behavior changed. No DB/index/API changes. `/search` and `/api/search/universal` are unmodified. Not merged to main, not deployed to production, no live Stripe action taken, no history rewritten.
+
+CONTROL UPDATES:
+
+- No program-board item state changes. Phase 4 remains `COMPLETE` (ledger entry #25) -- this is a corrective fix to a pre-existing homepage defect discovered post-closure, not a reopening of any P4-01–P4-09 item. Phase 5 remains not started.
+
+WHETHER PHASE 4 IS NOW TRULY COMPLETE:
+
+- `YES`. This regression was pre-existing in `src/pages/index.tsx` (present at commit `fa0bab7`, before any Phase 4 work began) and was independent of the Phase 4 personalization scope (P4-01 through P4-09), which never touched `index.tsx` or the search stack. Phase 4's own capabilities (`docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #25) are unaffected by this fix and remain `COMPLETE`.
+
+RUNTIME COMMIT:
+
+- `792baba`
+
+STATUS:
+
+- `COMPLETE`
+
 ## 13. Local runtime incident resolution rule
 
 DATE:
