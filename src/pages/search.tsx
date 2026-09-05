@@ -305,7 +305,7 @@ export default function UniversalSearch() {
                       ) : null}
                       {result.trust?.claimed ? (
                         <span className="rounded-full border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[10px] font-semibold text-sky-300">
-                          Claimed
+                          Ownership Verified
                         </span>
                       ) : null}
                       {result.trust?.sponsored ? (

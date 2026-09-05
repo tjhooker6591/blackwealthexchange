@@ -1143,8 +1143,13 @@ export default function BusinessDirectory({
       (r as any).listingStatus || (r as any).trustStatus || (r as any).status,
     ).toLowerCase();
     const ownershipState = resolveDirectoryOwnershipState(r as any);
+    const ownershipVerified = ownershipState.isOwnershipVerified;
+    // Distinct from ownership/claim verification: a business can carry a
+    // separate "verified" signal (isVerified/verified/status) without ever
+    // having gone through the ownership-claim flow. Keep them separate so
+    // "Ownership Verified" is never shown for a business that only has the
+    // generic verification signal.
     const verified =
-      ownershipState.isOwnershipVerified ||
       (r as any).isVerified === true ||
       (r as any).verified === true ||
       status === "verified";
@@ -1179,6 +1184,7 @@ export default function BusinessDirectory({
 
     return {
       verified,
+      ownershipVerified,
       approved,
       sponsored,
       isComplete,
@@ -2349,9 +2355,15 @@ export default function BusinessDirectory({
                             </Link>
 
                             <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                              {getTrustMeta(item as Row).verified ? (
+                              {getTrustMeta(item as Row).ownershipVerified ? (
                                 <span className="rounded-full border border-emerald-400/30 bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
                                   Ownership Verified
+                                </span>
+                              ) : null}
+                              {getTrustMeta(item as Row).verified &&
+                              !getTrustMeta(item as Row).ownershipVerified ? (
+                                <span className="rounded-full border border-teal-400/30 bg-teal-400/15 px-2 py-0.5 text-[10px] font-bold text-teal-200">
+                                  Verified
                                 </span>
                               ) : null}
                               {getTrustMeta(item as Row).claimStage ===
@@ -2434,7 +2446,7 @@ export default function BusinessDirectory({
                                 const businessId = safeStr((item as any)._id);
                                 const canClaim =
                                   Boolean(businessId) &&
-                                  !trustMeta.verified &&
+                                  !trustMeta.ownershipVerified &&
                                   ![
                                     "claim_initiated",
                                     "ownership_verification_pending",
@@ -2457,7 +2469,7 @@ export default function BusinessDirectory({
 
                                 return (
                                   <span className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-[11px] font-bold text-white/55">
-                                    {trustMeta.verified
+                                    {trustMeta.ownershipVerified
                                       ? "Already Verified"
                                       : trustMeta.claimStage ===
                                             "claim_initiated" ||
