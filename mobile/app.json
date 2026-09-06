@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "name": "Black Wealth Exchange",
+    "slug": "bwe-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "scheme": "bwe",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.blackwealthexchange.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "BWE uses your location, only when you choose to, to find nearby Black-owned businesses. Location is never collected without your explicit permission."
+      }
+    },
+    "android": {
+      "package": "com.blackwealthexchange.app",
+      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
+    }
+  }
+}

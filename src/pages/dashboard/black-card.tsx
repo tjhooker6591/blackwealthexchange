@@ -6,6 +6,7 @@ import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import { getJwtSecret } from "@/lib/env";
 import PremiumDigitalCard from "@/components/black-card/PremiumDigitalCard";
+import MembershipQrCode from "@/components/black-card/MembershipQrCode";
 
 type MemberSummaryResponse = {
   ok: boolean;
@@ -144,6 +145,9 @@ export default function BlackCardDashboardPage() {
                         </a>
                       </div>
                     </div>
+                    {verificationUrl ? (
+                      <MembershipQrCode verificationUrl={verificationUrl} />
+                    ) : null}
                     <button
                       onClick={() => setShowPhonePanel(true)}
                       className="w-full rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-black"
