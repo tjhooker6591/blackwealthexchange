@@ -38,6 +38,7 @@ import {
   isFoundingMembershipProductKey,
 } from "@/lib/founding-membership";
 import { getMongoDbName } from "@/lib/env";
+import { logHealthEvent } from "@/lib/observability/logHealthEvent";
 import { requireStripeSecretKey } from "@/lib/stripeSecret";
 import { sendEmail } from "@/lib/sendEmail";
 import {
@@ -2891,6 +2892,19 @@ export default async function webhookHandler(
     return res.status(200).json({ received: true });
   } catch (err: any) {
     console.error("❌ Webhook fulfillment failed:", err?.message || err);
+    try {
+      const client = await clientPromise;
+      const db = client.db(getMongoDbName());
+      await logHealthEvent(db, {
+        component: "stripe_webhook",
+        route: "/api/stripe/webhook-handler",
+        status: "fail",
+        httpStatus: 500,
+        message: String(err?.message || err),
+      });
+    } catch {
+      // Observability must never mask the original failure.
+    }
     return res.status(500).end("Webhook fulfillment failed");
   }
 }

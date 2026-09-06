@@ -265,10 +265,48 @@ async function main() {
     `[alerts] scanned ${searches.length} alert-enabled saved searches, ${created} notification(s) ${DRY_RUN ? "would be " : ""}created.`,
   );
 
+  // Phase 7 -- Scale/Observability: record a real run summary so the
+  // existing system_health_logs dashboards (src/pages/api/admin/metrics/
+  // system-health.ts, src/pages/api/support/status.ts) show this
+  // background job actually ran, without a duplicate observability store.
+  if (!DRY_RUN) {
+    await db.collection("system_health_logs").insertOne({
+      component: "network_alerts_scan",
+      service: "network_alerts_scan",
+      route: null,
+      status: "ok",
+      httpStatus: null,
+      message: `Scanned ${searches.length} alert-enabled saved searches, created ${created} notification(s).`,
+      durationMs: Date.now() - now.getTime(),
+      meta: { searchesScanned: searches.length, notificationsCreated: created },
+      createdAt: new Date(),
+    });
+  }
+
   await client.close();
 }
 
-main().catch((err) => {
+main().catch(async (err) => {
   console.error("[network-alerts-scan] failed:", err);
+  try {
+    const uri = mongoUri();
+    if (uri) {
+      const client = new MongoClient(uri);
+      await client.connect();
+      const db = client.db(process.env.MONGODB_DB || "bwes-cluster");
+      await db.collection("system_health_logs").insertOne({
+        component: "network_alerts_scan",
+        service: "network_alerts_scan",
+        route: null,
+        status: "fail",
+        httpStatus: null,
+        message: err?.message || String(err),
+        createdAt: new Date(),
+      });
+      await client.close();
+    }
+  } catch {
+    // Observability must never mask the original failure.
+  }
   process.exit(1);
 });

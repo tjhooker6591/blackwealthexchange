@@ -16,6 +16,7 @@ import {
   SESSION_TTL_LABEL,
   SESSION_TTL_SECONDS,
 } from "@/lib/authCookiePolicy";
+import { logHealthEvent } from "@/lib/observability/logHealthEvent";
 
 interface UserRecord {
   _id: ObjectId;
@@ -296,6 +297,20 @@ export default async function handler(
     });
   } catch (err) {
     console.error("Login handler unexpected error:", err);
+    try {
+      const client = await clientPromise;
+      const db = client.db(getMongoDbName());
+      await logHealthEvent(db, {
+        component: "auth",
+        service: "login",
+        route: "/api/auth/login",
+        status: "fail",
+        httpStatus: 500,
+        message: err instanceof Error ? err.message : String(err),
+      });
+    } catch {
+      // Observability must never mask the original failure.
+    }
     return res
       .status(500)
       .json({ success: false, error: "Internal Server Error" });

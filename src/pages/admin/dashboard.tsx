@@ -872,6 +872,12 @@ const AdminDashboard = ({
             >
               Economic Impact Engine →
             </Link>
+            <Link
+              href="/admin/observability"
+              className="inline-flex w-fit items-center rounded border border-gray-700 bg-gray-900 px-3 py-2 text-xs hover:bg-gray-700"
+            >
+              Scale &amp; Observability →
+            </Link>
           </div>
         </div>
 
