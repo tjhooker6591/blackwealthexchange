@@ -858,6 +858,68 @@ STATUS:
 
 - `COMPLETE`
 
+## 30. Checkout defect fix — conflicting canonicalSchemaVersion update (Stripe/MongoDB error code 40)
+
+DATE:
+
+- `2026-09-06`
+
+TRIGGER:
+
+- Owner-confirmed defect sync request: Stripe checkout on this machine had been failing at the order-upsert step with `MongoServerError: Updating the path 'canonicalSchemaVersion' would create a conflict at 'canonicalSchemaVersion'` (MongoDB error code 40).
+
+FILE:
+
+- `src/lib/checkout/createProductCheckoutSession.ts`
+
+ROOT CAUSE:
+
+- The `orders` collection `updateOne(..., { upsert: true })` call in `createProductCheckoutSessionCore` wrote `canonicalSchemaVersion: 1` under both `$setOnInsert` and `$set` in the same update document. MongoDB rejects a field being targeted by two different update operators in one call, since `$set` would attempt to overwrite a field `$setOnInsert` had just conditionally set, producing a genuine path conflict on every checkout attempt that hit this upsert.
+
+CORRECTION APPLIED:
+
+- Removed the duplicate `canonicalSchemaVersion: 1,` line from the `$set` block only. It remains, unchanged, under `$setOnInsert` -- so the field is still stamped exactly once, on initial order-document creation, and is never touched again on subsequent updates to that order. No other field in either block was changed.
+
+DIFF:
+
+```diff
+--- a/src/lib/checkout/createProductCheckoutSession.ts
++++ b/src/lib/checkout/createProductCheckoutSession.ts
+@@ -416,7 +416,6 @@ export async function createProductCheckoutSessionCore({
+         paid: false,
+       },
+       $set: {
+-        canonicalSchemaVersion: 1,
+         productId: product._id,
+         sellerId: seller._id,
+         businessId: businessAttribution.businessId,
+```
+
+VALIDATION:
+
+- Localhost checkout previously confirmed working end to end with this exact correction in place (owner-confirmed on this machine prior to this record).
+- `npm run typecheck`: PASS after the change.
+- Verified via `grep` that `canonicalSchemaVersion` now appears exactly once in the file, inside `$setOnInsert` only.
+
+WHAT WAS NOT CHANGED:
+
+- No Stripe secret keys, publishable keys, webhook secrets, or platform/seller Stripe account IDs were touched.
+- No seller records, business records, or any other MongoDB document/collection was modified.
+- No other checkout logic, pricing/fee/split calculation, inventory handling, or order-state logic in this file was changed -- the diff is a single one-line deletion.
+- Phase 5 -- Network Effects remains `COMPLETE` (ledger entry #29); all Phase 5 commits are preserved unchanged at this commit's parent.
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` -- single-line deletion removing a duplicate field assignment that was causing every affected checkout to hard-fail; strictly reduces failure surface, changes no other behavior. Not merged to main, not deployed to production, not pushed to any remote.
+
+RUNTIME COMMIT:
+
+- `c6db008`
+
+STATUS:
+
+- `COMPLETE`
+
 ## 13. Local runtime incident resolution rule
 
 DATE:
