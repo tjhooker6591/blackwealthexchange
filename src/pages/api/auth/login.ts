@@ -28,7 +28,13 @@ interface UserRecord {
   [key: string]: unknown;
 }
 
-const ADMIN_EMAIL = "blackwealth24@gmail.com";
+function isAllowlistedAdminEmail(email: string): boolean {
+  const allow = (process.env.ADMIN_EMAILS || "")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+  return Boolean(allow.length && allow.includes(email.toLowerCase()));
+}
 
 function normalizeEmail(email: string) {
   return (email || "").trim().toLowerCase();
@@ -218,8 +224,17 @@ export default async function handler(
       .collection<UserRecord>("users")
       .findOne({ email: emailNorm }, { projection: { isAdmin: 1 } });
 
+    // Phase 8 -- P8-AUTH-003 Identity Fortress. Admin status must come from
+    // the canonical users.isAdmin DB flag or the operator-controlled
+    // ADMIN_EMAILS env allowlist (same mechanism adminAuth.ts uses to
+    // re-verify every admin request) -- never from a hardcoded email
+    // string baked into source. A hardcoded admin email is a
+    // self-registrable privilege escalation path: signup.ts does not
+    // verify mailbox ownership, so anyone could have created an account
+    // matching that literal string and been granted isAdmin:true at
+    // login regardless of their real DB record.
     const isAdmin =
-      emailNorm === normalizeEmail(ADMIN_EMAIL) ||
+      isAllowlistedAdminEmail(emailNorm) ||
       canonicalUser?.isAdmin === true ||
       user.isAdmin === true;
 
