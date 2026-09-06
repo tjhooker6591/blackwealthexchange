@@ -18,6 +18,7 @@ import {
   isPublicMarketplaceSellerProfileComplete,
 } from "@/lib/marketplace/publicCatalog";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
+import useAuth from "@/hooks/useAuth";
 
 interface Product {
   _id: string;
@@ -64,8 +65,11 @@ const ProductDetailPage = ({
   const router = useRouter();
   const { id } = router.query;
   const routeId = typeof id === "string" ? id : initialProductId;
+  const { user } = useAuth({ silentOnPublic: false });
 
   const [product, setProduct] = useState<Product | null>(initialProduct);
+  const [saved, setSaved] = useState(false);
+  const [saveBusy, setSaveBusy] = useState(false);
   const [loading, setLoading] = useState(
     initialProductId ? false : !initialProduct,
   );
@@ -187,6 +191,46 @@ const ProductDetailPage = ({
     if (!product?._id) return;
     loadReviews(product._id);
   }, [product?._id]);
+
+  useEffect(() => {
+    if (!product?._id || !user) {
+      setSaved(false);
+      return;
+    }
+    fetch("/api/user/save-product", { credentials: "include" })
+      .then((r) => (r.ok ? r.json() : { products: [] }))
+      .then((data) => {
+        const list: Array<{ productId: string }> = data?.products || [];
+        setSaved(list.some((item) => item.productId === product._id));
+      })
+      .catch(() => null);
+  }, [product?._id, user]);
+
+  async function toggleSaveProduct() {
+    if (!product?._id) return;
+    if (!user) {
+      router.push(`/login?next=${encodeURIComponent(router.asPath)}`);
+      return;
+    }
+    setSaveBusy(true);
+    try {
+      const res = await fetch("/api/user/save-product", {
+        method: saved ? "DELETE" : "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: product._id }),
+      });
+      if (res.ok) {
+        setSaved(!saved);
+        trackMarketplaceProductEvent(
+          saved ? "product_unsaved" : "product_saved",
+          {},
+        );
+      }
+    } finally {
+      setSaveBusy(false);
+    }
+  }
 
   async function handleSubmitReview() {
     if (!product?._id) return;
@@ -431,9 +475,23 @@ const ProductDetailPage = ({
                 <h1 className="bwe-section-title mt-2 max-w-xl">
                   {productName}
                 </h1>
-                <p className="mt-3 text-2xl font-semibold text-white sm:text-3xl">
-                  ${Number(product.price || 0).toFixed(2)}
-                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <p className="text-2xl font-semibold text-white sm:text-3xl">
+                    ${Number(product.price || 0).toFixed(2)}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={toggleSaveProduct}
+                    disabled={saveBusy}
+                    className={`inline-flex items-center justify-center rounded-xl px-3 py-1.5 text-xs font-semibold transition disabled:opacity-60 ${
+                      saved
+                        ? "border border-yellow-500/40 bg-yellow-500/15 text-yellow-200"
+                        : "border border-white/10 bg-white/5 text-white/85 hover:bg-white/10"
+                    }`}
+                  >
+                    {saved ? "Saved" : "Save"}
+                  </button>
+                </div>
                 {reviewSummary.count > 0 ? (
                   <button
                     type="button"
