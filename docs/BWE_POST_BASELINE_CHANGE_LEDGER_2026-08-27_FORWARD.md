@@ -996,6 +996,81 @@ STATUS:
 
 - `COMPLETE`
 
+## 32. PHASE 7 — AI / MOBILE / SCALE — substantially complete, blocked on real external/environment gates
+
+DATE:
+
+- `2026-09-06`
+
+WORKSTREAM:
+
+- `PHASE 7 -- AI / MOBILE / SCALE (9 assigned capabilities)`
+
+STATUS:
+
+- `PARTIAL -- NOT FORMALLY CLOSED`. 7 of 9 capabilities are complete and verified end to end against the live database. The remaining 2 (Native iOS, Native Android) have their entire internally-achievable scope complete and verified (real source tree, real API integration, real `tsc` compile proof), but cannot be marked complete because this machine has no way to build/run them on a simulator or emulator -- Xcode is Command Line Tools only (no Simulator runtime) and there is no Android SDK/emulator at all. Mobile Wallet is split: QR-code verification is complete and proven; actual Apple/Google Wallet pass issuance is blocked by real missing owner credentials (not attempted, not faked). Per the phase's own closure rule ("do not call an unverified external capability complete"), Phase 7 is **not** marked COMPLETE and Phase 8 is **not** started.
+
+SCOPE AND STATUS OF ALL 9 CAPABILITIES:
+
+1. **BWE AI Mode** -- `COMPLETE`. `src/lib/ai/{intent,grounding,answer}.ts` + `POST /api/v1/ai/mode.ts`, rebuilt `src/pages/search/ai.tsx` (previously an orphaned page with fake "AI Summary" copy that called no AI system at all). Grounded exclusively in real BWE data (universal search, Student Hub, the Phase 6 Economic Impact Engine, the caller's own Phase 5 saved data, a static real capability index) -- never fabricates a business/product/job/opportunity/economic figure. Works fully with zero AI provider credentials (deterministic structured answers); an optional OpenAI prose layer activates only if `OPENAI_API_KEY` is configured (it is not, in this environment), and the response always honestly reports `answerSource: "structured" | "ai"`.
+2. **Natural-Language Economic Discovery** -- `COMPLETE`. All 5 example queries from the brief verified end to end against the live database: "products under $50" and "scholarships closing soon" and "how much verified economic activity has BWE measured" return real matches; "restaurants near Atlanta" and "jobs match technology leadership" honestly return no match (real, verified absence of data -- not a bug; see Validation).
+3. **Native iOS** -- `PARTIAL / NOT VERIFIED ON DEVICE OR SIMULATOR`. Real Expo/React Native TypeScript source tree at `mobile/` (11 screens, shared auth, navigation). `npm install` (855 packages) and `npx tsc --noEmit` both succeed cleanly -- the actual, provable verification available in this environment. Has **not** been run through `expo prebuild`/Xcode, has **not** launched in an iOS Simulator. No App Store submission of any kind exists or is implied.
+4. **Native Android** -- `PARTIAL / NOT VERIFIED ON DEVICE OR EMULATOR`. Same shared source tree as iOS (React Native is cross-platform by design) -- same `tsc` proof. Has **not** run on an Android emulator (no Android SDK/`adb`/emulator present in this environment at all -- confirmed via `which adb`/`sdkmanager` returning nothing). No Play Store submission of any kind exists or is implied.
+5. **Mobile Wallet / Black Card** -- `PARTIAL`. The existing member-summary API already had unused `card.qrPayload` and `card.walletPassState: "planned"` fields (`src/pages/api/black-card/member-summary.ts`) -- this phase completes the real half of that plan: a scannable QR code of the member's real, already-existing verification URL (`src/components/black-card/MembershipQrCode.tsx` on web, `mobile/src/screens/WalletScreen.tsx` on mobile), proven end to end. Actual Apple Wallet (`.pkpass`) / Google Wallet pass issuance needs real owner-provided credentials (Apple Pass Type ID certificate + WWDR certificate; Google Wallet issuer account + service account key) that do not exist in this environment -- `POST /api/v1/black-card/wallet/{apple,google}-pass.ts` check for those exact env vars and return an honest `501` naming the missing credential, confirmed via runtime proof, rather than fabricating a working integration.
+6. **Location-Aware Discovery** -- `COMPLETE`. No business in the `businesses` collection stores latitude/longitude, so this converts the browser's real, explicitly-opted-in coordinates (`src/components/location/UseMyLocationButton.tsx`) via free OpenStreetMap Nominatim reverse geocoding (`src/lib/location/reverseGeocode.ts`, no API key needed/available) into city/state text that feeds BWE's existing text-based directory search -- not a new coordinate-based search engine, no fabricated coordinates, nothing stored server-side. Wired into `/business-directory` and `/search/ai`. Denial/error states verified to degrade gracefully.
+7. **Mobile Business Management** -- `COMPLETE for the internally-achievable scope`, same iOS/Android simulator caveat as items 3-4. `mobile/src/screens/BusinessManagementScreen.tsx` calls the real `/api/user/managed-businesses` and `/api/business/updates` (Phase 5) endpoints -- identical server-side verified-ownership gate as the web app, not weakened for mobile.
+8. **API Platform** -- `COMPLETE`. `scripts/generate-api-inventory.mjs` produces a real, regenerable inventory of all 295 API routes (`docs/API_PLATFORM_INVENTORY.md`); `docs/API_PLATFORM.md` documents the 3 auth models in active use, establishes `/api/v1/` + a `{ok, data|error}` envelope for new routes without rewriting the 295 existing stable ones, and points at the existing shared rate limiter (`src/lib/apiRateLimit.ts`). The Bearer-token auth extension to `src/lib/network/shared.ts#getNetworkSession` (used by 13 existing Phase 5/6 routes) is the concrete "shared authentication" backbone every mobile/AI feature in this phase is built on.
+9. **Scale / Observability** -- `COMPLETE`. The `system_health_logs` collection already existed and was already read by three dashboards (`system-health.ts`, `adminSnapshot.ts`, `support/status.ts`) but nothing ever wrote to it. `src/lib/observability/logHealthEvent.ts` closes that loop, wired into Stripe webhook failures, login failures, and every alert-scan run (`scripts/network-alerts-scan.mjs`, now recording a real ok/fail run summary). New `/admin/observability.tsx` dashboard and public `/api/health.ts` (real MongoDB ping, no fabricated uptime/SLA percentage).
+
+PHASE 5 ALERT SCHEDULER:
+
+- `.github/workflows/network-alerts-scan.yml` schedules `npm run network:alerts-scan` via the same GitHub Actions infrastructure this repo already runs CI on (`.github/workflows/ci.yml`), on a 6-hour cron plus manual dispatch. YAML syntax validated with `js-yaml`; the underlying script re-verified via `npm run network:alerts-scan:dry-run` against the live database. **This does not mean alerts are running on a schedule.** Three real owner actions remain, documented in the workflow file itself: (1) this branch/repo must be pushed to GitHub with Actions enabled, (2) `MONGODB_URI` (and `MONGODB_DB` if non-default) must be added as GitHub repository secrets, (3) the cron cadence should be confirmed. Job/Scholarship/Product alerts are explicitly **not** claimed to be automatically scheduled until those three steps are done.
+
+TRUTH REQUIREMENT -- HOW IT WAS ENFORCED:
+
+- AI Mode never invents a result; every grounded fact traces to a real collection or a real static route list, and the "saved" domain resolver never returns another user's data (proven via runtime test: user B's AI Mode query returns zero of user A's saved businesses).
+- No fabricated uptime/SLA percentage anywhere in the observability surfaces.
+- No fabricated wallet-pass issuance; both wallet endpoints return a real `501` naming the exact missing credential.
+- No claim of App Store/Play Store publication, simulator/emulator execution, or native build success -- all three are explicitly and repeatedly called out as NOT verified in `mobile/README.md` and this record.
+
+PRESERVED UNCHANGED:
+
+- Homepage, `/explore`, Featured Sponsors, header/footer, auth/session, directory, universal search, marketplace, Stripe checkout, jobs, student opportunities, business claims/verification, advertising, Black Card, Wealth Builder, Phase 4 personalization, Phase 5 Network Effects, Phase 6 Economic Intelligence. No auth weakened -- Bearer support is strictly additive (cookie flow untouched); wallet endpoints require a real session; AI Mode's saved-data path requires a real session.
+
+VALIDATION:
+
+- `npm run typecheck` (web): PASS, checked after every commit.
+- `npx tsc --noEmit` (mobile/): PASS -- 855 real packages installed, zero type errors.
+- `npm run build`: PASS (clean production build, exit code 0).
+- `npm run smoke:local`: PASS (`6/6`).
+- `node scripts/p2-regression-check.mjs`: PASS (`26/26`).
+- `npm run check:vertical-regression`: PASS (`10/10`).
+- Natural-language discovery proof: all 5 example queries from the brief tested live against the real database (see capability 2 above); the 2 "no match" cases were independently confirmed honest by direct database queries (1,041 real "restaurant" businesses exist nationally but none of the top-50-by-relevance are in Atlanta/GA; none of the 6 real approved jobs mention "technology" or "leadership").
+- `tmp/phase7-runtime-proof.mjs` (not committed -- local validation artifact only), run against the live server + real database with two real seeded QA accounts: `11/11` checks passed -- Bearer login token issuance, `/api/auth/me` via Bearer with no cookie, a real Phase 5 save-business call via Bearer, AI Mode "saved" domain returning the correct user's own data, the same query for a second user returning zero of the first user's data (data isolation), the same query with no session requiring auth and exposing nothing, both wallet endpoints honestly reporting missing credentials, the wallet endpoint requiring auth, and real Atlanta reverse-geocoding. All test data cleaned up afterward.
+
+FILES:
+
+- New: `src/lib/ai/{intent,grounding,answer}.ts`, `src/lib/platformCapabilities.ts`, `src/lib/observability/logHealthEvent.ts`, `src/lib/location/reverseGeocode.ts`, `src/components/location/UseMyLocationButton.tsx`, `src/components/black-card/MembershipQrCode.tsx`, `src/pages/api/v1/ai/mode.ts`, `src/pages/api/v1/location/reverse-geocode.ts`, `src/pages/api/v1/black-card/wallet/{apple,google}-pass.ts`, `src/pages/api/health.ts`, `src/pages/admin/observability.tsx`, `scripts/generate-api-inventory.mjs`, `docs/API_PLATFORM.md`, `docs/API_PLATFORM_INVENTORY.md`, `.github/workflows/network-alerts-scan.yml`, the entire `mobile/` Expo/React Native app (24 files).
+- Modified: `src/lib/network/shared.ts` (Bearer support), `src/pages/api/auth/{login,me}.ts` (Bearer support), `src/pages/api/stripe/webhook-handler.ts` + `src/pages/api/auth/login.ts` (observability logging), `src/pages/api/admin/metrics/system-health.ts` (additive fields only), `src/pages/admin/dashboard.tsx` (2 additive links), `src/pages/business-directory.tsx` + `src/pages/search/ai.tsx` (location button), `src/pages/dashboard/black-card.tsx` (QR code), `src/pages/api/black-card/member-summary.ts` (Bearer support), `src/components/NavBar.tsx` (AI Mode link), `scripts/network-alerts-scan.mjs` (run-summary logging), `package.json`/`package-lock.json` (`qrcode.react` dependency).
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` -- no Stripe/payment action taken, no auth weakened, no existing collection's write shape changed except additive fields. Not merged to main, not deployed to production, not pushed to any remote.
+
+CONTROL UPDATES:
+
+- `PHASE 7 -- AI / MOBILE / SCALE: PARTIAL -- 7 of 9 capabilities complete and verified; Native iOS and Native Android are source-complete and type-check-verified but not simulator/emulator-verified (no Xcode Simulator or Android SDK/emulator in this environment); Mobile Wallet pass issuance is blocked by real missing owner credentials.`
+- `PHASE 8 -- FORTRESS SECURITY & ADVERSARIAL ASSURANCE: NOT STARTED, NOT AUTHORIZED TO START -- Phase 7 external/environment gates remain open.`
+- Owner-required next steps to close Phase 7 fully: (1) run `mobile/` through `expo prebuild` + Xcode on a machine with full Xcode installed, and through an Android Studio/SDK+emulator setup, to get real simulator/emulator proof; (2) obtain Apple Pass Type ID + WWDR certificates and/or a Google Wallet issuer account + service account key if real wallet-pass issuance is wanted; (3) push this branch to GitHub and add the `MONGODB_URI`/`MONGODB_DB` repository secrets to actually activate the alert-scan schedule; (4) optionally provide `OPENAI_API_KEY` to enable AI Mode's prose layer (fully functional today without it).
+
+RUNTIME COMMITS:
+
+- `82675b2`, `c27d06d`, `0db9e14`, `10a61da`, `1bb3f72`, `130a670`, `87ec07d`, `bafeb97`, `7a8ce04`
+
+STATUS:
+
+- `PARTIAL -- NOT FORMALLY CLOSED (see CONTROL UPDATES)`
+
 ## 13. Local runtime incident resolution rule
 
 DATE:
