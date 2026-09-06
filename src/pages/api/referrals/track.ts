@@ -23,8 +23,12 @@ function getIp(req: NextApiRequest) {
 async function ensureIndexes(db: any) {
   await db
     .collection("referral_events")
-    .createIndex({ code: 1, event: 1, createdAt: -1 });
-  await db.collection("referral_events").createIndex({ ip: 1, createdAt: -1 });
+    .createIndex({ code: 1, event: 1, createdAt: -1 })
+    .catch(() => null);
+  await db
+    .collection("referral_events")
+    .createIndex({ ip: 1, createdAt: -1 })
+    .catch(() => null);
 }
 
 export default async function handler(

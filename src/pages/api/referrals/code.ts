@@ -21,12 +21,18 @@ function makeCode(seed: string) {
 }
 
 async function ensureIndexes(db: any) {
+  // .catch(): an index matching this key already exists under a different
+  // auto-generated name on real data, which makes createIndex throw
+  // IndexOptionsConflict (code 85) instead of being a no-op -- discovered
+  // via Phase 5 runtime validation, since this crashed every real call.
   await db
     .collection("referral_codes")
-    .createIndex({ code: 1 }, { unique: true });
+    .createIndex({ code: 1 }, { unique: true })
+    .catch(() => null);
   await db
     .collection("referral_codes")
-    .createIndex({ ownerId: 1 }, { unique: true });
+    .createIndex({ ownerId: 1 }, { unique: true })
+    .catch(() => null);
 }
 
 function getSession(req: NextApiRequest): SessionPayload | null {
