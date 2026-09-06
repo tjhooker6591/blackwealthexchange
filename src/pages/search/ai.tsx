@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
+import UseMyLocationButton from "@/components/location/UseMyLocationButton";
 
 type SearchResult = {
   domain: string;
@@ -164,6 +165,20 @@ export default function AiModePage() {
               {loading ? "Asking…" : "Ask"}
             </button>
           </form>
+
+          <div className="mt-3 flex items-center gap-2">
+            <UseMyLocationButton
+              label="📍 Add my location"
+              onResolved={({ city }) => {
+                if (!city) return;
+                setQuery((prev) =>
+                  prev.trim()
+                    ? `${prev.trim()} near ${city}`
+                    : `businesses near ${city}`,
+                );
+              }}
+            />
+          </div>
 
           <div className="mt-3 flex flex-wrap gap-2">
             {EXAMPLE_QUERIES.map((example) => (

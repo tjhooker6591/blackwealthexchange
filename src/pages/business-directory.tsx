@@ -27,6 +27,7 @@ import {
 } from "@/lib/directory/queryState";
 import { publicBusinessBaseQuery } from "@/lib/directory/publicBusinessQuery";
 import { resolveBusinessImage } from "@/lib/imageResolver";
+import UseMyLocationButton from "@/components/location/UseMyLocationButton";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -1561,6 +1562,17 @@ export default function BusinessDirectory({
                     <SlidersHorizontal className="h-3.5 w-3.5" />
                     Filters are optional
                   </span>
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                  <UseMyLocationButton
+                    label="📍 Use my location"
+                    onResolved={({ city, state }) => {
+                      if (city) setInput(city);
+                      if (state) setStateFilter(state);
+                      setPage(1);
+                      setHasSearched(true);
+                    }}
+                  />
                 </div>
               </div>
 
