@@ -28,6 +28,10 @@ import {
 } from "@/lib/search/universalSearch";
 import { getStudentHubResolvedCatalog } from "@/lib/studentHub/repository";
 import { deriveStudentHubLifecycle } from "@/lib/studentHub/lifecycle";
+import {
+  buildPublicMarketplaceVisibilityFilter,
+  getPublicMarketplaceSellerName,
+} from "@/lib/marketplace/publicCatalog";
 import { resolveCommunityEconomicActivity } from "@/lib/economicImpact/communityEconomicActivity";
 import { resolveBlackCardImpact } from "@/lib/economicImpact/blackCardImpact";
 import { resolveJobCareerImpact } from "@/lib/economicImpact/jobCareerImpact";
@@ -119,6 +123,78 @@ async function groundOpportunityUrgent(
     relevanceScore: 0,
     data: record,
   }));
+}
+
+/**
+ * Product browse-by-price with no real search keyword ("show products
+ * under $50" -- "products" itself never appears verbatim in a listing, so
+ * resolveUniversalSearch's literal-substring match can't help here).
+ * Reuses the exact same visibility filter universalSearch.ts's own
+ * searchProductsDomain uses (buildPublicMarketplaceVisibilityFilter) so
+ * results match the same "what's really visible" rules -- just without
+ * requiring a non-empty query string.
+ */
+async function groundProductsByPrice(
+  db: Db,
+  minPriceCents: number | null,
+  maxPriceCents: number | null,
+  limit: number,
+): Promise<UniversalSearchResult[]> {
+  const priceFilter: Record<string, number> = {};
+  if (minPriceCents !== null) priceFilter.$gte = minPriceCents / 100;
+  if (maxPriceCents !== null) priceFilter.$lte = maxPriceCents / 100;
+
+  const docs = await db
+    .collection("products")
+    .find({
+      ...buildPublicMarketplaceVisibilityFilter(),
+      ...(Object.keys(priceFilter).length ? { price: priceFilter } : {}),
+    })
+    .sort({ isFeatured: -1, price: 1 })
+    .limit(limit)
+    .toArray();
+
+  const sellerIds = Array.from(
+    new Set(docs.map((d: any) => String(d.sellerId || "")).filter(Boolean)),
+  );
+  const sellers = sellerIds.length
+    ? await db
+        .collection("sellers")
+        .find({
+          $or: [{ userId: { $in: sellerIds } }, { _id: { $in: sellerIds } }],
+        } as any)
+        .toArray()
+    : [];
+  const sellerByKey = new Map<string, any>();
+  for (const seller of sellers as any[]) {
+    sellerByKey.set(String(seller._id), seller);
+    if (seller.userId) sellerByKey.set(String(seller.userId), seller);
+  }
+
+  return docs.map((doc: any) => {
+    const title = String(doc.name || doc.title || "Product");
+    const price = Number(doc.price);
+    return {
+      domain: "product" as const,
+      type: "product" as const,
+      id: String(doc._id),
+      title,
+      description:
+        String(doc.description || "").slice(0, 160) ||
+        "No description provided.",
+      url: `/marketplace/product/${String(doc._id)}`,
+      location: null,
+      image: doc.imageUrl || null,
+      category: doc.category || null,
+      price: Number.isFinite(price) ? price : null,
+      sellerName: getPublicMarketplaceSellerName(
+        sellerByKey.get(String(doc.sellerId)) || null,
+      ),
+      trust: { sponsored: Boolean(doc.isFeatured), source: "products" },
+      relevanceScore: 0,
+      data: doc,
+    };
+  });
 }
 
 export async function resolveAiGrounding(
@@ -218,6 +294,27 @@ export async function resolveAiGrounding(
     return { kind: "search", results };
   }
 
+  const GENERIC_PRODUCT_KEYWORDS = new Set([
+    "",
+    "products",
+    "product",
+    "items",
+    "stuff",
+  ]);
+  if (
+    intent.domain === "product" &&
+    (intent.minPriceCents !== null || intent.maxPriceCents !== null) &&
+    GENERIC_PRODUCT_KEYWORDS.has(intent.keyword.trim().toLowerCase())
+  ) {
+    const results = await groundProductsByPrice(
+      db,
+      intent.minPriceCents,
+      intent.maxPriceCents,
+      limit,
+    );
+    return { kind: "search", results };
+  }
+
   const searchDomains =
     intent.domain === "universal"
       ? undefined
@@ -225,16 +322,45 @@ export async function resolveAiGrounding(
   const queryText =
     intent.keyword || intent.location || intent.rawQuery || intent.domain;
 
-  const response = await resolveUniversalSearch(db, {
-    query: queryText,
-    domains: searchDomains,
-    limitPerDomain: limit,
-  });
+  // Fetch a wider candidate pool when a post-filter (location/price) is
+  // active, since those filters are applied after resolveUniversalSearch's
+  // own relevance ranking -- a real match further down the ranked list
+  // would otherwise be cut off before the filter ever sees it.
+  const hasPostFilter =
+    Boolean(intent.location) ||
+    intent.minPriceCents !== null ||
+    intent.maxPriceCents !== null;
+  const fetchLimit = hasPostFilter ? 50 : limit;
+  const runSearch = (query: string) =>
+    resolveUniversalSearch(db, {
+      query,
+      domains: searchDomains,
+      limitPerDomain: fetchLimit,
+    });
 
-  const filtered = response.results
+  let response = await runSearch(queryText);
+  let filtered = response.results
     .filter((r) => matchesLocation(r, intent.location))
-    .filter((r) => matchesPrice(r, intent.minPriceCents, intent.maxPriceCents))
-    .slice(0, limit);
+    .filter((r) => matchesPrice(r, intent.minPriceCents, intent.maxPriceCents));
 
-  return { kind: "search", results: filtered };
+  // resolveUniversalSearch matches the whole query as one literal
+  // substring, so a multi-word natural-language phrase can legitimately
+  // match nothing even though a real record matches part of it. As a
+  // real (not fabricated) fallback, retry once with just the longest
+  // single word from the keyword -- still a literal substring search
+  // against real BWE data, just less brittle than the full phrase.
+  if (filtered.length === 0 && /\s/.test(queryText.trim())) {
+    const words = queryText.split(/\s+/).filter((w) => w.length > 2);
+    const longestWord = [...words].sort((a, b) => b.length - a.length)[0];
+    if (longestWord && longestWord.toLowerCase() !== queryText.toLowerCase()) {
+      response = await runSearch(longestWord);
+      filtered = response.results
+        .filter((r) => matchesLocation(r, intent.location))
+        .filter((r) =>
+          matchesPrice(r, intent.minPriceCents, intent.maxPriceCents),
+        );
+    }
+  }
+
+  return { kind: "search", results: filtered.slice(0, limit) };
 }

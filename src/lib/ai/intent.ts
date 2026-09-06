@@ -193,10 +193,39 @@ export function parseAiIntent(rawQuery: string): AiIntent {
 
   // Strip a few filler lead words so the remaining text is a clean search
   // keyword ("Find Black-owned restaurants" -> "Black-owned restaurants").
-  const keyword = working
+  let keyword = working
     .replace(/^(find|show( me)?|what|search for|i want|i need|list)\b\s*/i, "")
     .replace(/\?$/, "")
     .trim();
+
+  // resolveUniversalSearch (src/lib/search/universalSearch.ts) matches the
+  // *entire* keyword as one literal substring, so words that never appear
+  // verbatim in a BWE record only break the match. "Black-owned"/"BWE" are
+  // true of every listing by definition and carry no discriminating text,
+  // so they're always stripped. Domain-name filler ("jobs", "business",
+  // "products"...) is only stripped when real content words remain --
+  // "What jobs match technology leadership?" -> "technology leadership".
+  keyword = keyword
+    .replace(/\bblack[- ]owned\b/gi, "")
+    .replace(/\bbwe\b/gi, "")
+    .trim();
+
+  const domainFillerByDomain: Partial<Record<AiDomain, RegExp>> = {
+    job: /\b(jobs?|careers?|hiring|positions?|roles?|match(es)?)\b/gi,
+    business: /\b(businesses?|shops?|stores?|directory)\b/gi,
+    product: /\b(products?|shop(ping)?|marketplace)\b/gi,
+    opportunity:
+      /\b(scholarships?|grants?|internships?|opportunit(y|ies)|fellowships?)\b/gi,
+  };
+  const fillerPattern = domainFillerByDomain[domain];
+  if (fillerPattern) {
+    const withoutFiller = keyword
+      .replace(fillerPattern, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (withoutFiller) keyword = withoutFiller;
+  }
+  keyword = keyword.replace(/\s+/g, " ").trim();
 
   return {
     rawQuery: trimmed,
