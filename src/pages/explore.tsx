@@ -36,6 +36,10 @@ import {
   Compass,
   Handshake,
   Home as HomeIcon,
+  BadgeCheck,
+  Landmark,
+  Target,
+  LineChart,
 } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import { canonicalUrl } from "@/lib/seo";
@@ -162,6 +166,13 @@ const EXPLORE_GROUPS: ExploreGroup[] = [
         href: "/recruiting-consulting?type=employer",
         icon: Handshake,
       },
+      {
+        title: "Founding Membership",
+        description:
+          "Hands-on support strengthening your verified BWE presence, profile, and performance baseline.",
+        href: "/founding-membership",
+        icon: BadgeCheck,
+      },
     ],
   },
   {
@@ -179,6 +190,33 @@ const EXPLORE_GROUPS: ExploreGroup[] = [
         description: "Support and discover music from Black creators.",
         href: "/music",
         icon: Music2,
+      },
+    ],
+  },
+  {
+    id: "mission-history",
+    label: "Our Mission & History",
+    items: [
+      {
+        title: "Black History Library",
+        description:
+          "Our history does not begin with slavery -- the longer story of what Black people built, what survived, and why ownership work still matters now.",
+        href: "/library-of-black-history",
+        icon: Landmark,
+      },
+      {
+        title: "0.5% Challenge",
+        description:
+          "The public habit campaign: search Black first, buy, review, refer, repeat.",
+        href: "/challenge",
+        icon: Target,
+      },
+      {
+        title: "Economic Impact",
+        description:
+          "Black buying power in context, and how BWE measures keeping more of it circulating with us.",
+        href: "/economic-freedom",
+        icon: LineChart,
       },
     ],
   },
@@ -274,6 +312,65 @@ export default function ExplorePage() {
               One organized hub across discovery, opportunity, wealth building,
               business growth, creator tools, and support.
             </p>
+          </section>
+
+          {/* What you can do here -- moved from the homepage so it lives once, here */}
+          <section className="mt-6 rounded-[28px] border border-white/10 bg-white/[0.03] p-5 text-left sm:p-6">
+            <div className="bwe-eyebrow">What you can do here</div>
+            <h2 className="bwe-section-title mt-2 max-w-3xl text-xl sm:text-2xl">
+              Explore freely. Join BWE free when you&apos;re ready for your own
+              dashboard.
+            </h2>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-white/68 sm:text-[15px]">
+              Public visitors can explore right away. Free accounts help you
+              return to one dashboard, and business owners can take the existing
+              Start Here path without guessing.
+            </p>
+
+            <div className="mt-5 grid gap-3 md:grid-cols-3">
+              <article className="rounded-2xl border border-white/10 bg-black/28 p-4">
+                <div className="bwe-card-title">Public</div>
+                <p className="mt-2 text-sm leading-6 text-white/68">
+                  Search businesses, products, jobs, and student opportunities
+                  without creating an account first.
+                </p>
+                <Link
+                  href="/business-directory"
+                  className="bwe-open-link bwe-focus-ring mt-4 text-[var(--accent)]"
+                >
+                  Open Directory
+                </Link>
+              </article>
+
+              <article className="rounded-2xl border border-white/10 bg-black/28 p-4">
+                <div className="bwe-card-title">Free</div>
+                <p className="mt-2 text-sm leading-6 text-white/68">
+                  Create your free BWE account and get your own dashboard—a
+                  single place to manage your account and access member features
+                  as you explore BWE.
+                </p>
+                <Link
+                  href="/signup?intent=join-bwe-free"
+                  className="bwe-open-link bwe-focus-ring mt-4 text-[var(--accent)]"
+                >
+                  Join BWE Free
+                </Link>
+              </article>
+
+              <article className="rounded-2xl border border-white/10 bg-black/28 p-4">
+                <div className="bwe-card-title">Business Owners</div>
+                <p className="mt-2 text-sm leading-6 text-white/68">
+                  Claim a listing, add your business, sell, or hire through the
+                  existing Start Here path.
+                </p>
+                <Link
+                  href="/start-here"
+                  className="bwe-open-link bwe-focus-ring mt-4 text-[var(--accent)]"
+                >
+                  Business Owner - Start Here
+                </Link>
+              </article>
+            </div>
           </section>
 
           {/* Personalized fast path -- one relevant shortcut, never a replacement for the full hub below */}
