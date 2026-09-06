@@ -5,6 +5,7 @@ import Head from "next/head";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import { toPublicErrorMessage } from "@/lib/publicError";
+import SaveSearchButton from "@/components/network/SaveSearchButton";
 import type {
   UniversalSearchDomain,
   UniversalSearchResponse,
@@ -219,6 +220,12 @@ export default function UniversalSearch() {
           One search across businesses, marketplace products, jobs, and student
           opportunities.
         </p>
+
+        {query ? (
+          <div className="mt-4">
+            <SaveSearchButton domain="universal" query={query} label={query} />
+          </div>
+        ) : null}
 
         {!query ? (
           <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/70">

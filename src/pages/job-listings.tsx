@@ -10,6 +10,7 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import { FEATURED_JOB_TOP_CAP } from "@/lib/advertising/placementDefinitions";
+import SaveSearchButton from "@/components/network/SaveSearchButton";
 
 interface Job {
   _id: string;
@@ -420,11 +421,20 @@ export default function JobListingsPage({
                 Featured only
               </label>
 
-              <div className="text-sm text-gray-400">
-                Showing{" "}
-                <span className="text-gray-200">{filteredSorted.length}</span>{" "}
-                result(s) · Featured cap:{" "}
-                <span className="text-gray-200">{featuredCap}</span>
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="text-sm text-gray-400">
+                  Showing{" "}
+                  <span className="text-gray-200">{filteredSorted.length}</span>{" "}
+                  result(s) · Featured cap:{" "}
+                  <span className="text-gray-200">{featuredCap}</span>
+                </div>
+                <SaveSearchButton
+                  domain="jobs"
+                  query={q}
+                  filters={{ typeFilter, locationFilter }}
+                  label={q || "All jobs"}
+                  alertLabel="Get job alerts"
+                />
               </div>
             </div>
           </div>
