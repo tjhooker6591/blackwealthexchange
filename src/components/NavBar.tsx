@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
+import NotificationBell from "@/components/network/NotificationBell";
 
 type DesktopMenu = "explore" | "account" | null;
 
@@ -250,6 +251,8 @@ export default function NavBar() {
             )}
           </div>
 
+          <NotificationBell />
+
           <div className="relative ml-1">
             <button
               type="button"
@@ -281,6 +284,29 @@ export default function NavBar() {
                     >
                       Profile
                     </Link>
+                    <div className="my-1 h-px bg-white/10" />
+                    <Link
+                      href="/my-bwe"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] md:hover:bg-white/5"
+                    >
+                      My BWE
+                    </Link>
+                    <Link
+                      href="/notifications"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+                    >
+                      Notifications
+                    </Link>
+                    <Link
+                      href="/inbox"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+                    >
+                      Inbox
+                    </Link>
+                    <div className="my-1 h-px bg-white/10" />
                     <button
                       onClick={() => {
                         closeAllMenus();
@@ -508,6 +534,27 @@ export default function NavBar() {
                       className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
                     >
                       Profile
+                    </Link>
+                    <Link
+                      href="/my-bwe"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] hover:bg-white/[0.04]"
+                    >
+                      My BWE
+                    </Link>
+                    <Link
+                      href="/notifications"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                    >
+                      Notifications
+                    </Link>
+                    <Link
+                      href="/inbox"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                    >
+                      Inbox
                     </Link>
                     <button
                       onClick={() => {
