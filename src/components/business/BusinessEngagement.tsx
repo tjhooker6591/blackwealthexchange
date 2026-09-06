@@ -8,6 +8,7 @@
 // nothing is fabricated or pre-seeded.
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
 
 type Review = {
@@ -48,6 +49,8 @@ export default function BusinessEngagement({
 
   const [saved, setSaved] = useState(false);
   const [saveBusy, setSaveBusy] = useState(false);
+
+  const [ownerUserId, setOwnerUserId] = useState<string | null>(null);
 
   const [reviews, setReviews] = useState<Review[]>([]);
   const [reviewSummary, setReviewSummary] = useState({
@@ -128,6 +131,16 @@ export default function BusinessEngagement({
     if (!businessId) return;
     loadUpdates();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [businessId]);
+
+  useEffect(() => {
+    if (!businessId) return;
+    fetch(
+      `/api/business/owner-contact?businessId=${encodeURIComponent(businessId)}`,
+    )
+      .then((r) => (r.ok ? r.json() : { ownerUserId: null }))
+      .then((data) => setOwnerUserId(data?.ownerUserId || null))
+      .catch(() => null);
   }, [businessId]);
 
   useEffect(() => {
@@ -285,6 +298,14 @@ export default function BusinessEngagement({
         >
           {saved ? "Saved" : "Save"}
         </button>
+        {ownerUserId && ownerUserId !== ((user as any)?.id || user?._id) ? (
+          <Link
+            href={`/inbox?with=${encodeURIComponent(ownerUserId)}`}
+            className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white/85 transition hover:bg-white/10"
+          >
+            Message
+          </Link>
+        ) : null}
       </div>
 
       {canPostUpdate ? (
