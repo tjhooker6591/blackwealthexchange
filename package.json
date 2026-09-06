@@ -41,6 +41,7 @@
     "check:buy-flows": "node scripts/check-buy-flows.mjs",
     "network:alerts-scan": "node scripts/network-alerts-scan.mjs",
     "network:alerts-scan:dry-run": "node scripts/network-alerts-scan.mjs --dry-run",
+    "api:generate-inventory": "node scripts/generate-api-inventory.mjs",
     "prepare": "if [ \"$VERCEL\" != \"1\" ]; then husky install; fi",
     "vercel-build": "next build"
   },
