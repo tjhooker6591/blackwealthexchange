@@ -920,6 +920,82 @@ STATUS:
 
 - `COMPLETE`
 
+## 31. PHASE 6 — ECONOMIC INTELLIGENCE — complete
+
+DATE:
+
+- `2026-09-06`
+
+WORKSTREAM:
+
+- `PHASE 6 -- ECONOMIC INTELLIGENCE (full-phase implementation, all 8 assigned capabilities)`
+
+SCOPE:
+
+- Owner assignment: measure the real economic value BWE creates, across 8 named capabilities, using only real, supportable BWE data. Every metric must be explicitly labeled measured / attributed / estimated / insufficient_data, and no metric may be fabricated to fill a gap where BWE's data does not support it.
+
+PRE-EXISTING INFRASTRUCTURE REUSED (not duplicated):
+
+- `bmev_records` (the existing verified marketplace payment ledger -- `src/lib/economics/marketplaceBmev.ts`, already consumed by `src/lib/personalization/attribution.ts`, `economicActivity360.ts`, and `businessGrowth.ts`) is the canonical source for every marketplace/transaction/business/community figure in Phase 6 -- no second ledger was created.
+- `src/lib/adminFinanceSummary.ts` (the existing admin finance reporting module, already reconciling the `payments`/`financial_ledger` collections into per-stream totals including `membership_black_card` and `wealth_builder`) is the canonical source for Black Card and Wealth Builder verified revenue -- reused directly rather than re-deriving payment aggregation.
+- `src/lib/personalization/attribution.ts`'s grouping approach (group bmev_records by source/businessLine) and `src/lib/personalization/businessGrowth.ts`'s verified-ownership/verified-revenue signals are extended to platform-wide rollups rather than re-implemented.
+- Phase 5's real `referral_events`/`referral_codes` collections back Referral Impact; the real `jobs`/`applicants` collections back Job/Career Impact; the real `financial_transactions`/`users.blackCardTier` fields back Wealth-Building and Black Card Impact.
+
+ALL 8 CAPABILITIES -- STATUS:
+
+1. **Economic Impact Engine** -- `src/lib/economicImpact/engine.ts`. Orchestrates all 7 category resolvers into one snapshot plus two non-overlapping overall totals (business-facing marketplace activity vs BWE's own membership revenue -- kept separate, never blended into one misleading "total revenue"). Surfaced at `/api/admin/economic-impact.ts` + `/admin/economic-impact.tsx` (full snapshot, admin-only) and a public-safe subset at `/api/economic-impact/public-summary.ts` + a new section on `/economic-freedom`.
+2. **Transaction Attribution** -- `src/lib/economicImpact/transactionAttribution.ts`. Platform-wide rollup over `bmev_records` (verified transaction count, verified revenue, revenue by source/businessLine) -- measured.
+3. **Business Growth Attribution** -- `src/lib/economicImpact/businessGrowthAttribution.ts`. Verified/claimed business count, businesses with a verified sale, and the calculated conversion ratio between them -- measured + one clearly-labeled calculated ratio.
+4. **Community Economic Activity** -- `src/lib/economicImpact/communityEconomicActivity.ts`. Platform-wide `bmev_records` aggregate: verified transaction count, verified economic activity moved to Black-owned businesses, distinct buyers, distinct businesses supported, average transaction value -- measured + one calculated average.
+5. **Black Card Economic Impact** -- `src/lib/economicImpact/blackCardImpact.ts`. Real active-member count by tier (`users.blackCardStatus`/`blackCardTier`), real verified membership revenue (`adminFinanceSummary` byStream.membership_black_card), and an explicitly-labeled estimated annualized value using the published tier prices (`src/lib/black-card.ts`) -- the invite-only Elite tier (no published price) is excluded from the estimate and reported as insufficient_data rather than assumed to be zero.
+6. **Referral Impact** -- `src/lib/economicImpact/referralImpact.ts`. Real `referral_events` counts by type, real referral-code holder count, and attributed downstream purchase revenue via a real join (a `referred_signup` event's `context.newUserId` matched against that same user's own `bmev_records` purchases) -- not a multiplier or projection.
+7. **Job / Career Impact** -- `src/lib/economicImpact/jobCareerImpact.ts`. Real jobs-posted and applications-submitted counts, real funnel breakdown by `hiringStatus`. Hires/placements and wages are explicitly reported as insufficient_data, because BWE's hiring pipeline schema has no "hired"/"placed" status and no salary-outcome field -- a hires figure would have to be invented, so none is shown.
+8. **Wealth-Building Impact** -- `src/lib/economicImpact/wealthBuildingImpact.ts`. Real active Wealth Builder user count (distinct `financial_transactions.userId`), real verified premium revenue (`adminFinanceSummary` byStream.wealth_builder). Aggregate "wealth created/saved" is explicitly reported as insufficient_data: members' own budget/debt/savings entries are self-reported personal financial data, not BWE-generated economic value, and summing them into a platform-wide dollar claim would both misrepresent what BWE directly created and risk exposing personal financial information in aggregate form.
+
+TRUTH REQUIREMENT -- HOW IT WAS ENFORCED:
+
+- Every metric returned by every resolver carries an explicit `status` field (`measured` | `attributed` | `estimated` | `insufficient_data`) plus its `sourceCollections` and, where applicable, its exact `formula` -- see `src/lib/economicImpact/shared.ts`. No resolver returns a fabricated number; every `insufficient_data` metric includes a plain-language reason.
+- The admin dashboard renders every metric's status as a visible badge (measured=green, attributed=blue, estimated=amber, insufficient_data=grey with an em-dash instead of a number).
+
+PRESERVED UNCHANGED:
+
+- Lean homepage, `/explore` Platform Access Hub, Featured Sponsor, header/footer, search, directory, marketplace, Stripe checkout, jobs, student opportunities, dashboards, claims/verification, advertising, Phase 4 personalization/analytics/attribution, and Phase 5 Network Effects. No auth weakened -- the admin snapshot requires the existing admin session guard (`requireAdminFromRequest`); the public summary exposes only non-revenue-sensitive counts. `/economic-freedom`'s existing content was not removed, only extended with one new section.
+
+VALIDATION:
+
+- `npm run typecheck`: PASS (checked after every commit through the build-out).
+- `npm run build`: PASS (clean production build; exit code 0, no errors).
+- `npm run smoke:local`: PASS (`6/6`).
+- `node scripts/p2-regression-check.mjs`: PASS (`26/26`).
+- `npm run check:vertical-regression`: PASS (`10/10`).
+- Reconciliation proof: `tmp/phase6-reconciliation-proof.mjs` (not committed -- local validation artifact only) independently re-derived every displayed number with hand-written queries against the raw collections (not by re-calling the resolver code) and compared them to the live `/api/economic-impact/public-summary` and (via a real seeded admin QA session, cleaned up afterward) `/api/admin/economic-impact` responses: `11/11` checks passed, including exact reconciliation of `job_postings_total` (9), `job_applications_total` (10), `black_card_active_members` (1), `community_verified_transaction_count`/`_cents` (0/0 -- genuinely no bmev_records exist yet in this environment), and `black_card_verified_revenue_cents` ($61.00, matched exactly against a raw `payments` query), plus explicit confirmation that `job_hires_total` and `wealth_builder_aggregate_wealth_created_cents` are honestly `insufficient_data` rather than fabricated.
+- Visual/responsive proof: `tmp/phase6-screens.mjs` (not committed) captured desktop (1440x900), tablet (834x1194), and mobile (390x844) full-page screenshots of `/admin/economic-impact` (logged in as a real seeded admin QA account) and the new section on `/economic-freedom` -- both render correctly at all three breakpoints with BWE visual identity intact and honest "—" placeholders where data is insufficient.
+
+FILES:
+
+- New: `src/lib/economicImpact/shared.ts`, `transactionAttribution.ts`, `businessGrowthAttribution.ts`, `communityEconomicActivity.ts`, `blackCardImpact.ts`, `referralImpact.ts`, `jobCareerImpact.ts`, `wealthBuildingImpact.ts`, `engine.ts`.
+- New API routes: `src/pages/api/admin/economic-impact.ts`, `src/pages/api/economic-impact/public-summary.ts`.
+- New pages: `src/pages/admin/economic-impact.tsx`.
+- Modified: `src/pages/admin/dashboard.tsx` (one additive link), `src/pages/economic-freedom.tsx` (one additive section + Toc entry).
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` -- no Stripe/payment action taken, no auth weakened, no existing collection's write shape changed (Phase 6 is entirely read/aggregate). Not merged to main, not deployed to production, not pushed to any remote.
+
+CONTROL UPDATES:
+
+- `PHASE 6 -- ECONOMIC INTELLIGENCE: COMPLETE`
+- `PHASE 7 -- BWE AI / MOBILE / SCALE: NEXT`
+- Phase 7 scope has not been selected and has not been started.
+
+RUNTIME COMMITS:
+
+- `a650692`, `1f91497`, `c664658`
+
+STATUS:
+
+- `COMPLETE`
+
 ## 13. Local runtime incident resolution rule
 
 DATE:
