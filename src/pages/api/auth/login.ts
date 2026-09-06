@@ -278,6 +278,13 @@ export default async function handler(
     return res.status(200).json({
       success: true,
       message: "Login successful",
+      // Phase 7 -- API Platform / mobile auth: the web client relies on the
+      // httpOnly cookie above and ignores this field. Native/mobile clients
+      // (which can't use httpOnly cookies) store this same JWT and send it
+      // back as `Authorization: Bearer <token>` -- see
+      // src/lib/network/shared.ts's getNetworkSession, the shared resolver
+      // every Phase 5/6/7 session-gated API route already calls.
+      token,
       user: {
         // return BOTH styles so your frontends don’t break
         id: user._id.toString(),

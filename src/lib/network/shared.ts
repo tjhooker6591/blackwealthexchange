@@ -34,11 +34,30 @@ export function toId(value: unknown): string {
   return s(value);
 }
 
-/** Resolves the logged-in user from the session_token cookie, or null. */
+function extractBearerToken(req: NextApiRequest): string {
+  const header =
+    req.headers.authorization || (req.headers as any).Authorization;
+  if (typeof header !== "string") return "";
+  const match = /^Bearer\s+(.+)$/i.exec(header.trim());
+  return match ? match[1].trim() : "";
+}
+
+/**
+ * Resolves the logged-in user from either the session_token cookie (web) or
+ * an `Authorization: Bearer <token>` header (mobile/native clients, which
+ * can't rely on the httpOnly cookie). Both carry the exact same JWT issued
+ * by /api/auth/login -- this is the one shared session resolver every
+ * Phase 5/6 API route already calls, so adding Bearer support here makes
+ * all of them mobile-ready without touching each route (Phase 7 -- API
+ * Platform / shared authentication).
+ */
 export function getNetworkSession(req: NextApiRequest): NetworkSession | null {
   try {
     const parsed = cookie.parse(req.headers.cookie || "");
-    const token = parsed.session_token || req.cookies?.session_token;
+    const token =
+      extractBearerToken(req) ||
+      parsed.session_token ||
+      req.cookies?.session_token;
     if (!token) return null;
     const payload = jwt.verify(token, getJwtSecret()) as {
       userId?: string;

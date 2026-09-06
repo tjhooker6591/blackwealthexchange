@@ -77,7 +77,11 @@ export default async function handler(
     const raw = req.headers.cookie || "";
     const cookieNames = Object.keys(cookie.parse(raw));
     const cookies = cookie.parse(raw);
-    const token = cookies.session_token;
+    // Phase 7 -- mobile/native clients send the same JWT as
+    // `Authorization: Bearer <token>` instead of a cookie.
+    const authHeader = req.headers.authorization || "";
+    const bearerMatch = /^Bearer\s+(.+)$/i.exec(authHeader.trim());
+    const token = bearerMatch?.[1]?.trim() || cookies.session_token;
 
     if (!token) {
       return res.status(200).json({ user: null });
