@@ -636,6 +636,78 @@ STATUS:
 
 - `COMPLETE`
 
+## 27. Post-Phase-4 Experience Consolidation — lean homepage, /explore as Platform Access Hub
+
+DATE:
+
+- `2026-09-05`
+
+WORKSTREAM:
+
+- `POST-PHASE-4 EXPERIENCE CONSOLIDATION (bounded UX pass -- not Phase 5)`
+
+SCOPE:
+
+- Owner assignment: protect the clean homepage, make `/explore` the organized access portal for the broader platform, and improve desktop/tablet/mobile presentation without redesigning backend systems. No new phase started.
+
+HOMEPAGE (`src/pages/index.tsx`):
+
+- Preserved exactly as hard-required: Header (`NavBar.tsx`, global via `_app.tsx`), Footer (`footer.tsx`, global via `_app.tsx`), the Directory + Marketplace hero search, and the Featured Sponsors section (byte-identical, still fully visible, not moved or collapsed).
+- Removed catalog-like, redundant sections that duplicated the same destinations in multiple places on one page: the 6-tile `HOME_PATHWAYS` grid (Directory/Marketplace/Jobs/Student Hub/Build Wealth/Grow a Business), the "Featured Jobs" + "Primary economic paths" block (Marketplace/Student Opportunities/Advertising), and the "Explore the broader BWE platform" block (Music/Real Estate/Recruiting & Consulting/consulting waitlist). Each duplicate destination now lives once, in `/explore`.
+- Replaced those sections with two focused entry points, both linking to `/explore`: a hero-area "Explore everything BWE offers" card and a closing "Explore the platform hub" CTA -- consistent with the stated homepage purpose ("understand BWE -> choose a primary action -> enter the platform") rather than listing every feature on `/`.
+- Removed the now-fully-unused `ConsultingInterestModal` component and its trigger -- the same `/api/consulting-interest` lead-capture endpoint remains reachable and used from `src/pages/dashboard/employer/consulting-interest.tsx`, so no functionality was orphaned.
+- Removed the `/api/jobs/list?limit=300` fetch, which only fed `featuredJobs` (rendered exclusively in the now-removed Featured Jobs block) and an `opportunities`/`products` trust-stat pair that was never rendered anywhere on the page -- a pure dead-weight network request, safe to drop with zero visible change. `trustStats.businesses`/`organizations` (the only rendered stats) still come from the existing `/api/stats/inventory` call, unchanged.
+- Retained unchanged: hero, "What you can do here" (Public/Free/Business Owners), Library of Black History callout, Business growth/Start Here, Founding Membership card, Black Card Membership bar, 0.5% Challenge, and the Economic Impact Simulator ("Buying Power Context").
+
+EXPLORE (`src/pages/explore.tsx` -- full rewrite):
+
+- Previously an orphaned page (confirmed via repo-wide search: nothing linked to `/explore`) that duplicated marketplace product browsing and checkout (`/api/marketplace/get-products`, Stripe checkout) -- a disconnected duplicate system per the standing rule against inventing those. Rebuilt as the organized BWE Platform Access Hub: "show me everything BWE can do for me."
+- Six groups, each linking to existing, already-working routes only (no new backend, no duplicate systems): **Discover & Shop** (Business Directory, Marketplace), **Opportunity** (Jobs, Student Opportunities), **Build Wealth** (Wealth Builder, Learn, Black Card, Real Estate), **Grow a Business** (Add/Claim Business via `/start-here`, Sell on BWE, Hire Talent, Advertising, Growth Command Center via `/dashboard`, Recruiting & Consulting), **Create** (Creator Dashboard, Music), **Help** (Support). A closing link preserves reachability of universal cross-domain search (`/search`).
+- Personalization reuses the same lightweight `accountType` signal `NavBar.tsx` already reads from `/api/auth/me` for its own `dashboardHref` -- not a new personalization engine. A single "for you" fast-path banner appears above the full hub for `business` (-> Growth Command Center), `seller` (-> seller dashboard), and `employer` (-> applicants) accounts; the complete hub with all six groups always renders underneath for every visitor regardless of role, so the broader platform is never hidden.
+- Design system: reused existing `bwe-*` utility classes (`bwe-hero-panel`, `bwe-eyebrow`, `bwe-display-title`, `bwe-lead`, `bwe-grid-card`, `bwe-cta-primary/secondary`, `bwe-focus-ring`) already used across the app (homepage, `/creator/dashboard`, etc.) and the existing emblem (`/favicon.png`) -- no new visual system introduced.
+
+INCIDENTAL FIX (`src/lib/personalization/home.ts`):
+
+- The Phase 4 `resolvePersonalizedHome` next-action for business owners pointed at `/dashboard/business-growth?businessId=...`, a route that never existed (the actual Growth Command Center renders at `/dashboard` for accountType `business`). Corrected the href to `/dashboard` since Explore now surfaces this exact destination prominently and needed the real, working route. One-line fix; no other Phase 4 logic touched.
+
+NAVBAR (`src/components/NavBar.tsx`):
+
+- One additive link ("Platform Hub — Everything BWE") added to the top of the existing desktop "Explore" dropdown and the equivalent mobile menu section, so the new hub is discoverable platform-wide. No other header structure, route, or behavior changed. Footer untouched.
+
+DESIGN / RESPONSIVE VALIDATION:
+
+- Desktop (1440x900), tablet (834x1194), and mobile (390x844) full-page screenshots captured for both `/` and `/explore` via Playwright and visually reviewed: desktop renders a premium multi-column platform portal, tablet a compact 2-column organized portal, mobile a visual front door with stacked, full-width tappable action cards (icon + title + one-line description on every card) -- matching the required desktop/tablet/mobile target shapes. BWE visual identity (dark background, gold accents, emblem, existing typography) confirmed present at all three breakpoints, including on mobile where the hero uses a compact treatment rather than being hidden.
+
+VALIDATION:
+
+- `npm run typecheck`: PASS.
+- `npm run build`: PASS (clean production build).
+- `npm run smoke:local`: PASS (`6/6`).
+- `node scripts/p2-regression-check.mjs`: PASS (`26/26`).
+- `npm run check:vertical-regression`: PASS (`10/10`).
+- Runtime/content proof: a Playwright script (`tmp/consolidation-runtime-proof.mjs`, not committed -- local validation artifact only) exercised both pages live against the dev server: `35/35` checks passed, covering the homepage's hero search still carrying its query end-to-end, Featured Sponsors still present, the removed catalog sections confirmed gone, the new Explore entry points navigating correctly, all six Explore groups and all fifteen-plus items present and correctly labeled, the Explore Business Directory card resolving to a real working page, and universal search remaining linked from Explore.
+- Two apparent early test failures (homepage "What you can do here"/"Black Card Membership" text, and all six Explore group labels) were investigated and confirmed to be case-sensitivity artifacts of the `bwe-eyebrow` CSS class's `text-transform: uppercase` rendering, not real defects -- corrected the test assertions and re-verified 35/35 passing.
+- A small circular "N" badge visible in several full-page screenshots at inconsistent, unrelated positions was confirmed via `document.elementsFromPoint` to have no corresponding DOM element on the page -- a screenshot-capture/browser-chrome artifact unrelated to the actual rendered page, not a real UI defect.
+
+FILES:
+
+- `src/pages/index.tsx` (modified -- sections removed/consolidated, dead fetch removed, two new links to `/explore`)
+- `src/pages/explore.tsx` (rewritten -- Platform Access Hub, replacing the prior orphaned marketplace-duplicate page)
+- `src/components/NavBar.tsx` (modified -- one additive link to `/explore` in desktop + mobile Explore menus)
+- `src/lib/personalization/home.ts` (modified -- one dead-link correction)
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` -- no auth/session, dashboard, seller/business tool, claims/verification, Stripe/payment, advertising, support, or Phase 4 personalization/analytics/attribution behavior changed; only UI composition on `/` and `/explore` plus one dead-link correction and one additive nav link. No backend or data-model change. Not merged to main, not deployed to production, no live Stripe action taken, no history rewritten.
+
+CONTROL UPDATES:
+
+- No program-board item state changes. Phase 4 remains `COMPLETE` (ledger entry #25). Phase 5 — Network Effects scope has not been selected and has not been started; this consolidation work is explicitly bounded UX cleanup, not Phase 5.
+
+STATUS:
+
+- `COMPLETE`
+
 ## 13. Local runtime incident resolution rule
 
 DATE:
