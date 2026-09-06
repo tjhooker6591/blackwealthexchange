@@ -188,6 +188,13 @@ export default function NavBar() {
                 >
                   Platform Hub — Everything BWE
                 </Link>
+                <Link
+                  href="/search/ai"
+                  onClick={handleItemClick}
+                  className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] md:hover:bg-white/5"
+                >
+                  AI Mode — Ask BWE
+                </Link>
                 <div className="my-1 h-px bg-white/10" />
                 <Link
                   href="/black-card"
@@ -457,6 +464,13 @@ export default function NavBar() {
                   className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] hover:bg-white/[0.04]"
                 >
                   Platform Hub — Everything BWE
+                </Link>
+                <Link
+                  href="/search/ai"
+                  onClick={handleItemClick}
+                  className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] hover:bg-white/[0.04]"
+                >
+                  AI Mode — Ask BWE
                 </Link>
                 <Link
                   href="/black-card"
