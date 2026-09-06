@@ -416,7 +416,6 @@ export async function createProductCheckoutSessionCore({
         paid: false,
       },
       $set: {
-        canonicalSchemaVersion: 1,
         productId: product._id,
         sellerId: seller._id,
         businessId: businessAttribution.businessId,
