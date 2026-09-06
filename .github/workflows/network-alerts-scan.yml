@@ -1,0 +1,45 @@
+name: Network Alerts Scan
+
+# Phase 7 -- Scale/Observability + closing the Phase 5 loop: schedules
+# scripts/network-alerts-scan.mjs (Job/Scholarship/Product alerts) using
+# the same GitHub Actions infrastructure this repo already runs CI on
+# (.github/workflows/ci.yml), rather than a new scheduling system. This is
+# the safe, committable code/config boundary -- see the "Owner action
+# required" note below for what still has to happen outside this repo
+# before it actually fires on a schedule.
+#
+# OWNER ACTION REQUIRED before this runs for real:
+#   1. This repository must be pushed to GitHub with Actions enabled
+#      (this branch has not been pushed as part of this change).
+#   2. Add repository secrets: MONGODB_URI and (if not "bwes-cluster")
+#      MONGODB_DB, under Settings -> Secrets and variables -> Actions.
+#   3. Confirm the schedule trigger below matches the desired cadence.
+# Until all three are done, this workflow file exists but does not run.
+
+on:
+  schedule:
+    # Every 6 hours. Adjust to the desired real cadence.
+    - cron: "0 */6 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run network alerts scan
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          MONGODB_DB: ${{ secrets.MONGODB_DB }}
+        run: npm run network:alerts-scan
