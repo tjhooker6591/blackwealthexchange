@@ -708,6 +708,64 @@ STATUS:
 
 - `COMPLETE`
 
+## 28. Homepage consolidation correction — match owner's lean target skeleton
+
+DATE:
+
+- `2026-09-05`
+
+TRIGGER:
+
+- Owner review of ledger entry #27's result: too much legacy content was still rendered expanded on the homepage. Owner specified the exact target skeleton (Header, Hero, directory-count/Add-a-listing row, Featured Sponsors, one compact "Explore the platform hub" CTA, Footer) and named eight sections that must come off the expanded homepage view without losing their content or functionality: "What you can do here", Public/Free/Business Owners cards, History and Context, Business Growth, Founding Membership, Black Card Membership, 0.5% Challenge, and the Black Buying Power / Economic Impact block.
+
+WHAT WAS REMOVED FROM THE EXPANDED HOMEPAGE, AND WHERE EACH ONE IS NOW ACCESSIBLE:
+
+- **"What you can do here" (Public/Free/Business Owners cards)** -- moved verbatim (same copy, same three links: `/business-directory`, `/signup?intent=join-bwe-free`, `/start-here`) to a new intro block on `/explore`, directly under its hero.
+- **History and Context** -- the callout is gone from the homepage; Black History is now a first-class item ("Black History Library") in `/explore`'s new "Our Mission & History" group, linking to the unchanged `/library-of-black-history` page.
+- **Business Growth (Start Here CTA)** -- no separate copy needed; already fully represented by `/explore`'s existing "Add / Claim Business" item, which links to the same `/start-here` destination.
+- **Founding Membership** -- new item in `/explore`'s "Grow a Business" group, linking to the existing `/founding-membership` page. Confirmed that page already renders live pricing and real remaining pilot-slot counts (`offer.remainingSlots` / `offer.pilotLimit`) -- richer than the static homepage snippet, so nothing was lost.
+- **Black Card Membership** -- already covered by `/explore`'s existing "Black Card" item (Build Wealth group) linking to `/black-card`; confirmed `/black-card` itself still links onward to `/pricing` for checkout, so the full original chain (homepage bar -> `/pricing`) remains reachable in one extra click, unchanged.
+- **0.5% Challenge** -- new item in `/explore`'s new "Our Mission & History" group, linking to the existing `/challenge` page (unchanged).
+- **Black Buying Power / Economic Impact block** -- the homepage's `EconomicImpactSimulator` component (the $2.1T benchmark, 0.5%/5% figures, "why both percentages appear" copy) was not moved anywhere, because `/economic-freedom` was confirmed to already contain the same buying-power benchmark and percentage framing (verified live: the exact "$2.1T" / "0.5% shift is about $10.5B, and a 5% shift is about $105B" language already exists on that page). Duplicating it would have violated the explicit "link to the existing page instead of duplicating it" instruction, so the component was deleted as dead code and a new "Economic Impact" item in "Our Mission & History" links to `/economic-freedom`.
+- The homepage's **sponsored banner slot** (`showHomepageBanner`, a distinct paid ad placement from the Featured Sponsors rail) was caught in the initial bulk deletion and restored immediately after the hero -- it was not on the owner's removal list and is sponsor-revenue infrastructure, not legacy feature content.
+- The now-fully-orphaned `EconomicImpactSimulator` function and the `/api/jobs/list?limit=300` fetch (already dead from ledger entry #27, confirmed still unreferenced) were removed as dead code.
+
+RESULT:
+
+- `src/pages/index.tsx`: 832 lines (was 1258 after entry #27, 1568 originally). Structure now matches the owner's skeleton exactly: `<header>` contains only the hero (search, directory-count/add-listing row, sponsored banner slot); `<main>` contains only Featured Sponsors (byte-identical, confirmed unchanged) and the single closing "Explore the platform hub" CTA; `</main>`.
+- `src/pages/explore.tsx`: gained one new group, "Our Mission & History" (Black History Library, 0.5% Challenge, Economic Impact), one new item in "Grow a Business" (Founding Membership), and a re-homed "What you can do here" intro block. Now seven groups, ~22 destinations, still one organized page -- not a giant replacement page, no new backend or duplicate system.
+
+VALIDATION:
+
+- `npm run typecheck`: PASS.
+- `npm run build`: PASS (clean production build).
+- `npm run smoke:local`: PASS (`6/6`).
+- `node scripts/p2-regression-check.mjs`: PASS (`26/26`).
+- `npm run check:vertical-regression`: PASS (`10/10`).
+- Runtime/dead-link proof: a Playwright script (`tmp/correction-runtime-proof.mjs`, not committed -- local validation artifact) confirmed, against the live dev server: all eight named sections no longer appear expanded on the homepage; the hero, add-a-listing/directory-count row, Featured Sponsors, and single closing Explore CTA remain; `/explore` renders the re-homed intro block, the new "Our Mission & History" group, and the new Founding Membership item; and every one of the eight re-homed destinations (`/business-directory`, `/signup`, `/start-here`, `/library-of-black-history`, `/challenge`, `/economic-freedom`, `/founding-membership`, `/black-card`) returns a live, non-dead HTTP status. 28/29 checks passed on the final run; the one flagged line was investigated and confirmed a false positive in the test itself (a naive substring match against the closing CTA's own descriptive sentence, which mentions "business growth" as one of several nouns in a list -- not the removed section reappearing; verified directly that the removed section's actual heading and copy do not exist anywhere in the page).
+- Desktop (1440x900), tablet (834x1194), and mobile (390x844) full-page screenshots captured for both `/` and `/explore` and visually reviewed: the homepage now visually matches the owner's three-screenshot target shape at all three breakpoints; `/explore` renders all re-homed content in the same organized, responsive card grid established in ledger entry #27, with no additional design system introduced.
+
+FILES:
+
+- `src/pages/index.tsx` (modified -- removed sections, restored sponsored-banner slot to its correct position, removed dead `EconomicImpactSimulator` component)
+- `src/pages/explore.tsx` (modified -- added "Our Mission & History" group, added Founding Membership item, added the re-homed "What you can do here" intro block)
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` -- no content or destination deleted, only relocated; no auth/session, dashboard, seller/business tool, claims/verification, Stripe/payment, advertising, support, or Phase 4 personalization/analytics/attribution behavior changed; no backend or data-model change. Not merged to main, not deployed to production, no live Stripe action taken. Ledger entries #26 and #27 (and their runtime commits `792baba`, `ccf9ab3`) were not amended or rewritten -- this is a new, additive corrective commit.
+
+CONTROL UPDATES:
+
+- No program-board item state changes. Phase 4 remains `COMPLETE` (ledger entry #25). Phase 5 remains not started.
+
+RUNTIME COMMIT:
+
+- `dec2119`
+
+STATUS:
+
+- `COMPLETE`
+
 ## 13. Local runtime incident resolution rule
 
 DATE:
