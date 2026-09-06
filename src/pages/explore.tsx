@@ -441,6 +441,15 @@ export default function ExplorePage() {
             >
               Search all of BWE
             </Link>
+            {user ? (
+              <Link
+                href="/my-bwe"
+                className="bwe-open-link bwe-focus-ring mt-1 text-sm text-[var(--accent)]"
+              >
+                Or see everything you&apos;ve followed, saved, and built — My
+                BWE
+              </Link>
+            ) : null}
           </div>
         </div>
       </div>
