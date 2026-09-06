@@ -766,6 +766,98 @@ STATUS:
 
 - `COMPLETE`
 
+## 29. PHASE 5 — NETWORK EFFECTS — complete
+
+DATE:
+
+- `2026-09-06`
+
+WORKSTREAM:
+
+- `PHASE 5 -- NETWORK EFFECTS (full-phase implementation, all 14 assigned capabilities)`
+
+SCOPE:
+
+- Owner assignment: give users and businesses real reasons to return to BWE and make the platform more valuable as participation grows, by inspecting and reusing existing infrastructure (Reviews, saved jobs, activity/event infra, Person360/Business360, personalization, marketplace, jobs, student opportunities) rather than duplicating it, and using only real BWE data and real user activity -- no fabricated follows, saves, reviews, referrals, notifications, messages, alert counts, or engagement.
+
+PRE-EXISTING INFRASTRUCTURE REUSED (not duplicated):
+
+- `notifications` collection (already read by `src/pages/api/notifications/fetch.ts`, written by the Stripe webhook/billing flows) is the single notification store for every Phase 5 event -- follows, reviews, business updates, alert matches, referral events, inbox messages.
+- `messages` collection (already written by `src/pages/api/messages/send.ts`) is the BWE Inbox store.
+- `referral_codes` / `referral_events` (already implemented in `src/pages/api/referrals/code.ts` and `track.ts`, but with zero UI and zero real capture point before this phase) back Referrals end to end.
+- `src/lib/personBusinessRelationships.ts` (verified owner/representative/manager resolver) gates who may post a Business Update -- no new ownership logic invented.
+- `src/lib/studentHub/repository.ts` (`studentHubOpportunities` collection) backs Save Opportunity and Scholarship Alerts.
+- Existing marketplace `product_reviews` (P3-03) is untouched; the new `business_reviews` collection is a distinct, non-duplicate review target (a business as a whole, not a single product).
+- Existing Save Job (`savedJobs` collection, `src/pages/api/user/save-job.ts`) is untouched; Save Business / Save Product / Save Search / Save Opportunity are new, parallel capabilities following the same pattern, not a rebuild of Save Job.
+
+ALL 14 CAPABILITIES -- STATUS:
+
+1. **Follow Business** -- `follows` collection, `src/pages/api/business/follow.ts` (GET status/list, POST/DELETE toggle). UI: Follow button on `/business/[slug]`.
+2. **Save Business** -- `saved_businesses` collection, `src/pages/api/user/save-business.ts`. UI: Save button on `/business/[slug]`, list at `/my-bwe/saved-businesses`.
+3. **Save Product** -- `saved_products` collection, `src/pages/api/user/save-product.ts`. UI: Save button on `/marketplace/product/[id]`, list at `/my-bwe/saved-products`.
+4. **Save Search** -- `saved_searches` collection (domain-tagged: jobs/scholarships/products/directory/universal), `src/pages/api/user/save-search.ts`. UI: Save Search button on `/search`.
+5. **Save Opportunity** -- `saved_opportunities` collection, `src/pages/api/user/save-opportunity.ts`, resolved against the real Student Hub catalog. UI: Save button per scholarship on `/black-student-opportunities/scholarships`.
+6. **Reviews** -- `business_reviews` collection, `src/pages/api/business/reviews.ts` (GET public list+average, POST authenticated upsert). UI: reviews list + submit form on `/business/[slug]`, notifies the real verified business owner.
+7. **Referrals** -- UI (`/referrals`) and signup capture wired onto the pre-existing code/track backend; `src/pages/api/auth/signup.ts` now accepts `?ref=<code>`, records a real `referred_signup` event, and stamps `referredByCode` on the new user; `src/pages/api/referrals/stats.ts` aggregates real events.
+8. **Collections** -- `collections` + `collection_items` collections, `src/pages/api/user/collections.ts` and `.../collections/[id]/items.ts`. UI: `/collections` (create/list), `/collections/[id]` (add from real saved businesses/products, remove).
+9. **Notifications** -- `src/pages/api/notifications/list.ts` (session-scoped, unlike the pre-existing unauthenticated `fetch.ts` which is left untouched/unused) + `mark-read.ts`. UI: `NotificationBell` in NavBar (desktop + mobile) and `/notifications`.
+10. **BWE Inbox** -- `src/pages/api/messages/list.ts` (conversation list + thread, session-scoped) on top of the existing `send.ts`. UI: `/inbox`. `/business/[slug]` gets a real "Message this business" link to the verified owner (`src/pages/api/business/owner-contact.ts`).
+11. **Job Alerts** -- saved-search domain `jobs` + alertsEnabled, surfaced on `/job-listings`.
+12. **Scholarship Alerts** -- saved-search domain `scholarships` + alertsEnabled, surfaced on `/black-student-opportunities/scholarships`.
+13. **Product Alerts** -- saved-search domain `products` + alertsEnabled, surfaced on `/marketplace`.
+14. **Business Updates** -- `business_updates` collection, `src/pages/api/business/updates.ts`. Posting gated to verified owner/representative/manager via `personBusinessRelationships`; on post, every real follower (from `follows`) gets a real notification. UI: owner-only "Post an update" panel + updates feed on `/business/[slug]`.
+
+Job/Scholarship/Product Alerts share one engine rather than three: `scripts/network-alerts-scan.mjs` (new, `npm run network:alerts-scan` / `--dry-run`) scans real `jobs` / `studentHubOpportunities` / marketplace `products` created since each alert-enabled saved search's `lastAlertedAt`, and creates a notification only on an actual match, advancing `lastAlertedAt` so each run is idempotent. Not wired into a cron trigger (no scheduler invocation was requested).
+
+NEW HUB PAGE:
+
+- `/my-bwe` (plus `/my-bwe/following`, `/my-bwe/saved-businesses`, `/my-bwe/saved-products`, `/my-bwe/alerts`) -- the personal-engagement counterpart to `/explore`'s discovery hub, showing the caller's real live counts across every Phase 5 capability. `/explore` gets one additive cross-link to `/my-bwe` for signed-in users; its existing structure (groups, hero, fast-path) is otherwise unchanged. `src/pages/explore_1/index_1.tsx` (unrelated pre-existing legacy file) was not touched.
+
+PRESERVED UNCHANGED:
+
+- Lean homepage, `/explore` Platform Access Hub structure, Featured Sponsor, header/footer, universal search, directory, marketplace, jobs, student opportunities, dashboards, auth/session, claims/verification, Stripe/payment behavior, advertising, and all Phase 4 personalization/analytics/attribution. No auth weakened; every new write endpoint requires a real session and, for Business Updates, real verified ownership.
+
+DEFECTS FOUND AND FIXED DURING VALIDATION:
+
+- `src/pages/api/referrals/code.ts` and `track.ts` (pre-existing, not part of this phase's new code): unguarded `createIndex()` calls crashed with a 500 (`IndexOptionsConflict`, Mongo error code 85) on every real request against the production-shaped local database, because a matching index already existed under a different auto-generated name. Found via runtime validation of the new Referrals UI (which depends on this endpoint), fixed by wrapping both calls in `.catch(() => null)`, matching the defensive pattern already used everywhere else in the codebase for index creation. Confirmed fixed by re-running the runtime proof.
+
+VALIDATION:
+
+- `npm run typecheck`: PASS (run repeatedly through the build-out, clean at closure).
+- `npm run build`: PASS (clean production build; all new Phase 5 routes present in the route manifest).
+- `npm run smoke:local`: PASS (`6/6`).
+- `node scripts/p2-regression-check.mjs`: PASS (`26/26`).
+- `npm run check:vertical-regression`: PASS (`10/10`).
+- Runtime/data proof: `tmp/phase5-runtime-proof.mjs` (not committed -- local validation artifact only), run against the live dev server and the real database with two real seeded QA accounts and a real existing business/product/opportunity: `33/33` checks passed, covering every one of the 14 capabilities end to end (follow/unfollow, save/unsave business+product+opportunity, save-search + alert toggle, review submission and public visibility, verified-owner business-update posting and real follower notification, review-triggered owner notification, inbox send/list/thread/notification, referral code generation + event tracking + stats, collection create/add-item/list). All test-created data (QA users, follows, saves, reviews, messages, notifications, referral rows, collections, and the temporary ownership grant used to test Business Updates) was cleaned up and the real business's ownership fields were restored to their original state at the end of the run.
+- Visual/responsive proof: `tmp/phase5-screens.mjs` (not committed) captured desktop (1440x900), tablet (834x1194), and mobile (390x844) full-page screenshots of the business profile page (Follow/Save/Reviews/Updates), `/my-bwe`, `/notifications`, `/inbox`, `/referrals`, and `/collections` while logged in as a real QA account -- all render correctly with BWE visual identity intact (dark background, gold accents, header/footer) and correct empty states for a fresh account (no fabricated content). The same small circular "N" screenshot-chrome artifact already documented as benign in ledger entry #27 reappears here; not a real UI defect.
+
+FILES:
+
+- New: `src/lib/network/shared.ts`, `src/lib/network/notifications.ts`.
+- New API routes: `src/pages/api/business/follow.ts`, `reviews.ts`, `updates.ts`, `owner-contact.ts`; `src/pages/api/user/save-business.ts`, `save-product.ts`, `save-search.ts`, `save-opportunity.ts`, `collections.ts`, `collections/[id]/items.ts`; `src/pages/api/notifications/list.ts`, `mark-read.ts`; `src/pages/api/messages/list.ts`; `src/pages/api/referrals/stats.ts`.
+- New pages: `src/pages/notifications.tsx`, `inbox.tsx`, `referrals.tsx`, `my-bwe.tsx`, `my-bwe/following.tsx`, `my-bwe/saved-businesses.tsx`, `my-bwe/saved-products.tsx`, `my-bwe/alerts.tsx`, `collections/index.tsx`, `collections/[id].tsx`.
+- New components: `src/components/business/BusinessEngagement.tsx`, `src/components/network/SaveSearchButton.tsx`, `SaveOpportunityButton.tsx`, `NotificationBell.tsx`.
+- New script: `scripts/network-alerts-scan.mjs`.
+- Modified: `src/pages/business/[slug].tsx` (mounts BusinessEngagement), `src/pages/marketplace/product/[id].tsx` (Save button), `src/pages/job-listings.tsx`, `src/pages/marketplace/index.tsx`, `src/pages/search.tsx`, `src/pages/black-student-opportunities/scholarships.tsx` (alert/save wiring), `src/pages/api/messages/send.ts` (recipient notification), `src/pages/api/auth/signup.ts` + `src/pages/signup.tsx` (referral capture), `src/components/NavBar.tsx` (bell + My BWE/Notifications/Inbox/Referrals links), `src/pages/explore.tsx` (one cross-link), `src/pages/api/referrals/code.ts` + `track.ts` (index-creation bugfix), `package.json` (two new scripts).
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` -- no Stripe/payment action taken, no auth weakened (every write requires a real session; Business Updates additionally requires real verified ownership via the existing resolver), no existing collection's write shape changed except the additive index-creation bugfix in referrals/code.ts and track.ts (behavior-preserving) and the additive notification call in messages/send.ts. Not merged to main, not deployed to production, not pushed to any remote.
+
+CONTROL UPDATES:
+
+- `PHASE 5 -- NETWORK EFFECTS: COMPLETE`
+- `PHASE 6 -- ECONOMIC INTELLIGENCE: NEXT`
+- Phase 6 scope has not been selected and has not been started.
+
+RUNTIME COMMITS:
+
+- `ee738d8`, `26993a5`, `13ff572`, `f215484`, `ccd5f11`, `75fa4ce`, `8e49c91`, `82618a5`
+
+STATUS:
+
+- `COMPLETE`
+
 ## 13. Local runtime incident resolution rule
 
 DATE:
