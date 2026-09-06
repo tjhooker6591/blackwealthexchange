@@ -181,6 +181,14 @@ export default function NavBar() {
             {desktopMenuOpen === "explore" && (
               <div className="absolute right-0 z-50 mt-2 w-64 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
                 <Link
+                  href="/explore"
+                  onClick={handleItemClick}
+                  className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] md:hover:bg-white/5"
+                >
+                  Platform Hub — Everything BWE
+                </Link>
+                <div className="my-1 h-px bg-white/10" />
+                <Link
                   href="/black-card"
                   onClick={handleItemClick}
                   className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
@@ -410,6 +418,13 @@ export default function NavBar() {
                 Explore
               </p>
               <div className="space-y-0.5">
+                <Link
+                  href="/explore"
+                  onClick={handleItemClick}
+                  className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] hover:bg-white/[0.04]"
+                >
+                  Platform Hub — Everything BWE
+                </Link>
                 <Link
                   href="/black-card"
                   onClick={handleItemClick}

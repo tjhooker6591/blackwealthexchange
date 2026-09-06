@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type FormEvent, useRef } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Head from "next/head";
@@ -13,106 +13,6 @@ import { FEATURED_SPONSOR_RAIL_CAP } from "@/lib/advertising/placementDefinition
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
-}
-
-function ConsultingInterestModal({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState("");
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setError("");
-    try {
-      const res = await fetch("/api/consulting-interest", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email }),
-      });
-      if (!res.ok) throw new Error("Submission failed");
-      setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-        setName("");
-        setEmail("");
-        onClose();
-      }, 1400);
-    } catch {
-      setError("Could not submit. Please try again.");
-    }
-  };
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4">
-      <div className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-white/10 bg-neutral-950/90 p-6 shadow-2xl backdrop-blur">
-        <div className="pointer-events-none absolute -top-20 left-1/2 h-40 w-[26rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/15 blur-3xl" />
-
-        <button
-          onClick={onClose}
-          className="absolute right-3 top-3 rounded-lg px-2 py-1 text-xl font-bold leading-none text-white/60 transition hover:text-[#D4AF37]"
-          aria-label="Close"
-          type="button"
-        >
-          ×
-        </button>
-
-        <h2 className="text-lg font-extrabold tracking-tight text-white">
-          Notify Me <span className="text-[#D4AF37]">Consulting</span>
-        </h2>
-        <p className="mt-1 text-sm text-white/70">
-          Get notified when BWE Recruiting & Consulting launches.
-        </p>
-
-        <div className="mt-5">
-          {submitted ? (
-            <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-center font-semibold text-emerald-300">
-              Thank you! We will notify you at launch.
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-3">
-              <input
-                type="text"
-                placeholder="Your Name"
-                required
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-white placeholder:text-white/40 outline-none transition focus:border-[#D4AF37]/60 focus:ring-2 focus:ring-[#D4AF37]/25"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-              <input
-                type="email"
-                placeholder="Your Email"
-                required
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-white placeholder:text-white/40 outline-none transition focus:border-[#D4AF37]/60 focus:ring-2 focus:ring-[#D4AF37]/25"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              {error && (
-                <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-2 text-center text-sm text-red-300">
-                  {error}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                className="w-full rounded-xl bg-[#D4AF37] py-2.5 font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40"
-              >
-                Notify Me
-              </button>
-            </form>
-          )}
-        </div>
-      </div>
-    </div>
-  );
 }
 
 const EconomicImpactSimulator = () => {
@@ -284,39 +184,6 @@ const HOME_SCOPE_CONFIG: Record<
   },
 };
 
-const HOME_PATHWAYS = [
-  {
-    title: "Discover businesses",
-    subtitle: "Directory",
-    href: "/business-directory",
-  },
-  {
-    title: "Shop",
-    subtitle: "Marketplace",
-    href: "/marketplace",
-  },
-  {
-    title: "Find jobs",
-    subtitle: "Job listings",
-    href: "/job-listings",
-  },
-  {
-    title: "Student opportunities",
-    subtitle: "Student Hub",
-    href: "/black-student-opportunities",
-  },
-  {
-    title: "Build wealth",
-    subtitle: "Learn",
-    href: "/economic-freedom",
-  },
-  {
-    title: "Grow a business",
-    subtitle: "Start here",
-    href: "/start-here",
-  },
-] as const;
-
 function HeroScopeTab({
   id,
   active,
@@ -364,7 +231,6 @@ function HeroScopeTab({
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
   const [activeScope, setActiveScope] = useState<HomeSearchScope>("directory");
   const scopeTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
@@ -481,18 +347,6 @@ export default function Home() {
     opportunities: null,
     products: null,
   });
-  const [featuredJobs, setFeaturedJobs] = useState<
-    Array<{
-      _id: string;
-      title: string;
-      company: string;
-      location: string;
-      type: string;
-      createdAt?: string;
-      isFeatured?: boolean;
-    }>
-  >([]);
-
   useEffect(() => {
     const controller = new AbortController();
     let cancelled = false;
@@ -586,25 +440,13 @@ export default function Home() {
 
     (async () => {
       try {
-        const [inventoryRes, jobsRes] = await Promise.all([
-          fetch("/api/stats/inventory", {
-            cache: "no-store",
-            signal: controller.signal,
-          }),
-          fetch("/api/jobs/list?limit=300", {
-            cache: "no-store",
-            signal: controller.signal,
-          }),
-        ]);
-
-        const [inventoryData, jobsData] = await Promise.all([
-          inventoryRes.json().catch(() => null),
-          jobsRes.json().catch(() => null),
-        ]);
+        const inventoryRes = await fetch("/api/stats/inventory", {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        const inventoryData = await inventoryRes.json().catch(() => null);
 
         if (cancelled) return;
-
-        const jobs = Array.isArray(jobsData?.jobs) ? jobsData.jobs : [];
 
         setTrustStats({
           businesses: Number.isFinite(Number(inventoryData?.businesses))
@@ -615,27 +457,11 @@ export default function Home() {
             : null,
           opportunities: Number.isFinite(Number(inventoryData?.opportunities))
             ? Number(inventoryData.opportunities)
-            : jobs.length,
+            : null,
           products: Number.isFinite(Number(inventoryData?.products))
             ? Number(inventoryData.products)
             : null,
         });
-
-        setFeaturedJobs(
-          jobs
-            .filter((j: any) => Boolean(j?.isFeatured))
-            .slice(0, 4)
-            .map((j: any) => ({
-              _id: String(j._id),
-              title: String(j.title || "Featured role"),
-              company: String(j.company || "Hiring Company"),
-              location: String(j.location || "Location flexible"),
-              type: String(j.type || "Role"),
-              createdAt:
-                typeof j.createdAt === "string" ? j.createdAt : undefined,
-              isFeatured: Boolean(j.isFeatured),
-            })),
-        );
       } catch {
         if (!cancelled) {
           setTrustStats({
@@ -644,7 +470,6 @@ export default function Home() {
             opportunities: null,
             products: null,
           });
-          setFeaturedJobs([]);
         }
       }
     })();
@@ -1093,27 +918,32 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-                {HOME_PATHWAYS.map((path) => (
-                  <Link
-                    key={path.title}
-                    href={path.href}
-                    className="bwe-soft-tile bwe-focus-ring flex min-h-24 flex-col justify-between p-3.5 hover:bg-white/[0.04]"
-                  >
-                    <div>
-                      <div className="bwe-card-title text-[0.98rem]">
-                        {path.title}
-                      </div>
-                      <div className="mt-1 text-xs uppercase tracking-[0.12em] text-white/42">
-                        {path.subtitle}
-                      </div>
-                    </div>
-                    <span className="mt-3 inline-flex items-center text-sm font-semibold text-[var(--accent)]">
-                      Open
-                    </span>
-                  </Link>
-                ))}
-              </div>
+              <Link
+                href="/explore"
+                onClick={() =>
+                  trackHomepageEvent("homepage_cta_clicked", {
+                    section: "search_dominant",
+                    ctaId: "homepage_open_explore_hub",
+                    ctaLabel: "Explore everything BWE offers",
+                    destination: "/explore",
+                  })
+                }
+                className="bwe-grid-card bwe-focus-ring group flex flex-col gap-2 p-5 transition hover:border-[var(--border-strong)] hover:bg-white/[0.04] sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div>
+                  <div className="bwe-card-title text-lg">
+                    Explore everything BWE offers
+                  </div>
+                  <p className="mt-1.5 text-sm text-white/62">
+                    Directory, marketplace, jobs, student opportunities, wealth
+                    building, business growth, creator tools, and more —
+                    organized in one hub.
+                  </p>
+                </div>
+                <span className="mt-3 inline-flex shrink-0 items-center gap-1.5 text-sm font-bold text-[var(--accent)] sm:mt-0">
+                  Open the platform hub →
+                </span>
+              </Link>
 
               <div className="mt-4 rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/10 p-4 text-left">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -1287,101 +1117,7 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
-        <div className="container mx-auto max-w-6xl px-4">
-          {featuredJobs.length ? (
-            <div className="mb-6 border-t border-white/8 pt-5">
-              <div className="mb-3 flex items-center justify-between gap-2">
-                <div>
-                  <div className="bwe-eyebrow">Jobs</div>
-                  <div className="text-sm font-semibold text-white">
-                    Featured opportunities from active employers
-                  </div>
-                </div>
-                <Link
-                  href="/job-listings"
-                  className="text-xs text-yellow-200 hover:underline"
-                >
-                  View all jobs
-                </Link>
-              </div>
-              <div className="grid gap-2 md:grid-cols-2">
-                {featuredJobs.map((job) => (
-                  <Link
-                    key={job._id}
-                    href={`/job/${job._id}`}
-                    className="bwe-soft-tile p-3 hover:bg-white/[0.04]"
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="truncate font-bold text-white">
-                        {job.title}
-                      </p>
-                      <span className="rounded bg-yellow-400 px-2 py-0.5 text-[10px] font-bold text-black">
-                        Featured
-                      </span>
-                    </div>
-                    <p className="mt-1 truncate text-xs text-white/75">
-                      {job.company} • {job.location} • {job.type}
-                    </p>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ) : null}
-
-          <div className="mt-10 border-t border-white/8 pt-6">
-            <div className="mb-3">
-              <div className="bwe-eyebrow">Primary economic paths</div>
-              <p className="mt-2 text-sm text-white/62">
-                Continue into more of the BWE platform from here.
-              </p>
-            </div>
-            <div className="grid gap-4 md:grid-cols-3">
-              <article className="bwe-soft-tile p-4">
-                <h3 className="bwe-card-title">Marketplace</h3>
-                <p className="mt-2 text-sm text-white/62">
-                  Open the live marketplace, check the current public catalog
-                  state, and support commerce directly when listings are active.
-                </p>
-                <Link
-                  href="/marketplace"
-                  className="bwe-open-link bwe-focus-ring mt-3 text-[var(--accent)]"
-                >
-                  Shop Marketplace
-                </Link>
-              </article>
-              <article className="bwe-soft-tile p-4">
-                <h3 className="bwe-card-title">Student Opportunities</h3>
-                <p className="mt-2 text-sm text-white/62">
-                  Explore internships, scholarships, grants, and mentorship
-                  pathways.
-                </p>
-                <Link
-                  href="/black-student-opportunities"
-                  className="bwe-open-link bwe-focus-ring mt-3 text-emerald-200"
-                >
-                  Explore Student Hub
-                </Link>
-              </article>
-              <article className="bwe-soft-tile p-4">
-                <h3 className="bwe-card-title">Advertising</h3>
-                <p className="mt-2 text-sm text-white/62">
-                  Premium placements for brands that want more visibility inside
-                  the BWE ecosystem.
-                </p>
-                <Link
-                  href="/advertise-with-us"
-                  className="bwe-open-link bwe-focus-ring mt-3 text-white/84"
-                >
-                  Advertise with BWE
-                </Link>
-              </article>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0">
+      <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0 pt-3 sm:pt-4">
         <section className="mb-8 border-t border-white/8 pt-6">
           <div className="mb-2.5 flex items-center justify-between">
             <div>
@@ -1462,77 +1198,31 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mb-6 border-t border-white/8 pt-6">
-          <p className="bwe-eyebrow text-white/58">
-            Supporting ecosystem paths
-          </p>
+        <section className="mb-6 border-t border-white/8 pt-6 text-center">
+          <p className="bwe-eyebrow text-white/58">Keep going</p>
           <h3 className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-[2rem]">
-            Explore the broader BWE platform
+            See everything else BWE offers
           </h3>
-
-          <div className="mt-4 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-            <article className="border-b border-white/8 pb-4 lg:border-b-0 lg:border-r lg:border-white/8 lg:pb-0 lg:pr-4">
-              <h4 className="bwe-card-title">Music</h4>
-              <p className="mt-2 text-sm text-white/62">
-                Support artists, creators, and music commerce.
-              </p>
-              <Link
-                href="/music"
-                className="bwe-open-link bwe-focus-ring mt-3 text-[var(--accent)]"
-              >
-                Explore Music
-              </Link>
-            </article>
-
-            <article className="border-b border-white/8 pb-4 lg:border-b-0 lg:border-r lg:border-white/8 lg:pb-0 lg:pr-4">
-              <h4 className="bwe-card-title">Real Estate</h4>
-              <p className="mt-2 text-sm text-white/62">
-                Explore ownership and investment pathways.
-              </p>
-              <Link
-                href="/real-estate-investment"
-                className="bwe-open-link bwe-focus-ring mt-3 text-white/84"
-              >
-                Explore Real Estate
-              </Link>
-            </article>
-
-            <article className="border-b border-white/8 pb-4 md:border-b-0 lg:border-r lg:border-white/8 lg:pb-0 lg:pr-4">
-              <h4 className="bwe-card-title">Recruiting & Consulting</h4>
-              <p className="mt-2 text-sm text-white/62">
-                Connect employers with talent pathways and consulting support.
-              </p>
-              <Link
-                href="/recruiting-consulting?type=employer"
-                className="bwe-open-link bwe-focus-ring mt-3 text-[var(--accent)]"
-              >
-                Open Recruiting
-              </Link>
-            </article>
-
-            <article>
-              <h4 className="bwe-card-title">
-                Join Creator or Consulting Waitlist
-              </h4>
-              <p className="mt-2 text-sm text-white/62">
-                Get updates when new creator and consulting opportunities open.
-              </p>
-              <button
-                type="button"
-                onClick={() => setModalOpen(true)}
-                className="bwe-open-link bwe-focus-ring mt-3 text-[var(--accent)]"
-              >
-                Notify Me
-              </button>
-            </article>
-          </div>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-white/62">
+            Student opportunities, wealth building, creator tools, business
+            growth, and more — organized in one hub.
+          </p>
+          <Link
+            href="/explore"
+            onClick={() =>
+              trackHomepageEvent("homepage_cta_clicked", {
+                section: "closing",
+                ctaId: "homepage_closing_explore_hub",
+                ctaLabel: "Explore the platform hub",
+                destination: "/explore",
+              })
+            }
+            className="bwe-cta-primary bwe-focus-ring mt-4 inline-flex px-6"
+          >
+            Explore the platform hub
+          </Link>
         </section>
       </main>
-
-      <ConsultingInterestModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-      />
 
       <style jsx>{`
         .animate-scroll {

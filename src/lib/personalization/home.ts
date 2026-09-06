@@ -87,9 +87,7 @@ export async function resolvePersonalizedHome(
       id: "view_growth_center",
       title: "Check your Business Growth Command Center",
       body: "See real profile views, revenue, and next steps for your business.",
-      href: `/dashboard/business-growth?businessId=${encodeURIComponent(
-        ownedBusinesses[0].businessId,
-      )}`,
+      href: "/dashboard",
       cta: "Open growth center",
     });
   }
