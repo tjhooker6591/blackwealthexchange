@@ -306,6 +306,13 @@ export default function NavBar() {
                     >
                       Inbox
                     </Link>
+                    <Link
+                      href="/referrals"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+                    >
+                      Referrals
+                    </Link>
                     <div className="my-1 h-px bg-white/10" />
                     <button
                       onClick={() => {
@@ -555,6 +562,13 @@ export default function NavBar() {
                       className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
                     >
                       Inbox
+                    </Link>
+                    <Link
+                      href="/referrals"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                    >
+                      Referrals
                     </Link>
                     <button
                       onClick={() => {

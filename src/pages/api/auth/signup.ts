@@ -45,7 +45,12 @@ export default async function handler(
       businessAddress,
       businessPhone,
       description,
+      referralCode,
     } = req.body;
+
+    const referralCodeNorm = String(referralCode || "")
+      .trim()
+      .toUpperCase();
 
     const emailNorm = String(email || "")
       .trim()
@@ -183,8 +188,32 @@ export default async function handler(
       };
     }
 
+    let referralCodeDoc: Record<string, unknown> | null = null;
+    if (referralCodeNorm.startsWith("BWE-")) {
+      referralCodeDoc = await db
+        .collection("referral_codes")
+        .findOne({ code: referralCodeNorm });
+      if (referralCodeDoc) {
+        (newUser as Record<string, unknown>).referredByCode = referralCodeNorm;
+      }
+    }
+
     const result = await collection.insertOne(newUser);
     const userId = result.insertedId;
+
+    if (referralCodeDoc) {
+      await db.collection("referral_events").insertOne({
+        code: String(referralCodeDoc.code),
+        ownerId: String(referralCodeDoc.ownerId),
+        ownerEmail: String(referralCodeDoc.ownerEmail),
+        ownerAccountType: String(referralCodeDoc.accountType || "user"),
+        event: "referred_signup",
+        context: { newUserId: String(userId), newAccountType: accountType },
+        ip: getClientIp(req),
+        userAgent: req.headers["user-agent"] || null,
+        createdAt: now,
+      });
+    }
 
     const token = jwt.sign(
       {

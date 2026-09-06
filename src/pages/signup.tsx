@@ -180,6 +180,11 @@ export default function Signup() {
     }
   }, [onboardingUrl]);
 
+  const referralCode = useMemo(() => {
+    const raw = router.query.ref;
+    return typeof raw === "string" ? raw.trim() : "";
+  }, [router.query.ref]);
+
   useEffect(() => {
     const rawType = router.query.type ?? router.query.accountType;
     if (
@@ -248,6 +253,7 @@ export default function Signup() {
           businessName: formData.businessName,
           businessAddress: formData.businessAddress,
           businessPhone: formData.businessPhone,
+          referralCode: referralCode || undefined,
         }),
       });
 
