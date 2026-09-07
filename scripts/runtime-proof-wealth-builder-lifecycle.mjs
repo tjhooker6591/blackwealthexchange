@@ -21,6 +21,12 @@ async function req(path, { method = "GET", body, cookie } = {}) {
     headers: {
       ...(body ? { "Content-Type": "application/json" } : {}),
       ...(cookie ? { Cookie: cookie } : {}),
+      // Same-origin CSRF check (src/lib/security/csrf.ts) requires a
+      // matching Origin for cookie-authenticated state-changing
+      // requests -- a real browser always sends one; this synthetic
+      // script must too, or every write here 403s regardless of app
+      // correctness.
+      ...(cookie ? { Origin: baseUrl } : {}),
     },
     body: body ? JSON.stringify(body) : undefined,
     redirect: "manual",
