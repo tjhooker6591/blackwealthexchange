@@ -305,17 +305,131 @@ users or the owner:
   P8-SECRET-001 fix, matching the secure behavior every real deployment
   already used).
 
+### Update 2 -- P8-03, P8-05, P8-08, P8-09, P8-15 (commits `a083c12`, `7cc034a`)
+
+#### P8-03 -- Broader API-surface sampling (BOLA / mass assignment)
+
+Two systematic grep-based sweeps across all 295 routes in
+`src/pages/api/**`, beyond the routes already live-tested above:
+
+- **Mutation handlers without a recognizable auth pattern.** 9 candidates
+  (`profile.ts`, `wealth-builder/profile.ts`,
+  `wealth-builder/debts|goals|transactions|budget/[id].ts`,
+  `travel-map/saved/index.ts`, `user/save-job.ts`, `jobs/[id].ts`). All 9
+  were false positives -- each uses a different, equally-valid auth
+  pattern the sweep's keyword list didn't match (inline `jwt.verify`, or
+  the dedicated `requireWealthUser` helper in
+  `src/lib/wealth-builder/auth.ts`, itself confirmed to be a real JWT
+  verification, not a stub). Every Wealth Builder route
+  (`financial_debts`/`financial_transactions`/`financial_profiles` --
+  HIGHLY SENSITIVE data) scopes its Mongo filter to `{_id, userId:
+auth.userId, accountType: "user"}` before any read/update/delete.
+- **`deleteOne`/`updateOne`/`findOneAndUpdate`/`findOneAndDelete` filtered
+  by `_id` alone** (the classic raw-IDOR shape, if reachable without a
+  prior ownership check). 5 candidates
+  (`marketplace/delete-product.ts`, `marketplace/update-order-fulfillment.ts`,
+  `admin/approve-directory-listing.ts`, `jobs/[id].ts` PUT and DELETE).
+  All 5 perform an explicit ownership/admin check (`findOne` first,
+  compare `sellerId`/`userId`/admin decoded claim, 403 on mismatch)
+  immediately before the bare-`_id` mutation -- the pattern is
+  verify-then-mutate-by-id, not missing verification.
+- **Mass assignment** (`$set: { ...req.body }` or `$set: req.body`/`fields`
+  spread directly into a Mongo update without an explicit field
+  allowlist): zero matches across the entire API surface. Every route
+  reviewed builds its own explicit update object.
+
+No new defects found in this pass. Given 295 total routes, this and the
+live cross-tenant tests above constitute representative, not exhaustive,
+coverage -- see Known gaps below.
+
+#### P8-05 -- Database / privacy data classification
+
+Based on the ~100+ distinct collections referenced across
+`src/pages/api/**` (sampled via `.collection("...")` call sites), grouped
+by classification:
+
+| Classification   | Examples                                                                                                                                                                                                            | Notes                                                                                                                                                                                     |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HIGHLY SENSITIVE | `users`/`sellers`/`businesses`/`employers` (password hash, tokenVersion), `financial_profiles`, `financial_transactions`, `financial_debts`, `financial_ledger`, `black_card_cards`, `payments`, Stripe identifiers | Password hashes and Stripe identifiers never appear in any API response reviewed in this session; Wealth Builder financial collections are scoped per-user server-side (see P8-03 above). |
+| CONFIDENTIAL     | `applicants`, `applicant_messages`, `messages`, `marketplace_messages`, `business_claims`, `entity_ownerships`, `consulting_intake`                                                                                 | Applicant/employer messaging and claim-verification data; confirmed scoped to the owning employer/user in every route reviewed this session (P8-02 live tests, P8-03 sampling).           |
+| INTERNAL         | `admin_metrics_snapshots`, `admin_moderation_audit`, `black_card_admin_audit`, `financial_class_admin_audit`, `api_rate_limits`, `system_health_logs`, `flow_events`                                                | Operational/audit data, admin-only surfaces (gated by the P8-AUTH-002-hardened `requireAdminFromRequest`).                                                                                |
+| PUBLIC           | `businesses` (approved listing fields), `directory_listings`, `jobs` (approved), `business_reviews`, `courses`, `certificates`                                                                                      | Intentionally public directory/marketplace/jobs content; `business_reviews` POST now rate-limited (P8-08 above) precisely because it is public, persistent, trust-affecting content.      |
+
+This is a representative classification of the major collection groups
+identified during this session's route review, not an exhaustive
+per-field data-dictionary audit of every one of the ~100+ collections
+observed -- a full field-by-field data dictionary is a larger,
+separately-scoped documentation effort.
+
+#### P8-09 -- Infrastructure / edge security
+
+Observable from this repository:
+
+- Security headers (X-Frame-Options, X-Content-Type-Options,
+  Referrer-Policy, HSTS w/ preload, Permissions-Policy, CSP) are
+  configured in `next.config.js` and confirmed present (reviewed prior to
+  this update).
+- No `vercel.json` (or equivalent hosting-platform config file) exists in
+  this repo -- deployment target, regions, and any edge/WAF rules are
+  configured entirely outside version control, on the hosting platform
+  itself.
+- `.github/workflows/ci.yml` now runs a Critical-only `npm audit` gate and
+  a `gitleaks` secret-scan job on every push/PR (commit `7cc034a`), closing
+  the "would this have been caught automatically" gap for both P8-11 and
+  P8-SECRET-001-class findings going forward. As previously documented for
+  Phase 7, this repo's git remote is a local filesystem path, not a hosted
+  GitHub remote, so neither CI gate can actually execute yet -- this is a
+  prepared safeguard, not a currently-running one.
+
+**Owner-required, not verifiable from this repository:** MongoDB Atlas
+network access rules / IP allowlisting, hosting-platform WAF/DDoS
+protection, hosting-platform environment-variable injection and secret
+storage, GitHub branch-protection rules once a real remote exists. None of
+these are claimed as verified here.
+
+#### P8-15 -- Backup / disaster recovery
+
+No backup or restore configuration, script, or runbook exists anywhere in
+this repository. The only "backup" artifacts present are ad-hoc,
+per-operation JSON snapshots that various one-off maintenance scripts
+write before a scripted data change (e.g.
+`scripts/recovery/out/manual-visibility-19-backup.json`) -- a good
+practice for those specific scripted operations, but not a systematic
+database backup/DR mechanism.
+
+MongoDB Atlas (the hosting platform for this database, confirmed via the
+`mongodb+srv://...mongodb.net` connection string) typically offers
+continuous backup / point-in-time recovery as a cluster-tier console
+setting -- entirely outside this repository's reach to configure or
+verify.
+
+Per the phase's explicit rule, this is NOT reported as "BACKUP RESTORE
+PASS." Status: **RESTORE EXERCISE PENDING -- OWNER/EXTERNAL GATE.**
+
+Recommended safe test procedure (owner-performed, not run in this
+session): in the Atlas console, confirm continuous backup / point-in-time
+recovery is enabled for the `bwes-cluster` cluster; then, against a
+disposable **test** cluster restored from a snapshot (never the live
+production cluster), verify the restored data matches an expected known
+state, verify the application can connect to the restored instance with
+its normal `MONGODB_URI` shape, and time the restore to establish a real
+RTO figure. This should not be performed against production without a
+maintenance window and explicit owner sign-off.
+
 ### Closure conclusion
 
-This is an interim checkpoint, not Phase 8 closure. Six Critical/High/Moderate
+This is an interim checkpoint, not Phase 8 closure. Eight Critical/High/Moderate
 findings have been fixed and verified end to end with QA-only testing; live
 cross-tenant adversarial testing across business, employer, and admin
-surfaces found no additional authorization defects. The owner account has
-been verified unchanged at every checkpoint. One Critical finding
-(P8-SECRET-001) requires an owner-performed external action (Atlas password
-rotation) that cannot be completed from this session. Remaining Phase 8
-checklist items (formal threat model document, systematic API-inventory
-sampling beyond the routes spot-checked here, database/privacy data
-classification, bot/fraud/abuse defense review, infrastructure/edge
-documentation, backup/disaster-recovery status, and the formal closure
+surfaces found no additional authorization defects; a broader API-surface
+sampling pass (P8-03) across mutation-route auth patterns and mass-assignment
+risk found no additional defects. The owner account has been verified
+unchanged at every checkpoint. One Critical finding (P8-SECRET-001) requires
+an owner-performed external action (Atlas password rotation) that cannot be
+completed from this session. A representative (not exhaustive) data
+classification (P8-05) and infrastructure/backup-DR status (P8-09, P8-15)
+have been documented, with owner-required/external items explicitly called
+out rather than claimed as verified. Remaining Phase 8 checklist items
+(formal threat model document, exhaustive per-route API-inventory coverage,
+the formal internal red-team findings ledger, and the formal closure
 report) are not yet complete.
