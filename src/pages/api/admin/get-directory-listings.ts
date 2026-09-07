@@ -1,18 +1,8 @@
 // src/pages/api/admin/get-directory-listings.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
-import cookie from "cookie";
-import jwt from "jsonwebtoken";
-import { getJwtSecret, getMongoDbName } from "@/lib/env";
-
-type Decoded = {
-  userId?: string;
-  email?: string;
-  accountType?: string;
-  role?: string;
-  isAdmin?: boolean;
-  roles?: string[];
-};
+import { getMongoDbName } from "@/lib/env";
+import { requireAdminFromRequest } from "@/lib/adminAuth";
 
 type AdminRow = {
   _id?: any;
@@ -50,25 +40,6 @@ type AdminRow = {
   placement?: string | null;
   campaignId?: string | null;
 };
-
-function isAdmin(decoded: Decoded) {
-  if (decoded?.isAdmin) return true;
-  if (decoded?.accountType === "admin") return true;
-  if (decoded?.role === "admin") return true;
-  if (Array.isArray(decoded?.roles) && decoded.roles.includes("admin"))
-    return true;
-
-  const allow = (process.env.ADMIN_EMAILS || "")
-    .split(",")
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
-
-  if (allow.length && decoded?.email) {
-    return allow.includes(decoded.email.toLowerCase());
-  }
-
-  return false;
-}
 
 function parseIntSafe(v: unknown, def: number) {
   const n = Number(v);
@@ -225,23 +196,14 @@ export default async function handler(
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const cookies = cookie.parse(req.headers.cookie || "");
-  const token = cookies.session_token;
-
-  if (!token) return res.status(401).json({ error: "Unauthorized" });
-
-  let decoded: Decoded;
-  try {
-    const SECRET = getJwtSecret();
-    if (!SECRET) throw new Error("JWT_SECRET missing");
-    decoded = jwt.verify(token, SECRET) as Decoded;
-  } catch {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
-  if (!isAdmin(decoded)) {
-    return res.status(403).json({ error: "Forbidden" });
-  }
+  // Phase 8 -- P8-AUTH-002 follow-up. Previously this route reimplemented
+  // its own JWT verification + isAdmin check inline instead of using the
+  // shared requireAdminFromRequest, so it never got the real-time DB
+  // re-verification fix applied to the other ~80 admin routes -- a
+  // revoked admin's stale JWT would still pass here for the token's full
+  // remaining lifetime. Using the shared helper closes that gap here too.
+  const admin = await requireAdminFromRequest(req, res);
+  if (!admin) return;
 
   try {
     const {
