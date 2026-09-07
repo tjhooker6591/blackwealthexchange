@@ -15,8 +15,21 @@ export type RevenueSplit = {
   netAmount: number;
 };
 
+// Canonical BWE commercial fee rules (single source of truth -- every
+// caller of computeRevenueSplit, across checkout creation and webhook
+// reconciliation, derives its fee from this table; nothing else in the
+// codebase independently hardcodes a percentage). Approved model
+// (2026-09-07 correction):
+//   Marketplace: 5% BWE platform fee, 95% to the seller.
+//   Advertising/sponsorship, memberships/Black Card/premium, and
+//   jobs/employer paid products: 100% BWE revenue (direct BWE service
+//   sale, no seller/provider split).
+// Historical completed transactions are NOT recalculated when this rate
+// changes -- their stored bweFee/sellerPayout reflect the rate actually
+// applied at the time they were paid. Only new transactions use this
+// value going forward.
 const FEE_PERCENT_BY_TYPE: Record<RevenueType, number> = {
-  marketplace: 12,
+  marketplace: 5,
   ads: 100,
   jobs: 100,
   courses: 100,

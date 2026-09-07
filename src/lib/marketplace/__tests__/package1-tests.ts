@@ -217,9 +217,11 @@ function testOrderLifecycle() {
     true,
   );
 
+  // Commercial & Revenue Integrity Audit (2026-09-07): marketplace fee
+  // corrected from 12% to the approved 5%.
   const split = buildMarketplaceProjectedAmounts(2500);
-  assert.equal(split.bweFee, 300);
-  assert.equal(split.sellerPayout, 2200);
+  assert.equal(split.bweFee, 125);
+  assert.equal(split.sellerPayout, 2375);
 }
 
 async function testPaymentLinkage() {
@@ -244,8 +246,8 @@ async function testPaymentLinkage() {
   assert.equal(payment.orderId, "order_1");
   assert.equal(payment.metadata.orderId, "order_1");
   assert.equal(payment.metadata.businessId, "business_1");
-  assert.equal(payment.bweFee, 300);
-  assert.equal(payment.payout, 2200);
+  assert.equal(payment.bweFee, 125);
+  assert.equal(payment.payout, 2375);
 
   const derived = deriveMarketplaceAmountTotal({
     session: { amount_total: null } as any,
@@ -294,8 +296,8 @@ async function testPaymentLinkage() {
   assert.equal(payments.length, 1);
   assert.equal(payments[0].metadata.orderId, "order_linked");
   assert.equal(payments[0].businessId, "business_linked");
-  assert.equal(payments[0].bweFee, 120);
-  assert.equal(payments[0].payout, 880);
+  assert.equal(payments[0].bweFee, 50);
+  assert.equal(payments[0].payout, 950);
 
   await emitMarketplaceReconciliationException({
     db: db as any,
@@ -523,8 +525,8 @@ function testScenarioExpectations() {
   assert.equal(paidLiability, true);
 
   const fee = buildMarketplaceProjectedAmounts(1000);
-  assert.equal(fee.bweFee, 120);
-  assert.equal(fee.sellerPayout, 880);
+  assert.equal(fee.bweFee, 50);
+  assert.equal(fee.sellerPayout, 950);
 
   const replayWebhookPayment = buildMarketplacePaymentRecord({
     stripeSessionId: "cs_replay",
