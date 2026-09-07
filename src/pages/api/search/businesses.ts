@@ -26,6 +26,7 @@ import {
   type SponsorCampaignRecord,
 } from "@/lib/advertising/sponsorListings";
 import { weekStartUtc } from "@/lib/advertising/sponsorSchedule";
+import { ensureSponsorSearchCapIndexes } from "@/lib/sponsorSearchCapIndexes";
 
 function escapeRegex(input: string) {
   return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -503,6 +504,7 @@ export default async function handler(
     const db = client.db(getMongoDbName());
 
     await ensureApiRateLimitIndexes(db);
+    await ensureSponsorSearchCapIndexes(db);
     const ip = getClientIp(req);
     const searchRate = await hitApiRateLimit(
       db,
