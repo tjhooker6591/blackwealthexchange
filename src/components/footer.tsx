@@ -11,6 +11,8 @@ const footerSections: Array<{
       { href: "/business-directory", label: "Search & Directory" },
       { href: "/marketplace", label: "Marketplace" },
       { href: "/jobs", label: "Jobs" },
+      { href: "/recruiting-consulting", label: "Recruiting" },
+      { href: "/consulting", label: "Consulting" },
       { href: "/advertising", label: "Advertising" },
       { href: "/support", label: "Support" },
     ],
