@@ -368,8 +368,9 @@ export default function SearchResults() {
                 safe((r as any).locationDisplay) ||
                 [safe(r.city), safe(r.state)].filter(Boolean).join(", ") ||
                 safe(r.address);
+              // Verification-field drift fix (2026-09-07): `verified` is
+              // canonical; r.isVerified no longer read independently.
               const verified =
-                r.isVerified === true ||
                 r.verified === true ||
                 safe((r as any).trustStatus).toLowerCase() === "verified";
               const sponsored =

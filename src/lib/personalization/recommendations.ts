@@ -73,7 +73,9 @@ function businessDoc(doc: any): RecommendedBusiness {
     city: s(doc.city) || null,
     state: s(doc.state) || null,
     image: s(doc.image) || null,
-    verified: Boolean(doc.isVerified || doc.verified),
+    // Verification-field drift fix (2026-09-07): `verified` is canonical;
+    // isVerified is a deprecated mirror, no longer read independently.
+    verified: Boolean(doc.verified),
     url: `/business/${encodeURIComponent(routeId)}`,
   };
 }

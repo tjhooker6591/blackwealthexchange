@@ -163,7 +163,10 @@ async function searchBusinessesDomain(
       image: s(doc.image) || null,
       category: category || null,
       trust: {
-        verified: Boolean(doc.isVerified || doc.verified),
+        // Verification-field drift fix (2026-09-07): `verified` is
+        // canonical; isVerified is a deprecated mirror, no longer read
+        // independently.
+        verified: Boolean(doc.verified),
         claimed: s(doc.claimStage) === "ownership_verified",
         sponsored: Boolean(doc.sponsored),
         source: "businesses",

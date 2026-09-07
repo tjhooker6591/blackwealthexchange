@@ -930,8 +930,12 @@ export default function BusinessDirectory({
       const bq = qualityRank(b?._matchQuality);
       if (bq !== aq) return bq - aq;
 
-      const aVerified = a?.isVerified === true || a?.verified === true;
-      const bVerified = b?.isVerified === true || b?.verified === true;
+      // Verification-field drift fix (2026-09-07): `verified` is the
+      // canonical business verification field -- `isVerified` is a
+      // deprecated legacy field kept in sync as a mirror, never read
+      // independently anymore.
+      const aVerified = a?.verified === true;
+      const bVerified = b?.verified === true;
       if (aVerified !== bVerified) return bVerified ? 1 : -1;
 
       const aComplete =
@@ -1146,14 +1150,18 @@ export default function BusinessDirectory({
     const ownershipState = resolveDirectoryOwnershipState(r as any);
     const ownershipVerified = ownershipState.isOwnershipVerified;
     // Distinct from ownership/claim verification: a business can carry a
-    // separate "verified" signal (isVerified/verified/status) without ever
-    // having gone through the ownership-claim flow. Keep them separate so
-    // "Ownership Verified" is never shown for a business that only has the
-    // generic verification signal.
-    const verified =
-      (r as any).isVerified === true ||
-      (r as any).verified === true ||
-      status === "verified";
+    // separate "verified" signal (verified/status) without ever having gone
+    // through the ownership-claim flow. Keep them separate so "Ownership
+    // Verified" is never shown for a business that only has the generic
+    // verification signal.
+    //
+    // Verification-field drift fix (2026-09-07): `verified` is the single
+    // canonical field -- `isVerified` was a second, independently-drifting
+    // field (1,359/2,334 businesses disagreed with it in some way) with no
+    // live write path anywhere in the app and no reliable signal (its only
+    // two `true` records were a duplicate/junk listing and BWE's own
+    // unapproved pending listing). It is no longer read here.
+    const verified = (r as any).verified === true || status === "verified";
 
     const approved =
       (r as any).isApproved === true ||
@@ -2722,7 +2730,10 @@ export const getServerSideProps: GetServerSideProps<
       priceRange: typeof row?.priceRange === "string" ? row.priceRange : null,
       website: typeof row?.website === "string" ? row.website : null,
       verified: typeof row?.verified === "boolean" ? row.verified : null,
-      isVerified: typeof row?.isVerified === "boolean" ? row.isVerified : null,
+      // Verification-field drift fix (2026-09-07): isVerified is deprecated
+      // and always derived from the canonical `verified` field now, never
+      // read independently from the raw document.
+      isVerified: typeof row?.verified === "boolean" ? row.verified : null,
       status: typeof row?.status === "string" ? row.status : null,
       amountPaid: typeof row?.amountPaid === "number" ? row.amountPaid : null,
       claimStage: typeof row?.claimStage === "string" ? row.claimStage : null,

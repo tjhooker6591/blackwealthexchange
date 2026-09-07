@@ -253,7 +253,8 @@ function relevanceScoreBusiness(item: any, search: string) {
     score += scoreTokenMatch(location, token) * 0.8 * tokenWeight;
   }
 
-  if (item?.isVerified === true || item?.verified === true) score += 10;
+  // Verification-field drift fix (2026-09-07): `verified` is canonical.
+  if (item?.verified === true) score += 10;
   if (Number(item?.amountPaid || 0) > 0) score += 4;
 
   return score;
@@ -378,8 +379,12 @@ function normalizeResultItem(item: any, isOrganizations: boolean) {
       normalizeFoundingClaimStage(item?.publicListingStatus) ||
       (listingStatus === "verified" ? "ownership_verified" : "unclaimed");
 
+  // Verification-field drift fix (2026-09-07): `verified` is canonical;
+  // raw item.isVerified no longer read independently (this computed
+  // isVerified below intentionally combines the generic verified signal
+  // with ownership-claim verification -- that's a distinct, broader
+  // concept from the raw DB field of the same name).
   const isVerified =
-    item?.isVerified === true ||
     item?.verified === true ||
     listingStatus === "verified" ||
     ownershipState.isOwnershipVerified;
@@ -449,7 +454,8 @@ function relevanceScoreOrg(item: any, search: string) {
     score += scoreTokenMatch(location, token) * 0.8 * tokenWeight;
   }
 
-  if (item?.isVerified === true || item?.verified === true) score += 8;
+  // Verification-field drift fix (2026-09-07): `verified` is canonical.
+  if (item?.verified === true) score += 8;
   return score;
 }
 
@@ -658,9 +664,13 @@ export default async function handler(
     if (state) and.push({ state });
 
     if (verifiedOnly) {
+      // Verification-field drift fix (2026-09-07): isVerified removed from
+      // this filter -- it had only 2 true records in the whole collection,
+      // one of which was a duplicate/junk listing, so including it here
+      // could surface a non-legitimate business under "Verified Only".
+      // `verified` is the canonical field.
       and.push({
         $or: [
-          { isVerified: true },
           { verified: true },
           { trustStatus: "verified" },
           { status: "verified" },
