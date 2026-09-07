@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import type { GetServerSideProps } from "next";
 import { ArrowRight, BadgeCheck, BookOpen, PlayCircle } from "lucide-react";
 import { resolvePremiumCourseAccess } from "@/lib/entitlements/courseAccess";
+import { verifyAndGrantCourseSession } from "@/lib/db/courses";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 const COURSE_MODULES = [
@@ -41,6 +42,12 @@ export default function CourseDashboard() {
   }, []);
 
   useEffect(() => {
+    if (!router.isReady) return;
+    const sessionId =
+      typeof router.query.session_id === "string"
+        ? router.query.session_id
+        : "";
+
     (async () => {
       try {
         const res = await fetch("/api/courses/access", {
@@ -56,12 +63,48 @@ export default function CourseDashboard() {
           return;
         }
 
+        if (!data?.hasAccess && sessionId) {
+          // P0 course fulfillment fix (2026-09-07): a buyer can land here
+          // immediately after Stripe checkout before the webhook has
+          // processed (or, previously, when it never did). Re-verify the
+          // exact session directly against Stripe before showing "locked"
+          // -- this is the same grantCourseAccess() path the webhook uses,
+          // just triggered from the success redirect instead of relying on
+          // the webhook alone.
+          setAccess({
+            loading: true,
+            allowed: false,
+            message: "Confirming your payment...",
+          });
+          try {
+            const verifyRes = await fetch(
+              `/api/courses/verify-session?session_id=${encodeURIComponent(sessionId)}`,
+              { cache: "no-store", credentials: "include" },
+            );
+            const verifyData = await verifyRes.json().catch(() => ({}));
+            if (verifyData?.paid) {
+              const recheck = await fetch("/api/courses/access", {
+                cache: "no-store",
+                credentials: "include",
+              });
+              const recheckData = await recheck.json().catch(() => ({}));
+              if (recheckData?.hasAccess) {
+                setAccess({ loading: false, allowed: true, message: "" });
+                return;
+              }
+            }
+          } catch {
+            // fall through to the standard not-yet-active message below
+          }
+        }
+
         if (!data?.hasAccess) {
           setAccess({
             loading: false,
             allowed: false,
-            message:
-              "Premium course access is not active yet. Complete enrollment to continue.",
+            message: sessionId
+              ? "We could not confirm this payment yet. If you were just charged, this can take a minute -- refresh this page, or contact support with your payment confirmation if it persists."
+              : "Premium course access is not active yet. Complete enrollment to continue.",
           });
           return;
         }
@@ -75,7 +118,10 @@ export default function CourseDashboard() {
         });
       }
     })();
-  }, [router]);
+  }, [router, router.isReady, router.query.session_id]);
+
+  const justPurchased =
+    typeof router.query.session_id === "string" && !!router.query.session_id;
 
   const progress = (completedModules.length / COURSE_MODULES.length) * 100;
 
@@ -156,6 +202,17 @@ export default function CourseDashboard() {
         <div className="pointer-events-none absolute -bottom-44 right-[-9rem] h-[440px] w-[440px] rounded-full bg-emerald-500/[0.04] blur-3xl" />
 
         <div className="bwe-section-wrap relative z-10 py-8 sm:py-10">
+          {justPurchased ? (
+            <section className="mb-6 rounded-[26px] border border-emerald-400/30 bg-emerald-500/10 px-4 py-4 sm:px-6 sm:py-5">
+              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-300">
+                Payment successful
+              </div>
+              <p className="mt-1 text-sm leading-6 text-white/85">
+                Your course is ready. Start with the first module below, or come
+                back to this dashboard any time to continue where you left off.
+              </p>
+            </section>
+          ) : null}
           <section className="bwe-hero-panel relative overflow-hidden rounded-[30px] px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.12),transparent_34%),radial-gradient(circle_at_82%_24%,rgba(255,255,255,0.08),transparent_24%)]" />
             <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.04fr)_minmax(0,0.96fr)] lg:items-end">
@@ -328,6 +385,25 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   if (!access.hasAccess) {
+    // P0 course fulfillment fix (2026-09-07): this SSR gate used to redirect
+    // straight back to the marketing page whenever access wasn't active yet,
+    // which fired for every course buyer landing here right after Stripe
+    // checkout -- before the webhook had a chance to process -- bouncing a
+    // paying customer off their own success page. If a session_id is
+    // present, re-verify it directly against Stripe (same fallback the
+    // client-side effect uses) before deciding to redirect away.
+    const sessionId =
+      typeof ctx.query.session_id === "string" ? ctx.query.session_id : "";
+    if (sessionId) {
+      const verified = await verifyAndGrantCourseSession(sessionId);
+      if (verified.paid) {
+        const rechecked = await resolvePremiumCourseAccess(ctx.req as any);
+        if (rechecked.hasAccess) {
+          return { props: {} };
+        }
+      }
+    }
+
     return {
       redirect: {
         destination: "/financial-literacy?locked=course-dashboard",

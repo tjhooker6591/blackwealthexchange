@@ -518,6 +518,20 @@ export default async function handler(
       itemName = course.name;
       isPlatformAccount = true;
       stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
+
+      // P0 course fulfillment fix (2026-09-07): this checkout path was
+      // sending every course buyer to the generic /payment-success page,
+      // which has no course-aware branch at all (it only understands
+      // founding-membership and marketplace orders) and never calls the
+      // verify-session fallback. Route to /course-dashboard instead,
+      // matching the success_url pattern /api/courses/checkout-session.ts
+      // already uses for the other course items -- course-dashboard reads
+      // ?session_id and falls back to verify-session when the webhook
+      // hasn't landed yet (see courseAccess check below).
+      successUrl = withCheckoutSessionId(
+        `${origin}/course-dashboard?course=${encodeURIComponent(itemId)}`,
+      );
+      cancelUrl = `${origin}/course-enrollment?cancelled=1`;
     } else if (type === "job") {
       const jobMap: Record<string, { name: string; amount: number }> = {
         "job-posting-standard": {
