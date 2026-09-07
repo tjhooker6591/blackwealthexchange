@@ -706,8 +706,15 @@ export default function BusinessDirectory({
     const q = input.trim();
 
     const hasAnyFilter = Boolean(q) || hasActiveFilters;
-    if (!hasAnyFilter && page === 1) {
-      if (scope === "businesses" && initialRows.length > 0) {
+    // Organization-search auto-populate fix (2026-09-07): this used to
+    // short-circuit to empty rows for ANY scope with no query/filter yet,
+    // which was correct for "businesses" (server-prefetched initialRows
+    // cover that case) but meant switching to "organizations" showed
+    // nothing at all until the visitor typed something -- there was no
+    // equivalent server-side initial fetch for organizations, so it needs
+    // to fall through to the real API fetch below instead of bailing out.
+    if (!hasAnyFilter && page === 1 && scope === "businesses") {
+      if (initialRows.length > 0) {
         didUseInitialResultsRef.current = true;
         setRows(initialRows);
         setTotal(initialTotal);
