@@ -9,6 +9,11 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { buildIdFilter, getNetworkSession, s } from "@/lib/network/shared";
 import { mapDirectoryProfileFromDoc } from "@/lib/directoryProfileContract";
+import {
+  ensureApiRateLimitIndexes,
+  getClientIp,
+  hitApiRateLimit,
+} from "@/lib/apiRateLimit";
 
 async function ensureIndexes(db: any) {
   await db
@@ -111,6 +116,36 @@ export default async function handler(
   if (req.method === "POST" || req.method === "DELETE") {
     const session = getNetworkSession(req);
     if (!session) return res.status(401).json({ error: "Login required" });
+
+    // Phase 8 -- P8-08 Bot/Scraper/Fraud/Abuse Defense. No throttling
+    // previously existed on follow/unfollow -- scriptable follow-count
+    // manipulation and notification-spam-to-owner via rapid follow/unfollow
+    // cycling were both unmitigated.
+    await ensureApiRateLimitIndexes(db).catch(() => null);
+    const ip = getClientIp(req);
+    const userLimit = await hitApiRateLimit(
+      db,
+      `business-follow:user:${session.userId}`,
+      30,
+      10,
+    );
+    const ipLimit = await hitApiRateLimit(
+      db,
+      `business-follow:ip:${ip}`,
+      60,
+      10,
+    );
+    if (userLimit.blocked || ipLimit.blocked) {
+      res.setHeader(
+        "Retry-After",
+        String(
+          Math.max(userLimit.retryAfterSeconds, ipLimit.retryAfterSeconds),
+        ),
+      );
+      return res
+        .status(429)
+        .json({ error: "Too many follow requests. Please try again shortly." });
+    }
 
     const body: any =
       typeof req.body === "string"

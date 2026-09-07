@@ -11,6 +11,11 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { buildIdFilter, getNetworkSession, s } from "@/lib/network/shared";
 import { createNotification } from "@/lib/network/notifications";
+import {
+  ensureApiRateLimitIndexes,
+  getClientIp,
+  hitApiRateLimit,
+} from "@/lib/apiRateLimit";
 
 const MAX_COMMENT_LENGTH = 1000;
 
@@ -121,6 +126,37 @@ export default async function handler(
   if (req.method === "POST") {
     const session = getNetworkSession(req);
     if (!session) return res.status(401).json({ error: "Login required" });
+
+    // Phase 8 -- P8-08 Bot/Scraper/Fraud/Abuse Defense. Business reviews had
+    // no rate limiting at all: the per-(business,user) unique index stops
+    // spamming the SAME business repeatedly, but nothing stopped one
+    // authenticated session from posting review-bombing/fake reviews across
+    // many DIFFERENT businesses in rapid succession.
+    await ensureApiRateLimitIndexes(db).catch(() => null);
+    const ip = getClientIp(req);
+    const userLimit = await hitApiRateLimit(
+      db,
+      `business-review:user:${session.userId}`,
+      10,
+      10,
+    );
+    const ipLimit = await hitApiRateLimit(
+      db,
+      `business-review:ip:${ip}`,
+      20,
+      10,
+    );
+    if (userLimit.blocked || ipLimit.blocked) {
+      res.setHeader(
+        "Retry-After",
+        String(
+          Math.max(userLimit.retryAfterSeconds, ipLimit.retryAfterSeconds),
+        ),
+      );
+      return res
+        .status(429)
+        .json({ error: "Too many reviews. Please try again shortly." });
+    }
 
     const body: any =
       typeof req.body === "string"
