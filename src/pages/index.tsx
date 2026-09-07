@@ -706,9 +706,12 @@ export default function Home() {
                   : "Loading current sponsor placements"}
               </p>
             </div>
-            <span className="rounded-full border border-white/10 px-3 py-1 text-[10px] text-white/45">
-              Weekly slots · max {FEATURED_SPONSOR_RAIL_CAP}
-            </span>
+            <Link
+              href="/advertise/featured-sponsor"
+              className="bwe-focus-ring shrink-0 rounded-full border border-[var(--border-strong)] px-3 py-1 text-[10px] font-semibold text-[var(--accent)] transition hover:bg-white/5"
+            >
+              Become a sponsor →
+            </Link>
           </div>
 
           <div className="relative h-28 w-full overflow-hidden rounded-[24px] border border-white/10 bg-black/20 sm:h-36">
