@@ -267,5 +267,16 @@ fs.writeFileSync(
 );
 console.log(JSON.stringify(out, null, 2));
 
+// QA-account cleanup (2026-09-07): this script previously created 5 fresh
+// qa.*.<timestamp>@bwe.local accounts across users/sellers/employers/
+// businesses on every run and never removed them -- across repeated runs
+// (by this and other sessions) that accumulated into dozens of permanent
+// fake records in each collection, discovered and cleaned up manually
+// several times before the root cause was traced back to here. Clean up
+// this run's own accounts so nothing accumulates going forward.
+for (const a of accounts) {
+  await db.collection(a.coll).deleteOne({ email: a.email });
+}
+
 await client.close();
 if (out.summary.failed > 0) process.exit(1);
