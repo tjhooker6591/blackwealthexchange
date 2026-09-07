@@ -1,28 +1,56 @@
 ## Phase 8 -- Fortress Security & Adversarial Assurance -- Closure Report
 
-- Timestamp: Sunday, September 6, 2026
+- Timestamp: Sunday, September 6, 2026 (updated same-day per owner
+  instruction to continue through today's full engineering/audit
+  closeout)
 - Canonical repo: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Branch: `friday-release-candidate`
 - Starting HEAD: `3be876a39f4df6136d131f7700cca1d65a2c1253`
-- Final HEAD: `fca84b4`
+- Final HEAD (as of this update): `b3d7e5a`
 
-### 1. Phase 8 complete: NO
+### STATUS (owner-specified wording)
 
-Internal security work is complete for everything achievable inside this
-repository. The phase is not closed because one Critical finding
-(P8-SECRET-001 / RT-004) requires an owner-performed external action --
-rotating the exposed MongoDB Atlas credential -- that cannot be completed
-from this session. Per the owner's explicit instruction, that rotation is
-deferred until this report is delivered.
+```
+PHASE 8 INTERNAL SECURITY WORK: COMPLETE
+FINAL SECURITY GATE: PENDING OWNER ACTION
+  -> CRITICAL -- EXPOSED MONGODB CREDENTIAL ROTATION/REVOCATION PENDING
+     Owner decision: rotation + connectivity verification + old-credential
+     revocation will be performed and proven tomorrow, as a manual
+     verification step. NOT performed by this session. NOT waited on
+     today. This finding remains CRITICAL / OPEN until that proof exists.
+EXTERNAL PENETRATION TEST: PENDING
+NATIVE IOS RUNTIME SECURITY: DEFERRED
+NATIVE ANDROID RUNTIME SECURITY: DEFERRED
+BACKUP RESTORE EXERCISE: PENDING
+```
 
-### 2. Final internal security gate: FAIL (blocked on one owner-only action)
+Not reported as "PHASE 8 FULLY COMPLETE" or "FULL SECURITY
+CERTIFICATION" -- those gates remain open by design until the owner's
+manual verification tomorrow.
+
+### 1. Phase 8 complete: NO (internal work: YES: see STATUS above)
+
+Every internally achievable Phase 8 security task -- identity, API,
+web-attack, database/privacy, Stripe/commerce, upload, bot/fraud,
+infrastructure, secrets, supply chain, AI, mobile-source, logging/
+detection, backup/DR assessment, internal red team, regression, owner-
+account integrity, existing-user continuity -- is complete. The phase as
+a whole does not close today because the Critical MongoDB credential
+finding requires an owner-performed external action (Atlas rotation +
+connectivity verification + old-credential revocation) that the owner
+has explicitly decided to perform and prove tomorrow. This session was
+instructed not to wait on that action today, and did not.
+
+### 2. Final internal security gate: PENDING OWNER ACTION (not a fail of internal work -- see above)
 
 The hard gate requires 0 Critical and 0 High vulnerabilities remaining.
-High: 0 remaining (all 5 High findings fixed and retested). Critical: 1
+High: 0 remaining (all 7 High findings fixed and retested). Critical: 1
 remaining -- RT-004's underlying credential has not been confirmed
 rotated. The code-level exposure is removed from the current tree; the
-credential itself is not yet proven invalid. This gate cannot honestly be
-marked PASS until rotation is confirmed.
+credential itself is not yet proven invalid, and per owner decision will
+be rotated and proven tomorrow, not today. This finding remains
+**CRITICAL / OPEN** and must not be marked fixed or closed until that
+proof exists.
 
 ### 3. P8-00 through P8-17 individual status
 
@@ -44,14 +72,14 @@ marked PASS until rotation is confirmed.
 | P8-13 | Mobile security                         | DONE (source-level) -- see item 15 below for explicit classification                                                                                        |
 | P8-14 | Logging / detection / incident response | REVIEWED, GAP DOCUMENTED -- no dedicated security/audit event log exists; not built in this pass (feature-scale work)                                       |
 | P8-15 | Backup / disaster recovery              | DOCUMENTED -- RESTORE EXERCISE PENDING -- OWNER/EXTERNAL GATE, not claimed as verified                                                                      |
-| P8-16 | Internal adversarial red team           | DONE -- `2026-09-06-phase8-red-team-ledger.md`, 9 findings (RT-001 through RT-009)                                                                          |
+| P8-16 | Internal adversarial red team           | DONE -- `2026-09-06-phase8-red-team-ledger.md`, 10 findings (RT-001 through RT-010)                                                                         |
 | P8-17 | Independent external verification       | NOT PERFORMED -- see item 20                                                                                                                                |
 
 ### 4. Vulnerability totals
 
-- Critical: 1 discovered, 1 code-level fixed, **1 remaining open pending owner credential rotation** (RT-004/P8-SECRET-001)
+- Critical: 1 discovered, 1 code-level fixed, **1 remaining OPEN pending owner credential rotation, to be proven tomorrow** (RT-004/P8-SECRET-001)
 - High: 6 discovered, 6 fixed, 0 remaining (RT-001, RT-002, RT-003, RT-005, RT-007, RT-008)
-- Medium: 2 discovered, 2 fixed, 0 remaining (RT-006, RT-009)
+- Medium: 3 discovered, 3 fixed, 0 remaining (RT-006, RT-009, RT-010)
 - Low: 0
 - Informational: 2 documented as accepted/deferred risk, not fixed (CSP `unsafe-inline`/`unsafe-eval`; `postcss`/`sharp` pending a Next.js major upgrade)
 
@@ -187,10 +215,13 @@ verification + a disposable test-cluster restore, never production).
 
 ### 19. Internal red team results
 
-9 findings (RT-001 through RT-009), full detail in
-`2026-09-06-phase8-red-team-ledger.md`: 8 fixed and retested PASS, 1
-(RT-004) partially remediated pending owner action. All testing used
-disposable QA accounts only; localhost only; no Production testing.
+10 findings (RT-001 through RT-010), full detail in
+`2026-09-06-phase8-red-team-ledger.md`: 9 fixed and retested PASS, 1
+(RT-004, the exposed MongoDB credential) code-level remediated with the
+actual rotation/revocation deferred to the owner's manual verification
+tomorrow, per explicit owner decision -- not waited on today, remains
+CRITICAL / OPEN. All testing used disposable QA accounts only; localhost
+only; no Production testing.
 
 ### 20. Independent external security verification: NOT PERFORMED
 
@@ -276,7 +307,10 @@ falsely marked resolved.
 
 1. **Rotate the `bwes_admin` MongoDB Atlas password** (Atlas console --
    cannot be performed from this session). This is the sole blocker to
-   the internal hard gate.
+   the internal hard gate. Owner decision: scheduled for tomorrow's
+   manual verification, alongside connectivity verification and
+   old-credential revocation proof. See
+   `2026-09-06-phase8-owner-verification-matrix.md` for the exact steps.
 2. Update `MONGODB_URI` on the hosting platform (and anywhere else this
    credential is configured) to the rotated value.
 3. Decide whether to rewrite git history to purge the old credential from
@@ -328,25 +362,38 @@ part of this report's scope.
 
 ### 34. Exact stop reason
 
-All internally achievable Phase 8 security work is completed and
-validated. The phase does not close because the one Critical finding
-(P8-SECRET-001/RT-004) requires an owner-only external action (Atlas
-credential rotation) not yet performed, per explicit owner instruction to
-deliver this report first and rotate afterward.
+All internally achievable Phase 8 security work (identity, API,
+web-attack, database/privacy, Stripe/commerce, upload, bot/fraud,
+infrastructure, secrets, supply chain, AI, mobile-source, logging/
+detection, backup/DR assessment, internal red team) is completed and
+validated. Per explicit owner decision, the one Critical finding
+(P8-SECRET-001/RT-004) is deferred to tomorrow's manual verification
+(rotation + connectivity verification + old-credential revocation proof)
+and was NOT waited on today.
 
 ### 35. Final status
 
-**PHASE 8 INTERNAL SECURITY HARDENING: BLOCKED ON ONE OWNER ACTION
-(Critical credential rotation) -- NOT YET COMPLETE. EXTERNAL SECURITY
-SIGNOFF: PENDING (no independent pentest performed).**
+```
+PHASE 8 INTERNAL SECURITY WORK: COMPLETE
+FINAL SECURITY GATE: PENDING OWNER ACTION
+  -> CRITICAL -- EXPOSED MONGODB CREDENTIAL ROTATION/REVOCATION PENDING
+EXTERNAL PENETRATION TEST: PENDING
+NATIVE IOS RUNTIME SECURITY: DEFERRED
+NATIVE ANDROID RUNTIME SECURITY: DEFERRED
+BACKUP RESTORE EXERCISE: PENDING
+```
 
-This is deliberately not reported as "PHASE 8 INTERNAL SECURITY HARDENING
-COMPLETE," because the hard 0-Critical gate is not yet met, and not as
-"PHASE 8 FULLY CERTIFIED" under any circumstance.
+This is deliberately not reported as "PHASE 8 FULLY COMPLETE" or "FULL
+SECURITY CERTIFICATION," because those gates remain open by owner
+decision until tomorrow's manual verification.
 
 ### 36. Next step
 
-Owner rotates the `bwes_admin` MongoDB Atlas password and confirms.
-Once confirmed, the internal hard gate can be re-verified and, if clean,
-Phase 8 internal hardening can then be truthfully reported as COMPLETE
-(external signoff still PENDING pending an independent pentest).
+Owner performs tomorrow's manual verification per
+`2026-09-06-phase8-owner-verification-matrix.md`: rotate the
+`bwes_admin` MongoDB Atlas password, update environment configuration,
+verify connectivity, revoke the old credential, and prove it no longer
+authenticates. Once confirmed, the internal hard gate can be
+re-verified and, if clean, Phase 8 internal hardening can then be
+truthfully reported as COMPLETE (external signoff still PENDING pending
+an independent pentest).

@@ -11,7 +11,7 @@
   (`tjameshooker@gmail.com`) and no real customer account were ever used as
   an attack target or attacker identity.
 - Status of this record: reflects testing performed through commit
-  `2c7abb6`. This is not an exhaustive test of all 295 API routes; see
+  `b3d7e5a`. This is not an exhaustive test of all 295 API routes; see
   "Coverage" at the end.
 
 ### Finding format
@@ -297,6 +297,36 @@ Exploitability | Business impact | Remediation | Fix commit | Retest result
   this environment, so the debug branches themselves were not directly
   exercised live; the logic is identical to the proven `isLocalHost`
   pattern from RT-008/`login.ts`.
+
+---
+
+**RT-010**
+
+- Severity: Medium
+- Component: `src/pages/api/referrals/track.ts`
+- Attack path: This endpoint is intentionally unauthenticated (a real
+  anonymous visitor triggers invite/signup events before they have an
+  account) but had zero rate limiting. Anyone could fabricate an
+  unlimited number of `referral_events` rows for any valid referral
+  code, including the higher-value event types
+  (`referred_first_purchase`, `referred_business_listing`) that feed
+  directly into Phase 6's "measured"/"attributed" economic-impact
+  metrics (`src/lib/economicImpact/referralImpact.ts`).
+- Reproducibility: 100%.
+- Exploitability: No authentication or privilege escalation required --
+  a bare unauthenticated POST loop with a known/guessable code format.
+- Business impact: Data-integrity risk against economic-impact metrics
+  that are explicitly meant to never be fabricated; potential inflation
+  of referral-driven reward signals.
+- Remediation: Added `hitApiRateLimit`, keyed by IP (30/10min) and by
+  referral code (60/10min).
+- Fix commit: `b3d7e5a`
+- Retest result: PASS. 5 rapid legitimate events against a throwaway
+  test code all succeeded with rate limiting active, confirming no
+  regression to normal usage. Documented limitation: rate limiting
+  raises the bar against bulk fabrication but does not independently
+  verify a claimed event's underlying real-world action occurred --
+  noted as a separate, larger architecture item, not silently ignored.
 
 ---
 
