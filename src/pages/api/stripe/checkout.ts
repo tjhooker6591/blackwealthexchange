@@ -224,6 +224,11 @@ export default async function handler(
   const cookies = cookie.parse(req.headers.cookie || "");
   const token = cookies.session_token;
   const cookieAccountType = cookies.accountType || "user";
+  const requestHost = (req.headers.host || "").toLowerCase();
+  const isLocalHost =
+    requestHost.startsWith("localhost") ||
+    requestHost.startsWith("127.0.0.1") ||
+    requestHost.startsWith("[::1]");
 
   let sessionUserId = "";
   let sessionEmail = "";
@@ -247,7 +252,21 @@ export default async function handler(
       return res.status(401).json({ error: "Unauthorized" });
     }
   } else if (
+    // Phase 8 -- P8-AUTH follow-up (RT-008). This dev-convenience fallback
+    // (checkout without a real session, trusting a client-supplied userId)
+    // was previously gated only by `NODE_ENV !== "production"` -- which is
+    // NOT the same as "running on localhost". Any deployment or
+    // environment where NODE_ENV isn't literally the string "production"
+    // (a misconfigured host, a non-Vercel-managed staging environment,
+    // NODE_ENV left unset) would accept a fully unauthenticated checkout
+    // request that just claims to be any userId, attributing the
+    // resulting Stripe checkout session/payment/membership/business claim
+    // to that claimed identity. Scoped to isLocalHost, matching the same
+    // pattern already used correctly elsewhere (e.g. login.ts's cookie
+    // domain logic), so real local development still works exactly as
+    // before while every other environment now requires a real session.
     process.env.NODE_ENV !== "production" &&
+    isLocalHost &&
     typeof payload.userId === "string"
   ) {
     sessionUserId = payload.userId;
