@@ -11,7 +11,7 @@
   (`tjameshooker@gmail.com`) and no real customer account were ever used as
   an attack target or attacker identity.
 - Status of this record: reflects testing performed through commit
-  `08c92c0`. This is not an exhaustive test of all 295 API routes; see
+  `2c7abb6`. This is not an exhaustive test of all 295 API routes; see
   "Coverage" at the end.
 
 ### Finding format
@@ -227,6 +227,76 @@ Exploitability | Business impact | Remediation | Fix commit | Retest result
   fresh login: 200. QA admin with `tokenVersion` bumped to simulate
   revocation, same cookie replayed: 403 -- confirms RT-001's fix now
   actually applies to these routes too.
+
+---
+
+**RT-008**
+
+- Severity: High
+- Component: `src/pages/api/stripe/checkout.ts`
+- Attack path: A broader sweep for the `NODE_ENV`-gated-bypass pattern
+  identified in RT-007 found the same class of defect on the
+  payment/checkout flow. When no `session_token` cookie was present, the
+  handler fell back to trusting a client-supplied `payload.userId` from
+  the request body with zero verification, gated only by
+  `NODE_ENV !== "production"` -- not the same condition as "running on
+  localhost." Any environment where `NODE_ENV` isn't literally the exact
+  string `"production"` (a misconfigured host, a non-Vercel-managed
+  staging environment, `NODE_ENV` left unset) accepted a fully
+  unauthenticated checkout request that could claim to be any user,
+  attributing the resulting Stripe checkout session/ad purchase/
+  membership/business claim to that claimed identity.
+- Reproducibility: 100% in an affected environment.
+- Exploitability: No credentials or session theft required -- just an
+  environment where `NODE_ENV` isn't exactly `"production"`.
+- Business impact: Payment/purchase identity spoofing; the single
+  highest-business-impact route this sweep found this pattern in.
+- Remediation: Added an `isLocalHost` check (identical pattern already
+  correct in `login.ts`) as an additional required condition.
+- Fix commit: `259c9d8`
+- Retest result: PARTIAL. The `isLocalHost` boolean logic was verified
+  correct in isolation (localhost/127.0.0.1 -> true,
+  staging/production hostnames -> false), matching the proven `login.ts`
+  pattern, and `npm run typecheck` + 26/26 regression pass. Full live
+  HTTP verification of the fixed endpoint was not possible in this
+  environment because `STRIPE_SECRET_KEY` is not configured locally, so
+  the handler's earlier "Stripe is not configured" check short-circuits
+  before reaching this code path regardless of outcome -- an honest
+  environment limitation on this specific retest, not a claim of
+  complete live proof.
+
+---
+
+**RT-009**
+
+- Severity: Medium
+- Component: `src/pages/api/auth/request-reset.ts`
+- Attack path: Defense-in-depth follow-up to RT-008. Two debug branches,
+  gated by an explicit operator-set `RESET_DEBUG_MODE=1` env var (not
+  automatic -- distinguishing this from RT-008), return the real
+  password-reset token and link directly in the API response instead of
+  emailing them, so local testing doesn't require real SMTP. The only
+  other gate was the same `NODE_ENV !== "production"` condition RT-008
+  showed is not equivalent to localhost. If `RESET_DEBUG_MODE` were ever
+  left enabled on a reachable non-production host, anyone could request a
+  reset for any email and receive the actual takeover token in the
+  response.
+- Reproducibility: 100% if `RESET_DEBUG_MODE=1` is set on a reachable
+  non-local host (requires that explicit misconfiguration).
+- Exploitability: Lower than RT-008 -- requires an operator to have
+  explicitly (if mistakenly) enabled a debug flag on a reachable host,
+  not merely an ambient environment condition.
+- Business impact: Full account takeover (bypasses the "must control the
+  victim's email inbox" security model of password reset) if the
+  precondition is met.
+- Remediation: Added the same `isLocalHost` check to both token-exposing
+  branches.
+- Fix commit: `2c7abb6`
+- Retest result: PASS for the non-debug path (normal request-reset flow
+  confirmed still working identically). `RESET_DEBUG_MODE` is not set in
+  this environment, so the debug branches themselves were not directly
+  exercised live; the logic is identical to the proven `isLocalHost`
+  pattern from RT-008/`login.ts`.
 
 ---
 
