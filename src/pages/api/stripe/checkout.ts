@@ -4,7 +4,6 @@ import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
-import { createHash } from "crypto";
 import {
   getAdItemName,
   getAdPriceCents,
@@ -12,6 +11,7 @@ import {
 } from "@/lib/advertising/pricing";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
 import { createProductCheckoutSessionCore } from "@/lib/checkout/createProductCheckoutSession";
+import { buildCheckoutIdempotencyKey } from "@/lib/checkout/idempotency";
 import {
   BLACK_CARD_TIERS,
   BLACK_CARD_TIER_BY_ITEM_ID,
@@ -117,10 +117,6 @@ function normalizeAdItemId(raw: string) {
   };
 
   return aliases[item] || item;
-}
-
-function sha256Hex(input: string) {
-  return createHash("sha256").update(input).digest("hex");
 }
 
 function buildCheckoutFingerprint(input: {
@@ -883,10 +879,7 @@ export default async function handler(
 
     metadata.checkoutFingerprint = checkoutFingerprint;
 
-    const minuteBucket = Math.floor(Date.now() / 60_000);
-    const idempotencyKey = `checkout:${sha256Hex(
-      `${checkoutFingerprint}|${minuteBucket}`,
-    )}`;
+    const idempotencyKey = buildCheckoutIdempotencyKey(checkoutFingerprint);
 
     const isPlanMembershipSubscription =
       type === "plan" &&
@@ -943,10 +936,23 @@ export default async function handler(
         : {
             payment_intent_data: {
               metadata,
+              // Commercial & Revenue Integrity Audit (2026-09-07): this
+              // branch is unreachable today (isPlatformAccount is always
+              // true for every item type this generic handler still
+              // processes -- ad/job/course/plan; "product" returns early
+              // via createProductCheckoutSessionCore above). It
+              // previously hardcoded a stale, independent 12% via
+              // Math.round(unitAmount * 0.12) instead of the canonical
+              // fee table in src/lib/payments/revenue.ts. Now uses the
+              // already-computed `split` (same computeRevenueSplit call
+              // as the financial-record fields below) so there is one
+              // single source of truth for this rate, not two, should a
+              // future seller-attributed non-product item type ever
+              // reach this branch.
               ...(isPlatformAccount
                 ? {}
                 : {
-                    application_fee_amount: Math.round(unitAmount * 0.12),
+                    application_fee_amount: split.bweFee,
                     transfer_data: { destination: stripeAccountId },
                   }),
             },
