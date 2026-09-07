@@ -33,3 +33,32 @@ jobs:
       - name: Build
         run: npm run build
         if: always()
+
+      # Phase 8 -- P8-11 Software Supply Chain. Fails the build only on a
+      # Critical-severity advisory (never lower) so this gate doesn't block
+      # on already-known, deliberately-deferred High findings (e.g. the
+      # postcss/sharp advisories that require a breaking Next.js major
+      # upgrade -- see docs/audit-evidence/2026-09-06-phase8-fortress-security-interim.md)
+      # while still catching any *new* Critical dependency vulnerability
+      # automatically, rather than relying solely on manual review.
+      - name: Dependency vulnerability audit (critical only)
+        run: npm audit --omit=dev --audit-level=critical
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Phase 8 -- P8-10 Secrets & Cryptographic Material. Scans every
+      # commit in the push/PR range (and, on a full checkout, full history)
+      # for committed secrets -- the exact class of defect found and fixed
+      # in connect.js (see docs/audit-evidence/2026-09-06-phase8-fortress-security-interim.md,
+      # P8-SECRET-001). Catches a future recurrence automatically instead
+      # of depending on manual review alone.
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
