@@ -11,7 +11,7 @@
   (`tjameshooker@gmail.com`) and no real customer account were ever used as
   an attack target or attacker identity.
 - Status of this record: reflects testing performed through commit
-  `06c74ac`. This is not an exhaustive test of all 295 API routes; see
+  `08c92c0`. This is not an exhaustive test of all 295 API routes; see
   "Coverage" at the end.
 
 ### Finding format
@@ -191,6 +191,42 @@ Exploitability | Business impact | Remediation | Fix commit | Retest result
 - Retest result: PASS. 8 rapid reviews against distinct businesses
   succeeded, the 9th+ correctly returned 429; normal single-follow usage
   unaffected by the new limiter.
+
+---
+
+**RT-007**
+
+- Severity: High
+- Component: `src/pages/api/admin/get-directory-listings.ts`,
+  `src/pages/api/admin/featured-products.ts`,
+  `src/pages/api/admin/directory-duplicates/index.ts`,
+  `src/pages/api/admin/directory-duplicates/resolve.ts`
+- Attack path: A follow-up sweep after RT-001's fix found 4 admin routes
+  that reimplemented their own JWT verification and `isAdmin()` check
+  inline instead of using the shared `requireAdminFromRequest` helper --
+  meaning they never received RT-001's real-time DB re-verification fix.
+  A revoked admin's stale JWT would still grant access to these 4 routes
+  for the token's full remaining lifetime, exactly like RT-001, just
+  scoped to a smaller blast radius. Three of the four additionally
+  enforced the admin check only when `NODE_ENV === "production"` -- in
+  any other environment, ANY authenticated user (not even an admin) could
+  call them, including `directory-duplicates/resolve.ts`, a write
+  endpoint that archives or approves business records.
+- Reproducibility: 100%.
+- Exploitability: For the NODE_ENV-gated three, any authenticated
+  non-admin user could exploit this directly in a non-production
+  environment (e.g. a reachable staging/preview deployment) with no
+  further steps.
+- Business impact: Same class as RT-001 (incident-response REVOKE stage
+  undermined) plus, for three routes, a full authorization bypass for any
+  logged-in user outside production.
+- Remediation: Replaced each route's duplicated auth logic with the
+  shared, already-hardened `requireAdminFromRequest`.
+- Fix commit: `08c92c0`
+- Retest result: PASS. Non-admin QA user: 403 on all 4 routes. QA admin,
+  fresh login: 200. QA admin with `tokenVersion` bumped to simulate
+  revocation, same cookie replayed: 403 -- confirms RT-001's fix now
+  actually applies to these routes too.
 
 ---
 
