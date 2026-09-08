@@ -147,6 +147,96 @@ export function getPendingApprovalQueueFilter(): Filter<any> {
   return getAdminBusinessBucketFilter("pending");
 }
 
+// Approval-queue eligibility (2026-09-08): the "pending" bucket above is
+// deliberately broad (used by dashboard tile counts and other consumers --
+// see getAdminBusinessCounts) and includes every business that hasn't been
+// approved/rejected yet, regardless of whether it actually has enough data
+// to approve. That's correct for a raw status bucket, but /admin/
+// business-approvals was showing that entire bucket (~1,632 records, ~66
+// pages at 25/page) as if it were an actionable queue -- only the ~15 that
+// satisfy normalizeAdminApprovalRow's own canApprove check (the SAME check
+// approve-business.ts already uses to gate the actual approve action)
+// could actually be approved if clicked; the rest would 422.
+//
+// These three buckets refine "pending" using that same, already-canonical
+// eligibility function -- no new approval criteria invented, just applying
+// the one the approve endpoint already enforces at the listing stage
+// instead of only at click-time. `duplicate_pending_review` records are
+// folded into review_exception regardless of kind, since that status is
+// itself an existing, established "needs human judgment" signal.
+export type ApprovalQueueBucket =
+  | "approval_ready"
+  | "needs_requirements"
+  | "review_exception";
+
+export function deriveApprovalQueueBucket(doc: any): ApprovalQueueBucket {
+  const status = String(doc?.status || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, "_");
+  if (status === "duplicate_pending_review") return "review_exception";
+
+  const { kind } = normalizeAdminApprovalRow(doc);
+  if (kind === "approvable_submission") return "approval_ready";
+  if (kind === "imported_pending_record") return "needs_requirements";
+  return "review_exception";
+}
+
+/**
+ * Human-readable reason(s) a record isn't approval-ready, derived only
+ * from the existing canonical fields above -- not a new rule set.
+ */
+export function getApprovalIneligibilityReasons(doc: any): string[] {
+  const status = String(doc?.status || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, "_");
+  if (status === "duplicate_pending_review") {
+    return ["Flagged as a possible duplicate of an existing listing"];
+  }
+
+  const normalized = normalizeAdminApprovalRow(doc);
+  const reasons: string[] = [];
+  if (normalized.missingFields.includes("businessName")) {
+    reasons.push("Missing required business name");
+  }
+  if (normalized.missingFields.includes("email")) {
+    reasons.push("Missing required contact/profile email");
+  }
+  if (
+    normalized.kind === "malformed_pending_record" &&
+    !normalized.missingFields.includes("businessName")
+  ) {
+    reasons.push("Business record is malformed and cannot be approved as-is");
+  }
+  return reasons;
+}
+
+/**
+ * Base MongoDB filter for the approval-queue tabs: the existing "pending"
+ * bucket plus the existing "duplicate_pending_review" status (which the
+ * plain "pending" bucket filter excludes) -- everything that could
+ * possibly land in one of the three ApprovalQueueBucket states. Bucket
+ * classification itself still has to happen in memory (see
+ * deriveApprovalQueueBucket) since it depends on multiple possible
+ * name/email field names that aren't cleanly expressible as one indexed
+ * Mongo condition -- this filter just keeps the initial fetch to the
+ * relevant few thousand documents instead of the whole collection.
+ */
+export function getApprovalQueueBaseFilter(): Filter<any> {
+  return {
+    $or: [
+      getAdminBusinessBucketFilter("pending"),
+      {
+        status: {
+          $regex: "^duplicate[\\s_-]?pending[\\s_-]?review$",
+          $options: "i",
+        },
+      },
+    ],
+  };
+}
+
 export async function resolveUniqueBusinessSlugAndAlias(args: {
   businesses: Collection<any>;
   existingId: ObjectId;
