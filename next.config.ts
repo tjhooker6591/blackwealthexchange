@@ -117,6 +117,26 @@ const nextConfig: NextConfig = {
         dns: false,
       };
     }
+
+    // src/instrumentation.ts deliberately requires sharp through a
+    // runtime-obfuscated string (not a static "sharp" literal) so webpack
+    // won't try to bundle/trace sharp's own source during the
+    // instrumentation-hook compilation pass -- serverExternalPackages
+    // above does not cover that pass the way it does ordinary server
+    // routes (confirmed 2026-09-07: a plain `require("sharp")` there broke
+    // the build with real Module-not-found errors from sharp's internals).
+    // That intentional obfuscation is exactly what makes webpack unable to
+    // statically resolve the require target, so it reports "Critical
+    // dependency: require function is used in a way in which dependencies
+    // cannot be statically extracted" for this one file. Known-safe,
+    // suppressed here rather than left to print on every dev server start.
+    config.ignoreWarnings = [
+      ...(config.ignoreWarnings || []),
+      {
+        module: /src[\\/]instrumentation\.ts$/,
+        message: /Critical dependency/,
+      },
+    ];
     return config;
   },
 };
