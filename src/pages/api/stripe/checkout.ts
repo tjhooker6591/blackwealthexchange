@@ -4,7 +4,6 @@ import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
-import { createHash } from "crypto";
 import {
   getAdItemName,
   getAdPriceCents,
@@ -12,6 +11,7 @@ import {
 } from "@/lib/advertising/pricing";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
 import { createProductCheckoutSessionCore } from "@/lib/checkout/createProductCheckoutSession";
+import { buildCheckoutIdempotencyKey } from "@/lib/checkout/idempotency";
 import {
   BLACK_CARD_TIERS,
   BLACK_CARD_TIER_BY_ITEM_ID,
@@ -119,10 +119,6 @@ function normalizeAdItemId(raw: string) {
   return aliases[item] || item;
 }
 
-function sha256Hex(input: string) {
-  return createHash("sha256").update(input).digest("hex");
-}
-
 function buildCheckoutFingerprint(input: {
   userId: string;
   email: string;
@@ -221,9 +217,67 @@ export default async function handler(
 
   const payload = req.body as CheckoutPayload;
 
+  // Guest marketplace checkout (2026-09-08): a normal product purchase must
+  // never require a BWE account -- createProductCheckoutSessionCore already
+  // fully supports this (its own resolveBuyerFromRequest() returns a null
+  // buyerUserId/buyerEmail for a guest with no session_token, and every
+  // other concern -- seller/business/product attribution, inventory,
+  // Stripe Connect destination-charge/platform-hold fallback, application
+  // fee, shipping -- is computed independently of buyer identity). The
+  // mandatory-session block below this comment was unconditionally
+  // returning 401 for ANY request with no session cookie, before the
+  // `type === "product"` dispatch further down ever ran -- so a logged-out
+  // visitor could never reach the guest-capable code path at all. Dispatch
+  // product checkout here, before that gate, so only non-product purchase
+  // types (ads, jobs, plans, etc.) still require a real BWE session --
+  // exactly as before for those.
+  if (
+    typeof payload?.type === "string" &&
+    payload.type === "product" &&
+    typeof payload?.itemId === "string"
+  ) {
+    try {
+      const client = await clientPromise;
+      const db = client.db(getMongoDbName());
+      const result = await createProductCheckoutSessionCore({
+        req,
+        db,
+        productId: payload.itemId,
+        stripe,
+      });
+
+      if (result.status === 429 && result.body?.retryAfterSeconds) {
+        res.setHeader("Retry-After", String(result.body.retryAfterSeconds));
+      }
+
+      return res.status(result.status).json(result.body);
+    } catch (err: any) {
+      console.error("❌ Guest product checkout failed:", err);
+
+      if (err?.code === "insufficient_capabilities_for_transfer") {
+        return res.status(400).json({
+          error:
+            "Seller Stripe account is not yet enabled for transfers. Complete Stripe onboarding and enable payouts/transfers.",
+        });
+      }
+
+      return res.status(500).json({
+        error:
+          process.env.NODE_ENV === "production"
+            ? "Internal Server Error"
+            : err?.message || "Stripe error",
+      });
+    }
+  }
+
   const cookies = cookie.parse(req.headers.cookie || "");
   const token = cookies.session_token;
   const cookieAccountType = cookies.accountType || "user";
+  const requestHost = (req.headers.host || "").toLowerCase();
+  const isLocalHost =
+    requestHost.startsWith("localhost") ||
+    requestHost.startsWith("127.0.0.1") ||
+    requestHost.startsWith("[::1]");
 
   let sessionUserId = "";
   let sessionEmail = "";
@@ -247,7 +301,21 @@ export default async function handler(
       return res.status(401).json({ error: "Unauthorized" });
     }
   } else if (
+    // Phase 8 -- P8-AUTH follow-up (RT-008). This dev-convenience fallback
+    // (checkout without a real session, trusting a client-supplied userId)
+    // was previously gated only by `NODE_ENV !== "production"` -- which is
+    // NOT the same as "running on localhost". Any deployment or
+    // environment where NODE_ENV isn't literally the string "production"
+    // (a misconfigured host, a non-Vercel-managed staging environment,
+    // NODE_ENV left unset) would accept a fully unauthenticated checkout
+    // request that just claims to be any userId, attributing the
+    // resulting Stripe checkout session/payment/membership/business claim
+    // to that claimed identity. Scoped to isLocalHost, matching the same
+    // pattern already used correctly elsewhere (e.g. login.ts's cookie
+    // domain logic), so real local development still works exactly as
+    // before while every other environment now requires a real session.
     process.env.NODE_ENV !== "production" &&
+    isLocalHost &&
     typeof payload.userId === "string"
   ) {
     sessionUserId = payload.userId;
@@ -286,20 +354,8 @@ export default async function handler(
     const db = client.db(getMongoDbName());
     const payments = db.collection("payments");
 
-    if (type === "product") {
-      const result = await createProductCheckoutSessionCore({
-        req,
-        db,
-        productId: itemId,
-        stripe,
-      });
-
-      if (result.status === 429 && result.body?.retryAfterSeconds) {
-        res.setHeader("Retry-After", String(result.body.retryAfterSeconds));
-      }
-
-      return res.status(result.status).json(result.body);
-    }
+    // type === "product" is fully handled above, before the mandatory-
+    // session gate -- it never reaches here.
 
     const origin = getOrigin(req);
 
@@ -503,6 +559,20 @@ export default async function handler(
       itemName = course.name;
       isPlatformAccount = true;
       stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
+
+      // P0 course fulfillment fix (2026-09-07): this checkout path was
+      // sending every course buyer to the generic /payment-success page,
+      // which has no course-aware branch at all (it only understands
+      // founding-membership and marketplace orders) and never calls the
+      // verify-session fallback. Route to /course-dashboard instead,
+      // matching the success_url pattern /api/courses/checkout-session.ts
+      // already uses for the other course items -- course-dashboard reads
+      // ?session_id and falls back to verify-session when the webhook
+      // hasn't landed yet (see courseAccess check below).
+      successUrl = withCheckoutSessionId(
+        `${origin}/course-dashboard?course=${encodeURIComponent(itemId)}`,
+      );
+      cancelUrl = `${origin}/course-enrollment?cancelled=1`;
     } else if (type === "job") {
       const jobMap: Record<string, { name: string; amount: number }> = {
         "job-posting-standard": {
@@ -864,10 +934,7 @@ export default async function handler(
 
     metadata.checkoutFingerprint = checkoutFingerprint;
 
-    const minuteBucket = Math.floor(Date.now() / 60_000);
-    const idempotencyKey = `checkout:${sha256Hex(
-      `${checkoutFingerprint}|${minuteBucket}`,
-    )}`;
+    const idempotencyKey = buildCheckoutIdempotencyKey(checkoutFingerprint);
 
     const isPlanMembershipSubscription =
       type === "plan" &&
@@ -924,10 +991,23 @@ export default async function handler(
         : {
             payment_intent_data: {
               metadata,
+              // Commercial & Revenue Integrity Audit (2026-09-07): this
+              // branch is unreachable today (isPlatformAccount is always
+              // true for every item type this generic handler still
+              // processes -- ad/job/course/plan; "product" returns early
+              // via createProductCheckoutSessionCore above). It
+              // previously hardcoded a stale, independent 12% via
+              // Math.round(unitAmount * 0.12) instead of the canonical
+              // fee table in src/lib/payments/revenue.ts. Now uses the
+              // already-computed `split` (same computeRevenueSplit call
+              // as the financial-record fields below) so there is one
+              // single source of truth for this rate, not two, should a
+              // future seller-attributed non-product item type ever
+              // reach this branch.
               ...(isPlatformAccount
                 ? {}
                 : {
-                    application_fee_amount: Math.round(unitAmount * 0.12),
+                    application_fee_amount: split.bweFee,
                     transfer_data: { destination: stripeAccountId },
                   }),
             },

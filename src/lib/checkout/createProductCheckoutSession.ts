@@ -18,6 +18,7 @@ import {
 } from "@/lib/marketplace/orderLifecycle";
 import { hasPublicMarketplaceVisibility } from "@/lib/marketplace/publicCatalog";
 import { resolveCanonicalMarketplaceBusinessId } from "@/lib/marketplace/businessAttribution";
+import { buildCheckoutIdempotencyKey } from "@/lib/checkout/idempotency";
 
 type OidLike = { $oid?: string; oid?: string; _id?: unknown } | any;
 type PayoutMode = "destination_charge" | "platform_hold";
@@ -397,6 +398,27 @@ export async function createProductCheckoutSessionCore({
   const orderId = orderObjectId.toString();
   const { buyerUserId, buyerEmail } = resolveBuyerFromRequest(req);
 
+  // Commercial & Revenue Integrity Audit (2026-09-07). Previously this
+  // path had no request-level duplicate-checkout protection at all:
+  // orderObjectId is a fresh random id on every call (nothing to
+  // collide against), and the Stripe session.create() calls below
+  // passed no idempotency key -- unlike the general checkout handler
+  // (src/pages/api/stripe/checkout.ts), which already had this. A
+  // double-click or a network retry within the same minute could create
+  // two separate orders, two separate Stripe sessions, and (if both
+  // were paid) duplicate the marketplace fee/seller payout for what was
+  // one purchase intent. Reuses the same shared helper the general
+  // handler uses, keyed on buyer + product + price, so a repeat
+  // request for the same purchase within the same minute returns the
+  // SAME Stripe session instead of creating a second one.
+  const checkoutFingerprint = [
+    "product",
+    buyerUserId || "",
+    (buyerEmail || "").toLowerCase(),
+    String(product._id),
+    String(unitAmountCents),
+  ].join("|");
+
   const subtotalCents = unitAmountCents;
   const shippingCents = shippingCostCents;
   const totalCents = subtotalCents + shippingCents;
@@ -416,7 +438,6 @@ export async function createProductCheckoutSessionCore({
         paid: false,
       },
       $set: {
-        canonicalSchemaVersion: 1,
         productId: product._id,
         sellerId: seller._id,
         businessId: businessAttribution.businessId,
@@ -471,24 +492,32 @@ export async function createProductCheckoutSessionCore({
   }
 
   try {
-    session = await stripe.checkout.sessions.create({
-      ...baseParams,
-      payment_intent_data: {
-        application_fee_amount: applicationFee,
-        transfer_data: { destination: stripeAccountId },
-        metadata: {
-          type: "product",
-          orderId,
-          productId: String(product._id),
-          sellerId: String(seller._id),
-          ...(businessAttribution.businessId
-            ? { businessId: businessAttribution.businessId }
-            : {}),
-          stripeAccountId,
-          payoutMode: "destination_charge",
+    session = await stripe.checkout.sessions.create(
+      {
+        ...baseParams,
+        payment_intent_data: {
+          application_fee_amount: applicationFee,
+          transfer_data: { destination: stripeAccountId },
+          metadata: {
+            type: "product",
+            orderId,
+            productId: String(product._id),
+            sellerId: String(seller._id),
+            ...(businessAttribution.businessId
+              ? { businessId: businessAttribution.businessId }
+              : {}),
+            stripeAccountId,
+            payoutMode: "destination_charge",
+          },
         },
       },
-    });
+      {
+        idempotencyKey: buildCheckoutIdempotencyKey(
+          checkoutFingerprint,
+          "product-checkout-primary",
+        ),
+      },
+    );
   } catch (err: any) {
     if (!isTransferCapabilityError(err)) {
       await db.collection("orders").updateOne(
@@ -530,23 +559,31 @@ export async function createProductCheckoutSessionCore({
     }
 
     try {
-      session = await stripe.checkout.sessions.create({
-        ...fallbackParams,
-        payment_intent_data: {
-          metadata: {
-            type: "product",
-            orderId,
-            productId: String(product._id),
-            sellerId: String(seller._id),
-            ...(businessAttribution.businessId
-              ? { businessId: businessAttribution.businessId }
-              : {}),
-            stripeAccountId,
-            payoutMode: "platform_hold",
-            transferBlocked: "1",
+      session = await stripe.checkout.sessions.create(
+        {
+          ...fallbackParams,
+          payment_intent_data: {
+            metadata: {
+              type: "product",
+              orderId,
+              productId: String(product._id),
+              sellerId: String(seller._id),
+              ...(businessAttribution.businessId
+                ? { businessId: businessAttribution.businessId }
+                : {}),
+              stripeAccountId,
+              payoutMode: "platform_hold",
+              transferBlocked: "1",
+            },
           },
         },
-      });
+        {
+          idempotencyKey: buildCheckoutIdempotencyKey(
+            checkoutFingerprint,
+            "product-checkout-fallback",
+          ),
+        },
+      );
     } catch (fallbackErr: any) {
       await db.collection("orders").updateOne(
         { _id: orderObjectId },

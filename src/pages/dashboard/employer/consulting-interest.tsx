@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 export default function EmployerConsultingInterestPage() {
   const [name, setName] = useState("");
@@ -49,14 +50,21 @@ export default function EmployerConsultingInterestPage() {
 
       const data = await res.json().catch(() => null);
       if (!res.ok || !data?.success) {
-        throw new Error(data?.error || "Failed to submit support request.");
+        throw new Error(
+          "We couldn't submit your support request right now. Please try again.",
+        );
       }
 
       setSuccess(
         "Request submitted. Our team will review and follow up with managed support options.",
       );
     } catch (err: any) {
-      setError(err?.message || "Failed to submit support request.");
+      setError(
+        toPublicErrorMessage(err?.message, {
+          fallback:
+            "We couldn't submit your support request right now. Please try again.",
+        }),
+      );
     } finally {
       setSubmitting(false);
     }

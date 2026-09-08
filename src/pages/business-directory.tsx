@@ -27,6 +27,7 @@ import {
 } from "@/lib/directory/queryState";
 import { publicBusinessBaseQuery } from "@/lib/directory/publicBusinessQuery";
 import { resolveBusinessImage } from "@/lib/imageResolver";
+import UseMyLocationButton from "@/components/location/UseMyLocationButton";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -705,8 +706,15 @@ export default function BusinessDirectory({
     const q = input.trim();
 
     const hasAnyFilter = Boolean(q) || hasActiveFilters;
-    if (!hasAnyFilter && page === 1) {
-      if (scope === "businesses" && initialRows.length > 0) {
+    // Organization-search auto-populate fix (2026-09-07): this used to
+    // short-circuit to empty rows for ANY scope with no query/filter yet,
+    // which was correct for "businesses" (server-prefetched initialRows
+    // cover that case) but meant switching to "organizations" showed
+    // nothing at all until the visitor typed something -- there was no
+    // equivalent server-side initial fetch for organizations, so it needs
+    // to fall through to the real API fetch below instead of bailing out.
+    if (!hasAnyFilter && page === 1 && scope === "businesses") {
+      if (initialRows.length > 0) {
         didUseInitialResultsRef.current = true;
         setRows(initialRows);
         setTotal(initialTotal);
@@ -929,8 +937,12 @@ export default function BusinessDirectory({
       const bq = qualityRank(b?._matchQuality);
       if (bq !== aq) return bq - aq;
 
-      const aVerified = a?.isVerified === true || a?.verified === true;
-      const bVerified = b?.isVerified === true || b?.verified === true;
+      // Verification-field drift fix (2026-09-07): `verified` is the
+      // canonical business verification field -- `isVerified` is a
+      // deprecated legacy field kept in sync as a mirror, never read
+      // independently anymore.
+      const aVerified = a?.verified === true;
+      const bVerified = b?.verified === true;
       if (aVerified !== bVerified) return bVerified ? 1 : -1;
 
       const aComplete =
@@ -1143,11 +1155,20 @@ export default function BusinessDirectory({
       (r as any).listingStatus || (r as any).trustStatus || (r as any).status,
     ).toLowerCase();
     const ownershipState = resolveDirectoryOwnershipState(r as any);
-    const verified =
-      ownershipState.isOwnershipVerified ||
-      (r as any).isVerified === true ||
-      (r as any).verified === true ||
-      status === "verified";
+    const ownershipVerified = ownershipState.isOwnershipVerified;
+    // Distinct from ownership/claim verification: a business can carry a
+    // separate "verified" signal (verified/status) without ever having gone
+    // through the ownership-claim flow. Keep them separate so "Ownership
+    // Verified" is never shown for a business that only has the generic
+    // verification signal.
+    //
+    // Verification-field drift fix (2026-09-07): `verified` is the single
+    // canonical field -- `isVerified` was a second, independently-drifting
+    // field (1,359/2,334 businesses disagreed with it in some way) with no
+    // live write path anywhere in the app and no reliable signal (its only
+    // two `true` records were a duplicate/junk listing and BWE's own
+    // unapproved pending listing). It is no longer read here.
+    const verified = (r as any).verified === true || status === "verified";
 
     const approved =
       (r as any).isApproved === true ||
@@ -1179,6 +1200,7 @@ export default function BusinessDirectory({
 
     return {
       verified,
+      ownershipVerified,
       approved,
       sponsored,
       isComplete,
@@ -1555,6 +1577,17 @@ export default function BusinessDirectory({
                     <SlidersHorizontal className="h-3.5 w-3.5" />
                     Filters are optional
                   </span>
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                  <UseMyLocationButton
+                    label="📍 Use my location"
+                    onResolved={({ city, state }) => {
+                      if (city) setInput(city);
+                      if (state) setStateFilter(state);
+                      setPage(1);
+                      setHasSearched(true);
+                    }}
+                  />
                 </div>
               </div>
 
@@ -2349,9 +2382,15 @@ export default function BusinessDirectory({
                             </Link>
 
                             <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                              {getTrustMeta(item as Row).verified ? (
+                              {getTrustMeta(item as Row).ownershipVerified ? (
                                 <span className="rounded-full border border-emerald-400/30 bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
                                   Ownership Verified
+                                </span>
+                              ) : null}
+                              {getTrustMeta(item as Row).verified &&
+                              !getTrustMeta(item as Row).ownershipVerified ? (
+                                <span className="rounded-full border border-teal-400/30 bg-teal-400/15 px-2 py-0.5 text-[10px] font-bold text-teal-200">
+                                  Verified
                                 </span>
                               ) : null}
                               {getTrustMeta(item as Row).claimStage ===
@@ -2434,7 +2473,7 @@ export default function BusinessDirectory({
                                 const businessId = safeStr((item as any)._id);
                                 const canClaim =
                                   Boolean(businessId) &&
-                                  !trustMeta.verified &&
+                                  !trustMeta.ownershipVerified &&
                                   ![
                                     "claim_initiated",
                                     "ownership_verification_pending",
@@ -2457,7 +2496,7 @@ export default function BusinessDirectory({
 
                                 return (
                                   <span className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-[11px] font-bold text-white/55">
-                                    {trustMeta.verified
+                                    {trustMeta.ownershipVerified
                                       ? "Already Verified"
                                       : trustMeta.claimStage ===
                                             "claim_initiated" ||
@@ -2615,6 +2654,8 @@ export const getServerSideProps: GetServerSideProps<
           slug: 1,
           image: 1,
           business_name: 1,
+          businessName: 1,
+          title: 1,
           name: 1,
           description: 1,
           phone: 1,
@@ -2660,9 +2701,13 @@ export const getServerSideProps: GetServerSideProps<
       business_name:
         typeof row?.business_name === "string"
           ? row.business_name
-          : typeof row?.name === "string"
-            ? row.name
-            : "Unnamed business",
+          : typeof row?.businessName === "string"
+            ? row.businessName
+            : typeof row?.title === "string"
+              ? row.title
+              : typeof row?.name === "string"
+                ? row.name
+                : "Unnamed business",
       name: typeof row?.name === "string" ? row.name : null,
       description:
         typeof row?.description === "string" ? row.description : null,
@@ -2692,7 +2737,10 @@ export const getServerSideProps: GetServerSideProps<
       priceRange: typeof row?.priceRange === "string" ? row.priceRange : null,
       website: typeof row?.website === "string" ? row.website : null,
       verified: typeof row?.verified === "boolean" ? row.verified : null,
-      isVerified: typeof row?.isVerified === "boolean" ? row.isVerified : null,
+      // Verification-field drift fix (2026-09-07): isVerified is deprecated
+      // and always derived from the canonical `verified` field now, never
+      // read independently from the raw document.
+      isVerified: typeof row?.verified === "boolean" ? row.verified : null,
       status: typeof row?.status === "string" ? row.status : null,
       amountPaid: typeof row?.amountPaid === "number" ? row.amountPaid : null,
       claimStage: typeof row?.claimStage === "string" ? row.claimStage : null,

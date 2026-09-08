@@ -1,6 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMarketplaceDbName } from "@/lib/marketplace/db";
+import {
+  getPublicMarketplaceSellerName,
+  hasPublicMarketplaceVisibility,
+  isPublicMarketplaceSellerProfileComplete,
+} from "@/lib/marketplace/publicCatalog";
 import { ObjectId } from "mongodb";
 
 export default async function handler(
@@ -25,7 +30,7 @@ export default async function handler(
 
     const product = await db.collection("products").findOne({ _id: productId });
 
-    if (!product) {
+    if (!hasPublicMarketplaceVisibility(product)) {
       return res.status(404).json({ error: "Product not found." });
     }
 
@@ -71,20 +76,12 @@ export default async function handler(
         condition: String(product?.condition || "New"),
         availability,
         recentlyAdded,
-        activeListing: String(product?.status || "").toLowerCase() === "active",
+        activeListing: true,
         seller: {
           id: rawSellerId || null,
-          name:
-            seller?.storeName ||
-            seller?.businessName ||
-            seller?.ownerName ||
-            null,
+          name: getPublicMarketplaceSellerName(seller),
           joinedAt: seller?.createdAt || null,
-          profileComplete: Boolean(
-            String(seller?.businessName || "").trim() &&
-            String(seller?.email || "").trim() &&
-            String(seller?.description || "").trim(),
-          ),
+          profileComplete: isPublicMarketplaceSellerProfileComplete(seller),
         },
       },
     });

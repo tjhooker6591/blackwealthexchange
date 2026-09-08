@@ -31,20 +31,16 @@ const roleLabels: Record<AccountType, string> = {
 
 const benefitItems: BenefitItem[] = [
   {
-    title: "Discover and support Black-owned businesses",
-    body: "Explore a platform built to help Black dollars circulate with intention.",
+    title: "Search first",
+    body: "Use public BWE discovery paths before you create an account.",
   },
   {
-    title: "Save the opportunities that matter to you",
-    body: "Keep businesses, jobs, products, and resources within reach as member tools grow.",
+    title: "Keep your place",
+    body: "Return to one dashboard instead of starting over each visit.",
   },
   {
-    title: "Join a mission-driven platform",
-    body: "Be part of a polished ecosystem focused on visibility, ownership, and economic empowerment.",
-  },
-  {
-    title: "Grow your visibility if you build or hire",
-    body: "Business owners, sellers, and employers can use BWE to expand reach and manage key next steps.",
+    title: "Continue the right path",
+    body: "Business owners, sellers, and employers can move into the right next step after signup.",
   },
 ];
 
@@ -74,12 +70,12 @@ const roleItems: RoleItem[] = [
 const nextStepsByRole: Record<AccountType, NextStep[]> = {
   user: [
     {
-      title: "Explore the directory",
-      body: "Start discovering Black-owned businesses, resources, and opportunities across the platform.",
+      title: "Search the platform",
+      body: "Start with businesses, products, jobs, and opportunities that match what you need right now.",
     },
     {
       title: "Save what matters",
-      body: "Use your account to keep track of businesses, products, jobs, and tools as member features grow.",
+      body: "Use your account to keep track of businesses, products, jobs, and tools in one place.",
     },
     {
       title: "Access your dashboard",
@@ -141,7 +137,7 @@ const accountTypeDescriptions: Record<AccountType, string> = {
 };
 
 const accountTypeCta: Record<AccountType, string> = {
-  user: "Join BWE",
+  user: "Join BWE Free",
   business: "Join as a Business Owner",
   seller: "Join as a Seller",
   employer: "Join as an Employer",
@@ -184,14 +180,19 @@ export default function Signup() {
     }
   }, [onboardingUrl]);
 
+  const referralCode = useMemo(() => {
+    const raw = router.query.ref;
+    return typeof raw === "string" ? raw.trim() : "";
+  }, [router.query.ref]);
+
   useEffect(() => {
-    const { type } = router.query;
+    const rawType = router.query.type ?? router.query.accountType;
     if (
-      type &&
-      typeof type === "string" &&
-      ["user", "seller", "business", "employer"].includes(type)
+      rawType &&
+      typeof rawType === "string" &&
+      ["user", "seller", "business", "employer"].includes(rawType)
     ) {
-      setAccountType(type as AccountType);
+      setAccountType(rawType as AccountType);
     }
   }, [router.query]);
 
@@ -252,6 +253,7 @@ export default function Signup() {
           businessName: formData.businessName,
           businessAddress: formData.businessAddress,
           businessPhone: formData.businessPhone,
+          referralCode: referralCode || undefined,
         }),
       });
 
@@ -316,10 +318,10 @@ export default function Signup() {
   return (
     <>
       <Head>
-        <title>Join Black Wealth Exchange | Build, Buy, Belong</title>
+        <title>Join Black Wealth Exchange Free | Build, Buy, Belong</title>
         <meta
           name="description"
-          content="Join Black Wealth Exchange to discover Black-owned businesses, support the mission, save opportunities, and access member tools as the platform grows."
+          content="Join Black Wealth Exchange free to save opportunities, keep your dashboard, and continue through the platform with clearer next steps."
         />
         <meta name="robots" content="noindex,nofollow" />
         <link
@@ -328,7 +330,7 @@ export default function Signup() {
         />
         <meta
           property="og:title"
-          content="Join Black Wealth Exchange | Build, Buy, Belong"
+          content="Join Black Wealth Exchange Free | Build, Buy, Belong"
         />
         <meta
           property="og:description"
@@ -344,18 +346,16 @@ export default function Signup() {
             </div>
             <div className="relative">
               <div className="inline-flex items-center rounded-full border border-yellow-400/30 bg-yellow-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-yellow-300">
-                Join BWE
+                Join BWE Free
               </div>
 
               <h1 className="mt-5 max-w-2xl text-4xl font-black tracking-tight text-white sm:text-5xl">
-                Join the platform built to discover, support, and grow Black
-                economic power.
+                Join BWE free and keep your next steps in one place.
               </h1>
 
               <p className="mt-4 max-w-2xl text-base leading-7 text-gray-200 sm:text-lg">
-                Create your BWE account to find Black-owned businesses, support
-                the mission, save the opportunities you care about, and access
-                member tools as the ecosystem expands.
+                Create your account to return to your dashboard and keep moving
+                through BWE without starting over each time.
               </p>
 
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -378,11 +378,11 @@ export default function Signup() {
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <h2 className="text-lg font-bold text-white">
-                      Built for every part of the BWE ecosystem
+                      Pick the path that fits
                     </h2>
                     <p className="mt-1 text-sm text-gray-300">
-                      One account experience, with role-aware paths for how you
-                      show up.
+                      One account base, then a clearer next step for how you use
+                      BWE.
                     </p>
                   </div>
                   <div className="rounded-full border border-yellow-400/25 bg-yellow-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-yellow-300">
@@ -419,9 +419,9 @@ export default function Signup() {
                   Build your place inside BWE
                 </h2>
                 <p className="mt-3 max-w-xl text-sm leading-6 text-gray-600 sm:text-base">
-                  Choose the path that fits you now. You can join as a
-                  supporter, business owner, seller, or employer without a
-                  complicated setup process.
+                  Supporters can join free. Business owners, sellers, and
+                  employers can continue into the right flow from the same
+                  account base.
                 </p>
               </div>
             </div>
@@ -536,8 +536,8 @@ export default function Signup() {
                       Business details
                     </h3>
                     <p className="mt-1 text-sm text-gray-600">
-                      These details help prepare your business-related
-                      experience after signup.
+                      These details help prepare your next business step after
+                      signup.
                     </p>
                   </div>
                   <div>
@@ -616,15 +616,15 @@ export default function Signup() {
                 Secure and respectful by design
               </h3>
               <p className="mt-2 text-sm leading-6 text-gray-600">
-                Your account is protected through our secure signup flow. Need
-                help? Visit the{" "}
+                Your account uses the existing secure signup flow. Need help?
+                Visit the{" "}
                 <Link
                   href="/support"
                   className="font-semibold text-yellow-700 hover:underline"
                 >
                   support center
                 </Link>{" "}
-                or log in anytime to manage your dashboard.
+                or log in anytime.
               </p>
             </div>
 

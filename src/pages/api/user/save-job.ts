@@ -12,8 +12,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
+  if (req.method !== "POST" && req.method !== "DELETE") {
+    res.setHeader("Allow", ["POST", "DELETE"]);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
@@ -48,12 +48,29 @@ export default async function handler(
   const client = await clientPromise;
   const db = client.db("bwes-cluster");
 
-  // Insert into savedJobs collection
-  await db.collection("savedJobs").insertOne({
-    userId: new ObjectId(userId),
-    jobId: new ObjectId(jobId),
-    savedAt: new Date(),
-  });
+  if (req.method === "DELETE") {
+    await db.collection("savedJobs").deleteOne({
+      userId: new ObjectId(userId),
+      jobId: new ObjectId(jobId),
+    });
+    return res.status(200).json({ success: true });
+  }
+
+  // Canonical saved-job store is the standalone savedJobs collection, keyed
+  // by { userId, jobId } (protected by a unique compound index). Upsert
+  // instead of insertOne so repeat saves are idempotent rather than
+  // surfacing a duplicate-key error to the client.
+  await db.collection("savedJobs").updateOne(
+    { userId: new ObjectId(userId), jobId: new ObjectId(jobId) },
+    {
+      $setOnInsert: {
+        userId: new ObjectId(userId),
+        jobId: new ObjectId(jobId),
+        savedAt: new Date(),
+      },
+    },
+    { upsert: true },
+  );
 
   return res.status(201).json({ success: true });
 }

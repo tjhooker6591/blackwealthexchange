@@ -24,6 +24,17 @@ export default async function handler(
       ? String(b.selectedBusinessId)
       : null,
     filters: b.filters || null,
+    // Additive, optional fields for universal search (P3-01). Existing
+    // callers that omit these are unaffected.
+    source: b.source ? String(b.source).slice(0, 60) : null,
+    resultsByDomain:
+      b.resultsByDomain && typeof b.resultsByDomain === "object"
+        ? b.resultsByDomain
+        : null,
+    selectedResultDomain: b.selectedResultDomain
+      ? String(b.selectedResultDomain).slice(0, 40)
+      : null,
+    selectedResultId: b.selectedResultId ? String(b.selectedResultId) : null,
     createdAt: new Date(),
   };
   const db = (await clientPromise).db(getMongoDbName());

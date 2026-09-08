@@ -17,6 +17,7 @@ import {
   getPublicStudentHubPageRecords,
   type PublicStudentHubRecord,
 } from "@/lib/studentHub/public";
+import { useStudentHubPageView } from "@/hooks/useStudentHubPageView";
 
 type GrantItem = {
   title: string;
@@ -128,6 +129,8 @@ const Grants = ({
   initialGrants: PublicStudentHubRecord[];
 }) => {
   const YEAR = 2026;
+
+  useStudentHubPageView("grants");
 
   const grants: GrantItem[] = initialGrants.map((record) => ({
     title: record.title,

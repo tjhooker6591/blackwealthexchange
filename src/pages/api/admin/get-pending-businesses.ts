@@ -10,6 +10,23 @@ import {
   getAdminBusinessBucketFilter,
   getAdminBusinessCounts,
 } from "@/lib/adminBusinessStatus";
+import {
+  deriveApprovalQueueBucket,
+  getApprovalIneligibilityReasons,
+  getApprovalQueueBaseFilter,
+  normalizeAdminApprovalRow,
+  type ApprovalQueueBucket,
+} from "@/lib/adminBusinessApprovals";
+
+const APPROVAL_QUEUE_BUCKETS: ApprovalQueueBucket[] = [
+  "approval_ready",
+  "needs_requirements",
+  "review_exception",
+];
+
+function isApprovalQueueBucket(value: string): value is ApprovalQueueBucket {
+  return (APPROVAL_QUEUE_BUCKETS as string[]).includes(value);
+}
 
 function parseIntSafe(v: unknown, def: number) {
   const n = Number(v);
@@ -43,7 +60,7 @@ export default async function handler(
       page = "1",
       limit = "25",
       q,
-      status = "pending", // pending | approved | rejected | all
+      status = "approval_ready", // approval_ready | needs_requirements | review_exception | pending | approved | rejected | all
       source = "mixed", // mixed | status | approved
     } = req.query as Record<string, string>;
 
@@ -55,18 +72,12 @@ export default async function handler(
     const db = client.db(getMongoDbName());
     const businessesCol = db.collection("businesses");
 
-    const filter: any =
-      status === "all"
-        ? {}
-        : status === "pending" || status === "approved" || status === "rejected"
-          ? getAdminBusinessBucketFilter(status)
-          : { status };
-
     // ---- Search (business name/email/category/owner/etc.) ----
+    const searchOr: any[] = [];
     if (q && q.trim()) {
       const query = q.trim();
 
-      const searchOr: any[] = [
+      searchOr.push(
         { business_name: { $regex: query, $options: "i" } },
         { businessName: { $regex: query, $options: "i" } },
         { name: { $regex: query, $options: "i" } },
@@ -81,38 +92,90 @@ export default async function handler(
         { city: { $regex: query, $options: "i" } },
         { state: { $regex: query, $options: "i" } },
         { description: { $regex: query, $options: "i" } },
-      ];
+      );
 
       if (ObjectId.isValid(query)) {
         searchOr.push({ _id: new ObjectId(query) });
       }
-
-      if (filter.$and) {
-        filter.$and.push({ $or: searchOr });
-      } else if (filter.$or) {
-        // combine existing OR with search safely
-        filter.$and = [{ $or: filter.$or }, { $or: searchOr }];
-        delete filter.$or;
-      } else {
-        filter.$or = searchOr;
-      }
     }
 
-    // ---- Query ----
-    const total = await businessesCol.countDocuments(filter);
+    function withSearch(baseFilter: any): any {
+      if (!searchOr.length) return baseFilter;
+      if (baseFilter.$and) {
+        return { $and: [...baseFilter.$and, { $or: searchOr }] };
+      }
+      if (baseFilter.$or) {
+        return { $and: [{ $or: baseFilter.$or }, { $or: searchOr }] };
+      }
+      return { ...baseFilter, $or: searchOr };
+    }
 
-    const businesses = await businessesCol
-      .find(filter)
-      .sort({ createdAt: -1, submittedAt: -1, _id: -1 })
-      .skip(skip)
-      .limit(limitNum)
-      .toArray();
+    let total: number;
+    let businesses: any[];
+    let approvalQueueCounts: {
+      approval_ready: number;
+      needs_requirements: number;
+      review_exception: number;
+    } | null = null;
+
+    if (isApprovalQueueBucket(status)) {
+      // Eligibility depends on which of several possible name/email field
+      // names a document has, which isn't cleanly expressible as one
+      // indexed Mongo condition -- fetch the (already narrow) base
+      // population and classify with the same function approve-business.ts
+      // itself uses to gate the actual approve action, then bucket, sort,
+      // and paginate in memory. Base population is a few thousand
+      // documents at most, fine for an admin-only page.
+      const baseFilter = withSearch(getApprovalQueueBaseFilter());
+      const basePopulation = await businessesCol.find(baseFilter).toArray();
+
+      const counts = {
+        approval_ready: 0,
+        needs_requirements: 0,
+        review_exception: 0,
+      };
+      const bucketed: any[] = [];
+      for (const doc of basePopulation) {
+        const bucket = deriveApprovalQueueBucket(doc);
+        counts[bucket]++;
+        if (bucket === status) bucketed.push(doc);
+      }
+      approvalQueueCounts = counts;
+
+      bucketed.sort((a, b) => {
+        const aDate = new Date(a.createdAt || a.submittedAt || 0).getTime();
+        const bDate = new Date(b.createdAt || b.submittedAt || 0).getTime();
+        return bDate - aDate;
+      });
+
+      total = bucketed.length;
+      businesses = bucketed.slice(skip, skip + limitNum);
+    } else {
+      const filter: any = withSearch(
+        status === "all"
+          ? {}
+          : status === "pending" ||
+              status === "approved" ||
+              status === "rejected"
+            ? getAdminBusinessBucketFilter(status)
+            : { status },
+      );
+
+      total = await businessesCol.countDocuments(filter);
+      businesses = await businessesCol
+        .find(filter)
+        .sort({ createdAt: -1, submittedAt: -1, _id: -1 })
+        .skip(skip)
+        .limit(limitNum)
+        .toArray();
+    }
 
     // ---- Normalize for UI use ----
     const rows = businesses.map((b: any) => {
       const businessName = getCanonicalBusinessName(b) || "Unnamed Business";
 
       const derivedStatus = deriveAdminBusinessStatus(b);
+      const normalizedApproval = normalizeAdminApprovalRow(b);
 
       return {
         ...b,
@@ -122,6 +185,12 @@ export default async function handler(
         displayPhone: s(b.phone) || s(b.businessPhone),
         displayCategory: s(b.category) || s(b.businessCategory),
         derivedStatus,
+        queueKind: normalizedApproval.kind,
+        canApprove: normalizedApproval.canApprove,
+        canReject: normalizedApproval.canReject,
+        missingFields: normalizedApproval.missingFields,
+        ineligibilityReasons: getApprovalIneligibilityReasons(b),
+        approvalQueueBucket: deriveApprovalQueueBucket(b),
         automationDisposition:
           typeof b?.blackOwnedVerification?.decision?.disposition === "string"
             ? b.blackOwnedVerification.decision.disposition
@@ -150,6 +219,38 @@ export default async function handler(
       total: totalBusinesses,
     } = await getAdminBusinessCounts(db);
 
+    // approvalQueueCounts is only computed on the in-memory path above (it
+    // needs the classified base population); compute it the same way for
+    // any other status value too, so tab counts stay accurate no matter
+    // which tab is currently selected.
+    if (!approvalQueueCounts) {
+      const baseFilter = getApprovalQueueBaseFilter();
+      const basePopulation = await businessesCol
+        .find(baseFilter)
+        .project({
+          business_name: 1,
+          businessName: 1,
+          name: 1,
+          companyName: 1,
+          legalName: 1,
+          dba: 1,
+          title: 1,
+          email: 1,
+          ownerEmail: 1,
+          businessEmail: 1,
+          status: 1,
+        })
+        .toArray();
+      const counts = {
+        approval_ready: 0,
+        needs_requirements: 0,
+        review_exception: 0,
+      };
+      for (const doc of basePopulation)
+        counts[deriveApprovalQueueBucket(doc)]++;
+      approvalQueueCounts = counts;
+    }
+
     return res.status(200).json({
       ok: true,
       page: pageNum,
@@ -160,6 +261,9 @@ export default async function handler(
         pending: pendingCount,
         approved: approvedCount,
         rejected: rejectedCount,
+        approvalReady: approvalQueueCounts.approval_ready,
+        needsRequirements: approvalQueueCounts.needs_requirements,
+        reviewException: approvalQueueCounts.review_exception,
         duplicateReview: duplicateReviewCount,
         totalBusinesses,
       },

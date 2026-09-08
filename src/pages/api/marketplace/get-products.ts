@@ -3,6 +3,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getAppEnv } from "@/lib/env";
 import { getMarketplaceDbName } from "@/lib/marketplace/db";
+import {
+  buildPublicMarketplaceVisibilityFilter,
+  getPublicMarketplaceSellerName,
+  isPublicMarketplaceSellerProfileComplete,
+} from "@/lib/marketplace/publicCatalog";
 import { ObjectId } from "mongodb";
 
 const marketplaceWarmupPromise = clientPromise
@@ -52,10 +57,14 @@ export default async function handler(
     const tConnected = performance.now();
 
     const filter: any = {};
+    const andClauses: any[] = [];
+    const now = new Date();
 
     // Category filtering
     if (category && category !== "All") {
-      filter.category = { $regex: new RegExp(category as string, "i") };
+      andClauses.push({
+        category: { $regex: new RegExp(category as string, "i") },
+      });
     }
 
     if (isSellerView) {
@@ -67,20 +76,25 @@ export default async function handler(
       }
       filter.sellerId = sellerId;
     } else {
-      // Public Marketplace View ➔ show active products, including legacy docs
-      // where isPublished was never set. Explicitly unpublished remains hidden.
-      filter.status = "active";
-      filter.isPublished = { $ne: false };
+      andClauses.push(buildPublicMarketplaceVisibilityFilter(now));
     }
 
     const search = String(q || "").trim();
     if (search) {
-      filter.$or = [
-        { name: { $regex: new RegExp(search, "i") } },
-        { title: { $regex: new RegExp(search, "i") } },
-        { description: { $regex: new RegExp(search, "i") } },
-        { category: { $regex: new RegExp(search, "i") } },
-      ];
+      andClauses.push({
+        $or: [
+          { name: { $regex: new RegExp(search, "i") } },
+          { title: { $regex: new RegExp(search, "i") } },
+          { description: { $regex: new RegExp(search, "i") } },
+          { category: { $regex: new RegExp(search, "i") } },
+        ],
+      });
+    }
+
+    if (andClauses.length === 1) {
+      Object.assign(filter, andClauses[0]);
+    } else if (andClauses.length > 1) {
+      filter.$and = andClauses;
     }
 
     const sortKey = String(sort || "relevance");
@@ -179,17 +193,17 @@ export default async function handler(
         recentlyAdded,
         seller: {
           id: sellerKey || null,
-          name:
-            seller?.storeName ||
-            seller?.businessName ||
-            seller?.ownerName ||
-            null,
-          profileComplete: Boolean(
-            String(seller?.businessName || "").trim() &&
-            String(seller?.email || "").trim() &&
-            String(seller?.description || "").trim(),
-          ),
+          name: getPublicMarketplaceSellerName(seller),
+          profileComplete: isPublicMarketplaceSellerProfileComplete(seller),
         },
+        activeListing: true,
+        availability:
+          Number(p?.stockQuantity ?? 0) <= 0
+            ? "Out of stock"
+            : Number(p?.stockQuantity ?? 0) <= 3
+              ? "Low stock"
+              : "In stock",
+        condition: String(p?.condition || "New"),
       };
     });
 

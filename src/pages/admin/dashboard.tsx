@@ -859,12 +859,26 @@ const AdminDashboard = ({
               directly into moderation queues.
             </p>
           </div>
-          <Link
-            href="/admin/analytics"
-            className="inline-flex w-fit items-center rounded border border-gray-700 bg-gray-900 px-3 py-2 text-xs hover:bg-gray-700"
-          >
-            View Platform Analytics →
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/admin/analytics"
+              className="inline-flex w-fit items-center rounded border border-gray-700 bg-gray-900 px-3 py-2 text-xs hover:bg-gray-700"
+            >
+              View Platform Analytics →
+            </Link>
+            <Link
+              href="/admin/economic-impact"
+              className="inline-flex w-fit items-center rounded border border-gray-700 bg-gray-900 px-3 py-2 text-xs hover:bg-gray-700"
+            >
+              Economic Impact Engine →
+            </Link>
+            <Link
+              href="/admin/observability"
+              className="inline-flex w-fit items-center rounded border border-gray-700 bg-gray-900 px-3 py-2 text-xs hover:bg-gray-700"
+            >
+              Scale &amp; Observability →
+            </Link>
+          </div>
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">

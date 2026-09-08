@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import { getAdDurationOptions, getAdQuote } from "@/lib/advertising/pricing";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 export default function FeaturedSponsorPage() {
   const router = useRouter();
@@ -203,7 +204,11 @@ export default function FeaturedSponsorPage() {
         body: JSON.stringify(payload),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || "Failed to save ad request");
+      if (!res.ok) {
+        throw new Error(
+          "We couldn't save your featured sponsor request right now. Please try again.",
+        );
+      }
 
       const requestId = data?.requestId || data?.adId;
 
@@ -229,7 +234,13 @@ export default function FeaturedSponsorPage() {
 
       router.push(`/advertising/checkout?${query.toString()}`);
     } catch (e: any) {
-      setError(e?.message || "Unable to continue to checkout");
+      setError(
+        toPublicErrorMessage(e?.message, {
+          fallback:
+            "We couldn't continue to checkout right now. Please try again.",
+          authFallback: "Please sign in to continue to secure checkout.",
+        }),
+      );
     } finally {
       setSubmitting(false);
     }

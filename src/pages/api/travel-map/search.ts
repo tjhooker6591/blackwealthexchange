@@ -235,7 +235,9 @@ function loadFallbackBusinesses(): TravelMapBusiness[] {
           : cleanString(doc?.subcategory),
         website: cleanString(doc?.website),
         phone: cleanString(doc?.phone),
-        verified: doc?.verified === true || doc?.isVerified === true,
+        // Verification-field drift fix (2026-09-07): `verified` is
+        // canonical; isVerified no longer read independently.
+        verified: doc?.verified === true,
         sponsored: doc?.sponsored === true,
         featured: doc?.featured === true,
         address: {

@@ -459,8 +459,18 @@ export default async function handler(
               doc?.name ||
               [doc?.firstName, doc?.lastName].filter(Boolean).join(" ") ||
               "(no name)";
+            // Verification-field drift fix (2026-09-07): for the
+            // "businesses" source, `verified` is the sole canonical field --
+            // isVerified is deprecated and drifted independently (see
+            // Finding #1). Other account-type collections in this shared
+            // loop (users/sellers/etc.) still fall back to isVerified since
+            // that field is not part of this drift.
             const verified =
-              doc?.verified ?? doc?.isVerified ?? Boolean(doc?.emailVerified);
+              collection === "businesses"
+                ? Boolean(doc?.verified)
+                : (doc?.verified ??
+                  doc?.isVerified ??
+                  Boolean(doc?.emailVerified));
             const status =
               typeof doc?.status === "string"
                 ? doc.status

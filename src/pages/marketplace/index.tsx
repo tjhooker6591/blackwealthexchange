@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { ObjectId } from "mongodb";
 import BuyNowButton from "@/components/BuyNowButton";
+import SaveSearchButton from "@/components/network/SaveSearchButton";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import clientPromise from "@/lib/mongodb";
 import { getMarketplaceDbName } from "@/lib/marketplace/db";
@@ -414,7 +415,7 @@ export default function Marketplace({
                   </button>
                 ) : null}
               </div>
-              <div className="mt-3 flex flex-wrap gap-2 text-left text-xs text-white/70">
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-left text-xs text-white/70">
                 <span className="bwe-badge" data-tone="success">
                   Secure checkout available
                 </span>
@@ -422,6 +423,13 @@ export default function Marketplace({
                 <span className="bwe-badge">
                   Seller support available where listed
                 </span>
+                <SaveSearchButton
+                  domain="products"
+                  query={q}
+                  filters={{ category: selectedCategory }}
+                  label={q || `${selectedCategory} products`}
+                  alertLabel="Get product alerts"
+                />
               </div>
             </div>
 

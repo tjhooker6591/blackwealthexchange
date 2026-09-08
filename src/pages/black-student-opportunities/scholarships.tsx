@@ -19,8 +19,12 @@ import {
   getPublicStudentHubPageRecords,
   type PublicStudentHubRecord,
 } from "@/lib/studentHub/public";
+import { useStudentHubPageView } from "@/hooks/useStudentHubPageView";
+import SaveOpportunityButton from "@/components/network/SaveOpportunityButton";
+import SaveSearchButton from "@/components/network/SaveSearchButton";
 
 type ScholarshipItem = {
+  id: string;
   title: string;
   description: string;
   statusNote: string;
@@ -82,14 +86,17 @@ function ScholarshipCard({ item }: { item: ScholarshipItem }) {
           </div>
         </div>
 
-        <a
-          href={item.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500"
-        >
-          Apply / Learn More <ExternalLink className="h-4 w-4" />
-        </a>
+        <div className="flex shrink-0 flex-col items-stretch gap-2">
+          <a
+            href={item.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500"
+          >
+            Apply / Learn More <ExternalLink className="h-4 w-4" />
+          </a>
+          <SaveOpportunityButton opportunityId={item.id} />
+        </div>
       </div>
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
@@ -140,7 +147,10 @@ export default function ScholarshipsPage({
 }) {
   const YEAR = 2026;
 
+  useStudentHubPageView("scholarships");
+
   const scholarships: ScholarshipItem[] = initialScholarships.map((record) => ({
+    id: record.id,
     title: record.title,
     description: record.description,
     statusNote: record.statusNote || record.statusLabel,
@@ -324,6 +334,18 @@ export default function ScholarshipsPage({
           {/* Live updates */}
           <div className="mt-6">
             <SectionCard title="Live Updates (Feeds / Alerts)" icon={Bell}>
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.06] p-4">
+                <p className="text-sm text-white/80">
+                  Want BWE to notify you when new scholarships are added?
+                </p>
+                <SaveSearchButton
+                  domain="scholarships"
+                  query="scholarships"
+                  label="All scholarships"
+                  alertLabel="Get scholarship alerts"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#D4AF37] px-4 py-2 text-xs font-extrabold text-black shadow transition hover:bg-yellow-500 disabled:opacity-60"
+                />
+              </div>
               <p className="text-sm text-white/70">
                 These are reliable official starting points to keep in your
                 scholarship rotation throughout the year:

@@ -4,6 +4,7 @@ import type { GetServerSideProps } from "next";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import { getJwtSecret } from "@/lib/env";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type Order = {
   _id: string;
@@ -73,7 +74,13 @@ export default function MarketplaceOrdersPage() {
         res.status === 401
           ? "Please sign in with a seller account to view seller orders."
           : "We could not load seller orders. Please refresh and try again.";
-      throw new Error(data?.error || fallback);
+      throw new Error(
+        toPublicErrorMessage(data?.error, {
+          fallback,
+          authFallback:
+            "Please sign in with a seller account to view seller orders.",
+        }),
+      );
     }
     const loaded = Array.isArray(data?.orders) ? data.orders : [];
     setOrders(loaded);
@@ -128,14 +135,19 @@ export default function MarketplaceOrdersPage() {
           trackingCarrier: trackingCarrierById[orderId] || "",
         }),
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok)
-        throw new Error(data?.error || "Failed to update fulfillment");
+      await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(
+          "We couldn't update fulfillment right now. Please try again.",
+        );
+      }
       await loadOrders();
     } catch (e: any) {
       setSaveError(
-        e?.message ||
-          "Fulfillment update was not saved. Check inputs and try again.",
+        toPublicErrorMessage(e?.message, {
+          fallback:
+            "Fulfillment update was not saved. Check your details and try again.",
+        }),
       );
     } finally {
       setSavingOrderId(null);

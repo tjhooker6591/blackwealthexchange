@@ -134,6 +134,19 @@ export default function RecruitingConsultingPage() {
               </ul>
             </div>
             {mode === "employer" ? (
+              <div className="mt-3 rounded-xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.06] p-3 text-xs text-white/85 sm:text-sm">
+                <p className="font-semibold text-[#D4AF37]">
+                  BWE Recruiting -- standard successful-placement fee: 15%
+                </p>
+                <p className="mt-1 text-white/70">
+                  BWE&rsquo;s standard fee is 15% of the placed
+                  candidate&rsquo;s agreed first-year compensation, due only
+                  when a placement is confirmed. Exact engagement terms are
+                  agreed with BWE before the recruiting engagement begins.
+                </p>
+              </div>
+            ) : null}
+            {mode === "employer" ? (
               <div className="mt-3 flex flex-wrap gap-2">
                 <Link
                   href="/dashboard/employer/consultants"

@@ -1,6 +1,7 @@
 // src/lib/db/courses.ts
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
+import Stripe from "stripe";
 import { getMongoDbName } from "@/lib/env";
 import { sendEmail } from "@/lib/sendEmail";
 
@@ -151,4 +152,103 @@ export async function grantCourseAccess(
     emailSent: Boolean(emailEvent.sent),
     emailError: emailEvent.error || null,
   };
+}
+
+export type VerifyCourseSessionResult = {
+  ok: boolean;
+  paid: boolean;
+  userId?: string;
+  courseId?: string;
+  enrollmentCreated?: boolean;
+  reason?: string;
+};
+
+/**
+ * P0 course fulfillment fix (2026-09-07): the client-side
+ * /api/courses/verify-session endpoint and the course-dashboard SSR gate
+ * both need to independently re-check a Stripe session and grant access as
+ * a fallback when the webhook hasn't processed it yet (or never will).
+ * Shared here so both call sites use exactly one implementation instead of
+ * two copies that could drift.
+ */
+export async function verifyAndGrantCourseSession(
+  sessionId: string,
+): Promise<VerifyCourseSessionResult> {
+  const stripeSecret = process.env.STRIPE_SECRET_KEY;
+  if (!stripeSecret) {
+    return { ok: false, paid: false, reason: "stripe_not_configured" };
+  }
+  if (!sessionId) {
+    return { ok: false, paid: false, reason: "missing_session_id" };
+  }
+
+  try {
+    const stripe = new Stripe(stripeSecret, {
+      apiVersion: "2025-02-24.acacia" as any,
+    });
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const paid =
+      String((session as any).payment_status || "").toLowerCase() === "paid";
+
+    const metadata = (session.metadata || {}) as Record<string, string>;
+    const metaType = String(metadata.type || "").toLowerCase();
+    const userId = String(metadata.userId || "").trim();
+    const courseId = String(metadata.courseId || metadata.itemId || "").trim();
+
+    if (!paid) {
+      return { ok: true, paid: false, reason: "not_paid" };
+    }
+    if (metaType !== "course") {
+      return { ok: true, paid: true, reason: "not_course_checkout" };
+    }
+    if (!userId || !courseId) {
+      return { ok: true, paid: true, reason: "missing_course_metadata" };
+    }
+
+    const client = await clientPromise;
+    const db = client.db(getMongoDbName());
+
+    const paymentIntentId =
+      typeof session.payment_intent === "string"
+        ? session.payment_intent
+        : null;
+
+    const grant = await grantCourseAccess(userId, courseId, {
+      stripeSessionId: sessionId,
+      paymentIntentId,
+      source: "verify_session",
+      paymentStatus: "paid",
+      purchasedAt: new Date(),
+      email: metadata.email || null,
+      courseName: metadata.courseName || courseId,
+      sendAccessEmail: true,
+    });
+
+    const now = new Date();
+    await db.collection("payments").updateOne(
+      { stripeSessionId: sessionId },
+      {
+        $set: {
+          status: "paid",
+          paid: true,
+          paymentStatus: "paid",
+          fulfillmentStatus: "fulfilled",
+          entitlementStatus: "granted",
+          lastReconciledAt: now,
+          updatedAt: now,
+        },
+      },
+    );
+
+    return {
+      ok: true,
+      paid: true,
+      userId,
+      courseId,
+      enrollmentCreated: grant.enrollmentUpserted,
+    };
+  } catch (error) {
+    console.error("verifyAndGrantCourseSession error:", error);
+    return { ok: false, paid: false, reason: "verify_failed" };
+  }
 }

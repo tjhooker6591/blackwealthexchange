@@ -19,6 +19,8 @@ type Business = {
   canApprove?: boolean;
   canReject?: boolean;
   missingFields?: string[];
+  ineligibilityReasons?: string[];
+  approvalQueueBucket?: ApprovalTab;
   sourceLabel?: string | null;
   listingType?: string | null;
   automationDisposition?: string | null;
@@ -27,6 +29,14 @@ type Business = {
 };
 
 const PAGE_SIZE = 25;
+
+type ApprovalTab = "approval_ready" | "needs_requirements" | "review_exception";
+
+const TABS: Array<{ value: ApprovalTab; label: string }> = [
+  { value: "approval_ready", label: "Approval Ready" },
+  { value: "needs_requirements", label: "Needs Requirements" },
+  { value: "review_exception", label: "Review / Exceptions" },
+];
 
 type MeResponse = {
   user?: {
@@ -42,6 +52,9 @@ type Summary = {
   pending: number;
   approved: number;
   rejected: number;
+  approvalReady: number;
+  needsRequirements: number;
+  reviewException: number;
   duplicateReview: number;
   totalBusinesses: number;
 };
@@ -58,6 +71,7 @@ function userIsAdmin(user?: MeResponse["user"]) {
 export default function BusinessApprovals() {
   const router = useRouter();
 
+  const [activeTab, setActiveTab] = useState<ApprovalTab>("approval_ready");
   const [pendingBusinesses, setPendingBusinesses] = useState<Business[]>([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -70,6 +84,7 @@ export default function BusinessApprovals() {
     const params = new URLSearchParams({
       page: String(page),
       limit: String(PAGE_SIZE),
+      status: activeTab,
     });
     const res = await fetch(`/api/admin/get-pending-businesses?${params}`, {
       cache: "no-store",
@@ -92,12 +107,21 @@ export default function BusinessApprovals() {
             pending: Number(data.summary.pending || 0),
             approved: Number(data.summary.approved || 0),
             rejected: Number(data.summary.rejected || 0),
+            approvalReady: Number(data.summary.approvalReady || 0),
+            needsRequirements: Number(data.summary.needsRequirements || 0),
+            reviewException: Number(data.summary.reviewException || 0),
             duplicateReview: Number(data.summary.duplicateReview || 0),
             totalBusinesses: Number(data.summary.totalBusinesses || 0),
           }
         : null,
     );
-  }, [page]);
+  }, [page, activeTab]);
+
+  const switchTab = (tab: ApprovalTab) => {
+    if (tab === activeTab) return;
+    setActiveTab(tab);
+    setPage(1);
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -222,12 +246,15 @@ export default function BusinessApprovals() {
                 Review and approve pending business submissions.
               </p>
               <p className="mt-1 text-xs text-zinc-500">
-                Showing {pageStart}-{pageEnd} of {total} pending businesses
+                Showing {pageStart}-{pageEnd} of {total}{" "}
+                {TABS.find((t) => t.value === activeTab)?.label.toLowerCase()}{" "}
+                businesses
               </p>
               {summary ? (
                 <p className="mt-1 text-xs text-zinc-500">
-                  Duplicate review queue: {summary.duplicateReview} separate
-                  records
+                  {summary.pending} total pending records exist; only{" "}
+                  {summary.approvalReady} currently satisfy BWE&rsquo;s approval
+                  requirements
                 </p>
               ) : null}
             </div>
@@ -256,6 +283,34 @@ export default function BusinessApprovals() {
             </div>
           </div>
 
+          <div className="mb-6 flex flex-wrap gap-2">
+            {TABS.map((tab) => {
+              const count =
+                tab.value === "approval_ready"
+                  ? summary?.approvalReady
+                  : tab.value === "needs_requirements"
+                    ? summary?.needsRequirements
+                    : summary?.reviewException;
+              const isActive = tab.value === activeTab;
+              return (
+                <button
+                  key={tab.value}
+                  type="button"
+                  onClick={() => switchTab(tab.value)}
+                  disabled={refreshing}
+                  className={`rounded-lg border px-4 py-2 text-sm font-semibold transition disabled:opacity-60 ${
+                    isActive
+                      ? "border-gold bg-gold/10 text-gold"
+                      : "border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800"
+                  }`}
+                >
+                  {tab.label}
+                  {typeof count === "number" ? ` (${count})` : ""}
+                </button>
+              );
+            })}
+          </div>
+
           {loading ? (
             <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6">
               <p>Loading pending businesses...</p>
@@ -270,7 +325,11 @@ export default function BusinessApprovals() {
 
               {pendingBusinesses.length === 0 ? (
                 <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6 text-zinc-300">
-                  No pending business approvals. 🎉
+                  {activeTab === "approval_ready"
+                    ? "No businesses are currently approval-ready. 🎉"
+                    : activeTab === "needs_requirements"
+                      ? "No businesses are currently missing requirements."
+                      : "No businesses currently need manual review."}
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -350,6 +409,19 @@ export default function BusinessApprovals() {
                                 <div className="mt-1 text-xs text-zinc-500">
                                   Missing: {biz.missingFields.join(", ")}
                                 </div>
+                              ) : null}
+                              {activeTab !== "approval_ready" &&
+                              Array.isArray(biz.ineligibilityReasons) &&
+                              biz.ineligibilityReasons.length ? (
+                                <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-yellow-300">
+                                  {biz.ineligibilityReasons.map(
+                                    (reason, index) => (
+                                      <li key={`${biz._id}-reason-${index}`}>
+                                        {reason}
+                                      </li>
+                                    ),
+                                  )}
+                                </ul>
                               ) : null}
                             </td>
                             <td className="p-3">

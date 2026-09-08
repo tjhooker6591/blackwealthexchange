@@ -28,15 +28,19 @@ export default function FinancialClassReconciliationPage() {
   const [repairReason, setRepairReason] = useState<Record<string, string>>({});
   const [msg, setMsg] = useState<string>("");
 
-  const runVerify = async () => {
+  const runVerify = async (scanUnfulfilled = false) => {
     setLoading(true);
     setError("");
     setMsg("");
     try {
       const qs = new URLSearchParams();
-      Object.entries(filters).forEach(([k, v]) => {
-        if (v.trim()) qs.set(k, v.trim());
-      });
+      if (scanUnfulfilled) {
+        qs.set("scanUnfulfilled", "1");
+      } else {
+        Object.entries(filters).forEach(([k, v]) => {
+          if (v.trim()) qs.set(k, v.trim());
+        });
+      }
       const res = await fetch(
         `/api/admin/financial-class/verify?${qs.toString()}`,
         { credentials: "include" },
@@ -125,13 +129,21 @@ export default function FinancialClassReconciliationPage() {
           ))}
         </div>
 
-        <div className="mb-4">
+        <div className="mb-4 flex flex-wrap gap-2">
           <button
-            onClick={runVerify}
+            onClick={() => runVerify(false)}
             disabled={loading}
             className="rounded bg-gold text-black px-4 py-2 text-sm font-semibold disabled:opacity-60"
           >
             {loading ? "Verifying..." : "Run Verification"}
+          </button>
+          <button
+            onClick={() => runVerify(true)}
+            disabled={loading}
+            className="rounded border border-yellow-500/40 bg-transparent px-4 py-2 text-sm font-semibold text-yellow-300 hover:bg-yellow-500/10 disabled:opacity-60"
+            title="Scan recent paid course payments for missing fulfillment, without needing to know who to search for"
+          >
+            {loading ? "Scanning..." : "Scan Paid-But-Unfulfilled (last 100)"}
           </button>
         </div>
 

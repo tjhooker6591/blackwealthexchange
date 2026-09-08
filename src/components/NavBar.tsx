@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
+import NotificationBell from "@/components/network/NotificationBell";
 
 type DesktopMenu = "explore" | "account" | null;
 
@@ -181,6 +182,21 @@ export default function NavBar() {
             {desktopMenuOpen === "explore" && (
               <div className="absolute right-0 z-50 mt-2 w-64 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
                 <Link
+                  href="/explore"
+                  onClick={handleItemClick}
+                  className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] md:hover:bg-white/5"
+                >
+                  Platform Hub — Everything BWE
+                </Link>
+                <Link
+                  href="/search/ai"
+                  onClick={handleItemClick}
+                  className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] md:hover:bg-white/5"
+                >
+                  AI Mode — Ask BWE
+                </Link>
+                <div className="my-1 h-px bg-white/10" />
+                <Link
                   href="/black-card"
                   onClick={handleItemClick}
                   className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
@@ -242,6 +258,8 @@ export default function NavBar() {
             )}
           </div>
 
+          <NotificationBell />
+
           <div className="relative ml-1">
             <button
               type="button"
@@ -273,6 +291,36 @@ export default function NavBar() {
                     >
                       Profile
                     </Link>
+                    <div className="my-1 h-px bg-white/10" />
+                    <Link
+                      href="/my-bwe"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] md:hover:bg-white/5"
+                    >
+                      My BWE
+                    </Link>
+                    <Link
+                      href="/notifications"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+                    >
+                      Notifications
+                    </Link>
+                    <Link
+                      href="/inbox"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+                    >
+                      Inbox
+                    </Link>
+                    <Link
+                      href="/referrals"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+                    >
+                      Referrals
+                    </Link>
+                    <div className="my-1 h-px bg-white/10" />
                     <button
                       onClick={() => {
                         closeAllMenus();
@@ -411,6 +459,20 @@ export default function NavBar() {
               </p>
               <div className="space-y-0.5">
                 <Link
+                  href="/explore"
+                  onClick={handleItemClick}
+                  className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] hover:bg-white/[0.04]"
+                >
+                  Platform Hub — Everything BWE
+                </Link>
+                <Link
+                  href="/search/ai"
+                  onClick={handleItemClick}
+                  className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] hover:bg-white/[0.04]"
+                >
+                  AI Mode — Ask BWE
+                </Link>
+                <Link
                   href="/black-card"
                   onClick={handleItemClick}
                   className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
@@ -493,6 +555,34 @@ export default function NavBar() {
                       className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
                     >
                       Profile
+                    </Link>
+                    <Link
+                      href="/my-bwe"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] hover:bg-white/[0.04]"
+                    >
+                      My BWE
+                    </Link>
+                    <Link
+                      href="/notifications"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                    >
+                      Notifications
+                    </Link>
+                    <Link
+                      href="/inbox"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                    >
+                      Inbox
+                    </Link>
+                    <Link
+                      href="/referrals"
+                      onClick={handleItemClick}
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                    >
+                      Referrals
                     </Link>
                     <button
                       onClick={() => {

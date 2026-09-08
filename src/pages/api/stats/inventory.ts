@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { publicBusinessBaseQuery } from "@/lib/directory/publicBusinessQuery";
+import { buildPublicMarketplaceVisibilityFilter } from "@/lib/marketplace/publicCatalog";
 
 const approvedFilter = {
   $or: [
@@ -25,6 +26,7 @@ export default async function handler(
   try {
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
+    const now = new Date();
 
     const businessesFilter = publicBusinessBaseQuery();
 
@@ -33,7 +35,9 @@ export default async function handler(
         db.collection("businesses").countDocuments(businessesFilter),
         db.collection("organizations").countDocuments(approvedFilter),
         db.collection("jobs").countDocuments({ status: "approved" }),
-        db.collection("products").countDocuments({}),
+        db
+          .collection("products")
+          .countDocuments(buildPublicMarketplaceVisibilityFilter(now)),
       ]);
 
     res.setHeader(

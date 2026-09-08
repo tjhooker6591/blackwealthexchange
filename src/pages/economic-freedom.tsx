@@ -1,7 +1,7 @@
 // src/pages/economic-freedom.tsx
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import {
@@ -181,6 +181,114 @@ function Card({
   );
 }
 
+type PublicImpactMetric = {
+  key: string;
+  label: string;
+  status: "measured" | "attributed" | "estimated" | "insufficient_data";
+  value: number | null;
+  unit: "usd_cents" | "count" | "ratio";
+  note?: string;
+};
+
+function formatPublicMetricValue(metric: PublicImpactMetric) {
+  if (metric.value === null || metric.status === "insufficient_data")
+    return "—";
+  if (metric.unit === "usd_cents") {
+    return `$${(metric.value / 100).toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+  }
+  return metric.value.toLocaleString();
+}
+
+/**
+ * Phase 6 -- Economic Intelligence. Real, verified BWE platform data (not
+ * the general ~$2.1T national buying-power estimate above) --
+ * src/pages/api/economic-impact/public-summary.ts, itself a thin public
+ * subset of src/lib/economicImpact/engine.ts. Every figure here is a real
+ * measured count from BWE's own database; there is no benchmark or
+ * estimate in this section.
+ */
+function EconomicImpactLive() {
+  const [metrics, setMetrics] = useState<PublicImpactMetric[] | null>(null);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/economic-impact/public-summary")
+      .then((r) =>
+        r.ok ? r.json() : Promise.reject(new Error(String(r.status))),
+      )
+      .then((data) => setMetrics(data?.metrics || []))
+      .catch(() => setFailed(true));
+  }, []);
+
+  const byKey = (key: string) => metrics?.find((m) => m.key === key) || null;
+  const activity = byKey("community_verified_economic_activity_cents");
+  const businesses = byKey("community_businesses_supported");
+  const buyers = byKey("community_distinct_buyers");
+  const blackCard = byKey("black_card_active_members");
+  const jobs = byKey("job_postings_total");
+  const referrals = byKey("referral_signups");
+
+  return (
+    <Card
+      id="impact"
+      kicker="REAL BWE DATA -- NOT AN ESTIMATE"
+      title="What BWE has actually measured so far"
+      icon={<LineChart className="h-5 w-5 text-[#D4AF37]" />}
+    >
+      <p className="text-sm text-white/65">
+        Every number below is a live, real count from BWE&apos;s own database --
+        not a projection. Where BWE does not yet have enough verified activity
+        to support a figure honestly, it says so instead of guessing.
+      </p>
+      {failed ? (
+        <div className="mt-4 text-sm text-white/50">
+          Live data is temporarily unavailable.
+        </div>
+      ) : (
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {[
+            {
+              metric: activity,
+              fallbackLabel:
+                "Verified activity moved to Black-owned businesses",
+            },
+            {
+              metric: businesses,
+              fallbackLabel: "Businesses with a verified sale",
+            },
+            {
+              metric: buyers,
+              fallbackLabel: "Members who completed a verified purchase",
+            },
+            { metric: blackCard, fallbackLabel: "Active Black Card members" },
+            { metric: jobs, fallbackLabel: "Jobs posted" },
+            {
+              metric: referrals,
+              fallbackLabel: "Members referred by other members",
+            },
+          ].map(({ metric, fallbackLabel }, i) => (
+            <div
+              key={metric?.key || i}
+              className="rounded-2xl border border-white/10 bg-black/30 p-4"
+            >
+              <div className="text-xl font-extrabold text-white">
+                {metrics === null
+                  ? "…"
+                  : metric
+                    ? formatPublicMetricValue(metric)
+                    : "—"}
+              </div>
+              <div className="mt-1 text-xs text-white/55">
+                {metric?.label || fallbackLabel}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </Card>
+  );
+}
+
 function ActionTile({
   icon,
   title,
@@ -211,6 +319,7 @@ function ActionTile({
 function Toc() {
   const items = useMemo(
     () => [
+      { id: "impact", label: "Real BWE Impact" },
       { id: "intro", label: "Introduction" },
       { id: "history", label: "Historical Context" },
       { id: "culture", label: "Cultural Exploitation" },
@@ -338,6 +447,11 @@ export default function EconomicFreedom() {
             Note: Public framing uses an estimated ~$2.1T Black buying power in
             2026. A 0.5% shift is about $10.5B, and a 5% shift is about $105B.
           </div>
+        </div>
+
+        {/* REAL BWE IMPACT (Phase 6 -- Economic Intelligence) */}
+        <div className="mt-8">
+          <EconomicImpactLive />
         </div>
 
         {/* INTRO */}

@@ -150,7 +150,9 @@ function normalizeBusinessDoc(doc: any): Business {
       ? profile.additionalCtas
       : [],
     verified: doc?.verified === true,
-    isVerified: doc?.isVerified === true,
+    // Verification-field drift fix (2026-09-07): isVerified is deprecated,
+    // always derived from the canonical `verified` field.
+    isVerified: doc?.verified === true,
     status: safeStr(doc?.status),
     claimStage: safeStr(doc?.claimStage),
     claimLocked: doc?.claimLocked === true,
@@ -229,10 +231,9 @@ export default function BusinessDetail({
   ).toLowerCase();
   const claimLocked = business?.claimLocked === true;
   const trust = {
-    verified:
-      business?.verified === true ||
-      business?.isVerified === true ||
-      status === "verified",
+    // Verification-field drift fix (2026-09-07): `verified` is canonical;
+    // isVerified no longer read independently.
+    verified: business?.verified === true || status === "verified",
     approved: status === "approved" || status === "verified" || !status,
     sponsored: Number(business?.amountPaid || 0) > 0,
     complete:
@@ -657,7 +658,7 @@ export default function BusinessDetail({
                       <div className="mt-1">
                         Payment starts membership and opens ownership
                         verification, unless ownership has already been verified
-                        through the canonical review flow.
+                        through the existing verification review process.
                       </div>
                       <div className="mt-2 flex flex-wrap gap-2">
                         <Link

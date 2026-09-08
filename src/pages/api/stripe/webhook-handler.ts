@@ -38,6 +38,7 @@ import {
   isFoundingMembershipProductKey,
 } from "@/lib/founding-membership";
 import { getMongoDbName } from "@/lib/env";
+import { logHealthEvent } from "@/lib/observability/logHealthEvent";
 import { requireStripeSecretKey } from "@/lib/stripeSecret";
 import { sendEmail } from "@/lib/sendEmail";
 import {
@@ -126,6 +127,11 @@ interface SessionMetadata {
   checkoutFingerprint?: string;
   rawType?: string;
   rawItemId?: string;
+
+  // Recruiting/Consulting MVP (2026-09-07) -- admin-triggered engagement
+  // payment requests carry the engagement id so the webhook can update
+  // the correct recruiting_engagements/consulting_engagements record.
+  engagementId?: string;
 }
 
 interface PaymentDocLike {
@@ -1359,6 +1365,78 @@ export default async function webhookHandler(
         },
         { upsert: true },
       );
+    }
+
+    /**
+     * Recruiting + Consulting Commercial MVP (2026-09-07). Both are
+     * admin-triggered Checkout Sessions (see
+     * src/pages/api/admin/recruiting/engagements/[id]/create-payment.ts
+     * and the consulting equivalent) carrying metadata.type +
+     * metadata.engagementId. The generic financial_ledger/payments write
+     * above already recorded this as "recruiting"/"consulting" revenue
+     * (100% BWE, via checkoutTypeToRevenueType/computeRevenueSplit) --
+     * this block additionally updates the engagement record itself so
+     * admin sees paymentStatus: paid, matching the existing
+     * upsert-by-stripeSessionId idempotency pattern used everywhere else
+     * in this handler (a replayed webhook for the same session simply
+     * re-applies the same $set, no duplicate revenue or duplicate
+     * status-history entry beyond what a real distinct event would add).
+     */
+    if (metaType === "recruiting" || metaType === "consulting") {
+      const engagementId = asString(mergedMeta.engagementId);
+      const collectionName =
+        metaType === "recruiting"
+          ? "recruiting_engagements"
+          : "consulting_engagements";
+
+      if (engagementId && ObjectId.isValid(engagementId)) {
+        const engagementObjectId = new ObjectId(engagementId);
+        const engagementCol = db.collection(collectionName);
+        const existingEngagement = await engagementCol.findOne({
+          _id: engagementObjectId,
+        });
+
+        if (existingEngagement && existingEngagement.paymentStatus !== "paid") {
+          await engagementCol.updateOne({ _id: engagementObjectId }, {
+            $set: {
+              status: "paid",
+              paymentStatus: "paid",
+              paidAt: now,
+              paidStripeSessionId: stripeSessionId,
+              paidAmountCents:
+                typeof session.amount_total === "number"
+                  ? session.amount_total
+                  : (existingEngagement.agreedFeeCents ?? null),
+              updatedAt: now,
+            },
+            $push: {
+              statusHistory: {
+                status: "paid",
+                at: now,
+                byAdminEmail: null,
+                note: `Stripe webhook ${event.type}`,
+              },
+            },
+          } as any);
+          console.log(
+            `✅ ${metaType} engagement paid engagementId=${engagementId} session=${redactId(stripeSessionId)}`,
+          );
+        } else if (existingEngagement) {
+          // Already recorded paid -- replayed webhook, no-op beyond the
+          // idempotent financial_ledger/payments upsert already done above.
+          console.log(
+            `ℹ️ ${metaType} engagement already paid (replayed webhook) engagementId=${engagementId}`,
+          );
+        } else {
+          console.error(
+            `⚠️ ${metaType} webhook paid but no matching engagement found engagementId=${engagementId} session=${redactId(stripeSessionId)}`,
+          );
+        }
+      } else {
+        console.error(
+          `⚠️ ${metaType} webhook paid with missing/invalid engagementId session=${redactId(stripeSessionId)}`,
+        );
+      }
     }
 
     /**
@@ -2891,6 +2969,19 @@ export default async function webhookHandler(
     return res.status(200).json({ received: true });
   } catch (err: any) {
     console.error("❌ Webhook fulfillment failed:", err?.message || err);
+    try {
+      const client = await clientPromise;
+      const db = client.db(getMongoDbName());
+      await logHealthEvent(db, {
+        component: "stripe_webhook",
+        route: "/api/stripe/webhook-handler",
+        status: "fail",
+        httpStatus: 500,
+        message: String(err?.message || err),
+      });
+    } catch {
+      // Observability must never mask the original failure.
+    }
     return res.status(500).end("Webhook fulfillment failed");
   }
 }

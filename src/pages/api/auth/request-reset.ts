@@ -89,6 +89,21 @@ export default async function handler(
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
+  // Phase 8 -- P8-AUTH follow-up. RESET_DEBUG_MODE requires an explicit
+  // operator opt-in (not just NODE_ENV alone, unlike RT-008), but if it
+  // were ever accidentally left enabled on a shared/reachable environment
+  // it would hand out real password-reset tokens directly in the API
+  // response, to anyone, for any email -- full account takeover with no
+  // access to the victim's inbox required. Requiring isLocalHost too
+  // means this debug behavior only ever activates on an actual local dev
+  // machine, never on a reachable deployment, regardless of how
+  // RESET_DEBUG_MODE is configured there.
+  const requestHost = (req.headers.host || "").toLowerCase();
+  const isLocalHost =
+    requestHost.startsWith("localhost") ||
+    requestHost.startsWith("127.0.0.1") ||
+    requestHost.startsWith("[::1]");
+
   const raw = req.body?.email;
 
   if (typeof raw !== "string") {
@@ -188,7 +203,8 @@ export default async function handler(
 
     if (
       process.env.RESET_DEBUG_MODE === "1" &&
-      process.env.NODE_ENV !== "production"
+      process.env.NODE_ENV !== "production" &&
+      isLocalHost
     ) {
       return res.status(200).json({
         message: "If this email exists, reset instructions will be sent.",
@@ -255,7 +271,7 @@ export default async function handler(
         return genericOk();
       }
 
-      if (process.env.RESET_DEBUG_MODE === "1") {
+      if (process.env.RESET_DEBUG_MODE === "1" && isLocalHost) {
         return res.status(200).json({
           message: "If this email exists, reset instructions will be sent.",
           _debug: {

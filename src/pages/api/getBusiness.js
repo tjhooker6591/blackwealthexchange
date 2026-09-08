@@ -6,6 +6,10 @@ import {
 } from "@/lib/apiRateLimit";
 import { mapDirectoryProfileFromDoc } from "@/lib/directoryProfileContract";
 
+function s(value) {
+  return typeof value === "string" ? value : "";
+}
+
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);

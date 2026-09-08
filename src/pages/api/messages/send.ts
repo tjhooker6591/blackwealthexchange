@@ -3,6 +3,7 @@ import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import clientPromise from "../../../lib/mongodb";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
+import { createNotification } from "@/lib/network/notifications";
 
 type SessionPayload = {
   userId?: string;
@@ -68,6 +69,14 @@ export default async function handler(
       isRead: false,
       sentAt: new Date(),
     });
+
+    await createNotification(db, {
+      userId: receiverId,
+      type: "inbox_message",
+      title: "New message in your BWE Inbox",
+      body: message.slice(0, 140),
+      href: `/inbox?with=${encodeURIComponent(senderId)}`,
+    }).catch(() => null);
 
     return res.status(200).json({ message: "Message sent successfully." });
   } catch (error) {

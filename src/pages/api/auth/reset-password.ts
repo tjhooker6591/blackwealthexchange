@@ -104,6 +104,14 @@ export default async function handler(
     let matchedTotal = 0;
 
     for (const coll of targetCollections) {
+      // Phase 8 -- P8-01 Identity Fortress. Bump tokenVersion alongside the
+      // password change, exactly like the existing logout.ts revocation
+      // pattern ($inc tokenVersion). Without this, any session token
+      // issued before the reset kept working for its full remaining
+      // lifetime -- the one moment a user resets their password because
+      // they suspect compromise is precisely when an existing stolen
+      // session should stop working immediately, not up to 30 minutes
+      // later.
       const result = await db.collection(coll).updateMany(
         { email: reset.email },
         {
@@ -111,6 +119,7 @@ export default async function handler(
             password: hashedPassword,
             updatedAt: now,
           },
+          $inc: { tokenVersion: 1 },
         },
       );
       matchedTotal += result.matchedCount || 0;

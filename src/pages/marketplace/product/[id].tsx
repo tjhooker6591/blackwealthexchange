@@ -18,6 +18,7 @@ import {
   isPublicMarketplaceSellerProfileComplete,
 } from "@/lib/marketplace/publicCatalog";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
+import useAuth from "@/hooks/useAuth";
 
 interface Product {
   _id: string;
@@ -44,6 +45,15 @@ interface Product {
   } | null;
 }
 
+type ProductReview = {
+  id: string;
+  userName: string;
+  rating: number;
+  comment: string | null;
+  verifiedPurchase: boolean;
+  createdAt: string | null;
+};
+
 type ProductDetailPageProps = {
   initialProduct: Product | null;
   initialProductId: string | null;
@@ -55,8 +65,11 @@ const ProductDetailPage = ({
   const router = useRouter();
   const { id } = router.query;
   const routeId = typeof id === "string" ? id : initialProductId;
+  const { user } = useAuth({ silentOnPublic: false });
 
   const [product, setProduct] = useState<Product | null>(initialProduct);
+  const [saved, setSaved] = useState(false);
+  const [saveBusy, setSaveBusy] = useState(false);
   const [loading, setLoading] = useState(
     initialProductId ? false : !initialProduct,
   );
@@ -64,6 +77,15 @@ const ProductDetailPage = ({
   const [messageText, setMessageText] = useState("");
   const [messageState, setMessageState] = useState<string | null>(null);
   const [sendingMessage, setSendingMessage] = useState(false);
+  const [reviews, setReviews] = useState<ProductReview[]>([]);
+  const [reviewSummary, setReviewSummary] = useState<{
+    count: number;
+    averageRating: number;
+  }>({ count: 0, averageRating: 0 });
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewState, setReviewState] = useState<string | null>(null);
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   const trackMarketplaceProductEvent = (
     eventType: string,
@@ -147,6 +169,105 @@ const ProductDetailPage = ({
 
     fetchRelated();
   }, [product]);
+
+  const loadReviews = async (productId: string) => {
+    try {
+      const res = await fetch(
+        `/api/marketplace/reviews?productId=${encodeURIComponent(productId)}`,
+      );
+      if (!res.ok) return;
+      const data = await res.json();
+      setReviews(Array.isArray(data?.reviews) ? data.reviews : []);
+      setReviewSummary({
+        count: Number(data?.count || 0),
+        averageRating: Number(data?.averageRating || 0),
+      });
+    } catch {
+      // leave reviews empty on fetch failure
+    }
+  };
+
+  useEffect(() => {
+    if (!product?._id) return;
+    loadReviews(product._id);
+  }, [product?._id]);
+
+  useEffect(() => {
+    if (!product?._id || !user) {
+      setSaved(false);
+      return;
+    }
+    fetch("/api/user/save-product", { credentials: "include" })
+      .then((r) => (r.ok ? r.json() : { products: [] }))
+      .then((data) => {
+        const list: Array<{ productId: string }> = data?.products || [];
+        setSaved(list.some((item) => item.productId === product._id));
+      })
+      .catch(() => null);
+  }, [product?._id, user]);
+
+  async function toggleSaveProduct() {
+    if (!product?._id) return;
+    if (!user) {
+      router.push(`/login?next=${encodeURIComponent(router.asPath)}`);
+      return;
+    }
+    setSaveBusy(true);
+    try {
+      const res = await fetch("/api/user/save-product", {
+        method: saved ? "DELETE" : "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: product._id }),
+      });
+      if (res.ok) {
+        setSaved(!saved);
+        trackMarketplaceProductEvent(
+          saved ? "product_unsaved" : "product_saved",
+          {},
+        );
+      }
+    } finally {
+      setSaveBusy(false);
+    }
+  }
+
+  async function handleSubmitReview() {
+    if (!product?._id) return;
+    setSubmittingReview(true);
+    setReviewState(null);
+    try {
+      const res = await fetch("/api/marketplace/reviews", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: product._id,
+          rating: reviewRating,
+          comment: reviewComment,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setReviewState(
+          res.status === 401
+            ? "Please sign in to leave a review."
+            : data?.error || "We could not save your review. Please try again.",
+        );
+        return;
+      }
+      setReviewComment("");
+      setReviewState("Thanks! Your review has been saved.");
+      trackMarketplaceProductEvent("product_review_submitted", {
+        rating: reviewRating,
+      });
+      loadReviews(product._id);
+    } catch {
+      setReviewState("We could not save your review. Please try again.");
+    } finally {
+      setSubmittingReview(false);
+    }
+  }
 
   const productName = String(product?.name || "").trim() || "Marketplace item";
   const stockQuantity = Number(product?.stockQuantity ?? 0);
@@ -354,9 +475,48 @@ const ProductDetailPage = ({
                 <h1 className="bwe-section-title mt-2 max-w-xl">
                   {productName}
                 </h1>
-                <p className="mt-3 text-2xl font-semibold text-white sm:text-3xl">
-                  ${Number(product.price || 0).toFixed(2)}
-                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <p className="text-2xl font-semibold text-white sm:text-3xl">
+                    ${Number(product.price || 0).toFixed(2)}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={toggleSaveProduct}
+                    disabled={saveBusy}
+                    className={`inline-flex items-center justify-center rounded-xl px-3 py-1.5 text-xs font-semibold transition disabled:opacity-60 ${
+                      saved
+                        ? "border border-yellow-500/40 bg-yellow-500/15 text-yellow-200"
+                        : "border border-white/10 bg-white/5 text-white/85 hover:bg-white/10"
+                    }`}
+                  >
+                    {saved ? "Saved" : "Save"}
+                  </button>
+                </div>
+                {reviewSummary.count > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      document
+                        .getElementById("reviews")
+                        ?.scrollIntoView({ behavior: "smooth", block: "start" })
+                    }
+                    className="bwe-focus-ring mt-2 inline-flex items-center gap-1 text-sm text-white/80 hover:text-white"
+                  >
+                    <span className="text-[#D4AF37]">
+                      {"★".repeat(Math.round(reviewSummary.averageRating))}
+                      {"☆".repeat(5 - Math.round(reviewSummary.averageRating))}
+                    </span>
+                    <span>
+                      {reviewSummary.averageRating.toFixed(1)} (
+                      {reviewSummary.count} review
+                      {reviewSummary.count === 1 ? "" : "s"})
+                    </span>
+                  </button>
+                ) : (
+                  <p className="mt-2 text-xs text-white/50">
+                    No reviews yet — be the first to review this listing.
+                  </p>
+                )}
               </div>
 
               <div className="mt-4 border-l border-white/10 pl-4">
@@ -391,9 +551,18 @@ const ProductDetailPage = ({
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <div className="bwe-soft-tile p-4 text-sm text-gray-200">
                   <p className="bwe-eyebrow">Seller</p>
-                  <p className="mt-2 text-base font-bold text-white">
-                    {sellerName}
-                  </p>
+                  {product?.seller?.id ? (
+                    <Link
+                      href={`/marketplace/seller/${encodeURIComponent(product.seller.id)}`}
+                      className="mt-2 inline-block text-base font-bold text-white underline decoration-white/30 hover:text-[var(--accent)]"
+                    >
+                      {sellerName}
+                    </Link>
+                  ) : (
+                    <p className="mt-2 text-base font-bold text-white">
+                      {sellerName}
+                    </p>
+                  )}
                   <p className="mt-1 text-sm text-white/68">{sellerTrust}</p>
                 </div>
                 <div className="bwe-soft-tile p-4 text-sm text-gray-200">
@@ -550,6 +719,99 @@ const ProductDetailPage = ({
             {messageState ? (
               <p className="mt-2 text-xs text-gray-300">{messageState}</p>
             ) : null}
+          </div>
+
+          <div id="reviews" className="bwe-soft-tile mt-6 p-4">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-lg font-bold text-white">Customer reviews</h2>
+              {reviewSummary.count > 0 ? (
+                <span className="text-sm text-white/70">
+                  {reviewSummary.averageRating.toFixed(1)} / 5 ·{" "}
+                  {reviewSummary.count} review
+                  {reviewSummary.count === 1 ? "" : "s"}
+                </span>
+              ) : null}
+            </div>
+
+            <div className="mt-4 border-t border-white/10 pt-4">
+              <label className="mb-2 block text-sm font-semibold text-white">
+                Leave a review
+              </label>
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setReviewRating(value)}
+                    aria-label={`Rate ${value} star${value === 1 ? "" : "s"}`}
+                    className="bwe-focus-ring text-2xl leading-none"
+                  >
+                    <span
+                      className={
+                        value <= reviewRating
+                          ? "text-[#D4AF37]"
+                          : "text-white/25"
+                      }
+                    >
+                      ★
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <textarea
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value)}
+                rows={3}
+                placeholder="Share how the product, seller, or delivery experience went (optional)"
+                className="bwe-textarea mt-2"
+              />
+              <button
+                type="button"
+                onClick={handleSubmitReview}
+                disabled={submittingReview}
+                className="bwe-focus-ring mt-3 w-full rounded-full border border-gold px-3 py-3 text-sm font-semibold text-gold transition enabled:hover:bg-gold enabled:hover:text-black disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {submittingReview ? "Saving..." : "Submit Review"}
+              </button>
+              {reviewState ? (
+                <p className="mt-2 text-xs text-gray-300">{reviewState}</p>
+              ) : null}
+            </div>
+
+            <div className="mt-5 space-y-3 border-t border-white/10 pt-4">
+              {reviews.length === 0 ? (
+                <p className="text-sm text-white/60">
+                  No reviews yet for this listing.
+                </p>
+              ) : (
+                reviews.map((review) => (
+                  <div
+                    key={review.id}
+                    className="rounded-xl border border-white/10 bg-black/20 p-3"
+                  >
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-[#D4AF37]">
+                        {"★".repeat(review.rating)}
+                        {"☆".repeat(5 - review.rating)}
+                      </span>
+                      <span className="text-sm font-semibold text-white">
+                        {review.userName}
+                      </span>
+                      {review.verifiedPurchase ? (
+                        <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-300">
+                          Verified purchase
+                        </span>
+                      ) : null}
+                    </div>
+                    {review.comment ? (
+                      <p className="mt-2 text-sm text-white/75">
+                        {review.comment}
+                      </p>
+                    ) : null}
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
 

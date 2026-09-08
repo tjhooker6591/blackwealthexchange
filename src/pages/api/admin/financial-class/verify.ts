@@ -24,12 +24,24 @@ export default async function handler(
   const stripeSessionId = String(req.query.stripeSessionId || "").trim();
   const paymentIntentId = String(req.query.paymentIntentId || "").trim();
   const courseId = String(req.query.courseId || "").trim();
+  // P0 course fulfillment fix (2026-09-07): with no filter at all, scan
+  // recent paid course payments for missing entitlement instead of
+  // requiring the admin to already know who to search for -- "PAID BUT NOT
+  // ENTITLED must never silently persist" requires a proactive view, not
+  // only a lookup tool.
+  const scanUnfulfilled = req.query.scanUnfulfilled === "1";
 
-  if (!email && !userId && !stripeSessionId && !paymentIntentId) {
+  if (
+    !email &&
+    !userId &&
+    !stripeSessionId &&
+    !paymentIntentId &&
+    !scanUnfulfilled
+  ) {
     return res.status(400).json({
       ok: false,
       error:
-        "Provide at least one lookup: email, userId, stripeSessionId, or paymentIntentId",
+        "Provide at least one lookup (email, userId, stripeSessionId, paymentIntentId) or scanUnfulfilled=1",
     });
   }
 
@@ -50,6 +62,15 @@ export default async function handler(
     and.push({
       $or: [{ itemId: courseId }, { "metadata.courseId": courseId }],
     });
+  if (scanUnfulfilled) {
+    and.push({ status: "paid" });
+    and.push({
+      $or: [
+        { fulfillmentStatus: { $ne: "fulfilled" } },
+        { fulfillmentStatus: { $exists: false } },
+      ],
+    });
+  }
 
   if (and.length) paymentQuery.$and = and;
 
@@ -57,7 +78,7 @@ export default async function handler(
     .collection("payments")
     .find(paymentQuery)
     .sort({ createdAt: -1 })
-    .limit(20)
+    .limit(scanUnfulfilled ? 100 : 20)
     .toArray();
 
   const rows = await Promise.all(
@@ -161,11 +182,15 @@ export default async function handler(
             Boolean(resolvedUserId && resolvedCourseId),
           failurePoint:
             entitlementStatus === "missing"
-              ? "paid_without_enrollment_or_course_access"
+              ? String(p.status || "").toLowerCase() === "paid"
+                ? "paid_without_enrollment_or_course_access"
+                : "checkout_never_reached_paid_status"
               : null,
           recommendedRepairAction:
             entitlementStatus === "missing"
-              ? "grant_missing_enrollment_from_paid_session"
+              ? String(p.status || "").toLowerCase() === "paid"
+                ? "grant_missing_enrollment_from_paid_session"
+                : "verify_true_stripe_status_before_any_repair"
               : null,
         },
         repairAudit: repairAudit.map((a: any) => ({

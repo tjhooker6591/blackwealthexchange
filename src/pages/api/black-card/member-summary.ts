@@ -24,7 +24,11 @@ export default async function handler(
 
   try {
     const cookies = cookie.parse(req.headers.cookie || "");
-    const token = cookies.session_token;
+    // Phase 7 -- mobile Wallet screen sends the same JWT as
+    // `Authorization: Bearer <token>` instead of a cookie.
+    const authHeader = req.headers.authorization || "";
+    const bearerMatch = /^Bearer\s+(.+)$/i.exec(authHeader.trim());
+    const token = bearerMatch?.[1]?.trim() || cookies.session_token;
 
     if (!token) {
       return res.status(401).json({ ok: false, error: "Unauthorized" });

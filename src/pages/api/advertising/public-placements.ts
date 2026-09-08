@@ -3,7 +3,6 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import {
   BANNER_HOMEPAGE_TOP_CAP,
-  BANNER_SIDEBAR_CAP,
   DIRECTORY_FEATURED_CAP,
 } from "@/lib/advertising/placementDefinitions";
 
@@ -118,9 +117,17 @@ export default async function handler(
       .filter((x) => x.option === "banner-ad" && x.placement === "homepage-top")
       .slice(0, BANNER_HOMEPAGE_TOP_CAP);
 
-    const bannerSidebar = mapped
-      .filter((x) => x.option === "banner-ad" && x.placement === "sidebar")
-      .slice(0, BANNER_SIDEBAR_CAP);
+    // Owner-confirmed (2026-09-07): the search-page sidebar is NOT hard-capped
+    // at a fixed business number -- it currently supports at least 8
+    // placements and can support more. BANNER_SIDEBAR_CAP=3 was a stale
+    // artificial limit that did not reflect real business/backend
+    // requirements. Capacity here is dynamic: bounded only by how many
+    // real paid+approved+active sidebar campaigns exist, with the
+    // existing .limit(120) above remaining as a technical safety bound on
+    // the whole batch query (not a placement-specific business rule).
+    const bannerSidebar = mapped.filter(
+      (x) => x.option === "banner-ad" && x.placement === "sidebar",
+    );
 
     const directoryFeatured = mapped
       .filter((x) => x.option === "directory-featured")
@@ -135,7 +142,8 @@ export default async function handler(
       },
       caps: {
         bannerHomepageTop: BANNER_HOMEPAGE_TOP_CAP,
-        bannerSidebar: BANNER_SIDEBAR_CAP,
+        // bannerSidebar is intentionally omitted: capacity is dynamic,
+        // not a fixed business cap (see comment above).
         directoryFeatured: DIRECTORY_FEATURED_CAP,
       },
       generatedAt: now.toISOString(),

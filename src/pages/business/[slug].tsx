@@ -21,6 +21,7 @@ import {
   buildBusinessDirectionsUrl,
   getBusinessMediaSet,
 } from "@/lib/directoryPublicMedia";
+import BusinessEngagement from "@/components/business/BusinessEngagement";
 
 type BusinessEntry = {
   claimStage: string | null;
@@ -534,6 +535,8 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                 ) : null}
               </div>
             </div>
+
+            {businessId ? <BusinessEngagement businessId={businessId} /> : null}
           </div>
         </section>
       </main>

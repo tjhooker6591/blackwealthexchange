@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMarketplaceDbName } from "@/lib/marketplace/db";
+import { syncSellerToBusinessListing } from "@/lib/marketplace/sellerBusinessSync";
 import bcrypt from "bcryptjs";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
@@ -190,6 +191,16 @@ export default async function handler(
     };
 
     const result = await db.collection("sellers").insertOne(sellerDoc);
+    await syncSellerToBusinessListing(db, {
+      email: normalized,
+      businessName: storeName,
+      description: storeDescription,
+      website: websiteStr,
+      phone: phoneStr,
+      address: addressStr,
+      ownerName: sellerDoc.ownerName,
+      source: "seller_create_existing_user",
+    });
 
     await db.collection("flow_events").insertOne({
       eventType: "seller_onboarding_submitted",
@@ -291,6 +302,16 @@ export default async function handler(
 
   try {
     const result = await db.collection("sellers").insertOne(sellerDoc);
+    await syncSellerToBusinessListing(db, {
+      email: normalizedEmail,
+      businessName: storeName,
+      description: storeDescription,
+      website: websiteStr,
+      phone: phoneStr,
+      address: addressStr,
+      ownerName: full,
+      source: "seller_create_signup",
+    });
 
     await db.collection("flow_events").insertOne({
       eventType: "seller_onboarding_submitted",

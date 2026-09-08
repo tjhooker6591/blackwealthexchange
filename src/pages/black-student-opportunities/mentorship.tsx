@@ -7,6 +7,7 @@ import {
   getPublicStudentHubPageRecords,
   type PublicStudentHubRecord,
 } from "@/lib/studentHub/public";
+import { useStudentHubPageView } from "@/hooks/useStudentHubPageView";
 
 type Program = {
   title: string;
@@ -70,6 +71,8 @@ export default function Mentorship({
 }) {
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState<(typeof TAGS)[number]>("All");
+
+  useStudentHubPageView("mentorship");
   const programs = useMemo(
     () => buildPrograms(initialPrograms),
     [initialPrograms],

@@ -5,43 +5,66 @@ import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
-import { getAdDurationOptions } from "@/lib/advertising/pricing";
+import {
+  getAdDurationOptions,
+  type AdOptionId,
+} from "@/lib/advertising/pricing";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
-type BannerPlacement = "sidebar";
-type BannerDuration = "14" | "30";
-
-/**
- * IMPORTANT:
- * This page now uses the SAME advertising checkout flow as the rest of the ad system:
- * /advertising/checkout?option=banner-ad&duration=...
- *
- * Pricing here is aligned to the current server/banner pricing flow.
- * If you later change pricing, update shared pricing + use shared pricing import here.
- */
-const BANNER_DURATION_OPTIONS: Array<{
-  label: string;
-  value: BannerDuration;
-  priceLabel: string;
-}> = getAdDurationOptions("banner-ad")
-  .filter((d) => d.durationDays === 14 || d.durationDays === 30)
-  .map((d) => ({
-    label: d.durationDays === 14 ? "2 Weeks" : "1 Month",
-    value: String(d.durationDays) as BannerDuration,
-    priceLabel: `$${d.amountDollars}`,
-  }));
-
-const PLACEMENTS: Array<{
+// Real, currently-active advertising placement options for the Business
+// Directory / search page -- verified against current code, not older
+// public documentation (2026-09-07 correction). Each maps to a real
+// `option` (Stripe/pricing product id) + `placement` (sub-slot id) pair
+// that already flows end to end: submit -> advertising_requests ->
+// checkout metadata -> Stripe webhook -> admin review
+// (src/pages/admin/advertising-requests.tsx already displays
+// `Placement: {r.placement}` distinctly).
+//
+// A "homepage top banner" option is deliberately NOT included here: the
+// owner has confirmed no such placement currently exists, even though a
+// dormant `placement: "homepage-top"` code path still exists in
+// src/pages/api/advertising/public-placements.ts and src/pages/index.tsx
+// (renders nothing today because no such campaign has ever been sold).
+// That dormant code path is reported separately as a stale-placement
+// cleanup item, not modified here.
+type PlacementOption = {
   title: string;
-  placement: BannerPlacement;
+  option: AdOptionId;
+  placement: string;
   description: string;
-}> = [
+};
+
+const PLACEMENTS: PlacementOption[] = [
   {
-    title: "Business Directory Banner / Sidebar",
+    title: "Search Page Sidebar",
+    option: "banner-ad",
     placement: "sidebar",
     description:
-      "Business Directory banner and sidebar inventory request after approval.",
+      "Banner card in the Business Directory search-results sidebar. Capacity is dynamic -- shown to every visitor browsing the directory, not capped to a fixed small number of slots.",
+  },
+  {
+    title: "Featured Placement in Search Results",
+    option: "directory-featured",
+    placement: "search-results",
+    description:
+      "Featured card shown directly within Business Directory search results, above standard organic listings.",
   },
 ];
+
+function durationOptionsFor(option: AdOptionId) {
+  return getAdDurationOptions(option).map((d) => ({
+    label:
+      d.durationDays === 7
+        ? "1 Week"
+        : d.durationDays === 14
+          ? "2 Weeks"
+          : d.durationDays === 30
+            ? "1 Month"
+            : `${d.durationDays} Days`,
+    value: String(d.durationDays),
+    priceLabel: `$${d.amountDollars}`,
+  }));
+}
 
 export default function BannerAdsPage() {
   const router = useRouter();
@@ -59,9 +82,10 @@ export default function BannerAdsPage() {
   };
 
   const [loadingUser, setLoadingUser] = useState(true);
-  const [selectedPlacement, setSelectedPlacement] =
-    useState<BannerPlacement | null>(null);
-  const [duration, setDuration] = useState<BannerDuration>("14");
+  const [selectedPlacement, setSelectedPlacement] = useState<string | null>(
+    null,
+  );
+  const [duration, setDuration] = useState<string>("");
   const [name, setName] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [email, setEmail] = useState("");
@@ -105,14 +129,33 @@ export default function BannerAdsPage() {
     return PLACEMENTS.find((p) => p.placement === selectedPlacement) || null;
   }, [selectedPlacement]);
 
+  // Pricing genuinely varies by placement (e.g. Search Page Sidebar is
+  // $199/$349, Featured Search Results is $99/30 days only) -- the
+  // available duration options must follow whichever placement is
+  // currently selected, not a single hardcoded banner-ad price list.
+  const durationOptions = useMemo(
+    () => durationOptionsFor(selectedPlacementMeta?.option || "banner-ad"),
+    [selectedPlacementMeta],
+  );
+
+  useEffect(() => {
+    if (!durationOptions.length) {
+      setDuration("");
+      return;
+    }
+    if (!durationOptions.some((d) => d.value === duration)) {
+      setDuration(durationOptions[0].value);
+    }
+  }, [durationOptions, duration]);
+
   const selectedDurationMeta = useMemo(() => {
-    return BANNER_DURATION_OPTIONS.find((d) => d.value === duration) || null;
-  }, [duration]);
+    return durationOptions.find((d) => d.value === duration) || null;
+  }, [durationOptions, duration]);
 
   const handleProceedToCheckout = async () => {
     setError("");
-    if (!selectedPlacement) {
-      setError("Please select a banner placement before proceeding.");
+    if (!selectedPlacement || !selectedPlacementMeta) {
+      setError("Please select an advertising placement before proceeding.");
       return;
     }
 
@@ -130,12 +173,14 @@ export default function BannerAdsPage() {
       return;
     }
 
+    const selectedOption = selectedPlacementMeta.option;
+
     setSubmitting(true);
     trackAdEvent("advertising_submission_started", {
       ctaId: "banner_proceed_to_checkout",
-      ad_option: "banner-ad",
-      ad_type: "banner-ad",
-      package_type: "banner",
+      ad_option: selectedOption,
+      ad_type: selectedOption,
+      package_type: selectedOption,
       source_variant: "banner_ads",
       placement: selectedPlacement,
       duration_days: Number(duration),
@@ -149,14 +194,13 @@ export default function BannerAdsPage() {
           name,
           email,
           businessName,
-          adText: notes || `Banner ad campaign request (${selectedPlacement})`,
+          adText:
+            notes ||
+            `${selectedPlacementMeta.title} campaign request (${selectedPlacement})`,
           adImage: creativeUrl.trim(),
           website,
-          budget:
-            BANNER_DURATION_OPTIONS.find(
-              (d) => d.value === duration,
-            )?.priceLabel.replace("$", "") || "",
-          option: "banner-ad",
+          budget: selectedDurationMeta?.priceLabel.replace("$", "") || "",
+          option: selectedOption,
           durationDays: Number(duration),
           placement: selectedPlacement,
         }),
@@ -164,15 +208,17 @@ export default function BannerAdsPage() {
 
       const submitData = await submitRes.json().catch(() => ({}));
       if (!submitRes.ok) {
-        throw new Error(submitData?.error || "Failed to save banner request");
+        throw new Error(
+          "We couldn't save your banner campaign right now. Please try again.",
+        );
       }
 
       const requestId = submitData?.requestId || submitData?.adId;
 
       trackAdEvent("advertising_checkout_started", {
-        ad_option: "banner-ad",
-        ad_type: "banner-ad",
-        package_type: "banner",
+        ad_option: selectedOption,
+        ad_type: selectedOption,
+        package_type: selectedOption,
         checkout_variant: "unified_advertising_checkout",
         source_variant: "banner_ads",
         placement: selectedPlacement,
@@ -182,7 +228,7 @@ export default function BannerAdsPage() {
       });
 
       const query = new URLSearchParams({
-        option: "banner-ad",
+        option: selectedOption,
         duration: duration,
         placement: selectedPlacement,
       });
@@ -190,7 +236,13 @@ export default function BannerAdsPage() {
 
       router.push(`/advertising/checkout?${query.toString()}`);
     } catch (e: any) {
-      setError(e?.message || "Unable to proceed to checkout");
+      setError(
+        toPublicErrorMessage(e?.message, {
+          fallback:
+            "We couldn't continue to checkout right now. Please try again.",
+          authFallback: "Please sign in to continue to secure checkout.",
+        }),
+      );
     } finally {
       setSubmitting(false);
     }
@@ -199,13 +251,13 @@ export default function BannerAdsPage() {
   return (
     <div className="min-h-screen bg-black text-white px-4 py-10 flex flex-col items-center text-center">
       <h1 className="text-4xl font-bold text-gold mb-4">
-        Advertise with Banner Ads
+        Advertise on the Business Directory
       </h1>
 
       <p className="text-lg text-gray-400 max-w-2xl mb-6">
-        Submit a banner campaign request with your preferred placement and
-        duration. Campaigns go live only after review, approval, and confirmed
-        placement scheduling.
+        Choose your placement and duration to submit a campaign request.
+        Campaigns go live only after review, approval, and confirmed placement
+        scheduling.
       </p>
 
       <div className="w-full max-w-3xl mb-8">
@@ -250,7 +302,7 @@ export default function BannerAdsPage() {
                   trackAdEvent("advertising_option_selected", {
                     ctaId: `banner_placement_${banner.placement}`,
                     ctaLabel: banner.title,
-                    ad_option: "banner-ad",
+                    ad_option: banner.option,
                     placement: banner.placement,
                   });
                 }}
@@ -277,12 +329,13 @@ export default function BannerAdsPage() {
           Pricing & Duration
         </h2>
         <p className="text-sm text-zinc-300 mb-6">
-          Banner pricing is based on campaign duration. Placement selected above
-          is treated as requested inventory and is confirmed during fulfillment.
+          Pricing depends on the placement you selected above and its campaign
+          duration. Placement selected above is treated as requested inventory
+          and is confirmed during fulfillment.
         </p>
 
         <div className="flex justify-center gap-4 flex-wrap">
-          {BANNER_DURATION_OPTIONS.map((opt) => {
+          {durationOptions.map((opt) => {
             const active = duration === opt.value;
             return (
               <button
@@ -315,7 +368,7 @@ export default function BannerAdsPage() {
           </div>
           <div className="text-sm text-zinc-300 mt-1">
             <span className="font-semibold text-white">Duration:</span>{" "}
-            {selectedDurationMeta?.label || "2 Weeks"}
+            {selectedDurationMeta?.label || "—"}
           </div>
           <div className="text-sm text-zinc-300 mt-1">
             <span className="font-semibold text-white">Checkout Price:</span>{" "}

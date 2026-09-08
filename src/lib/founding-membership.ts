@@ -91,10 +91,9 @@ export function getFoundingMembershipAvailability(
       .trim()
       .toLowerCase() || "public";
   const currentClaimState = normalizeFoundingClaimStage(row.claimStage);
-  const alreadyVerified =
-    row.verified === true ||
-    row.isVerified === true ||
-    publicStatus === "verified";
+  // Verification-field drift fix (2026-09-07): `verified` is canonical;
+  // isVerified no longer read independently.
+  const alreadyVerified = row.verified === true || publicStatus === "verified";
   const unavailableReason = alreadyVerified
     ? "already_verified"
     : currentClaimState === "claim_initiated" ||
