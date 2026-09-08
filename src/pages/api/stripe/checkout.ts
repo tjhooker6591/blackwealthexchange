@@ -217,6 +217,59 @@ export default async function handler(
 
   const payload = req.body as CheckoutPayload;
 
+  // Guest marketplace checkout (2026-09-08): a normal product purchase must
+  // never require a BWE account -- createProductCheckoutSessionCore already
+  // fully supports this (its own resolveBuyerFromRequest() returns a null
+  // buyerUserId/buyerEmail for a guest with no session_token, and every
+  // other concern -- seller/business/product attribution, inventory,
+  // Stripe Connect destination-charge/platform-hold fallback, application
+  // fee, shipping -- is computed independently of buyer identity). The
+  // mandatory-session block below this comment was unconditionally
+  // returning 401 for ANY request with no session cookie, before the
+  // `type === "product"` dispatch further down ever ran -- so a logged-out
+  // visitor could never reach the guest-capable code path at all. Dispatch
+  // product checkout here, before that gate, so only non-product purchase
+  // types (ads, jobs, plans, etc.) still require a real BWE session --
+  // exactly as before for those.
+  if (
+    typeof payload?.type === "string" &&
+    payload.type === "product" &&
+    typeof payload?.itemId === "string"
+  ) {
+    try {
+      const client = await clientPromise;
+      const db = client.db(getMongoDbName());
+      const result = await createProductCheckoutSessionCore({
+        req,
+        db,
+        productId: payload.itemId,
+        stripe,
+      });
+
+      if (result.status === 429 && result.body?.retryAfterSeconds) {
+        res.setHeader("Retry-After", String(result.body.retryAfterSeconds));
+      }
+
+      return res.status(result.status).json(result.body);
+    } catch (err: any) {
+      console.error("❌ Guest product checkout failed:", err);
+
+      if (err?.code === "insufficient_capabilities_for_transfer") {
+        return res.status(400).json({
+          error:
+            "Seller Stripe account is not yet enabled for transfers. Complete Stripe onboarding and enable payouts/transfers.",
+        });
+      }
+
+      return res.status(500).json({
+        error:
+          process.env.NODE_ENV === "production"
+            ? "Internal Server Error"
+            : err?.message || "Stripe error",
+      });
+    }
+  }
+
   const cookies = cookie.parse(req.headers.cookie || "");
   const token = cookies.session_token;
   const cookieAccountType = cookies.accountType || "user";
@@ -301,20 +354,8 @@ export default async function handler(
     const db = client.db(getMongoDbName());
     const payments = db.collection("payments");
 
-    if (type === "product") {
-      const result = await createProductCheckoutSessionCore({
-        req,
-        db,
-        productId: itemId,
-        stripe,
-      });
-
-      if (result.status === 429 && result.body?.retryAfterSeconds) {
-        res.setHeader("Retry-After", String(result.body.retryAfterSeconds));
-      }
-
-      return res.status(result.status).json(result.body);
-    }
+    // type === "product" is fully handled above, before the mandatory-
+    // session gate -- it never reaches here.
 
     const origin = getOrigin(req);
 
