@@ -2,6 +2,9 @@
   "name": "my-platform",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "check:env": "node scripts/check-env.mjs",
     "check:env:local": "node scripts/check-env.mjs --env=local",
