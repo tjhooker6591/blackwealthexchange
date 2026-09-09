@@ -2,9 +2,16 @@ import { MongoClient, MongoClientOptions } from "mongodb";
 import { getMongoUri } from "@/lib/env";
 
 const options: MongoClientOptions = {
-  serverSelectionTimeoutMS: 2500,
-  connectTimeoutMS: 2500,
-  socketTimeoutMS: 5000,
+  // Widened from 2500ms (2026-09-09): too tight for a cold serverless
+  // start reaching Atlas over the network for the first time, especially
+  // now that some page bundles are larger after forcing webpack to inline
+  // sanitize-html/htmlparser2 (next.config.ts) -- confirmed in production
+  // as the root cause of business pages intermittently 404ing (the
+  // connection attempt timed out, was silently caught, and fell through
+  // to a "not found" response) even though the records genuinely exist.
+  serverSelectionTimeoutMS: 8000,
+  connectTimeoutMS: 8000,
+  socketTimeoutMS: 10000,
   maxPoolSize: 10,
 };
 
@@ -27,7 +34,16 @@ async function connectMongo(): Promise<MongoClient> {
 
   if (!cachedPromise) {
     const client = new MongoClient(uri, options);
-    cachedPromise = client.connect();
+    // A failed connect() must not be cached (2026-09-09): without this,
+    // one transient timeout on a cold serverless instance permanently
+    // breaks Mongo access for every subsequent request on that same
+    // warm instance, since cachedPromise stays set to the rejected
+    // promise until Vercel recycles the instance -- confirmed as a
+    // major contributor to the intermittent-404 bug above.
+    cachedPromise = client.connect().catch((err) => {
+      cachedPromise = null;
+      throw err;
+    });
   }
 
   return cachedPromise;

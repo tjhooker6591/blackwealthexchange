@@ -699,7 +699,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
         businessId: doc?._id ? String(doc._id) : null,
       },
     };
-  } catch {
+  } catch (err) {
+    // Log instead of silently swallowing (2026-09-09): this catch was
+    // masking a real Mongo connection-timeout bug as a plain 404 with no
+    // trace anywhere, which made it very hard to diagnose -- see
+    // src/lib/mongodb.ts for the actual fix.
+    console.error("business/[slug] getServerSideProps error:", err);
     const fallback = loadFallbackBusinessBySlug(slug);
     if (!fallback) return { notFound: true };
     return { props: { entry: fallback, slug, businessId: null } };
