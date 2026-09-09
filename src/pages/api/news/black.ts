@@ -129,7 +129,6 @@ const SOURCES: Source[] = [
 ];
 
 const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
-const COLD_START_BUDGET_MS = 4000;
 const parser = new Parser();
 
 function stripHtml(input: string) {
@@ -294,15 +293,20 @@ export default async function handler(
   const now = Date.now();
 
   // Refresh cache if stale.
-  // If we already have cached items, return stale quickly and revalidate in background.
+  // If we already have cached items, return stale quickly and revalidate in
+  // background. On an empty cache (cold start), actually wait for the real
+  // fetch instead of racing a timeout (2026-09-09): Vercel suspends this
+  // function shortly after the response is sent, so a "give up after 4s,
+  // keep refreshing in the background" race meant the background half often
+  // never got to finish -- confirmed in production, cache.at stuck at epoch
+  // 0 with zero items AND zero recorded failures across repeated cold
+  // requests, i.e. the refresh never completed at all post-response. Each
+  // individual feed is already capped at FEED_TIMEOUT_MS (1.2s) via
+  // AbortSignal and they run in parallel, so worst case here is close to
+  // ~1.2-2s, not unbounded.
   if (!cache.items.length || now - cache.at > CACHE_TTL_MS) {
     if (!cache.items.length) {
-      await Promise.race([
-        refreshCache(cache, now),
-        new Promise<void>((resolve) =>
-          setTimeout(resolve, COLD_START_BUDGET_MS),
-        ),
-      ]);
+      await refreshCache(cache, now);
     } else {
       void refreshCache(cache, now);
     }
