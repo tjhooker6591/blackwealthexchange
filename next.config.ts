@@ -52,7 +52,12 @@ const nextConfig: NextConfig = {
     // real .node binding). Including the whole @img scope covers whatever
     // platform package npm resolves on the build machine, since that
     // varies by Vercel's build architecture.
-    "/**": ["./node_modules/sharp/**/*", "./node_modules/@img/**/*"],
+    "/**": [
+      "./node_modules/sharp/**/*",
+      "./node_modules/@img/**/*",
+      "./node_modules/detect-libc/**/*",
+      "./node_modules/semver/**/*",
+    ],
   },
   images: {
     remotePatterns: [
