@@ -34,6 +34,11 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   serverExternalPackages: ["sharp"],
+  transpilePackages: ["sanitize-html", "htmlparser2"],
+
+  experimental: {
+    esmExternals: "loose",
+  },
   // src/instrumentation.ts requires sharp through a runtime-obfuscated
   // string so webpack's static analysis can't see it (see the webpack()
   // comment below for why). That same obfuscation also hides the
