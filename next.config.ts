@@ -34,6 +34,19 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   serverExternalPackages: ["sharp"],
+  bundlePagesRouterDependencies: true,
+  transpilePackages: ["sanitize-html", "htmlparser2"],
+  experimental: {
+    // Required, not optional (2026-09-09): sanitize-html's own source does
+    // a plain CJS require("htmlparser2") internally, and webpack cannot
+    // statically bundle a CJS require() of a true ESM package without this
+    // -- confirmed by actually removing it, which fails the build with
+    // "Module not found: ESM packages (htmlparser2) need to be imported."
+    // (see https://nextjs.org/docs/messages/import-esm-externals). Next's
+    // own generic "not recommended, should be removed" warning about this
+    // flag doesn't apply to this specific case.
+    esmExternals: "loose",
+  },
   // src/instrumentation.ts requires sharp through a runtime-obfuscated
   // string so webpack's static analysis can't see it (see the webpack()
   // comment below for why). That same obfuscation also hides the
