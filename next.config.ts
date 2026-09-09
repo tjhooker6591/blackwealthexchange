@@ -34,6 +34,26 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   serverExternalPackages: ["sharp"],
+  // src/instrumentation.ts requires sharp through a runtime-obfuscated
+  // string so webpack's static analysis can't see it (see the webpack()
+  // comment below for why). That same obfuscation also hides the
+  // dependency from Vercel/Next's serverless output file tracer, which
+  // also relies on static analysis to decide which node_modules files to
+  // include in each deployed function -- so sharp's files were being
+  // silently pruned from every deployed bundle even though the package
+  // was actually installed (confirmed 2026-09-08: production 500s on
+  // every route with "Cannot find module 'sharp'" even from a completely
+  // clean Vercel-native rebuild). Force-including it here bypasses that.
+  outputFileTracingIncludes: {
+    // Both globs are required: sharp's JS lives under node_modules/sharp,
+    // but its actual platform-compiled binary ships in a separate
+    // node_modules/@img/sharp-<platform>-<arch> package (confirmed
+    // 2026-09-08 -- node_modules/sharp/**/* alone traced 0 bytes of the
+    // real .node binding). Including the whole @img scope covers whatever
+    // platform package npm resolves on the build machine, since that
+    // varies by Vercel's build architecture.
+    "/**": ["./node_modules/sharp/**/*", "./node_modules/@img/**/*"],
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "example.com" },

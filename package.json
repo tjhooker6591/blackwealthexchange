@@ -17,6 +17,10 @@
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "check:directory-query": "node scripts/test-directory-query-state.mjs",
+    "audit:seller-business-drift": "node scripts/audit-seller-business-drift.mjs",
+    "audit:directory-enrichment-queue": "node scripts/audit-directory-enrichment-queue.mjs",
+    "fix:directory-city-from-address": "node scripts/fix-directory-city-from-address.mjs",
+    "fix:directory-route-fields": "node scripts/fix-directory-route-fields.mjs",
     "audit:directory-completeness": "node scripts/stamp-directory-completeness.mjs",
     "check:release-hygiene": "node scripts/release-hygiene-check.mjs",
     "smoke:routes": "node scripts/smoke-routes.mjs",
@@ -30,6 +34,9 @@
     "runtime:check": "node scripts/runtime-check.mjs",
     "runtime:check-clear": "node scripts/runtime-check.mjs --clear",
     "runtime:recover": "node scripts/runtime-recover.mjs",
+    "runtime:service:install": "node scripts/install-localhost-service.mjs",
+    "runtime:service:status": "node scripts/localhost-service-status.mjs",
+    "runtime:service:uninstall": "node scripts/uninstall-localhost-service.mjs",
     "proof:auth-session-matrix": "node scripts/runtime-proof-auth-session-matrix.mjs",
     "proof:auth-session-advanced": "node scripts/runtime-proof-auth-session-advanced.mjs",
     "proof:black-card-entitlements": "node scripts/runtime-proof-black-card-entitlements.mjs",
@@ -39,6 +46,9 @@
     "check:internal-links": "node scripts/check-internal-links.mjs",
     "check:critical-paths": "node scripts/check-critical-paths.mjs",
     "check:buy-flows": "node scripts/check-buy-flows.mjs",
+    "network:alerts-scan": "node scripts/network-alerts-scan.mjs",
+    "network:alerts-scan:dry-run": "node scripts/network-alerts-scan.mjs --dry-run",
+    "api:generate-inventory": "node scripts/generate-api-inventory.mjs",
     "prepare": "if [ \"$VERCEL\" != \"1\" ]; then husky install; fi",
     "vercel-build": "next build"
   },
@@ -70,8 +80,8 @@
     "react-leaflet": "^5.0.0",
     "recharts": "^2.15.2",
     "rss-parser": "^3.13.0",
-    "sanitize-html": "^2.17.5",
-    "sharp": "^0.34.5",
+    "sanitize-html": "^2.17.7",
+    "sharp": "^0.34.3",
     "stripe": "^17.7.0",
     "swiper": "^12.1.2",
     "uuid": "^11.1.0"
@@ -100,6 +110,7 @@
     "typescript": "^5"
   },
   "overrides": {
-    "@isaacs/brace-expansion": "5.0.1"
+    "@isaacs/brace-expansion": "5.0.1",
+    "qs": "6.16.0"
   }
 }
