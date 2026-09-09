@@ -5,6 +5,8 @@ type User = {
   _id: string;
   accountType: string;
   email?: string;
+  fullName?: string;
+  businessName?: string;
   // Add more fields as needed!
 };
 

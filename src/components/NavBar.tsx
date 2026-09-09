@@ -28,6 +28,22 @@ export default function NavBar() {
   const profileHref =
     user?.accountType === "business" ? "/dashboard/edit-business" : "/profile";
 
+  // Show who's actually logged in instead of the generic word "Account" --
+  // users reported it was hard to tell they were logged in / find their way
+  // back to their profile once they'd navigated elsewhere, since nothing in
+  // the nav gave a persistent "this is you" cue (2026-09-09).
+  const accountDisplayName =
+    user?.accountType === "business"
+      ? user?.businessName?.trim() || "Account"
+      : user?.fullName?.trim()?.split(/\s+/)[0] || "Account";
+  const accountInitial = (
+    (user?.accountType === "business" ? user?.businessName : user?.fullName) ||
+    ""
+  )
+    .trim()
+    .charAt(0)
+    .toUpperCase();
+
   const closeAllMenus = () => {
     setMobileMenuOpen(false);
     setDesktopMenuOpen(null);
@@ -268,10 +284,15 @@ export default function NavBar() {
                   prev === "account" ? null : "account",
                 )
               }
-              className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
               aria-expanded={desktopMenuOpen === "account"}
             >
-              Account
+              {user && accountInitial ? (
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#D4AF37]/20 text-xs font-bold text-[#D4AF37]">
+                  {accountInitial}
+                </span>
+              ) : null}
+              {user ? accountDisplayName : "Account"}
             </button>
             {desktopMenuOpen === "account" && (
               <div className="absolute right-0 z-50 mt-2 w-48 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
