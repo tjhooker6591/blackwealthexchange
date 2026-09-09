@@ -37,14 +37,6 @@ const nextConfig: NextConfig = {
   bundlePagesRouterDependencies: true,
   transpilePackages: ["sanitize-html", "htmlparser2"],
   experimental: {
-    // Required, not optional (2026-09-09): sanitize-html's own source does
-    // a plain CJS require("htmlparser2") internally, and webpack cannot
-    // statically bundle a CJS require() of a true ESM package without this
-    // -- confirmed by actually removing it, which fails the build with
-    // "Module not found: ESM packages (htmlparser2) need to be imported."
-    // (see https://nextjs.org/docs/messages/import-esm-externals). Next's
-    // own generic "not recommended, should be removed" warning about this
-    // flag doesn't apply to this specific case.
     esmExternals: "loose",
   },
   // src/instrumentation.ts requires sharp through a runtime-obfuscated
@@ -58,16 +50,13 @@ const nextConfig: NextConfig = {
   // every route with "Cannot find module 'sharp'" even from a completely
   // clean Vercel-native rebuild). Force-including it here bypasses that.
   outputFileTracingIncludes: {
-    // All four globs are required. sharp's JS lives under node_modules/
-    // sharp, but its platform-compiled binary ships in a separate
+    // Both globs are required: sharp's JS lives under node_modules/sharp,
+    // but its actual platform-compiled binary ships in a separate
     // node_modules/@img/sharp-<platform>-<arch> package (confirmed
     // 2026-09-08 -- node_modules/sharp/**/* alone traced 0 bytes of the
-    // real .node binding). sharp's own dependencies (detect-libc, semver)
-    // are hoisted to top-level node_modules/ rather than nested under
-    // node_modules/sharp/node_modules/, so they need to be listed
-    // explicitly too (confirmed 2026-09-08: fixing the two globs above
-    // got sharp's own file to load, then it crashed on the next hop --
-    // "Cannot find module 'detect-libc'").
+    // real .node binding). Including the whole @img scope covers whatever
+    // platform package npm resolves on the build machine, since that
+    // varies by Vercel's build architecture.
     "/**": [
       "./node_modules/sharp/**/*",
       "./node_modules/@img/**/*",
