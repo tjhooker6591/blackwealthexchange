@@ -66,14 +66,18 @@ export default function PulsePage() {
   const canonical = canonicalUrl("/pulse");
 
   useEffect(() => {
-    if (!user) return;
+    if (authLoading) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     fetch("/api/pulse/feed", { credentials: "include" })
       .then((r) => (r.ok ? r.json() : Promise.reject(r)))
       .then((data: FeedResponse) => setFeed(data))
       .catch(() => setError("Couldn't load your feed right now."))
       .finally(() => setLoading(false));
-  }, [user]);
+  }, [user, authLoading]);
 
   return (
     <>

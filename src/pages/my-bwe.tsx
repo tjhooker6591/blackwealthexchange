@@ -24,6 +24,7 @@ export default function MyBwePage() {
   const { user, loading: authLoading } = useAuth({ silentOnPublic: false });
 
   const [followCount, setFollowCount] = useState(0);
+  const [peopleFollowCount, setPeopleFollowCount] = useState(0);
   const [savedBusinessCount, setSavedBusinessCount] = useState(0);
   const [savedProductCount, setSavedProductCount] = useState(0);
   const [savedOpportunityCount, setSavedOpportunityCount] = useState(0);
@@ -38,6 +39,11 @@ export default function MyBwePage() {
     fetch("/api/business/follow?mine=1", { credentials: "include" })
       .then((r) => (r.ok ? r.json() : { businesses: [] }))
       .then((data) => setFollowCount((data?.businesses || []).length))
+      .catch(() => null);
+
+    fetch("/api/user/follow?mine=1", { credentials: "include" })
+      .then((r) => (r.ok ? r.json() : { people: [] }))
+      .then((data) => setPeopleFollowCount((data?.people || []).length))
       .catch(() => null);
 
     fetch("/api/user/save-business", { credentials: "include" })
@@ -90,6 +96,12 @@ export default function MyBwePage() {
       count: followCount,
       href: "/my-bwe/following",
       description: "Businesses you follow for real updates.",
+    },
+    {
+      label: "People",
+      count: peopleFollowCount,
+      href: "/my-bwe/following-people",
+      description: "Members you follow.",
     },
     {
       label: "Saved businesses",
