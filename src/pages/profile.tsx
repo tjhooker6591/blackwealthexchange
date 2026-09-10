@@ -38,6 +38,7 @@ type UserProfile = {
   // compatibility
   profileImage?: string;
   resumeUrl?: string;
+  profileVisibility?: "private" | "public";
 };
 
 function cx(...classes: Array<string | false | null | undefined>) {
@@ -83,6 +84,9 @@ export default function ProfilePage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [bio, setBio] = useState("");
+  const [profileVisibility, setProfileVisibility] = useState<
+    "private" | "public"
+  >("private");
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
 
@@ -139,6 +143,9 @@ export default function ProfilePage() {
       setName(data.name || "");
       setEmail(data.email || meUser.email || "");
       setBio(data.bio || "");
+      setProfileVisibility(
+        data.profileVisibility === "public" ? "public" : "private",
+      );
     },
     [router],
   );
@@ -197,7 +204,7 @@ export default function ProfilePage() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ name, bio }),
+        body: JSON.stringify({ name, bio, profileVisibility }),
       });
       if (!res.ok) throw new Error();
       await fetchProfile();
@@ -471,6 +478,31 @@ export default function ProfilePage() {
                 placeholder="Tell people what you do."
               />
             </label>
+
+            {me?.accountType !== "business" ? (
+              <label className="flex items-start gap-3 rounded-xl border border-white/10 bg-black/30 px-3 py-3">
+                <input
+                  type="checkbox"
+                  checked={profileVisibility === "public"}
+                  onChange={(e) =>
+                    setProfileVisibility(
+                      e.target.checked ? "public" : "private",
+                    )
+                  }
+                  className="mt-1"
+                />
+                <span>
+                  <span className="block text-sm font-semibold text-gray-200">
+                    Make my profile public
+                  </span>
+                  <span className="block text-xs text-gray-400">
+                    Lets other BWE members find and follow you, and see this
+                    name/bio on a public page. Off by default -- your resume,
+                    email, and phone are never made public by this.
+                  </span>
+                </span>
+              </label>
+            ) : null}
 
             <div className="flex items-center gap-3">
               <button

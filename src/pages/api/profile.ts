@@ -24,6 +24,10 @@ type ProfileResponse = {
   // backward-compat fields used by older UI
   profileImage?: string;
   resumeUrl?: string;
+  // BWE Pulse Phase 2 -- opt-in public profile. Defaults to private; a
+  // profile is never public unless the account holder explicitly turns
+  // this on (see src/pages/profile.tsx).
+  profileVisibility: "private" | "public";
 };
 
 function collectionFor(accountType?: string) {
@@ -33,7 +37,7 @@ function collectionFor(accountType?: string) {
   return "users";
 }
 
-function nameFromDoc(doc: any) {
+export function nameFromDoc(doc: any) {
   return doc?.fullName || doc?.name || doc?.businessName || "";
 }
 
@@ -43,7 +47,10 @@ function toIso(value: unknown): string | undefined {
   return Number.isNaN(d.getTime()) ? undefined : d.toISOString();
 }
 
-function normalizeAsset(doc: any, key: "avatar" | "resume"): AssetMeta | null {
+export function normalizeAsset(
+  doc: any,
+  key: "avatar" | "resume",
+): AssetMeta | null {
   const raw = doc?.[key];
   if (
     raw &&
@@ -88,6 +95,8 @@ function mapProfile(doc: any, email: string): ProfileResponse {
     resume,
     profileImage: avatar?.url || "",
     resumeUrl: resume?.url || "",
+    profileVisibility:
+      doc.profileVisibility === "public" ? "public" : "private",
   };
 }
 
@@ -133,6 +142,19 @@ export default async function handler(
 
       if (typeof req.body?.bio === "string") {
         updateSet.bio = req.body.bio.trim();
+      }
+
+      // Opt-in public profile toggle (BWE Pulse Phase 2). Business accounts
+      // already have a full public directory listing -- this toggle is for
+      // people (users/sellers/employers) choosing to be followable/postable
+      // in the social layer, and is never turned on by anything but the
+      // account holder's own explicit request here.
+      if (
+        typeof req.body?.profileVisibility === "string" &&
+        payload.accountType !== "business"
+      ) {
+        updateSet.profileVisibility =
+          req.body.profileVisibility === "public" ? "public" : "private";
       }
 
       // explicit remove contract
