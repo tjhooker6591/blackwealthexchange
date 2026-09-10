@@ -8,6 +8,7 @@ import {
   parseSessionIdentity,
   resolveVerifiedOwnership,
 } from "@/lib/directoryOwnership";
+import BusinessUpdateComposer from "@/components/business/BusinessUpdateComposer";
 
 type AccountType =
   | "user"
@@ -528,6 +529,10 @@ export default function EditBusinessPage({
           >
             {status.message}
           </div>
+        ) : null}
+
+        {business.id ? (
+          <BusinessUpdateComposer businessId={business.id} />
         ) : null}
 
         <section className="rounded-2xl border border-yellow-500/15 bg-gray-900/50 p-6 shadow-xl">

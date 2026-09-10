@@ -133,6 +133,13 @@ export default function NavBar() {
 
         <div className="hidden items-center gap-1 lg:flex">
           <Link
+            href="/pulse"
+            onClick={handleItemClick}
+            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+          >
+            Pulse
+          </Link>
+          <Link
             href="/start-here"
             onClick={handleItemClick}
             className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
@@ -420,6 +427,13 @@ export default function NavBar() {
                 Primary
               </p>
               <div className="space-y-0.5">
+                <Link
+                  href="/pulse"
+                  onClick={handleItemClick}
+                  className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                >
+                  Pulse
+                </Link>
                 <Link
                   href="/start-here"
                   onClick={handleItemClick}
