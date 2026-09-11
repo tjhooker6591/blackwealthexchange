@@ -2,10 +2,11 @@
 //
 // BWE Pulse -- the personalized daily feed. Where /my-bwe is "show me what
 // I've built here" (counts and links out), Pulse is "show me what's new" --
-// a scrollable stream of real updates from businesses you follow, backed
-// by /api/pulse/feed, which itself composes three already-existing, already
-// -working building blocks (follows, business_updates, the recommendation
-// engine) rather than introducing new data.
+// a scrollable stream of real updates from businesses AND people you
+// follow, backed by /api/pulse/feed, which composes several already-
+// existing building blocks (follows, user_follows, business_updates,
+// member_posts, the recommendation engine) rather than introducing new
+// data of its own.
 
 import Head from "next/head";
 import Link from "next/link";
@@ -14,10 +15,12 @@ import useAuth from "@/hooks/useAuth";
 import { canonicalUrl } from "@/lib/seo";
 
 type PulseItem = {
+  type: "business" | "person";
   id: string;
-  businessId: string;
-  businessName: string;
-  businessHref: string | null;
+  authorId: string;
+  authorName: string;
+  authorHref: string;
+  authorAvatarUrl: string | null;
   title: string;
   body: string;
   createdAt: string | null;
@@ -57,13 +60,45 @@ function timeAgo(iso: string | null) {
   return new Date(iso).toLocaleDateString();
 }
 
+function Avatar({ name, url }: { name: string; url: string | null }) {
+  if (url) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={url}
+        alt={name}
+        className="h-9 w-9 shrink-0 rounded-full object-cover"
+      />
+    );
+  }
+  return (
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-sm font-bold text-white/70">
+      {name.charAt(0).toUpperCase()}
+    </div>
+  );
+}
+
 export default function PulsePage() {
   const { user, loading: authLoading } = useAuth({ silentOnPublic: false });
   const [loading, setLoading] = useState(true);
   const [feed, setFeed] = useState<FeedResponse | null>(null);
   const [error, setError] = useState("");
 
+  const [composeBody, setComposeBody] = useState("");
+  const [posting, setPosting] = useState(false);
+  const [composeState, setComposeState] = useState<string | null>(null);
+
   const canonical = canonicalUrl("/pulse");
+
+  const loadFeed = () => {
+    if (!user) return;
+    setLoading(true);
+    fetch("/api/pulse/feed", { credentials: "include" })
+      .then((r) => (r.ok ? r.json() : Promise.reject(r)))
+      .then((data: FeedResponse) => setFeed(data))
+      .catch(() => setError("Couldn't load your feed right now."))
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
     if (authLoading) return;
@@ -71,13 +106,34 @@ export default function PulsePage() {
       setLoading(false);
       return;
     }
-    setLoading(true);
-    fetch("/api/pulse/feed", { credentials: "include" })
-      .then((r) => (r.ok ? r.json() : Promise.reject(r)))
-      .then((data: FeedResponse) => setFeed(data))
-      .catch(() => setError("Couldn't load your feed right now."))
-      .finally(() => setLoading(false));
+    loadFeed();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading]);
+
+  async function handlePost() {
+    setPosting(true);
+    setComposeState(null);
+    try {
+      const res = await fetch("/api/user/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ body: composeBody }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setComposeState(data?.error || "Couldn't post. Please try again.");
+        return;
+      }
+      setComposeBody("");
+      setComposeState("Posted.");
+      loadFeed();
+    } catch {
+      setComposeState("Couldn't post. Please try again.");
+    } finally {
+      setPosting(false);
+    }
+  }
 
   return (
     <>
@@ -93,8 +149,8 @@ export default function PulsePage() {
             What&apos;s happening in your BWE network.
           </h1>
           <p className="bwe-lead mt-3 max-w-xl">
-            Real updates from businesses you follow, plus what&apos;s trending
-            across BWE.
+            Real updates from businesses and people you follow, plus what&apos;s
+            trending across BWE.
           </p>
 
           {authLoading || loading ? (
@@ -116,9 +172,43 @@ export default function PulsePage() {
           ) : (
             <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
               <div className="lg:col-span-2">
+                <div className="bwe-grid-card mb-4 flex flex-col gap-2 p-4">
+                  <textarea
+                    value={composeBody}
+                    onChange={(e) => setComposeBody(e.target.value)}
+                    placeholder="Share something with people who follow you -- a recommendation, a hire, a question..."
+                    maxLength={500}
+                    rows={2}
+                    className="bwe-textarea w-full"
+                  />
+                  <div className="flex items-center justify-between">
+                    <button
+                      type="button"
+                      onClick={handlePost}
+                      disabled={posting || !composeBody.trim()}
+                      className="rounded-lg bg-[var(--accent)] px-3 py-2 text-xs font-extrabold text-black disabled:opacity-50"
+                    >
+                      {posting ? "Posting…" : "Post"}
+                    </button>
+                    {composeState ? (
+                      <span className="text-xs text-white/60">
+                        {composeState}{" "}
+                        {composeState.startsWith("Make your profile") ? (
+                          <Link
+                            href="/profile"
+                            className="text-[var(--accent)] underline"
+                          >
+                            Go to Profile settings
+                          </Link>
+                        ) : null}
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+
                 {feed?.followingCount === 0 ? (
                   <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/70">
-                    You&apos;re not following any businesses yet.{" "}
+                    You&apos;re not following any businesses or members yet.{" "}
                     <Link
                       href="/business-directory"
                       className="text-[var(--accent)] underline"
@@ -129,36 +219,38 @@ export default function PulsePage() {
                   </div>
                 ) : !feed?.items?.length ? (
                   <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/70">
-                    No updates yet from businesses you follow. Check back soon,
-                    or browse what&apos;s trending on the right.
+                    No updates yet from businesses or members you follow. Check
+                    back soon, or browse what&apos;s trending on the right.
                   </div>
                 ) : (
                   <div className="flex flex-col gap-3">
                     {feed.items.map((item) => (
                       <article
-                        key={item.id}
+                        key={`${item.type}-${item.id}`}
                         className="bwe-grid-card flex flex-col gap-2 p-4"
                       >
                         <div className="flex items-center justify-between gap-3">
-                          {item.businessHref ? (
-                            <Link
-                              href={item.businessHref}
-                              className="bwe-card-title hover:text-[var(--accent)]"
-                            >
-                              {item.businessName}
-                            </Link>
-                          ) : (
-                            <div className="bwe-card-title">
-                              {item.businessName}
-                            </div>
-                          )}
+                          <Link
+                            href={item.authorHref}
+                            className="flex min-w-0 items-center gap-2"
+                          >
+                            <Avatar
+                              name={item.authorName}
+                              url={item.authorAvatarUrl}
+                            />
+                            <span className="bwe-card-title truncate hover:text-[var(--accent)]">
+                              {item.authorName}
+                            </span>
+                          </Link>
                           <span className="shrink-0 text-xs text-white/45">
                             {timeAgo(item.createdAt)}
                           </span>
                         </div>
-                        <div className="text-sm font-semibold text-white/90">
-                          {item.title}
-                        </div>
+                        {item.title ? (
+                          <div className="text-sm font-semibold text-white/90">
+                            {item.title}
+                          </div>
+                        ) : null}
                         <p className="text-sm leading-5 text-white/70">
                           {item.body}
                         </p>
