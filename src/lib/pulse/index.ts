@@ -234,6 +234,13 @@ function pickTakeaway(items: FeedItem[]) {
   return "A culture shift is forming across multiple sources.";
 }
 
+// Moved here from src/pages/black-entertainment-news.tsx (2026-09-11) so
+// the new unified BWE Pulse feed (src/pages/pulse.tsx) can reuse the exact
+// same entertainment filter for its culture/entertainment rail, instead of
+// importing one page module into another.
+export const ENTERTAINMENT_KEYWORDS =
+  /music|album|song|artist|rapper|hip[- ]?hop|r&b|single|tour|concert|festival|dj|producer|grammy|billboard|award|naacp|oscar|emmy|film|movie|cinema|box office|trailer|premiere|director|actor|actress|tv|series|show|season|episode|streaming|netflix|hulu|prime|disney|starz|hbo|apple tv|peacock|celebrity|red carpet|fashion|style|viral|interview|cast|soundtrack/i;
+
 export function buildPulseMoments(feedItems: FeedItem[]) {
   const items = [...feedItems].sort(
     (a, b) => safeTime(b.publishedAt) - safeTime(a.publishedAt),

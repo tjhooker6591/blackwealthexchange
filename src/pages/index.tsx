@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import { FEATURED_SPONSOR_RAIL_CAP } from "@/lib/advertising/placementDefinitions";
+import HomepagePulsePreview from "@/components/pulse/HomepagePulsePreview";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -774,6 +775,8 @@ export default function Home() {
             ) : null}
           </div>
         </section>
+
+        {user ? <HomepagePulsePreview /> : null}
 
         <section className="mb-6 border-t border-white/8 pt-6 text-center">
           <p className="bwe-eyebrow text-white/58">Keep going</p>

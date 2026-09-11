@@ -13,6 +13,15 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 import { canonicalUrl } from "@/lib/seo";
+import {
+  buildPulseMoments,
+  ENTERTAINMENT_KEYWORDS,
+  type FeedItem,
+  type PulseMoment,
+} from "@/lib/pulse";
+import { Avatar } from "@/components/pulse/Avatar";
+import { timeAgo } from "@/components/pulse/timeAgo";
+import CommentThread from "@/components/pulse/CommentThread";
 
 type PulseItem = {
   type: "business" | "person";
@@ -45,187 +54,6 @@ type FeedResponse = {
   };
 };
 
-type Comment = {
-  id: string;
-  authorUserId: string;
-  authorName: string;
-  authorAvatarUrl: string | null;
-  body: string;
-  createdAt: string | null;
-};
-
-function timeAgo(iso: string | null) {
-  if (!iso) return "";
-  const then = new Date(iso).getTime();
-  if (Number.isNaN(then)) return "";
-  const diffMs = Date.now() - then;
-  const minutes = Math.floor(diffMs / 60000);
-  if (minutes < 1) return "just now";
-  if (minutes < 60) return `${minutes}m ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d ago`;
-  return new Date(iso).toLocaleDateString();
-}
-
-function Avatar({
-  name,
-  url,
-  small = false,
-}: {
-  name: string;
-  url: string | null;
-  small?: boolean;
-}) {
-  // Tailwind's JIT scanner needs literal class strings, not interpolated
-  // ones -- `h-${size}` would never actually get generated, so this
-  // branches between two fully-literal class strings instead.
-  const sizeClass = small ? "h-6 w-6" : "h-9 w-9";
-  if (url) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={url}
-        alt={name}
-        className={`${sizeClass} shrink-0 rounded-full object-cover`}
-      />
-    );
-  }
-  return (
-    <div
-      className={`${sizeClass} flex shrink-0 items-center justify-center rounded-full bg-white/10 text-sm font-bold text-white/70`}
-    >
-      {name.charAt(0).toUpperCase()}
-    </div>
-  );
-}
-
-function CommentThread({
-  postType,
-  postId,
-}: {
-  postType: string;
-  postId: string;
-}) {
-  const [open, setOpen] = useState(false);
-  const [comments, setComments] = useState<Comment[] | null>(null);
-  const [body, setBody] = useState("");
-  const [posting, setPosting] = useState(false);
-  const [state, setState] = useState<string | null>(null);
-
-  const load = () => {
-    fetch(
-      `/api/pulse/comments?postType=${encodeURIComponent(postType)}&postId=${encodeURIComponent(postId)}`,
-      { credentials: "include" },
-    )
-      .then((r) => (r.ok ? r.json() : { comments: [] }))
-      .then((data) => setComments(data?.comments || []))
-      .catch(() => setComments([]));
-  };
-
-  function toggle() {
-    const next = !open;
-    setOpen(next);
-    if (next && comments === null) load();
-  }
-
-  async function handleComment() {
-    setPosting(true);
-    setState(null);
-    try {
-      const res = await fetch("/api/pulse/comments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ postType, postId, body }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setState(data?.error || "Couldn't comment. Please try again.");
-        return;
-      }
-      setBody("");
-      load();
-    } catch {
-      setState("Couldn't comment. Please try again.");
-    } finally {
-      setPosting(false);
-    }
-  }
-
-  return (
-    <div className="mt-1 border-t border-white/10 pt-2">
-      <button
-        type="button"
-        onClick={toggle}
-        className="text-xs font-semibold text-white/50 hover:text-white/80"
-      >
-        {open
-          ? "Hide comments"
-          : comments
-            ? `${comments.length} comment${comments.length === 1 ? "" : "s"}`
-            : "Comments"}
-      </button>
-
-      {open ? (
-        <div className="mt-2 flex flex-col gap-2">
-          {comments === null ? (
-            <div className="text-xs text-white/40">Loading…</div>
-          ) : (
-            comments.map((c) => (
-              <div key={c.id} className="flex items-start gap-2">
-                <Avatar name={c.authorName} url={c.authorAvatarUrl} small />
-                <div className="min-w-0">
-                  <span className="text-xs font-semibold text-white/85">
-                    {c.authorName}
-                  </span>{" "}
-                  <span className="text-xs text-white/40">
-                    {timeAgo(c.createdAt)}
-                  </span>
-                  <p className="text-sm text-white/70">{c.body}</p>
-                </div>
-              </div>
-            ))
-          )}
-
-          <div className="mt-1 flex items-center gap-2">
-            <input
-              type="text"
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              placeholder="Write a comment…"
-              maxLength={500}
-              className="bwe-input w-full text-sm"
-            />
-            <button
-              type="button"
-              onClick={handleComment}
-              disabled={posting || !body.trim()}
-              className="shrink-0 rounded-lg bg-white/10 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
-            >
-              {posting ? "…" : "Send"}
-            </button>
-          </div>
-          {state ? (
-            <span className="text-xs text-white/60">
-              {state}{" "}
-              {state.startsWith("Make your profile") ? (
-                <Link
-                  href="/profile"
-                  className="text-[var(--accent)] underline"
-                >
-                  Go to Profile settings
-                </Link>
-              ) : null}
-            </span>
-          ) : null}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
 export default function PulsePage() {
   const { user, loading: authLoading } = useAuth({ silentOnPublic: false });
   const [loading, setLoading] = useState(true);
@@ -236,7 +64,22 @@ export default function PulsePage() {
   const [posting, setPosting] = useState(false);
   const [composeState, setComposeState] = useState<string | null>(null);
 
+  const [cultureMoments, setCultureMoments] = useState<PulseMoment[]>([]);
+
   const canonical = canonicalUrl("/pulse");
+
+  useEffect(() => {
+    fetch("/api/news/black?limit=60")
+      .then((r) => (r.ok ? r.json() : { items: [] }))
+      .then((data) => {
+        const items: FeedItem[] = (data?.items || []).filter((it: FeedItem) =>
+          ENTERTAINMENT_KEYWORDS.test(`${it.title} ${it.snippet || ""}`),
+        );
+        const moments = buildPulseMoments(items);
+        setCultureMoments(moments.slice(0, 4));
+      })
+      .catch(() => setCultureMoments([]));
+  }, []);
 
   const loadFeed = () => {
     if (!user) return;
@@ -318,128 +161,174 @@ export default function PulsePage() {
               {error}
             </div>
           ) : (
-            <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
-              <div className="lg:col-span-2">
-                <div className="bwe-grid-card mb-4 flex flex-col gap-2 p-4">
-                  <textarea
-                    value={composeBody}
-                    onChange={(e) => setComposeBody(e.target.value)}
-                    placeholder="Share something with people who follow you -- a recommendation, a hire, a question..."
-                    maxLength={500}
-                    rows={2}
-                    className="bwe-textarea w-full"
-                  />
-                  <div className="flex items-center justify-between">
-                    <button
-                      type="button"
-                      onClick={handlePost}
-                      disabled={posting || !composeBody.trim()}
-                      className="rounded-lg bg-[var(--accent)] px-3 py-2 text-xs font-extrabold text-black disabled:opacity-50"
-                    >
-                      {posting ? "Posting…" : "Post"}
-                    </button>
-                    {composeState ? (
-                      <span className="text-xs text-white/60">
-                        {composeState}{" "}
-                        {composeState.startsWith("Make your profile") ? (
-                          <Link
-                            href="/profile"
-                            className="text-[var(--accent)] underline"
-                          >
-                            Go to Profile settings
-                          </Link>
-                        ) : null}
-                      </span>
-                    ) : null}
+            <>
+              <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
+                <div className="lg:col-span-2">
+                  <div className="bwe-grid-card mb-4 flex flex-col gap-2 p-4">
+                    <textarea
+                      value={composeBody}
+                      onChange={(e) => setComposeBody(e.target.value)}
+                      placeholder="Share something with people who follow you -- a recommendation, a hire, a question..."
+                      maxLength={500}
+                      rows={2}
+                      className="bwe-textarea w-full"
+                    />
+                    <div className="flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={handlePost}
+                        disabled={posting || !composeBody.trim()}
+                        className="rounded-lg bg-[var(--accent)] px-3 py-2 text-xs font-extrabold text-black disabled:opacity-50"
+                      >
+                        {posting ? "Posting…" : "Post"}
+                      </button>
+                      {composeState ? (
+                        <span className="text-xs text-white/60">
+                          {composeState}{" "}
+                          {composeState.startsWith("Make your profile") ? (
+                            <Link
+                              href="/profile"
+                              className="text-[var(--accent)] underline"
+                            >
+                              Go to Profile settings
+                            </Link>
+                          ) : null}
+                        </span>
+                      ) : null}
+                    </div>
                   </div>
+
+                  {feed?.followingCount === 0 ? (
+                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/70">
+                      You&apos;re not following any businesses or members yet.{" "}
+                      <Link
+                        href="/business-directory"
+                        className="text-[var(--accent)] underline"
+                      >
+                        Find some to follow
+                      </Link>{" "}
+                      and their updates will show up here.
+                    </div>
+                  ) : !feed?.items?.length ? (
+                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/70">
+                      No updates yet from businesses or members you follow.
+                      Check back soon, or browse what&apos;s trending on the
+                      right.
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-3">
+                      {feed.items.map((item) => (
+                        <article
+                          key={`${item.type}-${item.id}`}
+                          className="bwe-grid-card flex flex-col gap-2 p-4"
+                        >
+                          <div className="flex items-center justify-between gap-3">
+                            <Link
+                              href={item.authorHref}
+                              className="flex min-w-0 items-center gap-2"
+                            >
+                              <Avatar
+                                name={item.authorName}
+                                url={item.authorAvatarUrl}
+                              />
+                              <span className="bwe-card-title truncate hover:text-[var(--accent)]">
+                                {item.authorName}
+                              </span>
+                            </Link>
+                            <span className="shrink-0 text-xs text-white/45">
+                              {timeAgo(item.createdAt)}
+                            </span>
+                          </div>
+                          {item.title ? (
+                            <div className="text-sm font-semibold text-white/90">
+                              {item.title}
+                            </div>
+                          ) : null}
+                          <p className="text-sm leading-5 text-white/70">
+                            {item.body}
+                          </p>
+                          <CommentThread
+                            postType={item.type}
+                            postId={item.id}
+                          />
+                        </article>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-                {feed?.followingCount === 0 ? (
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/70">
-                    You&apos;re not following any businesses or members yet.{" "}
-                    <Link
-                      href="/business-directory"
-                      className="text-[var(--accent)] underline"
-                    >
-                      Find some to follow
-                    </Link>{" "}
-                    and their updates will show up here.
+                <div className="flex flex-col gap-3">
+                  <div className="bwe-eyebrow">
+                    {feed?.discover?.state === "PERSONALIZED"
+                      ? "Recommended for you"
+                      : "Trending on BWE"}
                   </div>
-                ) : !feed?.items?.length ? (
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/70">
-                    No updates yet from businesses or members you follow. Check
-                    back soon, or browse what&apos;s trending on the right.
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-3">
-                    {feed.items.map((item) => (
-                      <article
-                        key={`${item.type}-${item.id}`}
-                        className="bwe-grid-card flex flex-col gap-2 p-4"
+                  {(feed?.discover?.businesses || []).length === 0 ? (
+                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-white/60">
+                      Nothing trending yet.
+                    </div>
+                  ) : (
+                    feed?.discover?.businesses.map((biz) => (
+                      <Link
+                        key={biz.businessId}
+                        href={biz.url}
+                        className="bwe-grid-card bwe-focus-ring flex flex-col gap-1 p-4"
                       >
-                        <div className="flex items-center justify-between gap-3">
-                          <Link
-                            href={item.authorHref}
-                            className="flex min-w-0 items-center gap-2"
-                          >
-                            <Avatar
-                              name={item.authorName}
-                              url={item.authorAvatarUrl}
-                            />
-                            <span className="bwe-card-title truncate hover:text-[var(--accent)]">
-                              {item.authorName}
-                            </span>
-                          </Link>
-                          <span className="shrink-0 text-xs text-white/45">
-                            {timeAgo(item.createdAt)}
-                          </span>
-                        </div>
-                        {item.title ? (
-                          <div className="text-sm font-semibold text-white/90">
-                            {item.title}
-                          </div>
-                        ) : null}
-                        <p className="text-sm leading-5 text-white/70">
-                          {item.body}
+                        <div className="bwe-card-title">{biz.name}</div>
+                        <p className="text-xs text-white/55">
+                          {[
+                            biz.category,
+                            [biz.city, biz.state].filter(Boolean).join(", "),
+                          ]
+                            .filter(Boolean)
+                            .join(" · ")}
                         </p>
-                        <CommentThread postType={item.type} postId={item.id} />
-                      </article>
+                      </Link>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {cultureMoments.length ? (
+                <div className="mt-8">
+                  <div className="mb-3 flex items-center justify-between">
+                    <div className="bwe-eyebrow">
+                      Culture &amp; Entertainment
+                    </div>
+                    <Link
+                      href="/black-entertainment-news"
+                      className="text-xs font-semibold text-[var(--accent)] hover:underline"
+                    >
+                      See all →
+                    </Link>
+                  </div>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    {cultureMoments.map((moment) => (
+                      <Link
+                        key={moment.id}
+                        href="/black-entertainment-news"
+                        className="bwe-grid-card bwe-focus-ring flex flex-col gap-2 p-4"
+                      >
+                        {moment.heroImage ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={moment.heroImage}
+                            alt={moment.title}
+                            className="h-24 w-full rounded-xl object-cover"
+                          />
+                        ) : null}
+                        <div className="bwe-card-title line-clamp-2">
+                          {moment.title}
+                        </div>
+                        <p className="line-clamp-2 text-xs text-white/55">
+                          {moment.takeaway}
+                        </p>
+                      </Link>
                     ))}
                   </div>
-                )}
-              </div>
-
-              <div className="flex flex-col gap-3">
-                <div className="bwe-eyebrow">
-                  {feed?.discover?.state === "PERSONALIZED"
-                    ? "Recommended for you"
-                    : "Trending on BWE"}
                 </div>
-                {(feed?.discover?.businesses || []).length === 0 ? (
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-white/60">
-                    Nothing trending yet.
-                  </div>
-                ) : (
-                  feed?.discover?.businesses.map((biz) => (
-                    <Link
-                      key={biz.businessId}
-                      href={biz.url}
-                      className="bwe-grid-card bwe-focus-ring flex flex-col gap-1 p-4"
-                    >
-                      <div className="bwe-card-title">{biz.name}</div>
-                      <p className="text-xs text-white/55">
-                        {[
-                          biz.category,
-                          [biz.city, biz.state].filter(Boolean).join(", "),
-                        ]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      </p>
-                    </Link>
-                  ))
-                )}
-              </div>
-            </div>
+              ) : null}
+            </>
           )}
         </div>
       </div>

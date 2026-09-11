@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
 import NotificationBell from "@/components/network/NotificationBell";
+import PulseNavDot from "@/components/pulse/PulseNavDot";
 
 type DesktopMenu = "explore" | "account" | null;
 
@@ -138,6 +139,7 @@ export default function NavBar() {
             className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Pulse
+            <PulseNavDot />
           </Link>
           <Link
             href="/start-here"
@@ -433,6 +435,7 @@ export default function NavBar() {
                   className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
                 >
                   Pulse
+                  <PulseNavDot />
                 </Link>
                 <Link
                   href="/start-here"
