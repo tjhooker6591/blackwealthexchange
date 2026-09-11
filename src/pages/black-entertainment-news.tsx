@@ -15,6 +15,7 @@ import { motion } from "framer-motion";
 // Uses your existing pulse builder
 import {
   buildPulseMoments,
+  ENTERTAINMENT_KEYWORDS,
   type FeedItem,
   type PulseMoment,
   type PulseVibe,
@@ -45,12 +46,6 @@ const SAFE_FALLBACK_ERROR =
   "Entertainment stories are taking longer than usual to load. Please refresh in a moment.";
 
 type Lens = "Blend" | "All" | Region;
-
-/** -----------------------------
- * Entertainment filter (client-side)
- * ----------------------------- */
-const ENTERTAINMENT_KEYWORDS =
-  /music|album|song|artist|rapper|hip[- ]?hop|r&b|single|tour|concert|festival|dj|producer|grammy|billboard|award|naacp|oscar|emmy|film|movie|cinema|box office|trailer|premiere|director|actor|actress|tv|series|show|season|episode|streaming|netflix|hulu|prime|disney|starz|hbo|apple tv|peacock|celebrity|red carpet|fashion|style|viral|interview|cast|soundtrack/i;
 
 const VIBES: Array<PulseVibe | "All"> = [
   "All",

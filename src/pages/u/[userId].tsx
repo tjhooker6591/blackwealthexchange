@@ -14,6 +14,28 @@ import { getMongoDbName } from "@/lib/env";
 import { findPersonById } from "@/lib/network/personLookup";
 import { nameFromDoc, normalizeAsset } from "@/pages/api/profile";
 import { canonicalUrl } from "@/lib/seo";
+import CommentThread from "@/components/pulse/CommentThread";
+
+type Post = {
+  id: string;
+  body: string;
+  createdAt: string | null;
+};
+
+function timeAgo(iso: string | null) {
+  if (!iso) return "";
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return "";
+  const diffMs = Date.now() - then;
+  const minutes = Math.floor(diffMs / 60000);
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d ago`;
+  return new Date(iso).toLocaleDateString();
+}
 
 type Props = {
   userId: string;
@@ -66,6 +88,7 @@ const PublicProfilePage: NextPage<Props> = ({
   const [following, setFollowing] = useState(false);
   const [count, setCount] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     fetch(`/api/user/follow?userId=${encodeURIComponent(userId)}`, {
@@ -76,6 +99,11 @@ const PublicProfilePage: NextPage<Props> = ({
         setFollowing(Boolean(data.following));
         setCount(typeof data.count === "number" ? data.count : null);
       })
+      .catch(() => null);
+
+    fetch(`/api/user/posts?userId=${encodeURIComponent(userId)}`)
+      .then((r) => (r.ok ? r.json() : { posts: [] }))
+      .then((data) => setPosts(data?.posts || []))
       .catch(() => null);
   }, [userId]);
 
@@ -158,6 +186,30 @@ const PublicProfilePage: NextPage<Props> = ({
               This is your public profile.
             </p>
           )}
+
+          {posts.length > 0 ? (
+            <div className="mt-8">
+              <div className="bwe-eyebrow mb-3">Posts</div>
+              <div className="flex flex-col gap-3">
+                {posts.map((post) => (
+                  <div
+                    key={post.id}
+                    className="rounded-2xl border border-white/10 bg-black/30 p-4"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-white/45">
+                        {timeAgo(post.createdAt)}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-sm leading-5 text-white/80">
+                      {post.body}
+                    </p>
+                    <CommentThread postType="person" postId={post.id} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
     </>
