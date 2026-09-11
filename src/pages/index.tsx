@@ -819,19 +819,6 @@ export default function Home() {
             transform: translateX(-50%);
           }
         }
-
-        .animate-pulseGlow {
-          animation: pulseGlow 2.1s ease-in-out infinite;
-        }
-        @keyframes pulseGlow {
-          0%,
-          100% {
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
-          }
-          50% {
-            box-shadow: 0 0 24px rgba(212, 175, 55, 0.45);
-          }
-        }
       `}</style>
     </div>
   );
