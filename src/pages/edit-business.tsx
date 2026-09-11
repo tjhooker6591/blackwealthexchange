@@ -9,6 +9,7 @@ import {
   resolveVerifiedOwnership,
 } from "@/lib/directoryOwnership";
 import BusinessUpdateComposer from "@/components/business/BusinessUpdateComposer";
+import BusinessPostNudge from "@/components/business/BusinessPostNudge";
 
 type AccountType =
   | "user"
@@ -532,7 +533,10 @@ export default function EditBusinessPage({
         ) : null}
 
         {business.id ? (
-          <BusinessUpdateComposer businessId={business.id} />
+          <>
+            <BusinessPostNudge businessId={business.id} />
+            <BusinessUpdateComposer businessId={business.id} />
+          </>
         ) : null}
 
         <section className="rounded-2xl border border-yellow-500/15 bg-gray-900/50 p-6 shadow-xl">

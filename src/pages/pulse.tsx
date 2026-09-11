@@ -54,6 +54,26 @@ type FeedResponse = {
   };
 };
 
+function MomentCard({ moment }: { moment: PulseMoment }) {
+  return (
+    <Link
+      href="/black-entertainment-news"
+      className="bwe-grid-card bwe-focus-ring flex flex-col gap-2 p-4"
+    >
+      {moment.heroImage ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={moment.heroImage}
+          alt={moment.title}
+          className="h-24 w-full rounded-xl object-cover"
+        />
+      ) : null}
+      <div className="bwe-card-title line-clamp-2">{moment.title}</div>
+      <p className="line-clamp-2 text-xs text-white/55">{moment.takeaway}</p>
+    </Link>
+  );
+}
+
 export default function PulsePage() {
   const { user, loading: authLoading } = useAuth({ silentOnPublic: false });
   const [loading, setLoading] = useState(true);
@@ -69,17 +89,30 @@ export default function PulsePage() {
   const canonical = canonicalUrl("/pulse");
 
   useEffect(() => {
-    fetch("/api/news/black?limit=60")
+    fetch("/api/news/black?limit=150")
       .then((r) => (r.ok ? r.json() : { items: [] }))
       .then((data) => {
         const items: FeedItem[] = (data?.items || []).filter((it: FeedItem) =>
           ENTERTAINMENT_KEYWORDS.test(`${it.title} ${it.snippet || ""}`),
         );
-        const moments = buildPulseMoments(items);
-        setCultureMoments(moments.slice(0, 4));
+        setCultureMoments(buildPulseMoments(items));
       })
       .catch(() => setCultureMoments([]));
   }, []);
+
+  // Trending Top (2026-09-11): two real lenses on the same clustered
+  // culture/entertainment moments, ranked by the existing heat score --
+  // not a fabricated age-demographic split (no source data ties a story
+  // to an age group), but a real distinction that's already in the data:
+  // "Hype" = fast-moving/viral, "Iconic"/"DeepDive" = reflective/legacy.
+  const trendingNow = [...cultureMoments]
+    .filter((m) => m.vibe.includes("Hype"))
+    .sort((a, b) => b.heat - a.heat)
+    .slice(0, 4);
+  const iconicTimeless = [...cultureMoments]
+    .filter((m) => m.vibe.includes("Iconic") || m.vibe.includes("DeepDive"))
+    .sort((a, b) => b.heat - a.heat)
+    .slice(0, 4);
 
   const loadFeed = () => {
     if (!user) return;
@@ -302,30 +335,40 @@ export default function PulsePage() {
                       See all →
                     </Link>
                   </div>
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                    {cultureMoments.map((moment) => (
-                      <Link
-                        key={moment.id}
-                        href="/black-entertainment-news"
-                        className="bwe-grid-card bwe-focus-ring flex flex-col gap-2 p-4"
-                      >
-                        {moment.heroImage ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={moment.heroImage}
-                            alt={moment.title}
-                            className="h-24 w-full rounded-xl object-cover"
-                          />
-                        ) : null}
-                        <div className="bwe-card-title line-clamp-2">
-                          {moment.title}
-                        </div>
-                        <p className="line-clamp-2 text-xs text-white/55">
-                          {moment.takeaway}
-                        </p>
-                      </Link>
-                    ))}
-                  </div>
+
+                  {trendingNow.length ? (
+                    <div className="mb-6">
+                      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/50">
+                        Trending Now
+                      </div>
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                        {trendingNow.map((moment) => (
+                          <MomentCard key={moment.id} moment={moment} />
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {iconicTimeless.length ? (
+                    <div>
+                      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/50">
+                        Iconic &amp; Timeless
+                      </div>
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                        {iconicTimeless.map((moment) => (
+                          <MomentCard key={moment.id} moment={moment} />
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {!trendingNow.length && !iconicTimeless.length ? (
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                      {cultureMoments.slice(0, 4).map((moment) => (
+                        <MomentCard key={moment.id} moment={moment} />
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               ) : null}
             </>
