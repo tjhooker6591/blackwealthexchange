@@ -47,7 +47,7 @@ export default function HomepagePulsePreview() {
   const count = feed?.items?.length || 0;
 
   return (
-    <section className="mb-10 border-t border-white/8 pt-8">
+    <section className="mb-10 pt-2">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}

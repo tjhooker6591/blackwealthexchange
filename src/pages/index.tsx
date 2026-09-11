@@ -693,6 +693,8 @@ export default function Home() {
       </header>
 
       <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0 pt-3 sm:pt-4">
+        {user ? <HomepagePulsePreview /> : null}
+
         <section className="mb-8 border-t border-white/8 pt-6">
           <div className="mb-2.5 flex items-center justify-between">
             <div>
@@ -775,8 +777,6 @@ export default function Home() {
             ) : null}
           </div>
         </section>
-
-        {user ? <HomepagePulsePreview /> : null}
 
         <section className="mb-6 border-t border-white/8 pt-6 text-center">
           <p className="bwe-eyebrow text-white/58">Keep going</p>
