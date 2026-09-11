@@ -413,6 +413,24 @@ h4 {
   box-shadow: 0 0 0 0.24rem rgba(93, 211, 158, 0.16);
 }
 
+/* Moved here from src/pages/index.tsx's local styled-jsx (2026-09-11) --
+   was defined but never actually applied anywhere. Now used by
+   src/components/pulse/HomepagePulsePreview.tsx to give the Pulse
+   teaser real visual weight instead of blending into every other
+   section on the homepage. */
+.animate-pulseGlow {
+  animation: pulseGlow 2.1s ease-in-out infinite;
+}
+@keyframes pulseGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 24px rgba(212, 175, 55, 0.45);
+  }
+}
+
 @media (max-width: 640px) {
   .bwe-section-wrap {
     padding-inline: 0.85rem;
