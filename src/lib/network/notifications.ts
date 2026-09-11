@@ -18,7 +18,8 @@ export type NetworkNotificationType =
   | "alert_match"
   | "referral_event"
   | "inbox_message"
-  | "member_post";
+  | "member_post"
+  | "comment_received";
 
 export type CreateNotificationInput = {
   userId: string;
