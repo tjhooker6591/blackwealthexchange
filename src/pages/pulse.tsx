@@ -22,6 +22,7 @@ import {
 import { Avatar } from "@/components/pulse/Avatar";
 import { timeAgo } from "@/components/pulse/timeAgo";
 import CommentThread from "@/components/pulse/CommentThread";
+import HomepagePulseJoinTeaser from "@/components/pulse/HomepagePulseJoinTeaser";
 
 type PulseItem = {
   type: "business" | "person";
@@ -195,228 +196,251 @@ export default function PulsePage() {
           {authLoading || loading ? (
             <div className="mt-8 text-white/60">Loading…</div>
           ) : !user ? (
-            <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/70">
+            // Before this (2026-09-12), a visitor with no account saw only
+            // a bare "Log in to see your Pulse" line here -- nothing that
+            // made them want to join. Real activity + a join CTA now show
+            // instead; see HomepagePulseJoinTeaser for the same pattern
+            // used on the homepage.
+            <div className="mt-8">
+              <HomepagePulseJoinTeaser />
+              <div className="mt-3 text-center text-sm text-white/50">
+                Already have an account?{" "}
+                <Link
+                  href="/login?next=/pulse"
+                  className="text-[var(--accent)] underline"
+                >
+                  Log in
+                </Link>
+              </div>
+
+              {/* Tell them it exists, don't hand it over -- the actual
+                  Trending Now / Iconic & Timeless content only renders
+                  for a logged-in user below; this is a locked announcement,
+                  not a preview of the real thing. */}
               <Link
-                href="/login?next=/pulse"
-                className="text-[var(--accent)] underline"
+                href="/signup?intent=join-bwe-pulse"
+                className="bwe-focus-ring mt-8 flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition hover:border-[#D4AF37]/30 hover:bg-white/[0.05]"
               >
-                Log in
-              </Link>{" "}
-              to see your Pulse.
+                <div>
+                  <div className="bwe-eyebrow">Culture &amp; Entertainment</div>
+                  <p className="mt-1 text-sm text-white/60">
+                    Trending Now and Iconic &amp; Timeless -- what&apos;s hot in
+                    Black culture and entertainment, curated daily. Join to
+                    explore it.
+                  </p>
+                </div>
+                <span className="shrink-0 text-lg">🔒</span>
+              </Link>
             </div>
           ) : error ? (
             <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/70">
               {error}
             </div>
           ) : (
-            <>
-              <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
-                <div className="lg:col-span-2">
-                  <div className="bwe-grid-card mb-4 flex flex-col gap-2 p-4">
-                    <textarea
-                      value={composeBody}
-                      onChange={(e) => setComposeBody(e.target.value)}
-                      placeholder="Share something with people who follow you -- a recommendation, a hire, a question..."
-                      maxLength={500}
-                      rows={2}
-                      className="bwe-textarea w-full"
-                    />
-                    <div className="flex items-center justify-between">
-                      <button
-                        type="button"
-                        onClick={handlePost}
-                        disabled={posting || !composeBody.trim()}
-                        className="rounded-lg bg-[var(--accent)] px-3 py-2 text-xs font-extrabold text-black disabled:opacity-50"
-                      >
-                        {posting ? "Posting…" : "Post"}
-                      </button>
-                      {composeState ? (
-                        <span className="text-xs text-white/60">
-                          {composeState}{" "}
-                          {composeState.startsWith("Make your profile") ? (
-                            <Link
-                              href="/profile"
-                              className="text-[var(--accent)] underline"
-                            >
-                              Go to Profile settings
-                            </Link>
-                          ) : null}
-                        </span>
-                      ) : null}
-                    </div>
-                  </div>
-
-                  <div className="mb-3 flex gap-2">
+            <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
+              <div className="lg:col-span-2">
+                <div className="bwe-grid-card mb-4 flex flex-col gap-2 p-4">
+                  <textarea
+                    value={composeBody}
+                    onChange={(e) => setComposeBody(e.target.value)}
+                    placeholder="Share something with people who follow you -- a recommendation, a hire, a question..."
+                    maxLength={500}
+                    rows={2}
+                    className="bwe-textarea w-full"
+                  />
+                  <div className="flex items-center justify-between">
                     <button
                       type="button"
-                      onClick={() => setTab("following")}
-                      className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
-                        tab === "following"
-                          ? "bg-[var(--accent)] text-black"
-                          : "bg-white/5 text-white/60 hover:bg-white/10"
-                      }`}
+                      onClick={handlePost}
+                      disabled={posting || !composeBody.trim()}
+                      className="rounded-lg bg-[var(--accent)] px-3 py-2 text-xs font-extrabold text-black disabled:opacity-50"
                     >
-                      Following
+                      {posting ? "Posting…" : "Post"}
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => setTab("everyone")}
-                      className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
-                        tab === "everyone"
-                          ? "bg-[var(--accent)] text-black"
-                          : "bg-white/5 text-white/60 hover:bg-white/10"
-                      }`}
-                    >
-                      Everyone
-                    </button>
+                    {composeState ? (
+                      <span className="text-xs text-white/60">
+                        {composeState}{" "}
+                        {composeState.startsWith("Make your profile") ? (
+                          <Link
+                            href="/profile"
+                            className="text-[var(--accent)] underline"
+                          >
+                            Go to Profile settings
+                          </Link>
+                        ) : null}
+                      </span>
+                    ) : null}
                   </div>
+                </div>
 
-                  {tab === "following" && feed?.followingCount === 0 ? (
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/70">
-                      You&apos;re not following any businesses or members yet.{" "}
-                      <Link
-                        href="/business-directory"
-                        className="text-[var(--accent)] underline"
+                <div className="mb-3 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setTab("following")}
+                    className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
+                      tab === "following"
+                        ? "bg-[var(--accent)] text-black"
+                        : "bg-white/5 text-white/60 hover:bg-white/10"
+                    }`}
+                  >
+                    Following
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTab("everyone")}
+                    className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
+                      tab === "everyone"
+                        ? "bg-[var(--accent)] text-black"
+                        : "bg-white/5 text-white/60 hover:bg-white/10"
+                    }`}
+                  >
+                    Everyone
+                  </button>
+                </div>
+
+                {tab === "following" && feed?.followingCount === 0 ? (
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/70">
+                    You&apos;re not following any businesses or members yet.{" "}
+                    <Link
+                      href="/business-directory"
+                      className="text-[var(--accent)] underline"
+                    >
+                      Find some to follow
+                    </Link>{" "}
+                    and their updates will show up here.
+                  </div>
+                ) : !(tab === "following" ? feed?.items : feed?.publicItems)
+                    ?.length ? (
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/70">
+                    {tab === "following"
+                      ? "No updates yet from businesses or members you follow. Check back soon, or browse what's trending on the right."
+                      : "Nothing posted on BWE yet. Check back soon."}
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    {(tab === "following"
+                      ? feed!.items
+                      : feed!.publicItems
+                    ).map((item) => (
+                      <article
+                        key={`${item.type}-${item.id}`}
+                        className="bwe-grid-card flex flex-col gap-2 p-4"
                       >
-                        Find some to follow
-                      </Link>{" "}
-                      and their updates will show up here.
-                    </div>
-                  ) : !(tab === "following" ? feed?.items : feed?.publicItems)
-                      ?.length ? (
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/70">
-                      {tab === "following"
-                        ? "No updates yet from businesses or members you follow. Check back soon, or browse what's trending on the right."
-                        : "Nothing posted on BWE yet. Check back soon."}
-                    </div>
-                  ) : (
-                    <div className="flex flex-col gap-3">
-                      {(tab === "following"
-                        ? feed!.items
-                        : feed!.publicItems
-                      ).map((item) => (
-                        <article
-                          key={`${item.type}-${item.id}`}
-                          className="bwe-grid-card flex flex-col gap-2 p-4"
-                        >
-                          <div className="flex items-center justify-between gap-3">
-                            <Link
-                              href={item.authorHref}
-                              className="flex min-w-0 items-center gap-2"
-                            >
-                              <Avatar
-                                name={item.authorName}
-                                url={item.authorAvatarUrl}
-                              />
-                              <span className="bwe-card-title truncate hover:text-[var(--accent)]">
-                                {item.authorName}
-                              </span>
-                            </Link>
-                            <span className="shrink-0 text-xs text-white/45">
-                              {timeAgo(item.createdAt)}
+                        <div className="flex items-center justify-between gap-3">
+                          <Link
+                            href={item.authorHref}
+                            className="flex min-w-0 items-center gap-2"
+                          >
+                            <Avatar
+                              name={item.authorName}
+                              url={item.authorAvatarUrl}
+                            />
+                            <span className="bwe-card-title truncate hover:text-[var(--accent)]">
+                              {item.authorName}
                             </span>
+                          </Link>
+                          <span className="shrink-0 text-xs text-white/45">
+                            {timeAgo(item.createdAt)}
+                          </span>
+                        </div>
+                        {item.title ? (
+                          <div className="text-sm font-semibold text-white/90">
+                            {item.title}
                           </div>
-                          {item.title ? (
-                            <div className="text-sm font-semibold text-white/90">
-                              {item.title}
-                            </div>
-                          ) : null}
-                          <p className="text-sm leading-5 text-white/70">
-                            {item.body}
-                          </p>
-                          <CommentThread
-                            postType={item.type}
-                            postId={item.id}
-                          />
-                        </article>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  <div className="bwe-eyebrow">
-                    {feed?.discover?.state === "PERSONALIZED"
-                      ? "Recommended for you"
-                      : "Trending on BWE"}
-                  </div>
-                  {(feed?.discover?.businesses || []).length === 0 ? (
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-white/60">
-                      Nothing trending yet.
-                    </div>
-                  ) : (
-                    feed?.discover?.businesses.map((biz) => (
-                      <Link
-                        key={biz.businessId}
-                        href={biz.url}
-                        className="bwe-grid-card bwe-focus-ring flex flex-col gap-1 p-4"
-                      >
-                        <div className="bwe-card-title">{biz.name}</div>
-                        <p className="text-xs text-white/55">
-                          {[
-                            biz.category,
-                            [biz.city, biz.state].filter(Boolean).join(", "),
-                          ]
-                            .filter(Boolean)
-                            .join(" · ")}
+                        ) : null}
+                        <p className="text-sm leading-5 text-white/70">
+                          {item.body}
                         </p>
-                      </Link>
-                    ))
-                  )}
-                </div>
+                        <CommentThread postType={item.type} postId={item.id} />
+                      </article>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {cultureMoments.length ? (
-                <div className="mt-8">
-                  <div className="mb-3 flex items-center justify-between">
-                    <div className="bwe-eyebrow">
-                      Culture &amp; Entertainment
-                    </div>
-                    <Link
-                      href="/black-entertainment-news"
-                      className="text-xs font-semibold text-[var(--accent)] hover:underline"
-                    >
-                      See all →
-                    </Link>
+              <div className="flex flex-col gap-3">
+                <div className="bwe-eyebrow">
+                  {feed?.discover?.state === "PERSONALIZED"
+                    ? "Recommended for you"
+                    : "Trending on BWE"}
+                </div>
+                {(feed?.discover?.businesses || []).length === 0 ? (
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-white/60">
+                    Nothing trending yet.
                   </div>
+                ) : (
+                  feed?.discover?.businesses.map((biz) => (
+                    <Link
+                      key={biz.businessId}
+                      href={biz.url}
+                      className="bwe-grid-card bwe-focus-ring flex flex-col gap-1 p-4"
+                    >
+                      <div className="bwe-card-title">{biz.name}</div>
+                      <p className="text-xs text-white/55">
+                        {[
+                          biz.category,
+                          [biz.city, biz.state].filter(Boolean).join(", "),
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </p>
+                    </Link>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
 
-                  {trendingNow.length ? (
-                    <div className="mb-6">
-                      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/50">
-                        Trending Now
-                      </div>
-                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                        {trendingNow.map((moment) => (
-                          <MomentCard key={moment.id} moment={moment} />
-                        ))}
-                      </div>
-                    </div>
-                  ) : null}
+          {/* The real Trending Now / Iconic & Timeless content is only for
+              members -- a logged-out visitor gets told it exists (the
+              locked card above), not the content itself. */}
+          {user && cultureMoments.length ? (
+            <div className="mt-8">
+              <div className="mb-3 flex items-center justify-between">
+                <div className="bwe-eyebrow">Culture &amp; Entertainment</div>
+                <Link
+                  href="/black-entertainment-news"
+                  className="text-xs font-semibold text-[var(--accent)] hover:underline"
+                >
+                  See all →
+                </Link>
+              </div>
 
-                  {iconicTimeless.length ? (
-                    <div>
-                      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/50">
-                        Iconic &amp; Timeless
-                      </div>
-                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                        {iconicTimeless.map((moment) => (
-                          <MomentCard key={moment.id} moment={moment} />
-                        ))}
-                      </div>
-                    </div>
-                  ) : null}
-
-                  {!trendingNow.length && !iconicTimeless.length ? (
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                      {cultureMoments.slice(0, 4).map((moment) => (
-                        <MomentCard key={moment.id} moment={moment} />
-                      ))}
-                    </div>
-                  ) : null}
+              {trendingNow.length ? (
+                <div className="mb-6">
+                  <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/50">
+                    Trending Now
+                  </div>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    {trendingNow.map((moment) => (
+                      <MomentCard key={moment.id} moment={moment} />
+                    ))}
+                  </div>
                 </div>
               ) : null}
-            </>
-          )}
+
+              {iconicTimeless.length ? (
+                <div>
+                  <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-white/50">
+                    Iconic &amp; Timeless
+                  </div>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    {iconicTimeless.map((moment) => (
+                      <MomentCard key={moment.id} moment={moment} />
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              {!trendingNow.length && !iconicTimeless.length ? (
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  {cultureMoments.slice(0, 4).map((moment) => (
+                    <MomentCard key={moment.id} moment={moment} />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
     </>

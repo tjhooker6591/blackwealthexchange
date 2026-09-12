@@ -11,6 +11,7 @@ import useAuth from "@/hooks/useAuth";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import { FEATURED_SPONSOR_RAIL_CAP } from "@/lib/advertising/placementDefinitions";
 import HomepagePulsePreview from "@/components/pulse/HomepagePulsePreview";
+import HomepagePulseJoinTeaser from "@/components/pulse/HomepagePulseJoinTeaser";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -104,7 +105,7 @@ export default function Home() {
   const scopeTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   const trackHomepageEvent = (
     eventType: string,
@@ -693,7 +694,16 @@ export default function Home() {
       </header>
 
       <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0 pt-3 sm:pt-4">
-        {user ? <HomepagePulsePreview /> : null}
+        {authLoading ? null : user ? (
+          <HomepagePulsePreview />
+        ) : (
+          // A visitor with no account used to see nothing at all in this
+          // slot. The whole point of Pulse is to pull people INTO the
+          // conversation before they join -- so this shows real activity
+          // + a join CTA instead, and disappears the moment they have an
+          // account and are logged in (see HomepagePulseJoinTeaser).
+          <HomepagePulseJoinTeaser />
+        )}
 
         <section className="mb-8 border-t border-white/8 pt-6">
           <div className="mb-2.5 flex items-center justify-between">
