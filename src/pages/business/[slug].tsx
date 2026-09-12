@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ErrorPage from "next/error";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
+import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import {
   normalizeFoundingClaimStage,
@@ -600,9 +601,19 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     const dbName = process.env.MONGODB_DB?.trim();
     const db = dbName ? client.db(dbName) : client.db();
 
+    // Some producers of /business/<x> links (recommendations' businessDoc(),
+    // business-directory.tsx's getHref()) fall back to the raw _id when a
+    // business has neither alias nor slug -- confirmed 2026-09-10 that those
+    // links 404'd because this query only ever checked slug/alias. Matching
+    // _id too makes every existing link style resolvable instead of trying
+    // to chase down and fix every place that could produce a bare-id link.
+    const idMatch =
+      ObjectId.isValid(slug) && String(new ObjectId(slug)) === slug
+        ? [{ _id: new ObjectId(slug) }]
+        : [];
     const doc = await db.collection("businesses").findOne(
       {
-        $or: [{ slug }, { alias: slug }],
+        $or: [{ slug }, { alias: slug }, ...idMatch],
         status: { $nin: ["rejected", "archived"] },
       },
       {
