@@ -239,39 +239,48 @@ export default function PulsePage() {
           ) : (
             <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
               <div className="lg:col-span-2">
-                <div className="bwe-grid-card mb-4 flex flex-col gap-2 p-4">
-                  <textarea
-                    value={composeBody}
-                    onChange={(e) => setComposeBody(e.target.value)}
-                    placeholder="Share something with people who follow you -- a recommendation, a hire, a question..."
-                    maxLength={500}
-                    rows={2}
-                    className="bwe-textarea w-full"
-                  />
-                  <div className="flex items-center justify-between">
-                    <button
-                      type="button"
-                      onClick={handlePost}
-                      disabled={posting || !composeBody.trim()}
-                      className="rounded-lg bg-[var(--accent)] px-3 py-2 text-xs font-extrabold text-black disabled:opacity-50"
+                {user?.profileVisibility !== "public" ? (
+                  // Known upfront -- no point letting someone write a post
+                  // only to reject it after they hit Post. Same pattern as
+                  // CommentThread.
+                  <div className="bwe-grid-card mb-4 rounded-lg bg-white/5 p-4 text-xs text-white/60">
+                    Turn on your public profile to post -- it just lets other
+                    members see your name next to what you share. Your resume,
+                    email, and phone stay private either way.{" "}
+                    <Link
+                      href="/profile"
+                      className="font-semibold text-[var(--accent)] underline"
                     >
-                      {posting ? "Posting…" : "Post"}
-                    </button>
-                    {composeState ? (
-                      <span className="text-xs text-white/60">
-                        {composeState}{" "}
-                        {composeState.startsWith("Make your profile") ? (
-                          <Link
-                            href="/profile"
-                            className="text-[var(--accent)] underline"
-                          >
-                            Go to Profile settings
-                          </Link>
-                        ) : null}
-                      </span>
-                    ) : null}
+                      Turn on in Profile settings
+                    </Link>
                   </div>
-                </div>
+                ) : (
+                  <div className="bwe-grid-card mb-4 flex flex-col gap-2 p-4">
+                    <textarea
+                      value={composeBody}
+                      onChange={(e) => setComposeBody(e.target.value)}
+                      placeholder="Share something with people who follow you -- a recommendation, a hire, a question..."
+                      maxLength={500}
+                      rows={2}
+                      className="bwe-textarea w-full"
+                    />
+                    <div className="flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={handlePost}
+                        disabled={posting || !composeBody.trim()}
+                        className="rounded-lg bg-[var(--accent)] px-3 py-2 text-xs font-extrabold text-black disabled:opacity-50"
+                      >
+                        {posting ? "Posting…" : "Post"}
+                      </button>
+                      {composeState ? (
+                        <span className="text-xs text-white/60">
+                          {composeState}
+                        </span>
+                      ) : null}
+                    </div>
+                  </div>
+                )}
 
                 <div className="mb-3 flex gap-2">
                   <button
