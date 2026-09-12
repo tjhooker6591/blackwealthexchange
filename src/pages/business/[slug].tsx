@@ -14,6 +14,23 @@ import {
 } from "@/lib/founding-membership-state";
 import { Spotlight, spotlightData } from "../../lib/SpotlightEntry";
 import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
+
+// sanitize-html/htmlparser2 are ESM-only and known to fail intermittently
+// under Vercel's serverless runtime specifically (not reproducible via any
+// local `next build`/`next start`, including under the pinned Node 24.x --
+// see next.config.ts's transpilePackages). getServerSideProps has no UI to
+// fall back to on a thrown error other than a 404, so every business page
+// was going down whenever this call failed in production. Never let a
+// sanitizer crash take down the whole page -- fall back to a naively
+// tag-stripped plain-text version instead.
+function safeSanitizeRichHtml(input: unknown): string {
+  try {
+    return sanitizeRichHtml(input);
+  } catch (err) {
+    console.error("[business/[slug]] sanitizeRichHtml failed:", err);
+    return typeof input === "string" ? input.replace(/<[^>]*>/g, "") : "";
+  }
+}
 import {
   mapDirectoryProfileFromDoc,
   normalizeDirectoryLocationParts,
@@ -161,7 +178,7 @@ function mapDbBusinessToEntry(doc: any): BusinessEntry {
     tags: Array.isArray(profile.tags) ? profile.tags : [],
     primaryCtaLabel: cleanString(profile.primaryCtaLabel) || null,
     primaryCtaUrl: cleanString(profile.primaryCtaUrl) || null,
-    details: sanitizeRichHtml(detailParts.join("")) || null,
+    details: safeSanitizeRichHtml(detailParts.join("")) || null,
     category: category || null,
     categoriesText: categoriesText || null,
     location: location || null,
@@ -497,7 +514,7 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                   <div
                     className="text-sm text-white/75"
                     dangerouslySetInnerHTML={{
-                      __html: sanitizeRichHtml(entry.details),
+                      __html: safeSanitizeRichHtml(entry.details),
                     }}
                   />
                 ) : (
