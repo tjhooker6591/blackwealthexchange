@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 import { requireWealthUser } from "@/lib/wealth-builder/auth";
 
 export default async function handler(
@@ -35,8 +36,7 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const dbName = process.env.MONGODB_DB?.trim();
-    const db = dbName ? client.db(dbName) : client.db();
+    const db = client.db(getMongoDbName());
 
     const result = await db.collection("travel_map_saved_places").deleteOne({
       _id: objectId,

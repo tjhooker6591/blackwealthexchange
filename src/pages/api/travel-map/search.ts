@@ -3,6 +3,7 @@ import path from "node:path";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { Document, Filter } from "mongodb";
 import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 import type {
   TravelMapBusiness,
   TravelMapSearchResponse,
@@ -401,8 +402,7 @@ export default async function handler(
     }
 
     const client = await clientPromise;
-    const dbName = process.env.MONGODB_DB?.trim();
-    const db = dbName ? client.db(dbName) : client.db();
+    const db = client.db(getMongoDbName());
     const businesses = db.collection("businesses");
 
     const total = await businesses.countDocuments(filter);
