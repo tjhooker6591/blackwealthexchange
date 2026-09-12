@@ -24,6 +24,17 @@ function slugify(input: string) {
     .replace(/-+/g, "-");
 }
 
+// A handful of legacy business records have a corrupted `alias` stored as
+// a raw number (a stray coordinate value from a bad geocoding import) and
+// no real slug or business_name. Coercing that to a string here used to
+// still list it in the sitemap, but /business/[slug]'s lookup does a
+// strict-type match against the DB, so a numeric alias can never actually
+// resolve -- confirmed 2026-09-12 as a real, live source of dead sitemap
+// entries. A bare number/coordinate never a real slug either way.
+function looksNumeric(value: string) {
+  return /^-?\d+(\.\d+)?$/.test(value);
+}
+
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const base = getBaseUrl().replace(/\/$/, "");
 
@@ -132,10 +143,15 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
       ]);
 
     for (const b of businesses) {
-      const slug = String(
-        b?.slug || b?.alias || slugify(b?.business_name || ""),
-      );
-      if (!slug) continue;
+      const rawSlug =
+        (typeof b?.slug === "string" && b.slug.trim()) ||
+        (typeof b?.alias === "string" && b.alias.trim()) ||
+        "";
+      const name =
+        typeof b?.business_name === "string" ? b.business_name.trim() : "";
+      const slug =
+        rawSlug || (name && !looksNumeric(name) ? slugify(name) : "");
+      if (!slug || looksNumeric(slug)) continue;
       urls.push({
         loc: `${base}/business/${encodeURIComponent(slug)}`,
         changefreq: "weekly",
