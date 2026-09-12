@@ -1,49 +1,48 @@
 "use client";
 
-// Homepage teaser for BWE Pulse (src/pages/pulse.tsx). Only rendered for
-// logged-in users -- shows real content pulled from their actual feed
-// (via the same /api/pulse/feed used by the Pulse page itself) rather
-// than a generic "try this new feature" banner, since a real example of
-// what's actually happening is a stronger hook than an announcement.
-//
-// Given real visual weight (2026-09-11) -- gold glow border, a pulsing
-// "LIVE" badge, and a bold live count -- so it actually catches the eye
-// on a homepage full of otherwise similarly-styled sections, instead of
-// blending in as just another muted content block.
+// Logged-out counterpart to HomepagePulsePreview (same file directory).
+// Before this (2026-09-12), a visitor with no account saw nothing in this
+// homepage slot at all -- the section was gated `{user ? <Preview/> : null}`.
+// That defeats the actual goal: Pulse is meant to be the thing that pulls
+// people INTO the conversation before they join, not a reward that only
+// shows up after signup. Rendered by src/pages/index.tsx only when !user;
+// the instant someone has an account and is logged in, index.tsx swaps
+// this out for the real feed preview and this component never shows again.
 
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-type PulseItem = {
+type TeaserItem = {
   type: "business" | "person";
-  id: string;
   authorName: string;
   authorAvatarUrl: string | null;
   body: string;
 };
 
-type FeedResponse = {
+type TeaserResponse = {
   ok: boolean;
-  followingCount: number;
-  items: PulseItem[];
+  weeklyActivityCount: number;
+  sample: TeaserItem[];
 };
 
-export default function HomepagePulsePreview() {
-  const [feed, setFeed] = useState<FeedResponse | null>(null);
+const JOIN_HREF = "/signup?intent=join-bwe-pulse";
+
+export default function HomepagePulseJoinTeaser() {
+  const [data, setData] = useState<TeaserResponse | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    fetch("/api/pulse/feed", { credentials: "include" })
+    fetch("/api/pulse/public-teaser")
       .then((r) => (r.ok ? r.json() : null))
-      .then((data) => setFeed(data))
-      .catch(() => setFeed(null))
+      .then((d) => setData(d))
+      .catch(() => setData(null))
       .finally(() => setLoaded(true));
   }, []);
 
   if (!loaded) return null;
 
-  const preview = feed?.items?.slice(0, 2) || [];
+  const sample = data?.sample || [];
 
   return (
     <section className="mb-10 pt-2">
@@ -67,24 +66,24 @@ export default function HomepagePulsePreview() {
             </h3>
           </div>
           <Link
-            href="/pulse"
+            href={JOIN_HREF}
             className="bwe-focus-ring shrink-0 rounded-full bg-[#D4AF37] px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.1em] text-black transition hover:bg-[#e8c766]"
           >
-            Open Pulse →
+            Join the Conversation →
           </Link>
         </div>
 
         <p className="mt-2 text-sm text-white/60">
-          What&apos;s happening in your BWE network right now.
+          Black-owned businesses and members are already connecting on BWE. Join
+          free to follow along, comment, and share your own.
         </p>
 
-        {preview.length ? (
+        {sample.length ? (
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {preview.map((item) => (
-              <Link
-                key={`${item.type}-${item.id}`}
-                href="/pulse"
-                className="bwe-focus-ring flex items-start gap-3 rounded-2xl border border-white/10 bg-black/40 p-4 transition hover:border-[#D4AF37]/40 hover:bg-black/60"
+            {sample.map((item, i) => (
+              <div
+                key={`${item.type}-${i}`}
+                className="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/40 p-4"
               >
                 {item.authorAvatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -106,19 +105,17 @@ export default function HomepagePulsePreview() {
                     {item.body}
                   </p>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
-        ) : (
-          <Link
-            href="/pulse"
-            className="bwe-focus-ring mt-4 block rounded-2xl border border-white/10 bg-black/40 p-4 text-sm text-white/65 transition hover:border-[#D4AF37]/40 hover:bg-black/60"
-          >
-            {feed?.followingCount === 0
-              ? "Follow businesses and members to see their updates here -- or see what's trending now."
-              : "No new updates yet. See what's trending on BWE."}
-          </Link>
-        )}
+        ) : null}
+
+        <Link
+          href={JOIN_HREF}
+          className="bwe-focus-ring mt-4 block rounded-2xl border border-[#D4AF37]/30 bg-[#D4AF37]/10 p-4 text-center text-sm font-semibold text-[#F1D57A] transition hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/15"
+        >
+          Join free and be part of it →
+        </Link>
       </motion.div>
     </section>
   );
