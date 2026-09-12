@@ -17,7 +17,9 @@ export type NetworkNotificationType =
   | "follow_received"
   | "alert_match"
   | "referral_event"
-  | "inbox_message";
+  | "inbox_message"
+  | "member_post"
+  | "comment_received";
 
 export type CreateNotificationInput = {
   userId: string;
@@ -75,6 +77,48 @@ export async function notifyBusinessFollowers(
   let notified = 0;
   for (const follower of followers) {
     const userId = s((follower as any).userId);
+    if (!userId || userId === s(input.excludeUserId)) continue;
+    await createNotification(db, {
+      userId,
+      type: input.type,
+      title: input.title,
+      body: input.body,
+      href: input.href,
+      meta: input.meta,
+    });
+    notified += 1;
+  }
+  return notified;
+}
+
+/**
+ * Notifies every real follower of a person (BWE Pulse Phase 2). Mirrors
+ * notifyBusinessFollowers exactly, against the separate user_follows
+ * collection instead of follows.
+ */
+export async function notifyUserFollowers(
+  db: Db,
+  input: {
+    followingUserId: string;
+    excludeUserId?: string | null;
+    type: NetworkNotificationType;
+    title: string;
+    body?: string | null;
+    href?: string | null;
+    meta?: Record<string, unknown> | null;
+  },
+) {
+  const followingUserId = s(input.followingUserId);
+  if (!followingUserId) return 0;
+
+  const followers = await db
+    .collection("user_follows")
+    .find({ followingUserId }, { projection: { followerId: 1 } })
+    .toArray();
+
+  let notified = 0;
+  for (const follower of followers) {
+    const userId = s((follower as any).followerId);
     if (!userId || userId === s(input.excludeUserId)) continue;
     await createNotification(db, {
       userId,

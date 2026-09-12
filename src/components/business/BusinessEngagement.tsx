@@ -10,6 +10,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
+import CommentThread from "@/components/pulse/CommentThread";
 
 type Review = {
   id: string;
@@ -360,6 +361,7 @@ export default function BusinessEngagement({
                   {update.title}
                 </div>
                 <div className="mt-1 text-sm text-white/70">{update.body}</div>
+                <CommentThread postType="business" postId={update.id} />
               </div>
             ))}
           </div>

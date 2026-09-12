@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import { FEATURED_SPONSOR_RAIL_CAP } from "@/lib/advertising/placementDefinitions";
+import HomepagePulsePreview from "@/components/pulse/HomepagePulsePreview";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -692,6 +693,8 @@ export default function Home() {
       </header>
 
       <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0 pt-3 sm:pt-4">
+        {user ? <HomepagePulsePreview /> : null}
+
         <section className="mb-8 border-t border-white/8 pt-6">
           <div className="mb-2.5 flex items-center justify-between">
             <div>
@@ -814,19 +817,6 @@ export default function Home() {
           }
           100% {
             transform: translateX(-50%);
-          }
-        }
-
-        .animate-pulseGlow {
-          animation: pulseGlow 2.1s ease-in-out infinite;
-        }
-        @keyframes pulseGlow {
-          0%,
-          100% {
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
-          }
-          50% {
-            box-shadow: 0 0 24px rgba(212, 175, 55, 0.45);
           }
         }
       `}</style>
