@@ -53,8 +53,8 @@ export default function BusinessPostNudge({
   if (!hasEverPosted) {
     message =
       followerCount > 0
-        ? `You have ${followerCount} follower${followerCount === 1 ? "" : "s"} but haven't posted anything yet -- they won't see you in their BWE Pulse feed until you do.`
-        : "You haven't posted anything yet. Once you do, it'll show up in BWE Pulse for anyone who follows you.";
+        ? `You have ${followerCount} follower${followerCount === 1 ? "" : "s"} but haven't posted anything yet -- they won't see you in their BWE Pulse feed, and there's nothing on your page yet for members to comment on, until you do.`
+        : "You haven't posted anything yet. Once you do, it'll show up in BWE Pulse and on your page, where members can comment on it and follow along.";
   } else if (daysSinceLastPost !== null && daysSinceLastPost >= STALE_DAYS) {
     message = `Your last update was ${daysSinceLastPost} days ago${followerCount > 0 ? ` -- your ${followerCount} follower${followerCount === 1 ? "" : "s"} haven't heard from you in a while` : ""}.`;
   }

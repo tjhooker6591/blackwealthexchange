@@ -366,7 +366,18 @@ export default function BusinessEngagement({
             ))}
           </div>
         </div>
-      ) : null}
+      ) : (
+        // Reported directly: a visitor (and the owner themselves) found no
+        // way to comment on a business at all -- because comments only
+        // ever attach to a posted update, and this whole section silently
+        // disappeared when there were none. Explain the model instead of
+        // showing nothing.
+        <div className="rounded-2xl border border-white/10 bg-black/30 p-4 text-sm text-white/60">
+          {canPostUpdate
+            ? "You haven't posted an update yet. Once you do, it'll show here -- and members can comment on it and follow along."
+            : "This business hasn't posted an update yet. Updates -- and the ability to comment on them -- will show up here once they do."}
+        </div>
+      )}
 
       <div
         id="reviews"
