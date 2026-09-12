@@ -14,6 +14,12 @@
 //      (src/lib/personalization/recommendations.ts) as a transparent
 //      trending/personalized fallback so the feed is never empty for a
 //      user who follows nothing yet.
+//   4. "publicItems" (2026-09-11) -- the most recent posts platform-wide,
+//      not scoped to who you follow. Before this, there was genuinely no
+//      way to see what anyone outside your own follows was posting --
+//      "discover" only ever surfaced trending business/product cards, not
+//      actual post content. Real gap, reported directly: "i can only see
+//      my bwe network and not what others are posting."
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
@@ -173,6 +179,97 @@ export default async function handler(
       })
       .slice(0, FEED_LIMIT);
 
+    // Platform-wide "Everyone" feed -- same shape as the following-scoped
+    // one above, just without the businessId/authorUserId $in filter.
+    const [allUpdates, allPosts] = await Promise.all([
+      db
+        .collection("business_updates")
+        .find({})
+        .sort({ createdAt: -1 })
+        .limit(FEED_LIMIT)
+        .toArray(),
+      db
+        .collection("member_posts")
+        .find({})
+        .sort({ createdAt: -1 })
+        .limit(FEED_LIMIT)
+        .toArray(),
+    ]);
+
+    const allUpdateBusinessIds = Array.from(
+      new Set(allUpdates.map((u: any) => s(u.businessId))),
+    );
+    const allIdFilter = allUpdateBusinessIds.length
+      ? {
+          $or: allUpdateBusinessIds
+            .map((id) => buildIdFilter("_id", id))
+            .filter(Boolean) as any[],
+        }
+      : null;
+    const allBusinesses = allIdFilter
+      ? await db
+          .collection("businesses")
+          .find(allIdFilter as any)
+          .toArray()
+      : [];
+    const allBusinessesById = new Map(
+      allBusinesses.map((doc: any) => [String(doc._id), doc]),
+    );
+
+    const publicBusinessItems = allUpdates
+      .map((u: any) => {
+        const doc = allBusinessesById.get(s(u.businessId));
+        if (!doc) return null;
+        const profile = mapDirectoryProfileFromDoc(doc);
+        return {
+          type: "business" as const,
+          id: String(u._id),
+          authorId: s(u.businessId),
+          authorName: profile.displayName || "A BWE business",
+          authorHref: `/business/${encodeURIComponent(doc.alias || doc.slug || String(doc._id))}`,
+          authorAvatarUrl: null as string | null,
+          title: u.title || "",
+          body: u.body || "",
+          createdAt:
+            u.createdAt instanceof Date
+              ? u.createdAt.toISOString()
+              : u.createdAt || null,
+        };
+      })
+      .filter(Boolean);
+
+    const publicPersonItems = (
+      await Promise.all(
+        allPosts.map(async (p: any) => {
+          const found = await findPersonById(db, s(p.authorUserId));
+          if (!found || found.doc.profileVisibility !== "public") return null;
+          const avatar = normalizeAsset(found.doc, "avatar");
+          return {
+            type: "person" as const,
+            id: String(p._id),
+            authorId: s(p.authorUserId),
+            authorName: nameFromDoc(found.doc) || "A BWE member",
+            authorHref: `/u/${s(p.authorUserId)}`,
+            authorAvatarUrl: avatar?.url || null,
+            title: "",
+            body: p.body || "",
+            createdAt:
+              p.createdAt instanceof Date
+                ? p.createdAt.toISOString()
+                : p.createdAt || null,
+          };
+        }),
+      )
+    ).filter(Boolean);
+
+    const publicItems = [...publicBusinessItems, ...publicPersonItems]
+      .sort((a: any, b: any) => {
+        const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return tb - ta;
+      })
+      .slice(0, FEED_LIMIT);
+
     const recommendations = await resolveRecommendations(db, {
       userId: session.userId,
       limit: 8,
@@ -182,6 +279,7 @@ export default async function handler(
       ok: true,
       followingCount: followedBusinessIds.length + followedUserIds.length,
       items: combined,
+      publicItems,
       discover: recommendations,
     });
   } catch (err) {
