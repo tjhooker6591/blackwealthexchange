@@ -7,6 +7,7 @@ type User = {
   email?: string;
   fullName?: string;
   businessName?: string;
+  profileVisibility?: "public" | "private";
   // Add more fields as needed!
 };
 
