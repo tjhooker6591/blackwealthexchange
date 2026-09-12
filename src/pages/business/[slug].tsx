@@ -396,6 +396,12 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
               </div>
             </div>
 
+            {businessId ? (
+              <div className="mt-3 sm:mt-4">
+                <BusinessEngagement businessId={businessId} variant="header" />
+              </div>
+            ) : null}
+
             <div className="mt-4 sm:mt-6 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
               <div className="md:col-span-2 rounded-2xl border border-white/10 bg-black/30 p-5">
                 {entry.imageSrc ? (
@@ -555,7 +561,9 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
               </div>
             </div>
 
-            {businessId ? <BusinessEngagement businessId={businessId} /> : null}
+            {businessId ? (
+              <BusinessEngagement businessId={businessId} variant="body" />
+            ) : null}
           </div>
         </section>
       </main>

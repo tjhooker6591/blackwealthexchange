@@ -39,8 +39,16 @@ function Stars({ value }: { value: number }) {
 
 export default function BusinessEngagement({
   businessId,
+  variant = "full",
 }: {
   businessId: string;
+  // Follow/Save/Message used to only ever render buried below the main
+  // business details, well below the fold -- reported directly: "where
+  // and how do i follow a business." "header" renders just that button
+  // row (meant to sit right under the business name); "body" renders
+  // everything else (post composer, updates, comments, reviews); "full"
+  // keeps the original all-in-one behavior for any other caller.
+  variant?: "header" | "body" | "full";
 }) {
   const { user } = useAuth({ silentOnPublic: false });
 
@@ -270,46 +278,48 @@ export default function BusinessEngagement({
   }
 
   return (
-    <div className="mt-4 space-y-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          onClick={toggleFollow}
-          disabled={followBusy}
-          className={`inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-semibold transition disabled:opacity-60 ${
-            following
-              ? "border border-yellow-500/40 bg-yellow-500/15 text-yellow-200"
-              : "border border-white/10 bg-white/5 text-white/85 hover:bg-white/10"
-          }`}
-        >
-          {following ? "Following" : "Follow"}
-          {typeof followCount === "number" ? (
-            <span className="ml-1.5 text-white/50">({followCount})</span>
-          ) : null}
-        </button>
-        <button
-          type="button"
-          onClick={toggleSave}
-          disabled={saveBusy}
-          className={`inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-semibold transition disabled:opacity-60 ${
-            saved
-              ? "border border-yellow-500/40 bg-yellow-500/15 text-yellow-200"
-              : "border border-white/10 bg-white/5 text-white/85 hover:bg-white/10"
-          }`}
-        >
-          {saved ? "Saved" : "Save"}
-        </button>
-        {ownerUserId && ownerUserId !== ((user as any)?.id || user?._id) ? (
-          <Link
-            href={`/inbox?with=${encodeURIComponent(ownerUserId)}`}
-            className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white/85 transition hover:bg-white/10"
+    <div className={variant === "header" ? "" : "mt-4 space-y-4"}>
+      {variant === "body" ? null : (
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={toggleFollow}
+            disabled={followBusy}
+            className={`inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-semibold transition disabled:opacity-60 ${
+              following
+                ? "border border-yellow-500/40 bg-yellow-500/15 text-yellow-200"
+                : "border border-white/10 bg-white/5 text-white/85 hover:bg-white/10"
+            }`}
           >
-            Message
-          </Link>
-        ) : null}
-      </div>
+            {following ? "Following" : "Follow"}
+            {typeof followCount === "number" ? (
+              <span className="ml-1.5 text-white/50">({followCount})</span>
+            ) : null}
+          </button>
+          <button
+            type="button"
+            onClick={toggleSave}
+            disabled={saveBusy}
+            className={`inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-semibold transition disabled:opacity-60 ${
+              saved
+                ? "border border-yellow-500/40 bg-yellow-500/15 text-yellow-200"
+                : "border border-white/10 bg-white/5 text-white/85 hover:bg-white/10"
+            }`}
+          >
+            {saved ? "Saved" : "Save"}
+          </button>
+          {ownerUserId && ownerUserId !== ((user as any)?.id || user?._id) ? (
+            <Link
+              href={`/inbox?with=${encodeURIComponent(ownerUserId)}`}
+              className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white/85 transition hover:bg-white/10"
+            >
+              Message
+            </Link>
+          ) : null}
+        </div>
+      )}
 
-      {canPostUpdate ? (
+      {variant === "header" ? null : canPostUpdate ? (
         <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/[0.06] p-4">
           <div className="text-sm font-semibold text-yellow-200">
             Post an update to your followers
@@ -348,7 +358,7 @@ export default function BusinessEngagement({
         </div>
       ) : null}
 
-      {updates.length > 0 ? (
+      {variant === "header" ? null : updates.length > 0 ? (
         <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
           <div className="text-sm font-semibold text-white/90">Updates</div>
           <div className="mt-3 space-y-3">
@@ -379,85 +389,87 @@ export default function BusinessEngagement({
         </div>
       )}
 
-      <div
-        id="reviews"
-        className="rounded-2xl border border-white/10 bg-black/30 p-4"
-      >
-        <div className="flex items-center justify-between">
-          <div className="text-sm font-semibold text-white/90">Reviews</div>
-          {reviewSummary.count > 0 ? (
-            <div className="text-xs text-white/70">
-              <Stars value={reviewSummary.averageRating} />{" "}
-              {reviewSummary.averageRating.toFixed(1)} ({reviewSummary.count}{" "}
-              review
-              {reviewSummary.count === 1 ? "" : "s"})
-            </div>
-          ) : (
-            <div className="text-xs text-white/50">No reviews yet</div>
-          )}
-        </div>
-
-        <div className="mt-4 space-y-3">
-          {reviews.map((review) => (
-            <div
-              key={review.id}
-              className="border-t border-white/10 pt-3 first:border-t-0 first:pt-0"
-            >
-              <div className="flex items-center justify-between">
-                <div className="text-sm font-semibold text-white/85">
-                  {review.userName}
-                </div>
-                <Stars value={review.rating} />
+      {variant === "header" ? null : (
+        <div
+          id="reviews"
+          className="rounded-2xl border border-white/10 bg-black/30 p-4"
+        >
+          <div className="flex items-center justify-between">
+            <div className="text-sm font-semibold text-white/90">Reviews</div>
+            {reviewSummary.count > 0 ? (
+              <div className="text-xs text-white/70">
+                <Stars value={reviewSummary.averageRating} />{" "}
+                {reviewSummary.averageRating.toFixed(1)} ({reviewSummary.count}{" "}
+                review
+                {reviewSummary.count === 1 ? "" : "s"})
               </div>
-              {review.comment ? (
-                <div className="mt-1 text-sm text-white/65">
-                  {review.comment}
-                </div>
-              ) : null}
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-4 border-t border-white/10 pt-4">
-          <div className="text-sm font-semibold text-white/85">
-            Leave a review
+            ) : (
+              <div className="text-xs text-white/50">No reviews yet</div>
+            )}
           </div>
-          <div className="mt-2 flex gap-1">
-            {[1, 2, 3, 4, 5].map((value) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => setReviewRating(value)}
-                aria-label={`${value} star${value === 1 ? "" : "s"}`}
-                className={`text-2xl leading-none ${
-                  value <= reviewRating ? "text-yellow-400" : "text-white/25"
-                }`}
+
+          <div className="mt-4 space-y-3">
+            {reviews.map((review) => (
+              <div
+                key={review.id}
+                className="border-t border-white/10 pt-3 first:border-t-0 first:pt-0"
               >
-                ★
-              </button>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-semibold text-white/85">
+                    {review.userName}
+                  </div>
+                  <Stars value={review.rating} />
+                </div>
+                {review.comment ? (
+                  <div className="mt-1 text-sm text-white/65">
+                    {review.comment}
+                  </div>
+                ) : null}
+              </div>
             ))}
           </div>
-          <textarea
-            value={reviewComment}
-            onChange={(e) => setReviewComment(e.target.value)}
-            placeholder="Share your experience with this business (optional)"
-            maxLength={1000}
-            rows={3}
-            className="bwe-textarea mt-2 w-full"
-          />
-          <button
-            type="button"
-            onClick={handleSubmitReview}
-            disabled={submittingReview}
-            className="mt-2 rounded-lg bg-yellow-500 px-3 py-2 text-xs font-extrabold text-black disabled:opacity-50"
-          >
-            {submittingReview ? "Submitting…" : "Submit review"}
-          </button>
-          {reviewState ? (
-            <div className="mt-2 text-xs text-white/70">{reviewState}</div>
-          ) : null}
+
+          <div className="mt-4 border-t border-white/10 pt-4">
+            <div className="text-sm font-semibold text-white/85">
+              Leave a review
+            </div>
+            <div className="mt-2 flex gap-1">
+              {[1, 2, 3, 4, 5].map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setReviewRating(value)}
+                  aria-label={`${value} star${value === 1 ? "" : "s"}`}
+                  className={`text-2xl leading-none ${
+                    value <= reviewRating ? "text-yellow-400" : "text-white/25"
+                  }`}
+                >
+                  ★
+                </button>
+              ))}
+            </div>
+            <textarea
+              value={reviewComment}
+              onChange={(e) => setReviewComment(e.target.value)}
+              placeholder="Share your experience with this business (optional)"
+              maxLength={1000}
+              rows={3}
+              className="bwe-textarea mt-2 w-full"
+            />
+            <button
+              type="button"
+              onClick={handleSubmitReview}
+              disabled={submittingReview}
+              className="mt-2 rounded-lg bg-yellow-500 px-3 py-2 text-xs font-extrabold text-black disabled:opacity-50"
+            >
+              {submittingReview ? "Submitting…" : "Submit review"}
+            </button>
+            {reviewState ? (
+              <div className="mt-2 text-xs text-white/70">{reviewState}</div>
+            ) : null}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
