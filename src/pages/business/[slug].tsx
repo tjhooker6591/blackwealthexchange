@@ -8,6 +8,7 @@ import ErrorPage from "next/error";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 import {
   normalizeFoundingClaimStage,
   resolveFoundingOwnershipState,
@@ -614,9 +615,17 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   }
 
   try {
+    // Every other route resolves the db name via getMongoDbName(), which
+    // safely defaults to "bwes-cluster" if the env var isn't set. This was
+    // the one place reading process.env.MONGODB_DB raw with no fallback --
+    // calling client.db() with no name at all if that var is unset at
+    // runtime, which is invisible locally (.env.local always has it set)
+    // but would make every single business page fail in an environment
+    // where it isn't -- confirmed 2026-09-12 as the actual root cause of
+    // every /business/[slug] page 404ing in production while working
+    // under every possible local reproduction.
     const client = await clientPromise;
-    const dbName = process.env.MONGODB_DB?.trim();
-    const db = dbName ? client.db(dbName) : client.db();
+    const db = client.db(getMongoDbName());
 
     // Some producers of /business/<x> links (recommendations' businessDoc(),
     // business-directory.tsx's getHref()) fall back to the raw _id when a
