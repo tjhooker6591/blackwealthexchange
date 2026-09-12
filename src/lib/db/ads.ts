@@ -1,4 +1,5 @@
 import { MongoClient, MongoClientOptions, ObjectId } from "mongodb";
+import { getMongoDbName } from "@/lib/env";
 
 export interface Campaign {
   _id: ObjectId;
@@ -19,12 +20,15 @@ const options: MongoClientOptions = {};
 
 function getMongoConfig(): { uri: string; dbName: string } | null {
   const uri = process.env.MONGODB_URI;
-  const dbName = process.env.MONGODB_DB;
 
-  // ✅ Do NOT throw at import time; return null if not configured
-  if (!uri || !dbName) return null;
+  // ✅ Do NOT throw at import time; return null if not configured.
+  // dbName has a safe default (matching getMongoDbName() elsewhere) --
+  // this was requiring MONGODB_DB to be explicitly set or every campaign
+  // lookup returned null and markCampaignPaid threw outright, the same
+  // root cause confirmed 2026-09-12 for /business/[slug] and Travel Map.
+  if (!uri) return null;
 
-  return { uri, dbName };
+  return { uri, dbName: getMongoDbName() };
 }
 
 function getClientPromise(uri: string): Promise<MongoClient> {

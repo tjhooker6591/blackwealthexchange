@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 import type { TravelMapBusiness } from "@/types/travel-map";
 
 function toNumber(value: unknown, fallback: number) {
@@ -162,8 +163,7 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const dbName = process.env.MONGODB_DB?.trim();
-    const db = dbName ? client.db(dbName) : client.db();
+    const db = client.db(getMongoDbName());
     const businesses = db.collection("businesses");
 
     const docs = await businesses

@@ -3,6 +3,7 @@ import path from "node:path";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 
 function cleanString(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
@@ -144,8 +145,7 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const dbName = process.env.MONGODB_DB?.trim();
-    const db = dbName ? client.db(dbName) : client.db();
+    const db = client.db(getMongoDbName());
 
     const doc = await db.collection("businesses").findOne(
       {
