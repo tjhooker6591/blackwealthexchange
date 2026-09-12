@@ -48,6 +48,7 @@ type FeedResponse = {
   ok: boolean;
   followingCount: number;
   items: PulseItem[];
+  publicItems: PulseItem[];
   discover: {
     state: "PERSONALIZED" | "TRENDING_FALLBACK" | "INSUFFICIENT_DATA";
     businesses: DiscoverBusiness[];
@@ -86,6 +87,14 @@ export default function PulsePage() {
 
   const [cultureMoments, setCultureMoments] = useState<PulseMoment[]>([]);
 
+  // "Following" vs "Everyone" (2026-09-11) -- addresses a real gap: there
+  // was no way to see posts from businesses/members you don't follow, only
+  // trending business cards in the sidebar. Defaults to "Everyone" the
+  // first time the feed loads if you follow nothing yet, since a
+  // following-only feed would just be empty.
+  const [tab, setTab] = useState<"following" | "everyone">("following");
+  const [tabDefaulted, setTabDefaulted] = useState(false);
+
   const canonical = canonicalUrl("/pulse");
 
   useEffect(() => {
@@ -119,7 +128,13 @@ export default function PulsePage() {
     setLoading(true);
     fetch("/api/pulse/feed", { credentials: "include" })
       .then((r) => (r.ok ? r.json() : Promise.reject(r)))
-      .then((data: FeedResponse) => setFeed(data))
+      .then((data: FeedResponse) => {
+        setFeed(data);
+        if (!tabDefaulted) {
+          setTab(data.followingCount === 0 ? "everyone" : "following");
+          setTabDefaulted(true);
+        }
+      })
       .catch(() => setError("Couldn't load your feed right now."))
       .finally(() => setLoading(false));
   };
@@ -231,7 +246,32 @@ export default function PulsePage() {
                     </div>
                   </div>
 
-                  {feed?.followingCount === 0 ? (
+                  <div className="mb-3 flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setTab("following")}
+                      className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
+                        tab === "following"
+                          ? "bg-[var(--accent)] text-black"
+                          : "bg-white/5 text-white/60 hover:bg-white/10"
+                      }`}
+                    >
+                      Following
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTab("everyone")}
+                      className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
+                        tab === "everyone"
+                          ? "bg-[var(--accent)] text-black"
+                          : "bg-white/5 text-white/60 hover:bg-white/10"
+                      }`}
+                    >
+                      Everyone
+                    </button>
+                  </div>
+
+                  {tab === "following" && feed?.followingCount === 0 ? (
                     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/70">
                       You&apos;re not following any businesses or members yet.{" "}
                       <Link
@@ -242,15 +282,19 @@ export default function PulsePage() {
                       </Link>{" "}
                       and their updates will show up here.
                     </div>
-                  ) : !feed?.items?.length ? (
+                  ) : !(tab === "following" ? feed?.items : feed?.publicItems)
+                      ?.length ? (
                     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/70">
-                      No updates yet from businesses or members you follow.
-                      Check back soon, or browse what&apos;s trending on the
-                      right.
+                      {tab === "following"
+                        ? "No updates yet from businesses or members you follow. Check back soon, or browse what's trending on the right."
+                        : "Nothing posted on BWE yet. Check back soon."}
                     </div>
                   ) : (
                     <div className="flex flex-col gap-3">
-                      {feed.items.map((item) => (
+                      {(tab === "following"
+                        ? feed!.items
+                        : feed!.publicItems
+                      ).map((item) => (
                         <article
                           key={`${item.type}-${item.id}`}
                           className="bwe-grid-card flex flex-col gap-2 p-4"
