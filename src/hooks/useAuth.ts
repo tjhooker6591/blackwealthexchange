@@ -18,12 +18,17 @@ function useAuth(options?: { silentOnPublic?: boolean }) {
   useEffect(() => {
     if (!router.isReady) return;
 
-    const isHomepage = router.pathname === "/" || router.asPath === "/";
-    if (options?.silentOnPublic && isHomepage) {
-      setUser(null);
-      setLoading(false);
-      return;
-    }
+    // The old silentOnPublic homepage special-case (skip the auth check
+    // entirely on "/", hardcoding user to null) is gone (2026-09-11):
+    // it made every always-visible component that used it -- NavBar,
+    // NotificationBell, PulseNavDot -- incorrectly show a real logged-in
+    // user as logged out the moment they landed on the homepage (not an
+    // actual session/cookie logout, just a wrong client-side state, but
+    // indistinguishable from one to the user). The option is still
+    // accepted so existing call sites don't need to change, it's just a
+    // no-op now -- a real user should show as logged in everywhere,
+    // including "/", with no exceptions.
+    void options;
 
     async function fetchUser() {
       try {
