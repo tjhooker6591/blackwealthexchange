@@ -19,7 +19,8 @@ export type NetworkNotificationType =
   | "referral_event"
   | "inbox_message"
   | "member_post"
-  | "comment_received";
+  | "comment_received"
+  | "business_reply";
 
 export type CreateNotificationInput = {
   userId: string;

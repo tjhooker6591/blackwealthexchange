@@ -24,6 +24,8 @@ import {
 
 const MAX_BODY_LENGTH = 500;
 const VALID_POST_TYPES = new Set(["business", "person"]);
+const DEFAULT_PAGE_SIZE = 5;
+const MAX_PAGE_SIZE = 20;
 
 async function ensureIndexes(db: any) {
   await db
@@ -32,7 +34,7 @@ async function ensureIndexes(db: any) {
     .catch(() => null);
 }
 
-async function resolvePostAuthor(
+export async function resolvePostAuthor(
   db: any,
   postType: string,
   postId: string,
@@ -90,12 +92,54 @@ export default async function handler(
         .json({ error: "postType and postId are required" });
     }
 
-    const comments = await db
-      .collection("pulse_comments")
-      .find({ postType, postId })
-      .sort({ createdAt: 1 })
-      .limit(100)
-      .toArray();
+    // Newest-first, paged (2026-09-12): a post used to return every
+    // comment it ever had in one call -- fine at low volume, but a
+    // guaranteed problem once a popular business or post has hundreds of
+    // them. "before" is an ISO date cursor -- comments strictly older
+    // than it -- so paging stays correct even as new comments arrive.
+    const limit = Math.min(
+      MAX_PAGE_SIZE,
+      Math.max(1, Number(req.query.limit) || DEFAULT_PAGE_SIZE),
+    );
+    const before = s(req.query.before as string);
+    const filter: any = { postType, postId };
+    if (before) {
+      const beforeDate = new Date(before);
+      if (!Number.isNaN(beforeDate.getTime())) {
+        filter.createdAt = { $lt: beforeDate };
+      }
+    }
+
+    const [page, totalCount] = await Promise.all([
+      db
+        .collection("pulse_comments")
+        .find(filter)
+        .sort({ createdAt: -1 })
+        .limit(limit + 1)
+        .toArray(),
+      db.collection("pulse_comments").countDocuments({ postType, postId }),
+    ]);
+
+    const hasMore = page.length > limit;
+    const comments = hasMore ? page.slice(0, limit) : page;
+    const nextCursor = hasMore
+      ? comments[comments.length - 1].createdAt instanceof Date
+        ? comments[comments.length - 1].createdAt.toISOString()
+        : comments[comments.length - 1].createdAt
+      : null;
+
+    // Business-reply eligibility (2026-09-12): only the business's own
+    // owner can reply, and only on comments attached to a business post --
+    // resolved once per request rather than per comment since it's the
+    // same business for every comment on this post.
+    let canReply = false;
+    if (postType === "business") {
+      const session = getNetworkSession(req);
+      if (session) {
+        const postAuthor = await resolvePostAuthor(db, postType, postId);
+        canReply = !!postAuthor && postAuthor.userId === session.userId;
+      }
+    }
 
     const authorIds = Array.from(
       new Set(comments.map((c: any) => s(c.authorUserId)).filter(Boolean)),
@@ -107,6 +151,10 @@ export default async function handler(
     }
 
     return res.status(200).json({
+      totalCount,
+      hasMore,
+      nextCursor,
+      canReply,
       comments: comments.map((c: any) => {
         const authorDoc = authorsById.get(s(c.authorUserId));
         const avatar = authorDoc ? normalizeAsset(authorDoc, "avatar") : null;
@@ -122,6 +170,15 @@ export default async function handler(
             c.createdAt instanceof Date
               ? c.createdAt.toISOString()
               : c.createdAt || null,
+          businessReply: c.businessReply
+            ? {
+                body: c.businessReply.body || "",
+                createdAt:
+                  c.businessReply.createdAt instanceof Date
+                    ? c.businessReply.createdAt.toISOString()
+                    : c.businessReply.createdAt || null,
+              }
+            : null,
         };
       }),
     });
