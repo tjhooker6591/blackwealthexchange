@@ -14,6 +14,7 @@ const PULSE_NOTIFICATION_TYPES = new Set([
   "member_post",
   "business_update",
   "comment_received",
+  "business_reply",
 ]);
 
 export default function PulseNavDot() {
