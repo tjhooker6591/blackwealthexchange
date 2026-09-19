@@ -1071,6 +1071,79 @@ STATUS:
 
 - `PARTIAL -- NOT FORMALLY CLOSED (see CONTROL UPDATES)`
 
+## 33. BWE Acquisition & Proof -- prospect queue, preview, onboarding, buyer attribution, owner/admin reports, story approval (feature branch, not merged)
+
+DATE:
+
+- `2026-09-18`
+
+WORKSTREAM:
+
+- Owner-supplied brief (`BWE_Acquisition_and_Proof_Implementation.md`), authorized verbally for implementation in this repo ("implement here, it is not happening anywhere else"). Not a numbered BWE Phase -- a standalone acquisition/CRM/proof-of-value program, implemented on its own feature branch and never merged into the phase sequence above.
+
+BRANCH:
+
+- `feature/acquisition-and-proof`, created from `friday-release-candidate` at `cfd328d` (the merge-base -- branch is baseline + one commit, no drift).
+
+STATUS:
+
+- `IMPLEMENTED AND TESTED LOCALLY -- NOT EXTERNALLY VERIFIED, NOT DEPLOYED, NOT MERGED.`
+
+SCOPE:
+
+1. Admin acquisition queue -- staged pipeline (`researched -> contacted -> replied -> demo_completed -> onboarding_started -> activated`), paid status tracked separately from stage, immutable append-only transition history, 5-factor priority scoring.
+2. Personalized private preview -- proposed-vs-documented fields, expiring/revocable opaque token, preview visits excluded from all buyer/customer reporting.
+3. Conversation-to-onboarding workflow -- notes + checklist; activation requires the checklist AND an independent real-DB ownership-verification check (`Business360` claim/representative state) -- a checked box alone cannot activate a business.
+4. Buyer acquisition and attribution -- allowlisted campaign IDs, event dedup via a unique index, basic bot filtering, and a hard structural rule: a browser-sourced request can only ever declare `profile_view`/`website_click`/`phone_click`/`directions_click`/`storefront_view`; `inquiry_submitted` and `paid_order` require `source: "server"`, and `paid_order` additionally requires a real matching verified `bmev_records` document (the event schema has no amount field at all, so it cannot invent revenue).
+5. Owner results report + admin financial view -- merchant gross/net sales, BWE platform revenue, estimated pipeline, and owner-attested off-platform sales kept as four structurally separate figures, never summed; missing baseline reports `unavailable`, never `0`; CAC reports `unavailable` with a note (not `$0` or divide-by-zero) when there are no new paying businesses in-window; recurring revenue / retention explicitly marked `not_tracked_in_this_implementation_pass` rather than estimated.
+6. Evidence and customer story -- `draft -> owner_reviewed -> approved -> published`, one-step-forward-only transitions, editing approved content resets it to draft and clears approval, publication is its own explicit action never triggered by approval.
+
+EXISTING SYSTEMS REUSED, NOT DUPLICATED:
+
+- Business identity: `businesses._id` via `src/lib/business360.ts` (same anchor Person360/Business360 already use).
+- Revenue truth: `bmev_records` exclusively -- no parallel order/payment ledger created.
+- Admin auth: `requireAdminFromRequest` (unmodified). Owner auth: the exact same `resolvePersonalizationSession`/`resolveRequestedBusinessId`/`authorizeBusinessAccess` path Phase 4's Growth Command Center uses (`src/lib/personalization/session.ts`), so the new owner-report endpoint inherits the same proven ID-tampering protection.
+- Activation gate: `resolveBusiness360(...).ownership` -- the real claim/representative system (discovered during testing to require agreement across `business_claims`, `ownership_reviews`, and the `businesses` document itself; the synthetic test fixture was corrected to match this real requirement rather than the check being loosened).
+- UI: filled the pre-existing `/admin/growth` stub ("Not connected yet") instead of adding a new route; list/detail pattern mirrors the existing `admin/service-engagements.tsx`. Owner report composed into the existing Phase 4 Growth Command Center rather than a new dashboard.
+
+NEW, ADDITIVE-ONLY DATA:
+
+- 9 new MongoDB collections (`acquisition_prospects`, `_prospect_activities`, `_previews`, `_onboarding`, `_campaigns`, `_events`, `_off_platform_sales`, `_report_snapshots`, `_stories`), created idempotently via `ensureAcquisitionIndexes(db)`. Unique indexes on `acquisition_events.dedupeKey`, `acquisition_previews.accessToken`, `acquisition_campaigns.campaignId`. No existing collection, field, or index touched.
+
+FILES:
+
+- New: `src/lib/acquisition/{types,shared,prospects,onboarding,previews,campaigns,events,reports,stories,offPlatformSales,clientTrack}.ts`; API routes under `src/pages/api/admin/acquisition/*`, `src/pages/api/acquisition/events.ts`, `src/pages/api/business/acquisition-report.ts`, `src/pages/api/preview/[token].ts`, `src/pages/api/stories/[businessId].ts`; pages `src/pages/admin/acquisition-report.tsx`, `src/pages/preview/[token].tsx`, `src/pages/stories/[businessId].tsx`; components `src/components/acquisition/AcquisitionProfileViewTracker.tsx`, `src/components/dashboards/BusinessAcquisitionResults.tsx`.
+- Modified (rewrite): `src/pages/admin/growth.tsx` (previously a "Not connected yet" stub).
+- Modified (additive only): `src/components/dashboards/BusinessGrowthCenter.tsx` (+1 import, +1 component line), `src/pages/business/[slug].tsx` (+9 lines -- profile-view tracker + click handlers on the existing "Visit website"/"Directions" links; no existing markup removed).
+
+KNOWN, DISCLOSED GAPS (not fabricated as complete):
+
+- No existing contact/inquiry form was found to hook a real `inquiry_submitted` event into -- the event type is implemented and correctly gated but has no live UI trigger yet.
+- The Stripe checkout/webhook path was deliberately **not** modified to auto-emit `paid_order` events, to avoid touching the payment-critical path in this pass. Revenue reporting is still correct (reads `bmev_records` directly); only automatic order-level campaign attribution is deferred.
+- `phone_click` not wired (no `tel:` link exists on the audited business profile page). `storefront_view` not wired into `/marketplace/seller/[id].tsx` (that page keys on `sellerId`, not a canonical `businessId`; linkage not confirmed reliable in this pass).
+
+VALIDATION:
+
+- `npm run typecheck`: PASS (re-verified after commit, post lint-staged auto-fix).
+- `npm run build`: PASS -- all new routes present in the manifest.
+- `npm run smoke:local`: PASS (`6/6`).
+- `node scripts/p2-regression-check.mjs`: PASS (`26/26`).
+- `npm run check:vertical-regression`: PASS (`10/10`).
+- `tmp/acquisition-synthetic-journey.mjs` (not committed, local validation artifact only): `30/30` -- covers all 12 acceptance checks from the brief (verified-owner report access + unrelated-user 403 via ID tampering; existing flows untouched; preview never modifies the live listing or counts toward buyer results; activation blocked without onboarding+claim, then succeeds; campaign attribution persists to conversion; duplicate event delivery collapses to one row; browser-forged `paid_order` rejected; missing baseline reports `unavailable`; financial categories stay separate and reconcile to the fixture's real `bmev_records` row; only the exact approved story version publishes, edit-after-approval resets to draft; full synthetic journey runs end to end locally; fixture cleanup leaves zero residue across 7 collections). Two real bugs were found and fixed via this script during development: a missing CSRF `Origin` header on authenticated test calls, and an incomplete ownership fixture (was missing `ownership_reviews` + `businesses`-document fields the real gate requires).
+
+CURRENT PRODUCTION UI SAFE:
+
+- `YES` -- no Stripe/payment action taken, no auth weakened, no existing collection's write shape changed, homepage/`/explore`/directory/marketplace/checkout/all prior phases untouched. Not merged to main, not deployed, not pushed to any remote.
+
+CONTROL UPDATES:
+
+- Status labels, kept separate per the brief's own requirement: **Implemented** -- all 6 sections, all 12 acceptance checks. **Tested locally** -- all of the above. **Externally verified** -- none. **Deployed** -- no.
+- Owner-required next steps if this program is to go live: decide on and build a real inquiry-form trigger for `inquiry_submitted`; decide whether/how to hook `paid_order` into the live Stripe webhook for automatic order-level attribution; confirm reliable seller-to-business linkage before wiring `storefront_view`; merge the branch only after an explicit go-ahead (not implied by this record).
+
+RUNTIME COMMITS:
+
+- `40c45d1`
+
 ## 13. Local runtime incident resolution rule
 
 DATE:
