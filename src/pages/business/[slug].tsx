@@ -41,6 +41,8 @@ import {
   getBusinessMediaSet,
 } from "@/lib/directoryPublicMedia";
 import BusinessEngagement from "@/components/business/BusinessEngagement";
+import AcquisitionProfileViewTracker from "@/components/acquisition/AcquisitionProfileViewTracker";
+import { trackAcquisitionEvent } from "@/lib/acquisition/clientTrack";
 
 type BusinessEntry = {
   claimStage: string | null;
@@ -378,6 +380,9 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                     href={entry.website}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() =>
+                      trackAcquisitionEvent(businessId, "website_click")
+                    }
                     className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-sm px-3 py-2 transition"
                   >
                     Visit website
@@ -388,6 +393,9 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                     href={entry.directionsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() =>
+                      trackAcquisitionEvent(businessId, "directions_click")
+                    }
                     className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-sm px-3 py-2 transition"
                   >
                     Directions
@@ -398,6 +406,7 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
 
             {businessId ? (
               <div className="mt-3 sm:mt-4">
+                <AcquisitionProfileViewTracker businessId={businessId} />
                 <BusinessEngagement businessId={businessId} variant="header" />
               </div>
             ) : null}

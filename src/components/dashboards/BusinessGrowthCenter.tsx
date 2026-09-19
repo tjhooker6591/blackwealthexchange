@@ -14,6 +14,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, TrendingUp, Search, Radio } from "lucide-react";
+import BusinessAcquisitionResults from "./BusinessAcquisitionResults";
 
 type GrowthPayload = {
   ok: true;
@@ -306,6 +307,8 @@ export default function BusinessGrowthCenter({
           </p>
         )}
       </div>
+
+      <BusinessAcquisitionResults businessId={businessId} />
     </div>
   );
 }
