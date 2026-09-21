@@ -47,3 +47,4 @@ bwes-backup/
 
 # Local audit artifacts
 .audit/
+mobile/node_modules/

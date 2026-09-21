@@ -146,6 +146,18 @@ export default function StartHerePage() {
           </div>
         </header>
 
+        <section className="border-y border-white/8 py-4">
+          <div className="grid gap-2 text-sm text-white/68 sm:grid-cols-3 lg:grid-cols-7">
+            <div>Discover</div>
+            <div>Shop</div>
+            <div>Build wealth</div>
+            <div>Find opportunities</div>
+            <div>Grow a business</div>
+            <div>Sell</div>
+            <div>Hire</div>
+          </div>
+        </section>
+
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {ROLES.map((role) => (
             <article key={role.title} className="bwe-soft-tile p-5 sm:p-6">
