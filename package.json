@@ -37,6 +37,9 @@
     "runtime:check": "node scripts/runtime-check.mjs",
     "runtime:check-clear": "node scripts/runtime-check.mjs --clear",
     "runtime:recover": "node scripts/runtime-recover.mjs",
+    "runtime:service:install": "node scripts/install-localhost-service.mjs",
+    "runtime:service:status": "node scripts/localhost-service-status.mjs",
+    "runtime:service:uninstall": "node scripts/uninstall-localhost-service.mjs",
     "proof:auth-session-matrix": "node scripts/runtime-proof-auth-session-matrix.mjs",
     "proof:auth-session-advanced": "node scripts/runtime-proof-auth-session-advanced.mjs",
     "proof:black-card-entitlements": "node scripts/runtime-proof-black-card-entitlements.mjs",
@@ -48,6 +51,8 @@
     "check:buy-flows": "node scripts/check-buy-flows.mjs",
     "network:alerts-scan": "node scripts/network-alerts-scan.mjs",
     "network:alerts-scan:dry-run": "node scripts/network-alerts-scan.mjs --dry-run",
+    "acquisition:followup-scan": "node scripts/acquisition-followup-scan.mjs",
+    "acquisition:followup-scan:dry-run": "node scripts/acquisition-followup-scan.mjs --dry-run",
     "api:generate-inventory": "node scripts/generate-api-inventory.mjs",
     "prepare": "if [ \"$VERCEL\" != \"1\" ]; then husky install; fi",
     "vercel-build": "next build"

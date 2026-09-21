@@ -56,6 +56,7 @@ export type AcquisitionProspect = {
   sourceUrl: string | null;
   researchTimestamp: string; // ISO
   contactRoute: string | null; // publicly documented contact route
+  contactEmail: string | null; // required for automated outreach; null means no automation runs for this prospect
   evidenceNotes: string;
   targetOffer: string | null;
   stage: ProspectStage;
@@ -93,7 +94,7 @@ export type PreviewField = {
 export type AcquisitionPreview = {
   _id?: string;
   prospectId: string;
-  businessId: string;
+  businessId: string | null; // null for a prospect not yet in the directory
   proposedFields: PreviewField[];
   missingFacts: string[];
   accessToken: string; // opaque, expiring, revocable -- no auth required to view

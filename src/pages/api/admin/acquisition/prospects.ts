@@ -4,6 +4,7 @@ import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { ensureAcquisitionIndexes } from "@/lib/acquisition/shared";
 import { createProspect, listProspects } from "@/lib/acquisition/prospects";
+import { sendInitialOutreach } from "@/lib/acquisition/outreach";
 import type { ProspectStage } from "@/lib/acquisition/types";
 
 export default async function handler(
@@ -39,6 +40,7 @@ export default async function handler(
       externalProspectName: body.externalProspectName,
       sourceUrl: body.sourceUrl,
       contactRoute: body.contactRoute,
+      contactEmail: body.contactEmail,
       evidenceNotes: body.evidenceNotes,
       targetOffer: body.targetOffer,
       assignedOperator: body.assignedOperator,
@@ -49,7 +51,22 @@ export default async function handler(
     if (!result.ok) {
       return res.status(400).json(result);
     }
-    return res.status(201).json({ ok: true, prospect: result.prospect });
+
+    // One prospect at a time, added explicitly by an admin -- never a bulk
+    // sender. Fires immediately, but a failure here (bad SMTP config, no
+    // contact email on file) never blocks the prospect from being created;
+    // it's just logged on the prospect's own activity history instead.
+    let outreach: { ok: boolean; code?: string; message?: string } = {
+      ok: false,
+      code: "SKIPPED",
+    };
+    if (body.contactEmail && result.prospect._id) {
+      outreach = await sendInitialOutreach(db, result.prospect._id);
+    }
+
+    return res
+      .status(201)
+      .json({ ok: true, prospect: result.prospect, outreach });
   }
 
   res.setHeader("Allow", ["GET", "POST"]);

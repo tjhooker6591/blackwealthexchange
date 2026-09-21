@@ -21,7 +21,7 @@ const DEFAULT_TTL_DAYS = 14;
 
 export type CreatePreviewInput = {
   prospectId: string;
-  businessId: string;
+  businessId?: string | null; // omit/empty for a prospect not yet in the directory
   proposedFields: PreviewField[];
   missingFacts?: string[];
   ttlDays?: number;
@@ -35,13 +35,21 @@ export async function createPreview(
   | { ok: true; preview: AcquisitionPreview }
   | { ok: false; code: string; message: string }
 > {
-  const canonical = await resolveCanonicalBusiness(db, input.businessId);
-  if (!canonical) {
-    return {
-      ok: false,
-      code: "BUSINESS_NOT_FOUND",
-      message: "No canonical business matches this businessId.",
-    };
+  // No businessId at all is a legitimate case -- a prospect who isn't in
+  // the directory yet. Only reject when a businessId WAS given but doesn't
+  // actually resolve (a real data-integrity problem, not the same thing).
+  const requestedBusinessId = s(input.businessId);
+  let canonicalBusinessId: string | null = null;
+  if (requestedBusinessId) {
+    const canonical = await resolveCanonicalBusiness(db, requestedBusinessId);
+    if (!canonical) {
+      return {
+        ok: false,
+        code: "BUSINESS_NOT_FOUND",
+        message: "No canonical business matches this businessId.",
+      };
+    }
+    canonicalBusinessId = canonical.businessId;
   }
 
   // Preview text must be explicitly marked proposed vs. documented, and
@@ -62,7 +70,7 @@ export async function createPreview(
 
   const doc: AcquisitionPreview = {
     prospectId: input.prospectId,
-    businessId: canonical.businessId,
+    businessId: canonicalBusinessId,
     proposedFields: fields,
     missingFacts: (input.missingFacts || []).map(s).filter(Boolean),
     accessToken: crypto.randomBytes(24).toString("base64url"),

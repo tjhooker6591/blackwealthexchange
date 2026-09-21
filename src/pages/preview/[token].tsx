@@ -16,6 +16,23 @@ export default function PreviewPage() {
   const { token } = router.query;
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [interestedState, setInterestedState] = useState<
+    "idle" | "sending" | "sent" | "failed"
+  >("idle");
+
+  async function markInterested() {
+    if (typeof token !== "string") return;
+    setInterestedState("sending");
+    try {
+      const res = await fetch(`/api/preview/${token}/interested`, {
+        method: "POST",
+      });
+      const json = await res.json();
+      setInterestedState(res.ok && json.ok ? "sent" : "failed");
+    } catch {
+      setInterestedState("failed");
+    }
+  }
 
   useEffect(() => {
     if (!router.isReady || typeof token !== "string") return;
@@ -119,6 +136,35 @@ export default function PreviewPage() {
                   </Link>
                 </p>
               ) : null}
+
+              <div className="rounded border border-yellow-900/40 bg-yellow-500/5 p-4">
+                {interestedState === "sent" ? (
+                  <p className="text-sm text-yellow-300">
+                    Thanks -- we&apos;ll be in touch shortly.
+                  </p>
+                ) : (
+                  <>
+                    <p className="text-sm text-zinc-300 mb-3">
+                      Want to talk about getting{" "}
+                      {data?.current?.name || "your business"} listed?
+                    </p>
+                    <button
+                      onClick={markInterested}
+                      disabled={interestedState === "sending"}
+                      className="rounded bg-yellow-500 text-black text-sm font-semibold px-4 py-2 disabled:opacity-60"
+                    >
+                      {interestedState === "sending"
+                        ? "Sending..."
+                        : "I'm interested -- let's talk"}
+                    </button>
+                    {interestedState === "failed" ? (
+                      <p className="text-xs text-red-400 mt-2">
+                        Something went wrong. Please try again.
+                      </p>
+                    ) : null}
+                  </>
+                )}
+              </div>
 
               <p className="text-xs text-zinc-600">
                 This preview expires{" "}

@@ -49,6 +49,7 @@ export type CreateProspectInput = {
   externalProspectName?: string | null;
   sourceUrl?: string | null;
   contactRoute?: string | null;
+  contactEmail?: string | null;
   evidenceNotes?: string;
   targetOffer?: string | null;
   assignedOperator?: string | null;
@@ -108,6 +109,7 @@ export async function createProspect(
     sourceUrl: s(input.sourceUrl) || null,
     researchTimestamp: now,
     contactRoute: s(input.contactRoute) || null,
+    contactEmail: s(input.contactEmail) || null,
     evidenceNotes: s(input.evidenceNotes),
     targetOffer: s(input.targetOffer) || null,
     stage: "researched",
@@ -274,18 +276,16 @@ export async function setPaidStatus(
     return { ok: false, code: "INVALID_ID", message: "Invalid prospect id." };
   }
   const now = nowIso();
-  const result = await db
-    .collection(COLLECTIONS.prospects)
-    .updateOne(
-      { _id: new ObjectId(input.prospectId) },
-      {
-        $set: {
-          paidStatus: input.paidStatus,
-          lastActivityAt: now,
-          updatedAt: now,
-        },
+  const result = await db.collection(COLLECTIONS.prospects).updateOne(
+    { _id: new ObjectId(input.prospectId) },
+    {
+      $set: {
+        paidStatus: input.paidStatus,
+        lastActivityAt: now,
+        updatedAt: now,
       },
-    );
+    },
+  );
   if (!result.matchedCount) {
     return { ok: false, code: "NOT_FOUND", message: "Prospect not found." };
   }

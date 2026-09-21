@@ -76,30 +76,42 @@ function NewProspectForm({ onCreated }: { onCreated: () => void }) {
   const [externalName, setExternalName] = useState("");
   const [sourceUrl, setSourceUrl] = useState("");
   const [contactRoute, setContactRoute] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
   const [evidenceNotes, setEvidenceNotes] = useState("");
   const [targetOffer, setTargetOffer] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [outreachNote, setOutreachNote] = useState("");
 
   async function submit() {
     setSaving(true);
     setError("");
+    setOutreachNote("");
     try {
-      await api("/api/admin/acquisition/prospects", {
+      const result = await api("/api/admin/acquisition/prospects", {
         method: "POST",
         body: JSON.stringify({
           businessId: businessId || null,
           externalProspectName: businessId ? null : externalName || null,
           sourceUrl,
           contactRoute,
+          contactEmail: contactEmail || null,
           evidenceNotes,
           targetOffer,
         }),
       });
+      if (contactEmail) {
+        setOutreachNote(
+          result?.outreach?.ok
+            ? "Outreach email sent automatically -- prospect moved to Contacted."
+            : `Automatic outreach was not sent (${result?.outreach?.code || "unknown reason"}). You can still email them yourself.`,
+        );
+      }
       setBusinessId("");
       setExternalName("");
       setSourceUrl("");
       setContactRoute("");
+      setContactEmail("");
       setEvidenceNotes("");
       setTargetOffer("");
       onCreated();
@@ -145,6 +157,13 @@ function NewProspectForm({ onCreated }: { onCreated: () => void }) {
           onChange={(e) => setContactRoute(e.target.value)}
         />
         <input
+          className="bg-zinc-900 border border-zinc-700 rounded px-2 py-1.5 text-sm"
+          placeholder="Contact email (enables automatic outreach)"
+          type="email"
+          value={contactEmail}
+          onChange={(e) => setContactEmail(e.target.value)}
+        />
+        <input
           className="bg-zinc-900 border border-zinc-700 rounded px-2 py-1.5 text-sm sm:col-span-2"
           placeholder="Target offer"
           value={targetOffer}
@@ -158,6 +177,9 @@ function NewProspectForm({ onCreated }: { onCreated: () => void }) {
         />
       </div>
       {error ? <p className="text-xs text-red-400">{error}</p> : null}
+      {outreachNote ? (
+        <p className="text-xs text-yellow-300">{outreachNote}</p>
+      ) : null}
       <button
         onClick={submit}
         disabled={saving || (!businessId && !externalName)}
@@ -352,6 +374,7 @@ function ProspectDetail({
         <div className="mt-2 text-xs text-zinc-500 flex flex-wrap gap-3">
           <span>Target offer: {detail.targetOffer || "—"}</span>
           <span>Contact: {detail.contactRoute || "—"}</span>
+          <span>Email: {detail.contactEmail || "— (no automation)"}</span>
           <span>Priority: {detail.priorityTotal}/10</span>
         </div>
       </div>
