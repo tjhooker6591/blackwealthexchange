@@ -1087,7 +1087,7 @@ BRANCH:
 
 STATUS:
 
-- `IMPLEMENTED AND TESTED LOCALLY -- NOT EXTERNALLY VERIFIED, NOT DEPLOYED, NOT MERGED.`
+- `IMPLEMENTED, TESTED LOCALLY, AND MERGED INTO friday-release-candidate (2026-09-20, commit c496cea, fast-forward, zero conflicts -- friday-release-candidate had not moved since the branch point). STILL NOT EXTERNALLY VERIFIED, NOT PUSHED TO THE REMOTE, NOT DEPLOYED. Re-validated post-merge: typecheck clean, production build clean (all acquisition routes present in the build manifest).`
 
 SCOPE:
 
@@ -1137,12 +1137,12 @@ CURRENT PRODUCTION UI SAFE:
 
 CONTROL UPDATES:
 
-- Status labels, kept separate per the brief's own requirement: **Implemented** -- all 6 sections, all 12 acceptance checks. **Tested locally** -- all of the above. **Externally verified** -- none. **Deployed** -- no.
-- Owner-required next steps if this program is to go live: decide on and build a real inquiry-form trigger for `inquiry_submitted`; decide whether/how to hook `paid_order` into the live Stripe webhook for automatic order-level attribution; confirm reliable seller-to-business linkage before wiring `storefront_view`; merge the branch only after an explicit go-ahead (not implied by this record).
+- Status labels, kept separate per the brief's own requirement: **Implemented** -- all 6 sections, all 12 acceptance checks. **Tested locally** -- all of the above, re-confirmed after the merge (typecheck + production build clean on `friday-release-candidate` itself, not just the feature branch). **Merged** -- yes, 2026-09-20, explicit owner go-ahead ("merge it into friday-release-candidate"). **Externally verified** -- none. **Deployed** -- no. **Pushed to remote** -- no.
+- Owner-required next steps if this program is to go live: decide on and build a real inquiry-form trigger for `inquiry_submitted`; decide whether/how to hook `paid_order` into the live Stripe webhook for automatic order-level attribution; confirm reliable seller-to-business linkage before wiring `storefront_view`. Pushing to the remote and deploying still require a separate explicit go-ahead (not implied by this record).
 
 RUNTIME COMMITS:
 
-- `40c45d1`
+- `40c45d1`, `c496cea` (implementation), merged into `friday-release-candidate` at `c496cea` (fast-forward, no new merge commit)
 
 ## 13. Local runtime incident resolution rule
 
