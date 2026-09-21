@@ -286,6 +286,24 @@ function ProspectDetail({
             </div>
           </div>
           <div className="flex gap-2">
+            {detail.stage === "researched" &&
+            detail.contactEmail &&
+            detail.lossState === "active" ? (
+              <button
+                disabled={busy}
+                onClick={() =>
+                  act(() =>
+                    api(`/api/admin/acquisition/prospects/${prospectId}`, {
+                      method: "PATCH",
+                      body: JSON.stringify({ action: "send_outreach" }),
+                    }),
+                  )
+                }
+                className="rounded border border-green-500/40 text-green-300 px-2 py-1 text-xs"
+              >
+                Send outreach now
+              </button>
+            ) : null}
             {nextStage &&
             detail.lossState === "active" &&
             nextStage !== "activated" ? (
@@ -529,6 +547,32 @@ function ProspectDetail({
           </ul>
         </div>
       ) : null}
+
+      <div className="rounded border border-zinc-800 bg-zinc-950 p-3">
+        <h3 className="font-semibold text-yellow-300 mb-2">Activity history</h3>
+        <p className="text-[11px] text-zinc-600 mb-2">
+          The real, append-only record of every stage change and outreach
+          attempt -- this is how to confirm an email actually sent, and who it
+          went to.
+        </p>
+        <ul className="space-y-1.5 text-xs text-zinc-400">
+          {(detail.activities || []).map((a: any) => (
+            <li key={a._id} className="border-l-2 border-zinc-800 pl-2">
+              <span className="text-zinc-600">
+                {new Date(a.timestamp).toLocaleString()}
+              </span>{" "}
+              — {a.note}
+              {a.fromStage || a.toStage ? (
+                <span className="text-zinc-600">
+                  {" "}
+                  ({a.fromStage || "—"} → {a.toStage || "—"})
+                </span>
+              ) : null}
+            </li>
+          ))}
+          {!detail.activities?.length ? <li>No activity yet.</li> : null}
+        </ul>
+      </div>
     </div>
   );
 }

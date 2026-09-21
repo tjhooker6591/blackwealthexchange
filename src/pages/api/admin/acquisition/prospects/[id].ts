@@ -9,6 +9,7 @@ import {
   transitionProspectStage,
 } from "@/lib/acquisition/prospects";
 import { activateProspect } from "@/lib/acquisition/onboarding";
+import { sendInitialOutreach } from "@/lib/acquisition/outreach";
 
 export default async function handler(
   req: NextApiRequest,
@@ -71,6 +72,36 @@ export default async function handler(
       return res.status(result.ok ? 200 : 400).json(result);
     }
 
+    if (action === "send_outreach") {
+      // Manual re-trigger for a prospect that already exists but never got
+      // automatic outreach when it was created (e.g. a contact email was
+      // added after the fact, or the send failed the first time -- SMTP
+      // wasn't configured at all when several prospects were first added).
+      // Only valid while still "researched" -- the same gate the automatic
+      // path uses -- so this can never fire a second outreach email once a
+      // prospect has actually moved forward.
+      const current = await getProspect(db, id);
+      if (!current) {
+        return res
+          .status(404)
+          .json({
+            ok: false,
+            code: "NOT_FOUND",
+            message: "Prospect not found.",
+          });
+      }
+      const currentStage = (current as any).stage;
+      if (currentStage !== "researched") {
+        return res.status(400).json({
+          ok: false,
+          code: "ALREADY_CONTACTED",
+          message: `This prospect is already past the initial-outreach stage (currently "${currentStage}").`,
+        });
+      }
+      const result = await sendInitialOutreach(db, id);
+      return res.status(result.ok ? 200 : 400).json(result);
+    }
+
     if (action === "set_paid_status") {
       const result = await setPaidStatus(db, {
         prospectId: id,
@@ -81,13 +112,11 @@ export default async function handler(
       return res.status(result.ok ? 200 : 400).json(result);
     }
 
-    return res
-      .status(400)
-      .json({
-        ok: false,
-        code: "UNKNOWN_ACTION",
-        message: `Unknown action: ${action}`,
-      });
+    return res.status(400).json({
+      ok: false,
+      code: "UNKNOWN_ACTION",
+      message: `Unknown action: ${action}`,
+    });
   }
 
   res.setHeader("Allow", ["GET", "PATCH"]);
