@@ -1,0 +1,260 @@
+{
+  "rowCount": 17,
+  "rows": [
+    {
+      "_id": "681d1df4fd9719ad7b26dfa2",
+      "business_name": "LYS Beauty",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "no reliable duplicate evidence",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfa8",
+      "business_name": "Ami Colé",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "no reliable duplicate evidence",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb1",
+      "business_name": "Boon Boona Coffee",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "no reliable duplicate evidence",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb2",
+      "business_name": "Blk & Bold",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "no reliable duplicate evidence",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb7",
+      "business_name": "Topicals",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "no reliable duplicate evidence",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb8",
+      "business_name": "RedDrop",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "no reliable duplicate evidence",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfbd",
+      "business_name": "Camille Rose",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "no reliable duplicate evidence",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfc2",
+      "business_name": "The Sip",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "no reliable duplicate evidence",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfc4",
+      "business_name": "Be Rooted",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "no reliable duplicate evidence",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfc5",
+      "business_name": "Clare",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "no reliable duplicate evidence",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfc6",
+      "business_name": "Bolé Road",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "no reliable duplicate evidence",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfcb",
+      "business_name": "The Whitney Collection",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "no reliable duplicate evidence",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfce",
+      "business_name": "Fourth Phase",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "no reliable duplicate evidence",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfda",
+      "business_name": "Loyalty Bookstores",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "no reliable duplicate evidence",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfdb",
+      "business_name": "The Lit Bar",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "no reliable duplicate evidence",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a460",
+      "business_name": "The Talonted Vixen Atelier Tarzana 2",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "weak relationship",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a4af",
+      "business_name": "Aarmy West Hollywood 3",
+      "current_completeness": {
+        "isComplete": null,
+        "completenessScore": null,
+        "qualityScore": null
+      },
+      "exact_missing_or_blocking_issue": "no deterministic repair proposed in original artifact; requires manual verification",
+      "duplicate_classification": "weak relationship",
+      "required_repair": "needs public route key plus identity verification",
+      "mongodb_alone_can_resolve_it": "partial",
+      "external_research_would_help": "yes",
+      "projected_approval_readiness_after_repair": "not ready"
+    }
+  ]
+}

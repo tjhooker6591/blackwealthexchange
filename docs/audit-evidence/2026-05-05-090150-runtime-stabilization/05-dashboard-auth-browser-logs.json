@@ -1,0 +1,49 @@
+{
+  "timestamp": "2026-05-05T16:45:10.798Z",
+  "logs": [
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "type": "log",
+      "text": "[HMR] connected"
+    },
+    {
+      "type": "info",
+      "text": "[timing] auth/me 215ms status=200"
+    },
+    {
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 162ms status=200"
+    },
+    {
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 180ms status=200"
+    },
+    {
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 175ms status=200"
+    },
+    {
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 197ms status=200"
+    },
+    {
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 200ms status=200"
+    },
+    {
+      "type": "info",
+      "text": "[timing] fetch /api/user/applications-overview?email=audit.user.local%40blackwealthexchange.test 192ms status=200"
+    },
+    {
+      "type": "info",
+      "text": "[timing] fetch /api/billing/subscription-status 201ms status=200"
+    },
+    {
+      "type": "info",
+      "text": "[timing] fetch /api/user/get-dashboard?email=audit.user.local%40blackwealthexchange.test 378ms status=200"
+    }
+  ]
+}

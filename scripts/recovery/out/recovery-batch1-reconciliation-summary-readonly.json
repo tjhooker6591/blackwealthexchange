@@ -1,0 +1,178 @@
+{
+  "totalCandidatesUniverse": 1613,
+  "deliveredCandidates": 1613,
+  "recordsNotDelivered": 0,
+  "notDeliveredBreakdown": {
+    "validCandidatesExcludedOnlyByExportLimit": 0,
+    "failedQualityThreshold": 0,
+    "duplicatesExcluded": 0,
+    "lowerPriorityExcluded": 0,
+    "omittedForOtherReason": 0
+  },
+  "verificationCountContradiction": {
+    "batch0SummaryField": "recordsRequiringVerificationBeforeApproval",
+    "batch0CalculationProperty": "requires_verification_before_approval",
+    "batch1RowsWithApprovalReadinessRequiresVerificationBeforeApproval": 72,
+    "conclusion": "Batch 0 summary was not broken after relabeling, it counted the Batch 0 artifact and returned 0 because that script never produced qualifying rows. Batch 1 uses a different recovery artifact and does contain such rows."
+  },
+  "primaryQueueCounts": {
+    "A": 0,
+    "B": 75,
+    "C": 31,
+    "D": 1,
+    "E": 21,
+    "F": 1468,
+    "G": 17
+  },
+  "sumOfPrimaryQueues": 1613,
+  "fieldLevelTotals": {
+    "business_name": 1,
+    "website": 284,
+    "phone": 1464,
+    "address": 0,
+    "city": 0,
+    "state": 0,
+    "ZIP": 0,
+    "category": 0,
+    "categories": 0,
+    "display_categories": 272,
+    "description": 0,
+    "alias": 444,
+    "slug": 0,
+    "duplicate_classification": 1472,
+    "approval_or_status": 0
+  },
+  "proposedFieldChangeCardinality": {
+    "one": 1030,
+    "two": 247,
+    "threePlus": 301
+  },
+  "protectedSimulation": {
+    "protectedCountBefore": 332,
+    "protectedCountAfterSimulation": 332,
+    "protectedIdsRemoved": 0,
+    "protectedBusinessesUnapproved": 0,
+    "protectedBusinessesDeactivated": 0
+  },
+  "perQueueProtection": {
+    "A": {
+      "rowCount": 0,
+      "protectedRowsIncluded": 0,
+      "nonProtectedRowsIncluded": 0,
+      "protectedIdsProjectedToDisappearFromSearch": 0,
+      "protectedIdsProjectedToLoseApproval": 0,
+      "protectedIdsProjectedToLoseActiveStatus": 0
+    },
+    "B": {
+      "rowCount": 75,
+      "protectedRowsIncluded": 0,
+      "nonProtectedRowsIncluded": 75,
+      "protectedIdsProjectedToDisappearFromSearch": 0,
+      "protectedIdsProjectedToLoseApproval": 0,
+      "protectedIdsProjectedToLoseActiveStatus": 0
+    },
+    "C": {
+      "rowCount": 31,
+      "protectedRowsIncluded": 0,
+      "nonProtectedRowsIncluded": 31,
+      "protectedIdsProjectedToDisappearFromSearch": 0,
+      "protectedIdsProjectedToLoseApproval": 0,
+      "protectedIdsProjectedToLoseActiveStatus": 0
+    },
+    "D": {
+      "rowCount": 1,
+      "protectedRowsIncluded": 0,
+      "nonProtectedRowsIncluded": 1,
+      "protectedIdsProjectedToDisappearFromSearch": 0,
+      "protectedIdsProjectedToLoseApproval": 0,
+      "protectedIdsProjectedToLoseActiveStatus": 0
+    },
+    "E": {
+      "rowCount": 21,
+      "protectedRowsIncluded": 0,
+      "nonProtectedRowsIncluded": 21,
+      "protectedIdsProjectedToDisappearFromSearch": 0,
+      "protectedIdsProjectedToLoseApproval": 0,
+      "protectedIdsProjectedToLoseActiveStatus": 0
+    },
+    "F": {
+      "rowCount": 1468,
+      "protectedRowsIncluded": 0,
+      "nonProtectedRowsIncluded": 1468,
+      "protectedIdsProjectedToDisappearFromSearch": 0,
+      "protectedIdsProjectedToLoseApproval": 0,
+      "protectedIdsProjectedToLoseActiveStatus": 0
+    },
+    "G": {
+      "rowCount": 17,
+      "protectedRowsIncluded": 0,
+      "nonProtectedRowsIncluded": 17,
+      "protectedIdsProjectedToDisappearFromSearch": 0,
+      "protectedIdsProjectedToLoseApproval": 0,
+      "protectedIdsProjectedToLoseActiveStatus": 0
+    }
+  },
+  "sampleValidation": [
+    {
+      "_id": "67f73dec1d08a04e139a9b2c",
+      "current_full_mongodb_values": {
+        "_id": "67f73dec1d08a04e139a9b2c",
+        "name": "cross colours",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "Launched in L.A. in 1989, Carl Jones’ and T.J. Walkers’ streetwear label with a bold color palette inspired by the Pan-African flag and motto “clothing without prejudice” was embraced by hip-hop and then, seemingly, the whole world. The founders and the brand are still around — and their message seems more relevant than ever. (It’s also the subject of an ongoing exhibition at the temporarily closed California African American Museum in Exposition Park.) crosscolours.com",
+        "address": "311 N. Robertson Blvd., Suite 458 Beverly Hills, CA 90211",
+        "phone": "",
+        "website": "https://crosscolours.com/",
+        "state": "CA",
+        "completenessScore": 67,
+        "isComplete": false,
+        "status": "pending",
+        "business_name": "cross colours",
+        "city": ""
+      },
+      "exact_proposed_values": {
+        "website": "https://crosscolours.com",
+        "display_categories": "Shopping and Retail",
+        "alias": "cross-colours"
+      },
+      "why_display_category_needs_correction": "Current display category Shopping normalized from source value Shopping to Shopping and Retail",
+      "why_alias_is_needed": "No current alias or slug present for route key",
+      "alias_conflict_ids": [],
+      "is_protected": false,
+      "affects_live_routing_or_search": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b53",
+      "current_full_mongodb_values": {
+        "_id": "67f73dec1d08a04e139a9b53",
+        "name": "fear of god",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "Jerry Lorenzo’s upscale streetwear label has collaborated with some of the biggest names in the business — sneaker maker Nike and Italian luxury menswear label Ermenegildo Zegna, to name just two. fearofgod.com",
+        "address": "3940 Laurel Canyon Blvd #427 Studio City, CA 91604",
+        "phone": "",
+        "website": "https://fearofgod.com/",
+        "state": "CA",
+        "completenessScore": 67,
+        "isComplete": false,
+        "status": "pending",
+        "business_name": "fear of god",
+        "city": ""
+      },
+      "exact_proposed_values": {
+        "website": "https://fearofgod.com",
+        "display_categories": "Shopping and Retail",
+        "alias": "fear-of-god"
+      },
+      "why_display_category_needs_correction": "Current display category Shopping normalized from source value Shopping to Shopping and Retail",
+      "why_alias_is_needed": "No current alias or slug present for route key",
+      "alias_conflict_ids": [],
+      "is_protected": false,
+      "affects_live_routing_or_search": true
+    }
+  ],
+  "recommendedSafeFirstWriteBatchCriteria": {
+    "description": "deterministic normalization-only repairs only, excluding protected rows, excluding alias/slug changes, excluding category changes, excluding business_name inference, excluding duplicate decisions, excluding any approval/status fields"
+  }
+}

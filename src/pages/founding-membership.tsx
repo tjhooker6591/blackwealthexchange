@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type ResumeState = {
   selectedBusinessId: string;
@@ -42,6 +43,11 @@ type OptionsPayload = {
   businesses?: BusinessOption[];
 };
 
+const MEMBERSHIP_LOAD_ERROR =
+  "We couldn't load founding membership details right now. Please try again.";
+const MEMBERSHIP_CHECKOUT_ERROR =
+  "We couldn't start secure checkout right now. Please try again.";
+
 function money(cents: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -77,7 +83,7 @@ function normalizeResumeState(args: {
       resumeCheckoutRequested: false,
       resumeBusinessName: "",
       error:
-        "The requested business could not be confirmed as a current public claimable listing. Please choose one from the list below.",
+        "We couldn't confirm that business for membership right now. Please choose one from the list below.",
     };
   }
 
@@ -152,11 +158,15 @@ export default function FoundingMembershipPage() {
         });
         const json = await res.json().catch(() => ({}));
         if (!res.ok || !json?.ok) {
-          throw new Error(json?.error || "Unable to load membership offer");
+          throw new Error(MEMBERSHIP_LOAD_ERROR);
         }
         setData(json);
       } catch (e: any) {
-        setError(e?.message || "Unable to load membership offer");
+        setError(
+          toPublicErrorMessage(e?.message, {
+            fallback: MEMBERSHIP_LOAD_ERROR,
+          }),
+        );
       }
     })();
   }, []);
@@ -309,18 +319,17 @@ export default function FoundingMembershipPage() {
       }
 
       if (!res.ok || !json?.url) {
-        const apiMessage =
-          typeof json?.error === "string"
-            ? json.error
-            : "Unable to create the Stripe Checkout Session";
-        throw new Error(apiMessage);
+        throw new Error(MEMBERSHIP_CHECKOUT_ERROR);
       }
 
       setCheckoutState("redirecting");
       setCheckoutMessage("Opening secure checkout…");
       window.location.assign(json.url);
     } catch (e: any) {
-      const message = e?.message || "Unable to start checkout";
+      const message = toPublicErrorMessage(e?.message, {
+        fallback: MEMBERSHIP_CHECKOUT_ERROR,
+        authFallback: "Please sign in to continue to secure checkout.",
+      });
       setError(message);
       setCheckoutState("checkout_error");
       setCheckoutMessage(message);
@@ -435,7 +444,7 @@ export default function FoundingMembershipPage() {
                         : getUnavailableLabel(activeBusiness)}
                     </div>
                     <div className="mt-1 text-white/55">
-                      Canonical ID: {activeBusiness.id}
+                      Business ID: {activeBusiness.id}
                     </div>
                   </div>
                 </div>
@@ -517,8 +526,8 @@ export default function FoundingMembershipPage() {
                   </h2>
                   <p className="mt-2 max-w-3xl text-sm text-white/75">
                     Search the BWE directory in claim mode, open your existing
-                    listing, and return here with the canonical business
-                    selected automatically.
+                    listing, and return here with your business selected
+                    automatically.
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-3">
@@ -594,7 +603,7 @@ export default function FoundingMembershipPage() {
                         : `${activeBusiness.businessName} is not currently available for a new founding membership claim.`}
                     </div>
                     <div className="text-xs text-white/45">
-                      Canonical business ID: {activeBusiness.id}
+                      Business ID: {activeBusiness.id}
                     </div>
                     <div className="text-xs text-white/45">
                       Server availability:{" "}
@@ -649,7 +658,7 @@ export default function FoundingMembershipPage() {
                         Profile-enhancement setup using verified business
                         information
                       </li>
-                      <li>Initial profile-performance baseline</li>
+                      <li>Initial profile performance baseline</li>
                       <li>
                         Recurring monthly activity report and member support
                         access
@@ -662,15 +671,16 @@ export default function FoundingMembershipPage() {
                     </div>
                     <ul className="mt-2 list-disc space-y-1 pl-5 text-white/75">
                       <li>
-                        Your membership is activated through the canonical
-                        checkout and webhook flow
+                        Your membership starts after secure checkout is
+                        completed
                       </li>
                       <li>
                         Your claim is initiated and ownership verification moves
                         to pending
                       </li>
                       <li>
-                        BWE opens onboarding, fulfillment, and baseline records
+                        BWE opens your onboarding steps, profile work, and
+                        reporting setup
                       </li>
                       <li>
                         You follow the ownership-verification steps before owner
@@ -695,8 +705,8 @@ export default function FoundingMembershipPage() {
                     </ul>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-black/25 p-4 text-white/70">
-                    Cancellation and billing changes continue through the
-                    existing canonical billing process after checkout.
+                    Cancellation and billing changes continue through your BWE
+                    billing portal after checkout.
                   </div>
                 </div>
               </section>
@@ -744,7 +754,7 @@ export default function FoundingMembershipPage() {
                       </div>
                       <div className="mt-1 text-white/65">
                         Claim initiation, ownership verification intake, profile
-                        review, fulfillment setup, baseline creation, and
+                        review, fulfillment setup, performance baseline, and
                         monthly reporting.
                       </div>
                     </div>
@@ -763,8 +773,9 @@ export default function FoundingMembershipPage() {
                       </div>
                       <div className="mt-1 text-white/65">
                         Payment confirmation, claim initiated, ownership
-                        verification pending, profile review queued, baseline
-                        created, and monthly reporting scheduled.
+                        verification pending, profile review in progress,
+                        performance baseline setup, and monthly reporting
+                        scheduled.
                       </div>
                     </div>
                   </div>

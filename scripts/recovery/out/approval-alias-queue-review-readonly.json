@@ -1,0 +1,315 @@
+{
+  "rowCount": 31,
+  "rows": [
+    {
+      "_id": "67f73dec1d08a04e139a9b2c",
+      "business_name": "cross colours",
+      "alias_only_blocker": false,
+      "proposed_alias": "cross-colours",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b53",
+      "business_name": "fear of god",
+      "alias_only_blocker": false,
+      "proposed_alias": "fear-of-god",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c75",
+      "business_name": "the ron finley project",
+      "alias_only_blocker": false,
+      "proposed_alias": "the-ron-finley-project",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c41",
+      "business_name": "silverback coffee of rwanda",
+      "alias_only_blocker": false,
+      "proposed_alias": "silverback-coffee-of-rwanda",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c40",
+      "business_name": "sip & sonder",
+      "alias_only_blocker": false,
+      "proposed_alias": "sip-and-sonder",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9bc3",
+      "business_name": "luxe & glam beauty supply",
+      "alias_only_blocker": false,
+      "proposed_alias": "luxe-and-glam-beauty-supply",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9ac8",
+      "business_name": "adrien sauvage",
+      "alias_only_blocker": false,
+      "proposed_alias": "adrien-sauvage",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a4ed",
+      "business_name": "Bai Blooms",
+      "alias_only_blocker": false,
+      "proposed_alias": "bai-blooms",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b1b",
+      "business_name": "charles mingus youth arts center",
+      "alias_only_blocker": false,
+      "proposed_alias": "charles-mingus-youth-arts-center",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b54",
+      "business_name": "fksp",
+      "alias_only_blocker": false,
+      "proposed_alias": "fksp",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b9e",
+      "business_name": "ktx fitness",
+      "alias_only_blocker": false,
+      "proposed_alias": "ktx-fitness",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9bf0",
+      "business_name": "nior",
+      "alias_only_blocker": false,
+      "proposed_alias": "nior",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c27",
+      "business_name": "royal house of wraps",
+      "alias_only_blocker": false,
+      "proposed_alias": "royal-house-of-wraps",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c04",
+      "business_name": "patty wack vintage",
+      "alias_only_blocker": false,
+      "proposed_alias": "patty-wack-vintage",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b0c",
+      "business_name": "bychari",
+      "alias_only_blocker": false,
+      "proposed_alias": "bychari",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c21",
+      "business_name": "roam vintage",
+      "alias_only_blocker": false,
+      "proposed_alias": "roam-vintage",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9acb",
+      "business_name": "agnes baddoo",
+      "alias_only_blocker": false,
+      "proposed_alias": "agnes-baddoo",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c9f",
+      "business_name": "vanillablack",
+      "alias_only_blocker": false,
+      "proposed_alias": "vanillablack",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c7f",
+      "business_name": "thrive doughnuts",
+      "alias_only_blocker": false,
+      "proposed_alias": "thrive-doughnuts",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c7a",
+      "business_name": "the proper bunny",
+      "alias_only_blocker": false,
+      "proposed_alias": "the-proper-bunny",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9caf",
+      "business_name": "zelie for she",
+      "alias_only_blocker": false,
+      "proposed_alias": "zelie-for-she",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9ba3",
+      "business_name": "laced",
+      "alias_only_blocker": false,
+      "proposed_alias": "laced",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9aee",
+      "business_name": "bia blooms",
+      "alias_only_blocker": false,
+      "proposed_alias": "bia-blooms",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b5f",
+      "business_name": "galerie la",
+      "alias_only_blocker": false,
+      "proposed_alias": "galerie-la",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c26",
+      "business_name": "rockin cushions",
+      "alias_only_blocker": false,
+      "proposed_alias": "rockin-cushions",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c08",
+      "business_name": "philthy rags",
+      "alias_only_blocker": false,
+      "proposed_alias": "philthy-rags",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b7f",
+      "business_name": "house of aama",
+      "alias_only_blocker": false,
+      "proposed_alias": "house-of-aama",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b88",
+      "business_name": "junglegurl",
+      "alias_only_blocker": false,
+      "proposed_alias": "junglegurl",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9ba2",
+      "business_name": "lace by tanaya",
+      "alias_only_blocker": false,
+      "proposed_alias": "lace-by-tanaya",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9acd",
+      "business_name": "aarmy",
+      "alias_only_blocker": false,
+      "proposed_alias": "aarmy",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9ace",
+      "business_name": "alem digital marketing",
+      "alias_only_blocker": false,
+      "proposed_alias": "alem-digital-marketing",
+      "proposed_alias_unique": true,
+      "remaining_data_complete": false,
+      "generating_alias_would_make_ready": false,
+      "route_generation_safe": true
+    }
+  ]
+}

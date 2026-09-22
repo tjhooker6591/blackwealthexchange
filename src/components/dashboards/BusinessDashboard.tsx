@@ -16,6 +16,7 @@ import {
   AlertTriangle,
   UserCircle2,
 } from "lucide-react";
+import BusinessGrowthCenter from "./BusinessGrowthCenter";
 
 type AccountType =
   | "user"
@@ -222,6 +223,8 @@ export default function BusinessDashboard({
             </div>
           </div>
         </div>
+
+        <BusinessGrowthCenter />
 
         {/* Data warning */}
         {dataError ? (

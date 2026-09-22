@@ -60,17 +60,19 @@ export default async function handler(
   // by { userId, jobId } (protected by a unique compound index). Upsert
   // instead of insertOne so repeat saves are idempotent rather than
   // surfacing a duplicate-key error to the client.
-  await db.collection("savedJobs").updateOne(
-    { userId: new ObjectId(userId), jobId: new ObjectId(jobId) },
-    {
-      $setOnInsert: {
-        userId: new ObjectId(userId),
-        jobId: new ObjectId(jobId),
-        savedAt: new Date(),
+  await db
+    .collection("savedJobs")
+    .updateOne(
+      { userId: new ObjectId(userId), jobId: new ObjectId(jobId) },
+      {
+        $setOnInsert: {
+          userId: new ObjectId(userId),
+          jobId: new ObjectId(jobId),
+          savedAt: new Date(),
+        },
       },
-    },
-    { upsert: true },
-  );
+      { upsert: true },
+    );
 
   return res.status(201).json({ success: true });
 }

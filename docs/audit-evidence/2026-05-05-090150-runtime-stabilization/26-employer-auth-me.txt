@@ -1,0 +1,18 @@
+HTTP/1.1 200 OK
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; frame-src 'self' https:; form-action 'self'
+Cache-Control: no-store
+Server-Timing: mongo_connect;dur=0, mongo_query;dur=69, total;dur=69
+Content-Type: application/json; charset=utf-8
+ETag: "h074ffnpagie"
+Content-Length: 662
+Vary: Accept-Encoding
+Date: Wed, 06 May 2026 00:00:56 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"user":{"_id":"69fa847d2aeb239dc034a036","email":"audit.employer.1778025366451@blackwealthexchange.test","accountType":"employer","isPremium":false,"currentPlan":"free","premiumStatus":"inactive","premiumActivatedAt":null,"createdAt":"2026-05-05T23:59:57.045Z","updatedAt":"2026-05-06T00:00:22.208Z","id":"69fa847d2aeb239dc034a036","isAdmin":false,"blackCardTier":null,"blackCardStatus":"inactive","blackCardMemberSince":null,"stripeSubscriptionId":null,"stripeCustomerId":null,"subscriptionStatus":null,"subscriptionCurrentPeriodStart":null,"subscriptionCurrentPeriodEnd":null,"subscriptionCancelAtPeriodEnd":false,"nextBillingDate":null,"renewalStatus":null}}

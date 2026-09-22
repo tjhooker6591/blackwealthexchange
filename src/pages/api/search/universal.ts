@@ -60,10 +60,12 @@ export default async function handler(
     );
     if (ipLimit.blocked) {
       res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
-      return res.status(429).json({
-        ok: false,
-        message: "Too many searches. Please try again shortly.",
-      });
+      return res
+        .status(429)
+        .json({
+          ok: false,
+          message: "Too many searches. Please try again shortly.",
+        });
     }
 
     const q = String(req.query.q || req.query.search || "").trim();

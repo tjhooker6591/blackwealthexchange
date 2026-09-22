@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; frame-src 'self' https:; form-action 'self'
+Content-Type: application/json; charset=utf-8
+ETag: "55uw5vj2ov6r"
+Content-Length: 243
+Vary: Accept-Encoding
+Date: Wed, 06 May 2026 00:00:50 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"seller":{"_id":"69fa849618f8a26be32e7a13","userId":"69fa84772aeb239dc034a033","email":"audit.seller.1778025366451@blackwealthexchange.test","name":"Audit Seller","createdAt":"2026-05-06T00:00:22.406Z","updatedAt":"2026-05-06T00:00:22.406Z"}}

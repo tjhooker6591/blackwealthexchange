@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import type { GetServerSideProps } from "next";
 import { requirePageRole } from "@/lib/security/pageRoleGuard";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type HiringStatus =
   | "new"
@@ -114,10 +115,17 @@ export default function EmployerApplicantsPage() {
         if (res.ok) {
           setApplicants(data.applicants || []);
         } else {
-          setError(data?.error || "Failed to load applicants.");
+          setError(
+            toPublicErrorMessage(data?.error, {
+              fallback:
+                "We couldn't load applicants right now. Please try again.",
+              authFallback:
+                "Please sign in with your employer account to continue.",
+            }),
+          );
         }
       } catch {
-        setError("Failed to load applicants.");
+        setError("We couldn't load applicants right now. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -181,7 +189,11 @@ export default function EmployerApplicantsPage() {
       });
 
       const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || "Failed to update status");
+      if (!res.ok) {
+        throw new Error(
+          "We couldn't update applicant status right now. Please try again.",
+        );
+      }
       setApplicants((cur) =>
         cur.map((a) =>
           a._id === applicantId
@@ -211,7 +223,12 @@ export default function EmployerApplicantsPage() {
       );
     } catch (e: any) {
       setApplicants(prev);
-      setError(e?.message || "Failed to update status");
+      setError(
+        toPublicErrorMessage(e?.message, {
+          fallback:
+            "We couldn't update applicant status right now. Please try again.",
+        }),
+      );
     } finally {
       setBusyId(null);
     }
@@ -249,12 +266,21 @@ export default function EmployerApplicantsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ applicantId, body }),
       });
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || "Failed to send message");
+      await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(
+          "We couldn't send your message right now. Please try again.",
+        );
+      }
       setMessageDraft((cur) => ({ ...cur, [applicantId]: "" }));
       await loadMessages(applicantId);
     } catch (e: any) {
-      setError(e?.message || "Failed to send message");
+      setError(
+        toPublicErrorMessage(e?.message, {
+          fallback:
+            "We couldn't send your message right now. Please try again.",
+        }),
+      );
     } finally {
       setBusyId(null);
     }

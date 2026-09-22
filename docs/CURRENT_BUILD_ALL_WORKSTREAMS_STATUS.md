@@ -1,5 +1,302 @@
 # Current Build — Canonical All-Workstreams Status
 
+## CURRENT CHECKPOINT — 2026-09-03
+
+- PROGRAM PHASE: `POST-BASELINE EXECUTION ON TOP OF COMPLETED PHASE 0 + PHASE 1`
+- CANONICAL REPOSITORY: `/Users/blackforge/workspace/bwe/repos/repo_clean`
+- CANONICAL BRANCH: `friday-release-candidate`
+- CURRENT CONTROL HEAD: `PENDING CURRENT 2026-09-05 P0-06 / P3-03 FORMAL CLOSURE CONTROL COMMIT`
+- LATEST RUNTIME HEAD: `000e25e` (P3-03 seller storefront; supersedes `2dd17e9`/`6ab1d25`/`56a6370`/`a97bfe4`/`0ea2cfe`/`6d3ecf5`/`f5d738f`/`46790a0`/`02c84c2`) — no code change for the 2026-09-05 closure entry, control-record only
+- PRODUCTION DB WRITE LOG: `b234b97 directory completeness recompute (36/2286 businesses, 8 crossed public-search threshold, 0 demotions); 39 additive/reversible production indexes created across 5 audit batches; saved-jobs reconciliation pass (0 backfill needed, 0 duplicates, 1 pre-existing invalid record left untouched, tracked as data-hygiene backlog) via scripts/reconcile-saved-jobs.mjs; see docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md #15, #18, #19 and docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md`
+- PLATFORM-WIDE UI/API/DB ALIGNMENT AUDIT: `COMPLETE — see docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md (26 functional contracts reviewed, 39 index gaps fixed, 1 API<->DB contract mismatch (saved jobs) closed per explicit owner decision — savedJobs collection canonical). No open items remain from this audit's DB-alignment scope.`
+- PERMANENT UI/API/DB SYNC RULE: `RECORDED — see docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md #16`
+- PHASE 2 — UNIFIED PLATFORM CORE: `COMPLETE (2026-09-03)` — see `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #19 and `docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md` P2-01/P2-02
+- PHASE 3 — DISCOVERY & COMMERCE: `COMPLETE` — P3-01 Universal BWE Search `COMPLETE` (ledger #21); P3-02 Multi-Domain Discovery + Trust-Rich Results `COMPLETE` (ledger #22); P3-03 World-Class Marketplace Experience `COMPLETE` (2026-09-05, ledger #23–#24, runtime commits `2dd17e9`, `000e25e`) — reviews system (product_reviews collection, verified-purchase computed from real paid orders), seller storefront (`/marketplace/seller/[id]`), reorder ("Buy again"), fulfillment visibility (already solid pre-existing). `P0-06` (paid fulfillment proof) closed the same day on an owner-confirmed live production Stripe transaction, satisfying P3-03's last dependency.
+- NEXT MAJOR ENGINEERING FOCUS: `PHASE 4 — PERSONALIZED PLATFORM` COMPLETE (2026-09-05, P4-01 through P4-09, see `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #25 and `docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md`); select and scope Phase 5 (Network Effects) next
+- CURRENT DATABASE: `bwes-cluster`
+- LOCALHOST REQUIRED STATE: `127.0.0.1:3000 RUNNING`
+- DATABASE RECONCILIATION STATUS: `PARTIAL — OWNER DATA DECISION ONLY`
+- SAFE DETERMINISTIC DB WORK REMAINING: `NO`
+- OPEN OWNER-DATA DECISIONS:
+  - applicants duplicate email-group disposition for one three-row legacy/public-apply cluster
+  - Pamfa canonical attribution is resolved for the approved seller/product pair; broader historical Pamfa cleanup remains intentionally out of scope
+- DB TRACKING LEDGER: `docs/81426-1453_DB_TRACKING.md`
+- RUNNING FILE LEDGER: `docs/BWE_RUNNING_APPLICATION_FILE_CHANGES_2026-08-06_FORWARD.md`
+- WORLD-CLASS MASTER PLAN: `docs/BWE_WORLD_CLASS_PLATFORM_MASTER_PLAN.md`
+- WORLD-CLASS PROGRAM BOARD: `docs/BWE_WORLD_CLASS_PROGRAM_BOARD.md`
+- WORLD-CLASS SCORECARD: `docs/BWE_WORLD_CLASS_PLATFORM_SCORECARD.md`
+- WORLD-CLASS GAP REGISTER: `docs/BWE_WORLD_CLASS_GAP_REGISTER.md`
+- WORLD-CLASS MEASUREMENT HISTORY: `docs/BWE_WORLD_CLASS_MEASUREMENT_HISTORY.md`
+- WORLD-CLASS DECISION LOG: `docs/BWE_WORLD_CLASS_DECISION_LOG.md`
+- UNIQUE APPLICATION FILES SINCE 2026-08-06: `165`
+- UNIQUE APPLICATION FILES SINCE 81426-1453: `39`
+- DB OPERATIONS: `35`
+- ADMIN PROOF STATUS: `PASS — 2026-08-25 targeted admin proof pass`
+- AUTH/ENV PARITY STATUS: `LOCAL PROOF COMPLETED — business-session role drift fixed; production-safe config parity remains partial`
+- ACTIVE POST-BASELINE WORKSTREAM: `PHASE 2 — WORKSTREAM 5 — SHARED ACTIVITY360 FOUNDATION`
+- BWE-10 INTERNAL TRANSACTION READINESS: `GO`
+- OWNER TRANSACTION: `PENDING`
+- BWE-10 LIVE PROOF: `PENDING`
+- PAYMENT PROOF STATUS: `READY FOR OWNER EXECUTION — existing Stripe architecture preserved; live owner-only proof still pending`
+- CROSS-MACHINE PARITY STATUS: `EXTERNAL PROOF PENDING`
+- CROSS-MACHINE PARITY PROCEDURE: `docs/BWE_13_SECOND_MACHINE_PARITY_PROCEDURE.md`
+- PHASE 0 — RELEASE STABILIZATION: `COMPLETE`
+- PHASE 1 — BWE EXPERIENCE 2.0: `COMPLETE`
+- PHASE 2 — UNIFIED PLATFORM CORE: `COMPLETE (2026-09-03)` — see ledger entry #19
+- PHASE 3 — DISCOVERY & COMMERCE: `NOT STARTED — awaiting highest-value outcome selection`
+- PHASE 4 — PERSONALIZED PLATFORM: `COMPLETE (2026-09-05)` — see `docs/BWE_POST_BASELINE_CHANGE_LEDGER_2026-08-27_FORWARD.md` #25
+- PHASE 5 — NETWORK EFFECTS: `OUTSTANDING`
+- PHASE 6 — ECONOMIC INTELLIGENCE: `OUTSTANDING`
+- PHASE 7 — AI / MOBILE / SCALE: `OUTSTANDING`
+- EXTERNAL / OWNER PROOFS: `PENDING`
+- CURRENT BLOCKER: `no new release defect is currently proven; remaining closure depends on owner/live proof for BWE-10 and separate-machine proof for BWE-13`
+- CURRENT NEXT WORK: `preserve the accepted runtime incident resolution rule, keep localhost stable by never running build against the active dev server, preserve the completed Person360 foundation, and extend the shared activity layer beneath Person360 and Business360`
+- BWE-10 OWNER ACTION: `PENDING — Pamfa hoodies owner-only live proof`
+- STRIPE STATUS: `existing architecture preserved`
+- REAL TRANSACTION RULE: `OWNER ONLY`
+- EXACT RESUME ACTION:
+  - preserve the accepted admin proof result at `d1380da1b34593ec605b4c8b589c1e608bd63714`
+  - preserve the accepted auth/env parity runtime fix at `c7ecbc31c52387d6a4601f1b86cab35e481355e6`
+  - preserve the accepted Stripe owner-only control checkpoint at `1754ca6dbf6f0176948c3a2c7fd756a1d15200f4`
+  - preserve the accepted BWE-10 control/docs checkpoint at `1ec2aaa1931ca9a64f929d639b24394db99ec9ee`
+  - restore and verify localhost on `127.0.0.1:3000`
+  - preserve runtime payment checkpoint `665a1193d180d9c3c2bc79dda6bba8310d477416`
+  - preserve the accepted Phase 1 consumer foundation runtime checkpoint `ceeb5957132d575d7b91458de9eb06d147413839`
+  - preserve the accepted Phase 1 consumer refinement runtime checkpoint `ac8831a69a5d510bb356aab3d0fd0490a135e6d6`
+  - preserve the accepted Phase 1 discovery/jobs runtime checkpoint `aec329ca6c15a053ede2f256cea686670d13afdc`
+  - preserve the accepted Phase 1 homepage pathway + Student Hub runtime checkpoint `faff2cdfb6e556c8e8cbc5d35beececa74e16610`
+  - preserve the accepted Phase 1 pricing + Black Card runtime checkpoint `fad902f66bdcfe6109e9e2cb2a5c85e0e958969b`
+  - preserve the accepted Phase 1 music creator runtime checkpoint `706273a206c87a02987b4c5802a1ca458e1ed42a`
+  - preserve the accepted Phase 1 learning runtime checkpoint `b9efc79a9c13a2ce8fbc8db397a7e30cbdc13ec4`
+  - preserve the accepted Phase 1 resources/articles + homepage hero copy runtime checkpoint `94b0f45957a48e1100445e98ba1c2509e9eda223`
+  - preserve the accepted Phase 1 support + advertising + creator-dashboard runtime checkpoint `f0110c5aaed1656458704165cfe3115fedada1df`
+  - preserve the accepted Phase 1 shared dashboard-entry shell runtime checkpoint `80c971734635b57b2921a0b31918acb5868faa8d`
+  - preserve the existing Stripe checkout and webhook path
+  - preserve the approved deterministic Pamfa attribution links:
+    - `sellers/67fd9ed3acdef9011c60ff99 -> businessId 6a45de2d3278d888ed5d0730`
+    - `products/680d23a3dc57cdf2efedf784 -> businessId 6a45de2d3278d888ed5d0730`
+  - preserve completed Black History Blocks `1` through `5` at the current checkpoint
+  - preserve the history mobile / information-architecture correction
+  - preserve the seller payout / API-contract correction
+  - preserve customer-safe public error handling
+  - preserve the complete public internal-language / error sweep
+  - preserve the rewritten `18` public internal messages
+  - preserve the corrected `27` raw technical-error exposures
+  - do not reopen accepted History or public-quality work without proven regression
+  - record the local Home -> Directory delay as deferred backlog only; no optimization authorized without customer evidence
+  - keep BWE-10 owner/live proof and BWE-13 separate-machine proof as the real remaining release-evidence items
+  - preserve the Phase 2 Workstream 1 artifact at `docs/PHASE2_WORKSTREAM1_UNIFIED_ENTITY_INVENTORY_2026-09-01.md`
+  - preserve the Phase 2 Workstream 2 contract at `docs/PHASE2_WORKSTREAM2_BUSINESS360_CONTRACT_2026-09-01.md`
+  - preserve the read-only Business360 runtime adapter:
+    - `src/lib/business360.ts`
+    - `src/pages/api/admin/business360.ts`
+    - `src/lib/__tests__/business360-tests.mjs`
+  - preserve runtime checkpoint `ad29cf44034830551df070f4bc4b42ee0a7b0d8b`
+  - preserve the accepted customer-conversion runtime checkpoint `e4cac87`
+  - preserve the homepage conversion closeout null-guard runtime checkpoint `cb5d0d65f31491584808a596a80a98501c81dfd2`
+  - preserve the accepted Phase 2 Workstream 3 runtime checkpoint `bef090926badaab7ce82810f39f316dd3a21d99f`
+  - preserve the accepted Phase 2 Workstream 4 runtime checkpoint `5fb6ce481734c1d9ad0b5817c8cc0e37be171a27`
+  - preserve the accepted Phase 2 Workstream 5 runtime checkpoint `8ce2d605cfc5414f058c225c1a02df75c4b92764`
+  - preserve homepage conversion outcomes:
+    - member-value / homepage conversion complete
+    - hero simplified and mobile pass
+    - Businesses and Organizations remain separate truthful metrics
+    - hero Opportunities metric corrected to Jobs
+    - Join BWE Free preserved
+    - `/start-here` business-owner path preserved
+  - preserve Black Card and Affiliate background console noise as pre-existing deferred work only
+  - preserve the operational Person <-> Business resolver:
+    - `src/lib/personBusinessRelationships.ts`
+    - `src/lib/__tests__/person-business-relationships-tests.mjs`
+  - preserve the operational Person360 resolver:
+    - `src/lib/person360.ts`
+    - `src/lib/__tests__/person360-tests.mjs`
+  - keep Business360 read-only: no schema changes, no DB writes, no backfills, no customer-facing dependency by default
+  - use Business360 as an adapter layer around existing systems, not as a replacement for Directory, Seller, Claims, Membership, Jobs, Support, or Organizations
+  - keep Person <-> Business and Person360 read-only: no schema changes, no DB writes, no migrations, no auth rewrite, no email-only identity inference
+- ENGINEERING RULE: `VERIFY DELTA -> WORK -> VALIDATE -> COMMIT -> UPDATE RECORDS -> VERIFY LOCALHOST -> CONTINUE`
+- LOCAL DEV RUNTIME RULE:
+  - do not run `npm run build` while `next dev` is actively running against the same canonical repo / `.next` state
+  - for dev testing:
+    - stop dev before `npm run build`
+    - run build
+    - verify build result
+    - restart or recover dev before returning to localhost
+  - if results appear and then disappear after a local build/dev overlap, treat that as the known `.next` runtime corruption sequence first and recover localhost before reopening broader investigation
+
+## Accepted 2026-09-03 preservation checkpoint
+
+- TODAY'S ACCEPTED WORK:
+  - Black History Blocks `1` through `5` completed to the current checkpoint
+  - history mobile / information-architecture correction completed
+  - seller payout / API-contract defect corrected
+  - customer-safe public error handling added
+  - complete public internal-language / error sweep completed
+  - `18` internal public messages rewritten
+  - `27` raw technical-error exposures corrected
+  - seller fix preserved
+  - critical-path validation passing
+  - localhost customer experience visually accepted by owner
+- DEFERRED:
+  - local Home -> Directory navigation delay of approximately `1 second`
+  - likely related to destination API / auth / session request work
+  - no functional defect proven
+  - no performance code change authorized
+  - reassess later only against production or customer evidence
+- NEXT MAJOR ENGINEERING PHASE: `PHASE 3 — DISCOVERY & COMMERCE` (PHASE 2 — UNIFIED PLATFORM CORE closed 2026-09-03, ledger entry #19)
+- FIRST PHASE 2 WORKSTREAM: `accepted at docs/PHASE2_WORKSTREAM1_UNIFIED_ENTITY_INVENTORY_2026-09-01.md`
+- FINAL PHASE 2 WORKSTREAM: `Person <-> Business, Person360, Activity360, EconomicActivity360, platform-wide UI/API/DB alignment audit (39 indexes), saved-jobs canonicalization -- see docs/UI_API_DB_ALIGNMENT_AUDIT_2026-09-03.md and ledger entries #16-#19`
+- COMPLETED CUSTOMER-CONVERSION CHECKPOINT:
+  - runtime commit `e4cac87`
+  - member-value / homepage conversion complete
+  - hero simplified and mobile PASS
+  - Businesses / Organizations remain separate
+  - hero Opportunities metric corrected to Jobs
+  - Black Card / Affiliate background errors confirmed pre-existing and deferred
+  - build PASS
+  - critical paths PASS (`35/35`)
+  - regression PASS
+- HOMEPAGE CONVERSION CLOSEOUT:
+  - runtime commit `cb5d0d65f31491584808a596a80a98501c81dfd2`
+  - homepage metrics-strip null-guard preserved
+  - `npm run typecheck` PASS
+  - build PASS
+- COMPLETED PHASE 2 WORKSTREAM 3 CHECKPOINT:
+  - runtime commit `bef090926badaab7ce82810f39f316dd3a21d99f`
+  - Person <-> Business resolver operational
+  - verified owner, managed business, seller/business link, multiple businesses, unresolved weak links, and Business360 integration covered in focused tests
+  - build PASS
+  - critical paths PASS (`35/35`)
+  - regression PASS
+- COMPLETED PHASE 2 WORKSTREAM 4 CHECKPOINT:
+  - runtime commit `5fb6ce481734c1d9ad0b5817c8cc0e37be171a27`
+  - Person360 read-only resolver operational
+  - users.\_id anchor preserved
+  - multiple business relationships preserved through the accepted Person <-> Business resolver
+  - membership state, seller state, affiliate state, consultant profile state, creator state, Black Card state, and direct employer activity now resolve with provenance
+  - weak email-only employer relationships remain explicitly non-authoritative
+  - `npm run typecheck` PASS
+  - `node src/lib/__tests__/person360-tests.mjs` PASS
+  - `node src/lib/__tests__/person-business-relationships-tests.mjs` PASS
+  - `node src/lib/__tests__/business360-tests.mjs` PASS
+  - build PASS
+  - critical paths PASS (`35/35`)
+  - phase 2 regression PASS
+  - vertical regression PASS
+  - localhost runtime PASS on `127.0.0.1:3000`
+- COMPLETED PHASE 2 WORKSTREAM 5 CHECKPOINT:
+  - runtime commit `8ce2d605cfc5414f058c225c1a02df75c4b92764`
+  - shared Activity360 read-only resolver added beneath Business360 and Person360
+  - Business360 activity now resolves through the shared adapter instead of inline duplication
+  - Person360 now exposes direct person activity from authoritative `flow_events.userId` evidence
+  - admin-only `/api/admin/person360` route added for internal-safe resolver diagnostics
+  - `npm run typecheck` PASS
+  - `node src/lib/__tests__/person360-tests.mjs` PASS
+  - `node src/lib/__tests__/person-business-relationships-tests.mjs` PASS
+  - `node src/lib/__tests__/business360-tests.mjs` PASS
+  - build PASS
+  - critical paths PASS (`35/35`)
+  - phase 2 regression PASS
+  - vertical regression PASS
+  - localhost runtime PASS on `127.0.0.1:3000`
+- ACCEPTED LOCAL RUNTIME INCIDENT:
+  - incident accepted as resolved on Thursday, September 3, 2026
+  - proven root cause: running `npm run build` while `next dev` was already active against the same canonical repo / `.next` state
+  - proven effect: transient missing-module / missing-artifact `500` errors and disappearing results on localhost
+  - Mongo startup timeouts were transient and non-repeatable
+  - no Mongo code change authorized
+  - no Next/runtime code change authorized
+  - current runtime state:
+    - port `3000` PASS
+    - canonical repo serving YES
+    - results disappearing NO
+- CURRENT PHASE 2 WORKSTREAM: `Phase 2 Workstream 6 read-only economic activity attribution foundation`
+- COMPLETED PHASE 2 WORKSTREAM 6 CHECKPOINT:
+  - runtime commit `ca96ee6116c858c0a200af1c4f486b350d9900e8`
+  - shared `EconomicActivity360` read-only resolver added (`src/lib/economicActivity360.ts`), joining verified `bmev_records` payment truth with the existing Activity360 overlay for both business and person anchors
+  - admin-only `/api/admin/economic-activity360` route added for internal-safe diagnostics (businessId or userId)
+  - `node src/lib/__tests__/economicActivity360-tests.mjs` PASS
+  - `npm run typecheck` PASS
+  - `npm run build` PASS
+  - critical paths PASS (`35/35`)
+  - phase 2 regression PASS (`26/26`)
+  - vertical regression PASS
+  - `npm run runtime:check` PASS
+  - localhost runtime PASS on `127.0.0.1:3000`
+- NEXT PHASE 2 SLICE CANDIDATE: `surface EconomicActivity360 as an optional read-only section inside Business360/Person360 (or a dedicated admin UI), once an owner-approved consumer/UI use case is defined`
+
+## Master program anchors — 2026-08-25
+
+- CURRENT RELEASE COMPLETION: `67%`
+- CURRENT WORLD-CLASS INDEX: `381 / 1000`
+- PROGRAM ITEMS: `26`
+- WORLD-CLASS GAPS: `10`
+- OPEN P0: `0`
+- OPEN P1: `0`
+- OPEN P2: `0`
+- OPEN P3: `0`
+- BWE-13: `EXTERNAL PROOF PENDING`
+- BUSINESS INDEPENDENCE: `BI-0 — PLATFORM PRE-REVENUE / UNPROVEN`
+- BMEV: `UNVERIFIED / NOT YET INSTRUMENTED`
+- BI-1: `NOT ACHIEVED — owner live proof pending`
+- ES-0: `NOT ACHIEVED — owner live proof pending`
+
+## Compact checkpoint — 2026-08-12
+
+- LATEST VERIFIED RUNTIME HEAD: `38d1681bd31c75ea86eb3453ea617b04e0558c46`
+- PUBLIC UX RECONCILIATION COMMITS PRESENT:
+  - `4cc163a7a955d38fd3403680bc5ceaa0cd3c6c1e`
+  - `53d023a535437a4e848e575ac7b4310584916b05`
+  - `5fa3db91f0d81e61f8218fd007bb008b9de1e4bc`
+  - `7322e189ff275330f6050599f91351212cfc7efb`
+  - `dea50fb5dc1497ba6bfa317bccc2afb4d09bc413`
+- RUNTIME RECONCILIATION COMMIT: `c996a1b4d5b02b3b9dcfa65c245d234462072065`
+- LIVE ROOT RUNTIME DIRTY COUNT: `0` tracked runtime diffs
+- PRE-EXISTING ROOT PUBLIC ASSET DIRTINESS: `1` untracked upload directory (`public/uploads/businesses/`)
+- COMPLETED VERIFICATION CAPABILITIES:
+  - existing claim / ownership verification preserved
+  - ownership verification complete
+  - prospective new-business Black-owned verification automation implemented
+  - structured intake, explainable decisioning, automated more-evidence routing, admin visibility, and exception routing complete
+- PRESERVED SAFETY BOUNDARIES:
+  - existing verified BWE inventory remains unchanged
+  - safe public-activation contract remains implemented but feature-gated OFF
+  - production auto-activation remains OFF
+  - automatic racial inference remains prohibited
+- EXISTING INVENTORY PRESERVATION RULE:
+  - established inventory remains untouched and outside the prospective automation lane
+- NEW-BUSINESS PROSPECTIVE RULE:
+  - only new businesses may enter the final Black-owned verification automation path, and race inference is prohibited
+
+## Implementation result — 2026-08-11
+
+- prospective automated new-business Black-owned verification: implemented
+- existing inventory preserved: yes
+- qualifying owner records + explicit Black self-attestation: implemented
+- business legitimacy automation: implemented
+- claimant authorization automation: implemented
+- 51% ownership/control calculation: implemented
+- automated more-evidence routing: implemented
+- exception-only human review path: implemented
+- safe public activation contract: implemented / dry run / off
+- production auto-activation enabled: no
+- automatic racial inference: no
+
+## Student Hub — structured current + upcoming opportunity rebuild
+
+- **Status:** PARTIAL
+- **Primary audience:** Black students
+- **Access:** open to all students
+- **HBCU resources:** included as part of the hub
+- **HBCU focus of entire hub:** no
+- **Legacy baseline preserved:** 27 legacy raw records, 23 unique canonical opportunities after dedupe, 4 duplicate raw records, and HBCU resources included inside the broader Black-student-centered hub
+- **Phase 1 now committed:** canonical Student Hub catalog (`src/lib/studentHub/catalog.ts`), structured lifecycle/status fields, official-source metadata fields, `/api/student-hub/opportunities`, `/api/opportunities/latest`, and real feed endpoints for internships/scholarships replacing dead hooks
+- **Phase 2 now committed:** legacy-to-canonical reconciliation helpers, lifecycle derivation helper, authoritative-source refresh across the canonical catalog, current public scholarships/grants/internships/mentorship routes sourced from the canonical catalog, and authenticated Student Hub admin review endpoints/pages
+- **Current verified foundation:** 23 canonical records consolidated from the legacy Hub, Black-student-centered copy preserved, open-to-all-students positioning preserved, official-source verification captured for UNCF, TMCF, INROADS, MLT, NSBE, NABA, Scholarship America, NSF REU, Ron Brown, Pell, FSEOG, TEACH, UNCF ESA, USAJOBS Pathways, NIH SIP, Google student internships, HBCUConnect, SEO Career, and the Posse nomination pathway
+- **Current lifecycle accounting:** 18 open, 1 closing soon, 1 upcoming, 1 closed, 2 needs review, 0 stale, 0 broken links in the canonical catalog
+- **Admin maintenance foundation:** `/api/admin/student-hub` + `/admin/student-hub` now provide authenticated review of open/upcoming/closing-soon/closed/needs-review, stale, broken-link, and duplicate states inside existing BWE admin architecture
+- **Remaining required outcome:** complete the two remaining `needs_review` records with tighter official cycle proof where available, add authenticated add/edit/archive/mark-verified mutations, and broaden verified catalog coverage beyond the initial 23 reconciled legacy opportunities
+
 Status labels allowed:
 
 - COMPLETE
@@ -8,6 +305,22 @@ Status labels allowed:
 - BLOCKED BY PAYMENT COMPLETION
 - OPEN DEFECT
 
+Revenue-first governing directive in force: `docs/BWE_12_MONTH_REVENUE_FIRST_GOVERNING_DIRECTIVE_2026-06-28.md`
+
+Interpret all workstream activity through that directive and its Revenue Gate before resuming implementation.
+
+---
+
+## 0) DA-13 automated ownership-verification scaling readiness
+
+- **Status:** COMPLETE
+- **Entry point:** `/admin/claim-verification` and `src/lib/founding-membership.ts`
+- **Expected final outcome:** BWE can safely classify which claims are high-confidence enough for future automated Ownership Verification without granting ownership automatically until a separate explicit activation checkpoint is accepted.
+- **Current actual outcome:** DA-13 is complete in human-verification mode. Phase 5 added no separate runtime implementation commit beyond the Phase 4 base `466b886eaaea379c36896378374c38515ae76b02`, and runtime checkpoint `1af802a7f92f3f83b47042e26e5a0ac3cca27195` proves authenticated claimant/admin flow, claimant evidence persistence, claimant relationship capture, public-listing protection, cross-claim evidence isolation, admin visibility of current-versus-claimant values including city/state/postal code/business email/social comparisons, and admin visibility of the dry-run recommendation plus mandatory failures/unknowns. Automatic ownership activation remains deferred/OFF and Black-owned-status inference remains prohibited/OFF.
+- **Exact blocker:** none for the human-verification operating model. Automatic ownership activation remains a separate future evidence-gated capability because the real modern-claim sample is still `0` new structured live claims and `1` legacy historical claim.
+- **Files/routes/endpoints involved:** `src/lib/founding-membership.ts`, `src/pages/api/admin/founding-memberships.ts`, `src/pages/admin/claim-verification.tsx`, `src/pages/api/founding-membership/evidence.ts`, `src/pages/founding-membership/evidence.tsx`, `src/pages/api/stripe/webhook-handler.ts`, `scripts/runtime-proof-da13-authenticated.mjs`, `src/lib/founding-membership/__tests__/shadow-validation-tests.mjs`, `src/lib/founding-membership/__tests__/claim-intake-readiness-tests.mjs`
+- **Exact closure condition:** satisfied for human-verification mode. Future automatic activation review still requires meaningful real new-structure sample, zero dangerous false auto-verifies, mandatory UNKNOWN blocking, conflict/dispute/revocation protections, ownership and claimant rechecks, audit proof, and explicit owner approval.
+
 ---
 
 ## 1) Auth / login / session
@@ -15,8 +328,8 @@ Status labels allowed:
 - **Status:** PARTIAL
 - **Entry point:** `/login`
 - **Expected final outcome:** valid login establishes session; `/api/auth/session` + `/api/auth/me` behave correctly; protected routes guard/redirect correctly on both local systems.
-- **Current actual outcome:** verified on Mac mini; cross-machine proof on main dev machine not yet fully captured in this session.
-- **Exact blocker:** off-session runtime parity evidence pending.
+- **Current actual outcome:** local runtime on the current machine now proves guest boundary redirects, role-gated route/API behavior for user, seller, employer, business, and admin, and the business-session role drift in `/api/auth/me` has been fixed at runtime commit `c7ecbc31c52387d6a4601f1b86cab35e481355e6`. `/api/auth/session` remains a parallel NextAuth endpoint and does not currently resolve the live custom `session_token` session model.
+- **Exact blocker:** cross-machine proof still pending, and production/preview env values are not safely verifiable from this machine.
 - **Files/routes/endpoints involved:** `src/pages/login.tsx`, `src/pages/api/auth/login.ts`, `src/pages/api/auth/me.ts`, `/api/auth/session`, protected route guards.
 - **Exact closure condition:** same commit/env contract proves successful login/session/protected-route behavior on both Mac mini + main dev with no auth/env regressions.
 
@@ -25,10 +338,10 @@ Status labels allowed:
 - **Status:** BLOCKED BY PAYMENT COMPLETION
 - **Entry point:** `/marketplace` Buy CTA
 - **Expected final outcome:** CTA -> checkout -> payment complete -> webhook -> DB fulfillment state persisted -> user-visible purchased state correct.
-- **Current actual outcome:** CTA + checkout session creation verified; full paid webhook->fulfilled-state proof not completed for active canonical runs.
-- **Exact blocker:** payment completion + post-payment fulfillment verification pending.
-- **Files/routes/endpoints involved:** `src/components/BuyNowButton.tsx`, `src/pages/api/checkout/create-session.ts`, `src/pages/api/stripe/webhook-handler.ts`, `payments` + fulfillment records.
-- **Exact closure condition:** one canonical marketplace paid run shows payment complete, webhook processed, DB fulfilled state, and user-visible final state.
+- **Current actual outcome:** CTA + checkout session creation are preserved through the existing Stripe checkout flow, marketplace payment linkage now carries explicit deterministic `businessId` when canonically present, verified paid webhook processing can upsert a deduplicated marketplace BMEV record, and marketplace payment success can show buyer-scoped order details without exposing guest data. Missing Stripe credentials in the current localhost runtime remain a local environment/proof limitation, not a proven release defect by themselves.
+- **Exact blocker:** no owner-authorized real payment has been executed yet; the current Pamfa product path still has ambiguous seller->business linkage in canonical data; owner-controlled Stripe runtime proof is still required in the established environment.
+- **Files/routes/endpoints involved:** `src/components/BuyNowButton.tsx`, `src/pages/api/checkout/create-session.ts`, `src/pages/api/stripe/checkout.ts`, `src/lib/checkout/createProductCheckoutSession.ts`, `src/lib/marketplace/paymentLinkage.ts`, `src/lib/marketplace/businessAttribution.ts`, `src/lib/economics/marketplaceBmev.ts`, `src/pages/api/marketplace/order-confirmation.ts`, `src/pages/api/stripe/webhook-handler.ts`, `src/pages/payment-success.tsx`, `payments`, `orders`, `bmev_records`.
+- **Exact closure condition:** one owner-executed canonical marketplace paid run shows payment complete, webhook processed once, DB fulfilled state, user-visible final state, seller/admin visibility, marketplace fee treatment, and one-count BMEV capture with no duplicate economic attribution.
 
 ## 3) Seller onboarding
 
@@ -55,9 +368,9 @@ Status labels allowed:
 - **Status:** BLOCKED BY PAYMENT COMPLETION
 - **Entry point:** `/financial-literacy` (Get Lifetime Access / Enroll)
 - **Expected final outcome:** paid or free path completes; user gets course access/enrollment and correct destination.
-- **Current actual outcome:** both CTAs route correctly to Stripe; post-payment course access grant not fully proven in current canonical proof set.
+- **Current actual outcome:** `/financial-literacy`, `/learning`, `/course-enrollment`, and `/course-dashboard` now use the shared Experience 2.0 learning system with clearer access explanations, calmer module discovery, and preserved enrollment/dashboard route contracts; post-payment course access grant is still not fully proven in the current canonical proof set.
 - **Exact blocker:** payment-complete + access entitlement proof pending.
-- **Files/routes/endpoints involved:** `src/pages/financial-literacy.tsx`, `src/pages/api/stripe/checkout.ts`, `src/pages/api/courses/enroll.ts`, `src/pages/api/courses/verify-session.ts`, `src/pages/course-dashboard.tsx`.
+- **Files/routes/endpoints involved:** `src/pages/financial-literacy.tsx`, `src/pages/learning.tsx`, `src/pages/course-enrollment.tsx`, `src/pages/course-dashboard.tsx`, `src/pages/api/stripe/checkout.ts`, `src/pages/api/courses/enroll.ts`, `src/pages/api/courses/verify-session.ts`.
 - **Exact closure condition:** one canonical course purchase shows webhook/DB access grant and successful access to entitled course area.
 
 ## 6) Sponsorship purchase-to-fulfillment
@@ -160,13 +473,43 @@ Status labels allowed:
 - **Files/routes/endpoints involved:** `src/pages/course-enrollment.tsx`, `src/pages/course-dashboard.tsx`, `src/pages/api/courses/checkout-session.ts`, `src/pages/api/courses/verify-session.ts`, `src/pages/api/courses/enroll.ts`, Stripe webhook path.
 - **Exact closure condition:** canonical paid run proves DB entitlement write and successful access/delivery in UI.
 
+## 16) Consultant/Employer workflow completion lane
+
+- **Status:** PARTIAL
+- **Entry point:** `/dashboard/consultant/requests`, `/dashboard/employer/consultants/*`, `/dashboard/employer/consultants/pipeline`
+- **Expected final outcome:** employer requests are triaged with consultant response actions, moderation/admin queue exists for blocked/flagged requests, and conversion analytics cover full workflow.
+- **Current actual outcome:** discovery hub, profile authoring, employer pipeline board, consultant inbox/moderation/instrumentation exist; consultant response actions (accept/decline/request-more-info) are implemented; admin moderation queue read/write path is live (`/api/admin/consultant-moderation-queue` + `/admin/consultant-moderation`) with canonical error contract + not-found protection; escalation lifecycle read/write path is now also fully actionable (`/api/admin/consultant-escalations` + `/admin/consultant-escalations`) with canonical contract-backed transitions (`open`/`in_review`/`closed`), required close-note enforcement, and escalation status updates now sync back to underlying employer contact request disposition state (`escalated`/`resolved`) for operational consistency.
+- **Exact blocker:** richer conversion/workflow analytics + trust-hardening completion/polish + final end-to-end UX pass still open.
+- **Files/routes/endpoints involved:** `src/pages/dashboard/consultant/requests.tsx`, `src/pages/api/consultants/contact-requests.ts`, `src/pages/api/employer/consultant-contact-requests.ts`, `src/pages/dashboard/employer/consultants/[id].tsx`, `src/pages/api/admin/consultant-moderation-queue.ts`, `src/pages/admin/consultant-moderation.tsx`.
+- **Exact closure condition:** consultant action loop, employer/admin moderation queue, analytics coverage, and trust-hardening all proven with end-to-end evidence.
+
+## 17) Production auth/session audit lane
+
+- **Status:** PARTIAL
+- **Entry point:** production auth/logout/session behavior (`/api/auth/logout`, `/api/auth/me`, cookie issuance paths)
+- **Expected final outcome:** logout invalidates active session predictably and timeout policy is explicit + consistently enforced.
+- **Current actual outcome:** an older April 9, 2026 audit identified plausible root causes at code-path level, but no fresh Monday, August 10, 2026 reproduction was run in the DA-07/DA-10 lanes, so this is not currently verified as a live reproducible defect in the current canonical proof set.
+- **Exact blocker:** fresh current reproduction or non-reproduction evidence is still needed before classifying this lane as a present open defect or closing it as not currently reproducible.
+- **Files/routes/endpoints involved:** `src/pages/api/auth/logout.ts`, `src/pages/api/auth/login.ts`, `src/pages/api/auth/signup.ts`, `src/pages/api/auth/me.ts`, `src/hooks/useAuth.ts`, `docs/PRODUCTION_AUTH_SESSION_AUDIT_2026-04-09.md`.
+- **Exact closure condition:** fresh current evidence either reproduces the defect on the canonical environment and justifies a narrow fix, or proves the issue is not currently reproducible and downgrades the lane accordingly.
+
+## 18) Ownership verification scaling lane
+
+- **Status:** COMPLETE
+- **Entry point:** `/admin/claim-verification`, `/api/admin/founding-memberships`
+- **Expected final outcome:** ownership verification queue exposes a reusable first-pass machine classifier that separates routine admin review from exception-only review without changing the underlying claim lifecycle.
+- **Current actual outcome:** the shared founding-membership layer now derives a canonical normal-check result per record, the admin API returns verdict-level counts plus per-row normal-check details, and the admin claim-verification UI surfaces routine-versus-exception review status, verdict reason, consistency class, and detected issues. Existing business and organization ownership flows remain preserved.
+- **Exact blocker:** none in the current canonical repo state.
+- **Files/routes/endpoints involved:** `src/lib/founding-membership.ts`, `src/pages/api/admin/founding-memberships.ts`, `src/pages/admin/claim-verification.tsx`, `src/lib/founding-membership/__tests__/normal-check-tests.mjs`.
+- **Exact closure condition:** satisfied on Monday, August 10, 2026 by commit chain `b51f6e25fd8316f54d2df396b85ef7407d6107de` -> `fb8c11c19ecf035154ae6a48a3cc5bd87d8a2f73` plus focused founding-membership proofs, `npm run typecheck`, `node scripts/runtime-check.mjs`, and `node scripts/check-critical-paths.mjs`.
+
 ---
 
 ## Grouped summary
 
 ### COMPLETE
 
-- _(none currently marked complete under strict end-state standard)_
+- 18. Ownership verification scaling lane
 
 ### PARTIAL
 
@@ -179,6 +522,7 @@ Status labels allowed:
 - 12. Affiliate functionality
 - 13. Music platform / music selling
 - 14. Creator-selling / broader creator commerce
+- 16. Consultant/Employer workflow completion lane
 
 ### BLOCKED BY ENV/CONFIG
 
@@ -194,4 +538,4 @@ Status labels allowed:
 
 ### OPEN DEFECT
 
-- _(none currently classified as open defect in this snapshot; unresolved items are currently PARTIAL or payment/env blocked)_
+- _(none currently marked open defect under current canonical proof discipline)_

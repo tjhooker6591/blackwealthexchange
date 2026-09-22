@@ -1,0 +1,63 @@
+{
+  "generatedAt": "2026-04-20T21:06:53.873Z",
+  "cookieSecurity": {
+    "loginStatus": 200,
+    "sessionCookie": {
+      "name": "session_token",
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "SameSite=Lax",
+      "domain": null,
+      "path": "Path=/",
+      "maxAge": "Max-Age=1800"
+    },
+    "accountTypeCookie": {
+      "name": "accountType",
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "SameSite=Lax",
+      "domain": null,
+      "path": "Path=/",
+      "maxAge": "Max-Age=1800"
+    },
+    "sessionHttpOnly": true,
+    "sessionSameSiteLax": true,
+    "sessionSecureInLocal": false,
+    "sessionDomainInLocal": null,
+    "jsAccessibleSessionCookie": false,
+    "jsAccessibleAccountTypeCookie": true
+  },
+  "tokenExpiry": {
+    "expiredTokenStatus": 401,
+    "expiredTokenRejected": true
+  },
+  "apiProtection": {
+    "adminDashboardAnon": 401,
+    "adminToolsAnon": 404,
+    "marketplaceGetOrdersAnon": 401,
+    "marketplaceGetBuyerOrdersAnon": 401,
+    "marketplaceStatsAnon": 401,
+    "jobsEmployerAnon": 401,
+    "jobsCreateAnon": 401,
+    "jobsListAnon": 200
+  },
+  "roleEnforcement": {
+    "userToSellerApi": 403,
+    "sellerToSellerApi": 200,
+    "userToAdminApi": 403,
+    "adminToAdminApi": 200,
+    "userToEmployerApi": 403,
+    "employerToEmployerApi": 200,
+    "businessToSellerDashboard": 307,
+    "businessToSellerDashboardLocation": "/login?redirect=/marketplace/dashboard"
+  },
+  "logoutCompleteness": {
+    "logoutStatus": 200,
+    "clearedSessionCookie": true,
+    "clearedAccountTypeCookie": false,
+    "replayOldTokenStatus": 401,
+    "replayBlocked": true,
+    "postLogoutNoCookieStatus": 401
+  },
+  "issues": []
+}

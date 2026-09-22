@@ -1,0 +1,7 @@
+method=GET
+url=http://localhost:3000/api/sponsored-businesses
+status=200
+location=
+content_type=application/json; charset=utf-8
+bytes=3694
+body_preview={"ok":true,"sponsors":[{"_id":"69b09f2e378b7c3d1bf17d1c","name":"Pamfa United Citizen","tagline":"Featured on Black Wealth Exchange","img":"/images/sponsors/pamfaunitedcitizen.jpg","url":"/featured?name=Pamfa+United+Citi

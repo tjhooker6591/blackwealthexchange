@@ -30,10 +30,12 @@ export default async function handler(
 
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
-    return res.status(405).json({
-      ok: false,
-      error: { code: "METHOD_NOT_ALLOWED", message: "POST only" },
-    });
+    return res
+      .status(405)
+      .json({
+        ok: false,
+        error: { code: "METHOD_NOT_ALLOWED", message: "POST only" },
+      });
   }
 
   const body: any =
@@ -42,10 +44,12 @@ export default async function handler(
       : req.body || {};
   const rawQuery = typeof body.query === "string" ? body.query.trim() : "";
   if (!rawQuery) {
-    return res.status(400).json({
-      ok: false,
-      error: { code: "MISSING_QUERY", message: "query is required" },
-    });
+    return res
+      .status(400)
+      .json({
+        ok: false,
+        error: { code: "MISSING_QUERY", message: "query is required" },
+      });
   }
 
   const client = await clientPromise;
@@ -56,13 +60,15 @@ export default async function handler(
   const limit = await hitApiRateLimit(db, `ai-mode:ip:${ip}`, 30, 5);
   if (limit.blocked) {
     res.setHeader("Retry-After", String(limit.retryAfterSeconds));
-    return res.status(429).json({
-      ok: false,
-      error: {
-        code: "RATE_LIMITED",
-        message: "Too many AI Mode requests. Try again shortly.",
-      },
-    });
+    return res
+      .status(429)
+      .json({
+        ok: false,
+        error: {
+          code: "RATE_LIMITED",
+          message: "Too many AI Mode requests. Try again shortly.",
+        },
+      });
   }
 
   const session = getNetworkSession(req);
@@ -94,12 +100,14 @@ export default async function handler(
       message: error instanceof Error ? error.message : String(error),
       durationMs: Date.now() - startedAt,
     });
-    return res.status(500).json({
-      ok: false,
-      error: {
-        code: "AI_MODE_FAILED",
-        message: "AI Mode could not process this query.",
-      },
-    });
+    return res
+      .status(500)
+      .json({
+        ok: false,
+        error: {
+          code: "AI_MODE_FAILED",
+          message: "AI Mode could not process this query.",
+        },
+      });
   }
 }

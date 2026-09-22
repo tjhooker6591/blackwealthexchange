@@ -37,14 +37,18 @@ export async function resolveCommunityEconomicActivity(
         },
       ])
       .toArray(),
-    db.collection("bmev_records").distinct("buyerUserId", {
-      paymentVerified: true,
-      buyerUserId: { $ne: null },
-    }),
-    db.collection("bmev_records").distinct("businessId", {
-      paymentVerified: true,
-      businessId: { $ne: null },
-    }),
+    db
+      .collection("bmev_records")
+      .distinct("buyerUserId", {
+        paymentVerified: true,
+        buyerUserId: { $ne: null },
+      }),
+    db
+      .collection("bmev_records")
+      .distinct("businessId", {
+        paymentVerified: true,
+        businessId: { $ne: null },
+      }),
   ]);
 
   const count = Number(agg[0]?.count || 0);

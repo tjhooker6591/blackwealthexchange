@@ -1,0 +1,18 @@
+{
+  "generatedAt": "2026-06-17T19:08:19.531Z",
+  "count": 1,
+  "candidates": [
+    {
+      "_id": "67ea165aca2270d775407020",
+      "business_name": "",
+      "current_category": null,
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": [
+        "Apparel & Footwear"
+      ],
+      "matching_reason": "/\\bclothing\\b/i",
+      "confidence": "high"
+    }
+  ]
+}

@@ -1,0 +1,427 @@
+{
+  "generatedAt": "2026-05-08T22:53:25.571Z",
+  "broken": [
+    {
+      "id": "698c0f16c6a7356725f7f583",
+      "name": "Phillips Temple CME Church",
+      "website": "http://www.phillipstempletoledo.com",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND www.phillipstempletoledo.com",
+        "final": "http://www.phillipstempletoledo.com"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f597",
+      "name": "Miracle Tabernacle Church of God in Christ",
+      "website": "miracletabdogic.com",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND miracletabdogic.com",
+        "final": "https://miracletabdogic.com"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f59a",
+      "name": "Saint Mark Church of God in Christ",
+      "website": "staintmarkcogic.weebly.com",
+      "status": {
+        "cls": "BROKEN",
+        "code": 404,
+        "final": "https://staintmarkcogic.weebly.com"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f59c",
+      "name": "Rhema Christian Center Church of God in Christ",
+      "website": "rhemachristiancentersc.org",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND rhemachristiancentersc.org",
+        "final": "https://rhemachristiancentersc.org"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f5a1",
+      "name": "The Praise Center Church of God in Christ",
+      "website": "praisecentercogic.org",
+      "status": {
+        "cls": "BROKEN",
+        "code": 405,
+        "final": "https://praisecentercogic.org"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f5a4",
+      "name": "Abundant Life Ministries Church of God in Christ",
+      "website": "breakingeveryshackle.com",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND breakingeveryshackle.com",
+        "final": "https://breakingeveryshackle.com"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f5a8",
+      "name": "Faith Deliverance Church of God in Christ",
+      "website": "faithdeliverancecogic.com",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND faithdeliverancecogic.com",
+        "final": "https://faithdeliverancecogic.com"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f5c8",
+      "name": "The Temple Of Prayer Church Of God In Christ",
+      "website": "http://www.topscogic.org",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND www.topscogic.org",
+        "final": "http://www.topscogic.org"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f60f",
+      "name": "Rehoboth Church of God in Christ",
+      "website": "http://rehobothct.org",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND rehobothct.org",
+        "final": "http://rehobothct.org"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f615",
+      "name": "New Destiny Tabernacle Church Inc.",
+      "website": "http://newdestinytabernaclechurch.org/",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND newdestinytabernaclechurch.org",
+        "final": "http://newdestinytabernaclechurch.org/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f623",
+      "name": "Good Samaritan Church Of God In Christ",
+      "website": "http://www.gscogic.org/",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND www.gscogic.org",
+        "final": "http://www.gscogic.org/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f629",
+      "name": "Community Baptist Church",
+      "website": "http://execpc.com/~cbckenosha",
+      "status": {
+        "cls": "BROKEN",
+        "code": 404,
+        "final": "https://www.core.com/~cbckenosha"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f62c",
+      "name": "Fairview Missionary Baptist Church",
+      "website": "https://www.fairviewbcokc.com/",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND www.fairviewbcokc.com",
+        "final": "https://www.fairviewbcokc.com/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f62e",
+      "name": "Greater New Zion Baptist Church",
+      "website": "https://gnzbc.org/",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND gnzbc.org",
+        "final": "https://gnzbc.org/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f630",
+      "name": "Faith Hope & Love Missionary Baptist Church",
+      "website": "https://www.fhlmbc.org/",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND www.fhlmbc.org",
+        "final": "https://www.fhlmbc.org/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f632",
+      "name": "Harrison Bethel Baptist Church",
+      "website": "https://www.harrisonbethel.org/",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND www.harrisonbethel.org",
+        "final": "https://www.harrisonbethel.org/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f633",
+      "name": "Greater Shiloh Baptist Church",
+      "website": "https://greatershilohok.org/",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND greatershilohok.org",
+        "final": "https://greatershilohok.org/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f634",
+      "name": "Shiloh Baptist Church",
+      "website": "https://www.shilohtulsa.org/",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND www.shilohtulsa.org",
+        "final": "https://www.shilohtulsa.org/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f635",
+      "name": "Wayman A.M.E. Church",
+      "website": "https://www.waymanamechurch.org/",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND www.waymanamechurch.org",
+        "final": "https://www.waymanamechurch.org/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f639",
+      "name": "Bethesda Missionary Baptist Church",
+      "website": "https://www.bethesdambc.net/",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND www.bethesdambc.net",
+        "final": "https://www.bethesdambc.net/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f63c",
+      "name": "Zion Baptist Church",
+      "website": "https://www.zionbcstpaul.org/",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND www.zionbcstpaul.org",
+        "final": "https://www.zionbcstpaul.org/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f63f",
+      "name": "MACEDONIA TEMPLE 21ST CENTURY COGIC",
+      "website": "http://lrn.cc/5QQ",
+      "status": {
+        "cls": "BROKEN",
+        "code": 404,
+        "final": "https://learnboost.com/5QQ"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f64a",
+      "name": "Mt. Zion Missionary Baptist Church",
+      "website": "http://www.mtzionmbc.net",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND www.mtzionmbc.net",
+        "final": "http://www.mtzionmbc.net"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f650",
+      "name": "Elizabeth Missionary Baptist Church",
+      "website": "http://community.webtv.net/jwm_57/ElizabethMissionary",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND community.webtv.net",
+        "final": "http://community.webtv.net/jwm_57/ElizabethMissionary"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f67f",
+      "name": "Unity Baptist Church",
+      "website": "https://www.unityslc.com",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND www.unityslc.com",
+        "final": "https://www.unityslc.com"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f692",
+      "name": "Treasure Valley Full Gospel Fellowship",
+      "website": "tvfgf.org",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND tvfgf.org",
+        "final": "https://tvfgf.org"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f69c",
+      "name": "Greater Love Church Of God In Christ",
+      "website": "http://www.greaterlovecogic.org",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND www.greaterlovecogic.org",
+        "final": "http://www.greaterlovecogic.org"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f6a4",
+      "name": "City of the Lord Church",
+      "website": "https://www.cityofthelordchurchmaine.org/",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND www.cityofthelordchurchmaine.org",
+        "final": "https://www.cityofthelordchurchmaine.org/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f6a6",
+      "name": "Disciples International Christian Church",
+      "website": "https://dicc.myclcemail.com/",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND dicc.myclcemail.com",
+        "final": "https://dicc.myclcemail.com/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f6a8",
+      "name": "Gospel Kingdom Ministries (GOKIM)",
+      "website": "https://www.gokim.org/",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND www.gokim.org",
+        "final": "https://www.gokim.org/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f6af",
+      "name": "Gospel Outreach Ministries Church of God in Christ",
+      "website": "https://mygom.org/",
+      "status": {
+        "cls": "BROKEN",
+        "reason": "getaddrinfo ENOTFOUND mygom.org",
+        "final": "https://mygom.org/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f6b4",
+      "name": "Allen Chapel AME Church",
+      "website": "https://allenchapelayankton.wixsite.com/allenchapelayankton",
+      "status": {
+        "cls": "BROKEN",
+        "code": 404,
+        "final": "https://allenchapelayankton.wixsite.com/allenchapelayankton"
+      }
+    }
+  ],
+  "blocked": [
+    {
+      "id": "698c0f16c6a7356725f7f59d",
+      "name": "Universal Outreach Church of God in Christ",
+      "website": "universaloutreach.org",
+      "status": {
+        "cls": "BLOCKED",
+        "reason": "Hostname/IP does not match certificate's altnames: Host: universaloutreach.org. is not in the cert's altnames: DNS:attachedrive.com, DNS:www.attachedrive.com",
+        "final": "https://universaloutreach.org"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f5a2",
+      "name": "Reconciliation Church of God in Christ",
+      "website": "reconciliationcogic.org",
+      "status": {
+        "cls": "BLOCKED",
+        "reason": "connect ECONNREFUSED 50.18.48.65:443",
+        "final": "https://reconciliationcogic.org"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f603",
+      "name": "Holy Temple Church of God in Christ",
+      "website": "www.htccogiclr.org/index.html",
+      "status": {
+        "cls": "BLOCKED",
+        "reason": "Hostname/IP does not match certificate's altnames: Host: www.htccogiclr.org. is not in the cert's altnames: DNS:ssl2001.webhosting.comcast.net, DNS:ssl2002.webhosting.comcast.net, DNS:ssl2003.webhosting.comcast.net, DNS:ssl2004.webhosting.comcast.net, DNS:ssl2005.webhosting.comcast.net, DNS:ssl2006.webhosting.comcast.net, DNS:ssl2007.webhosting.comcast.net, DNS:ssl2008.webhosting.comcast.net",
+        "final": "https://www.htccogiclr.org/index.html"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f62d",
+      "name": "Avery Chapel A.M.E. Church",
+      "website": "https://www.averychapelame.com/",
+      "status": {
+        "cls": "BLOCKED",
+        "reason": "read ECONNRESET",
+        "final": "https://www.averychapelame.com/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f636",
+      "name": "New Creations Ministries COGIC",
+      "website": "https://newcreationsministries.com/",
+      "status": {
+        "cls": "BLOCKED",
+        "code": 403,
+        "final": "https://newcreationsministries.com/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f637",
+      "name": "St. James A.M.E. Church",
+      "website": "https://motherstjames.com/",
+      "status": {
+        "cls": "BLOCKED",
+        "reason": "write EPROTO 0031D8F401000000:error:0A000410:SSL routines:ssl3_read_bytes:ssl/tls alert handshake failure:../deps/openssl/openssl/ssl/record/rec_layer_s3.c:916:SSL alert number 40\n",
+        "final": "https://motherstjames.com/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f638",
+      "name": "Pilgrim Rest Missionary Baptist Church",
+      "website": "https://www.pilgrimrestmbc.org/",
+      "status": {
+        "cls": "BLOCKED",
+        "reason": "write EPROTO 0031D8F401000000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:../deps/openssl/openssl/ssl/record/rec_layer_s3.c:916:SSL alert number 80\n",
+        "final": "https://www.pilgrimrestmbc.org/"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f672",
+      "name": "Mount Nebo Missionary Baptist Church",
+      "website": "www.mtneboomaha.org",
+      "status": {
+        "cls": "BLOCKED",
+        "reason": "certificate has expired",
+        "final": "https://www.mtneboomaha.org"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f681",
+      "name": "Griffin Memorial Church of God in Christ",
+      "website": "https://www.griffinmemorialcogic.com",
+      "status": {
+        "cls": "BLOCKED",
+        "reason": "Hostname/IP does not match certificate's altnames: Host: www.griffinmemorialcogic.com. is not in the cert's altnames: DNS:*.securedata.net, DNS:securedata.net",
+        "final": "https://www.griffinmemorialcogic.com"
+      }
+    },
+    {
+      "id": "698c0f16c6a7356725f7f683",
+      "name": "Calvary Baptist Church",
+      "website": "https://calvaryslc.com",
+      "status": {
+        "cls": "BLOCKED",
+        "reason": "write EPROTO 0031D8F401000000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:../deps/openssl/openssl/ssl/record/rec_layer_s3.c:916:SSL alert number 80\n",
+        "final": "https://calvaryslc.com"
+      }
+    }
+  ]
+}

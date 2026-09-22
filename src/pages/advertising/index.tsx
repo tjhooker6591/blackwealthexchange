@@ -136,8 +136,8 @@ export default function AdvertisingIndexPage() {
                 the existing review, approval, and scheduled activation flow.
               </p>
               <p className="mt-3 text-sm text-white/58">
-                Placement definitions and delivery rules stay canonical and
-                visible before checkout.
+                Placement details and delivery terms stay visible before
+                checkout.
               </p>
               <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link

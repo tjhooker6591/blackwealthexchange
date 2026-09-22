@@ -1,0 +1,7 @@
+method=GET
+url=http://localhost:3000/advertising
+status=200
+location=
+content_type=text/html; charset=utf-8
+bytes=15785
+body_preview=<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8" data-next-head=""/><meta name="viewport" content="width=device-width, initial-scale=1" data-next-head=""/><title data-next-head="">Black Wealth Exchange</title><

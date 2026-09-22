@@ -1,0 +1,92 @@
+{
+  "route": "/business-directory",
+  "control": "pagination button/link text 2 (heuristic)",
+  "api": "/api/search/businesses",
+  "desktop": {
+    "label": "desktop",
+    "mobile": false,
+    "clicked": false,
+    "elapsedMs": 5007,
+    "url": "http://localhost:3000/business-directory?type=businesses&scope=businesses&tab=businesses",
+    "net": [],
+    "loadingSeen": false,
+    "logs": [
+      {
+        "type": "info",
+        "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+        "ts": 1778091405932
+      },
+      {
+        "type": "log",
+        "text": "[HMR] connected",
+        "ts": 1778091406009
+      },
+      {
+        "type": "info",
+        "text": "[timing] route start -> /business-directory?type=businesses&scope=businesses&tab=businesses",
+        "ts": 1778091406089
+      },
+      {
+        "type": "info",
+        "text": "[timing] auth/me 38ms status=200",
+        "ts": 1778091406090
+      },
+      {
+        "type": "info",
+        "text": "[timing] route complete /business-directory?type=businesses&scope=businesses&tab=businesses 18ms",
+        "ts": 1778091406107
+      },
+      {
+        "type": "info",
+        "text": "[timing] fetch /api/auth/me 14ms status=200",
+        "ts": 1778091406125
+      },
+      {
+        "type": "info",
+        "text": "[timing] auth/me 14ms status=200",
+        "ts": 1778091406126
+      }
+    ]
+  },
+  "mobile": {
+    "label": "mobile",
+    "mobile": true,
+    "clicked": false,
+    "elapsedMs": 5006,
+    "url": "http://localhost:3000/business-directory?type=businesses&scope=businesses&tab=businesses",
+    "net": [],
+    "loadingSeen": false,
+    "logs": [
+      {
+        "type": "log",
+        "text": "[HMR] connected",
+        "ts": 1778091412624
+      },
+      {
+        "type": "info",
+        "text": "[timing] auth/me 22ms status=200",
+        "ts": 1778091412680
+      },
+      {
+        "type": "info",
+        "text": "[timing] route start -> /business-directory?type=businesses&scope=businesses&tab=businesses",
+        "ts": 1778091412684
+      },
+      {
+        "type": "info",
+        "text": "[timing] route complete /business-directory?type=businesses&scope=businesses&tab=businesses 9ms",
+        "ts": 1778091412693
+      },
+      {
+        "type": "info",
+        "text": "[timing] fetch /api/auth/me 9ms status=200",
+        "ts": 1778091412704
+      },
+      {
+        "type": "info",
+        "text": "[timing] auth/me 9ms status=200",
+        "ts": 1778091412704
+      }
+    ]
+  }
+}

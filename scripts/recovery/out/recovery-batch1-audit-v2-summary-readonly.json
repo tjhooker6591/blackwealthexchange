@@ -1,0 +1,41 @@
+{
+  "corrected_actionable_candidate_count": 1578,
+  "no_action_count": 44,
+  "duplicate_breakdown": {
+    "exact phone collision": 1464,
+    "exact website-domain collision": 7,
+    "exact official-profile collision": 0,
+    "exact name plus exact address": 0,
+    "exact address but different business name": 101,
+    "same business name but different address": 0,
+    "same brand with multiple locations": 0,
+    "similar-name only": 18,
+    "possible rebrand": 0,
+    "weak heuristic relationship": 0,
+    "no duplicate relationship": 32
+  },
+  "queue_counts_after_no_action_removal": {
+    "A": 0,
+    "B": 13,
+    "C": 0,
+    "D": 1,
+    "E": 1471,
+    "F": 93,
+    "G": 0
+  },
+  "protected_requirement": {
+    "protectedBefore": 332,
+    "protectedAfterSimulation": 332,
+    "protectedIdsRemoved": 0,
+    "protectedBusinessesUnapproved": 0,
+    "protectedBusinessesDeactivated": 0
+  },
+  "safe_write_proposal": {
+    "operation_count": 1748,
+    "unique_record_count": 1477,
+    "website_only_operations": 13,
+    "phone_only_operations": 1193,
+    "records_containing_both": 271,
+    "excluded_malformed_operations": 0
+  }
+}

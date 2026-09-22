@@ -1,0 +1,2184 @@
+{
+  "rowCount": 31,
+  "rows": [
+    {
+      "_id": "67f73dec1d08a04e139a9b2c",
+      "current_values": {
+        "business_name": "cross colours",
+        "phone": "",
+        "website": "https://crosscolours.com/",
+        "address": "311 N. Robertson Blvd., Suite 458 Beverly Hills, CA 90211",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "Launched in L.A. in 1989, Carl Jones’ and T.J. Walkers’ streetwear label with a bold color palette inspired by the Pan-African flag and motto “clothing without prejudice” was embraced by hip-hop and then, seemingly, the whole world. The founders and the brand are still around — and their message seems more relevant than ever. (It’s also the subject of an ongoing exhibition at the temporarily closed California African American Museum in Exposition Park.) crosscolours.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "website": "https://crosscolours.com",
+        "display_categories": "Shopping and Retail",
+        "alias": "cross-colours"
+      },
+      "evidence_source": [
+        {
+          "field": "website",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        },
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct",
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": false,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "normalization",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/cross-colours",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "cross-colours",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b53",
+      "current_values": {
+        "business_name": "fear of god",
+        "phone": "",
+        "website": "https://fearofgod.com/",
+        "address": "3940 Laurel Canyon Blvd #427 Studio City, CA 91604",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "Jerry Lorenzo’s upscale streetwear label has collaborated with some of the biggest names in the business — sneaker maker Nike and Italian luxury menswear label Ermenegildo Zegna, to name just two. fearofgod.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "website": "https://fearofgod.com",
+        "display_categories": "Shopping and Retail",
+        "alias": "fear-of-god"
+      },
+      "evidence_source": [
+        {
+          "field": "website",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        },
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct",
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": false,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "normalization",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/fear-of-god",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "fear-of-god",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c75",
+      "current_values": {
+        "business_name": "the ron finley project",
+        "phone": "",
+        "website": "http://ronfinley.com/",
+        "address": "4501 W Exposition Blvd Los Angeles, CA 90016",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "The former fashion designer-turned-Gangsta Gardener recently taught MasterClass lessons on gardening and sells T-shirts online. ronfinley.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "website": "http://ronfinley.com",
+        "display_categories": "Shopping and Retail",
+        "alias": "the-ron-finley-project"
+      },
+      "evidence_source": [
+        {
+          "field": "website",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        },
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct",
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": false,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "normalization",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/the-ron-finley-project",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "the-ron-finley-project",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c41",
+      "current_values": {
+        "business_name": "silverback coffee of rwanda",
+        "phone": "",
+        "website": "https://silverbackcoffee.com/",
+        "address": "1712 W Sunset Blvd Los Angeles, CA 90026",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Restaurants",
+        "display_categories": "Restaurants",
+        "description": "Founded by Jack Karuletwa, Silverback sources its coffee from farms in Rwanda, where he grew up. A portion of proceeds are donated to Rwandan organizations. The Echo Park location is open for takeout and limited dine-in. 1712 W. Sunset Blvd., Echo Park,",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "website": "https://silverbackcoffee.com",
+        "display_categories": "Food and Beverage",
+        "alias": "silverback-coffee-of-rwanda"
+      },
+      "evidence_source": [
+        {
+          "field": "website",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        },
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct",
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": false,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "normalization",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/silverback-coffee-of-rwanda",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "silverback-coffee-of-rwanda",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Restaurants",
+      "current_category_source_value": "Restaurants",
+      "proposed_display_category": "Food and Beverage",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c40",
+      "current_values": {
+        "business_name": "sip & sonder",
+        "phone": "",
+        "website": "https://www.sipandsonder.com/",
+        "address": "108 S Market St Inglewood, CA 90301",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Restaurants",
+        "display_categories": "Restaurants",
+        "description": "Two lawyers, Amanda-Jane Thomas and Shanita Nicholas, became friends and launched Sip and Sonder, an entrepreneurial and creative hub that also houses a coffee house. Open for takeout. 108 S Market St, Inglewood,",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "website": "https://www.sipandsonder.com",
+        "display_categories": "Food and Beverage",
+        "alias": "sip-and-sonder"
+      },
+      "evidence_source": [
+        {
+          "field": "website",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        },
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct",
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": false,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "normalization",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/sip-and-sonder",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "sip-and-sonder",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Restaurants",
+      "current_category_source_value": "Restaurants",
+      "proposed_display_category": "Food and Beverage",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9bc3",
+      "current_values": {
+        "business_name": "luxe & glam beauty supply",
+        "phone": "",
+        "website": "https://lgbeautysupply.com/?v=7516fd43adaa",
+        "address": "623 SOUTH LONG BEACH COMPTON, CA 90221",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "cosmetic and beauty supply",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "website": "https://lgbeautysupply.com",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "alias": "luxe-and-glam-beauty-supply"
+      },
+      "evidence_source": [
+        {
+          "field": "website",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        },
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct",
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": false,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "normalization",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/luxe-and-glam-beauty-supply",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "luxe-and-glam-beauty-supply",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9ac8",
+      "current_values": {
+        "business_name": "adrien sauvage",
+        "phone": "",
+        "website": "https://asauvage.com/",
+        "address": "8500 Burton Way #612 Los Angeles Beverly Hills, CA 90048",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "Menswear designer Sauvage, a London-to-Beverly Hills transplant of Ghanian descent, has dressed the likes of Dwyane Wade, LeBron James and, most recently, 2019 NBA draft pick Zion Williamson, who was tapped by the New Orleans Pelicans in a cream-colored, shawl-collar made-to-measure House of A. Sauvage tuxedo. asauvage.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "website": "https://asauvage.com",
+        "display_categories": "Shopping and Retail",
+        "alias": "adrien-sauvage"
+      },
+      "evidence_source": [
+        {
+          "field": "website",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        },
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct",
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": false,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "normalization",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/adrien-sauvage",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "adrien-sauvage",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a4ed",
+      "current_values": {
+        "business_name": "Bai Blooms",
+        "phone": "",
+        "website": "",
+        "address": "8950 W Olympic Blvd #293 Beverly Hills, CA 90211",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Florist",
+        "display_categories": "Shopping",
+        "description": "BIA BLOOMS (florist – monthly arrangements)",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "bai-blooms"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/bai-blooms",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "bai-blooms",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b1b",
+      "current_values": {
+        "business_name": "charles mingus youth arts center",
+        "phone": "",
+        "website": "https://culturela.org/cultural-centers/watts-towers-campus/",
+        "address": "10624 Graham Ave, Los Angeles, CA 90002",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Museums, Cultural Institutions, and Shared Spaces",
+        "display_categories": "Museums, Cultural Institutions, and Shared Spaces",
+        "description": "Part of the world famous Watts Towers Campus and named after jazz great Charles Mingus, the youth center gives children a safe and creative atmosphere for individual expression with guidance and direction from professional artists.",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "website": "https://culturela.org/cultural-centers/watts-towers-campus",
+        "alias": "charles-mingus-youth-arts-center"
+      },
+      "evidence_source": [
+        {
+          "field": "website",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "normalization",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/charles-mingus-youth-arts-center",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "charles-mingus-youth-arts-center",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Museums, Cultural Institutions, and Shared Spaces",
+      "current_category_source_value": "Museums, Cultural Institutions, and Shared Spaces",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b54",
+      "current_values": {
+        "business_name": "fksp",
+        "phone": "",
+        "website": "https://shopfksp.com",
+        "address": "Fashion District Los Angeles, CA",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "contemporary women’s clothing brand, ethically made in LA",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "fksp"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/fksp",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "fksp",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b9e",
+      "current_values": {
+        "business_name": "ktx fitness",
+        "phone": "",
+        "website": "https://www.ktxfitness.com/",
+        "address": "1710 N McCadden Pl, Los Angeles, CA 90028",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Gym, Fitness Health and Wellness",
+        "display_categories": "Gym, Fitness Health and Wellness",
+        "description": "Founded by certified group instructor Keith Thompson, offers cycling, step and Zumba classes. Virtual classes and packages are available. 1710 N. McCadden Place, Los Angeles, ktxfitness.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "website": "https://www.ktxfitness.com",
+        "alias": "ktx-fitness"
+      },
+      "evidence_source": [
+        {
+          "field": "website",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "normalization",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/ktx-fitness",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "ktx-fitness",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Gym, Fitness Health and Wellness",
+      "current_category_source_value": "Gym, Fitness Health and Wellness",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9bf0",
+      "current_values": {
+        "business_name": "nior",
+        "phone": "",
+        "website": "https://www.thenior.com",
+        "address": "12211 Arbor Pl Los Angeles, CA 90044",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "contemporary women’s designer",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "nior"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/nior",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "nior",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c27",
+      "current_values": {
+        "business_name": "royal house of wraps",
+        "phone": "",
+        "website": "https://www.royalhouseofwraps.com",
+        "address": "1600 Vine St Los Angeles, CA 90028",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "head wraps",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "royal-house-of-wraps"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/royal-house-of-wraps",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "royal-house-of-wraps",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c04",
+      "current_values": {
+        "business_name": "patty wack vintage",
+        "phone": "",
+        "website": "https://www.pattywackvintage.com",
+        "address": "1620 Morton Ave Los Angeles, CA 90026",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "women’s vintage apparel",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "patty-wack-vintage"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/patty-wack-vintage",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "patty-wack-vintage",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b0c",
+      "current_values": {
+        "business_name": "bychari",
+        "phone": "",
+        "website": "https://bychari.com",
+        "address": "600 S Spring St Los Angeles, CA 90014",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "simple, dainty, beautiful jewelry – made in LA",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "bychari"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/bychari",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "bychari",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c21",
+      "current_values": {
+        "business_name": "roam vintage",
+        "phone": "",
+        "website": "https://roam-vintage.com",
+        "address": "2959 Potomac Ave Los Angeles, CA 90016",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "beautifully curated vintage womenswear",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "roam-vintage"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/roam-vintage",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "roam-vintage",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9acb",
+      "current_values": {
+        "business_name": "agnes baddoo",
+        "phone": "",
+        "website": "https://www.agnesbaddoo.com",
+        "address": "4705 Melrose Ave Los Angeles, CA 90029",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "leather goods",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "agnes-baddoo"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/agnes-baddoo",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "agnes-baddoo",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c9f",
+      "current_values": {
+        "business_name": "vanillablack",
+        "phone": "",
+        "website": "",
+        "address": "1825 Sunset Blvd Los Angeles, CA 90026",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Restaurants",
+        "display_categories": "Restaurants",
+        "description": "Vanessa Butler’s small coffee shop in Echo Park has a variety of coffee drinks including a “vanilla bomb” and vegan food options. 1825 Sunset Blvd., Echo Park.",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Food and Beverage",
+        "alias": "vanillablack"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/vanillablack",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "vanillablack",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Restaurants",
+      "current_category_source_value": "Restaurants",
+      "proposed_display_category": "Food and Beverage",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c7f",
+      "current_values": {
+        "business_name": "thrive doughnuts",
+        "phone": "",
+        "website": "https://www.thrivedoughnuts.com/",
+        "address": "9030 Owensmouth Ave Canoga Park, CA 91304",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Restaurants",
+        "display_categories": "Restaurants",
+        "description": "Thrive Doughnuts, Canoga Park,",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "website": "https://www.thrivedoughnuts.com",
+        "alias": "thrive-doughnuts"
+      },
+      "evidence_source": [
+        {
+          "field": "website",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "normalization",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/thrive-doughnuts",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "thrive-doughnuts",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Restaurants",
+      "current_category_source_value": "Restaurants",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c7a",
+      "current_values": {
+        "business_name": "the proper bunny",
+        "phone": "",
+        "website": "https://theproperbunny.com",
+        "address": "6230 Wilshire Blvd #71 Los Angeles, CA 90048",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "masks, mugs, graphic t’s, and more",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "the-proper-bunny"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/the-proper-bunny",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "the-proper-bunny",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9caf",
+      "current_values": {
+        "business_name": "zelie for she",
+        "phone": "",
+        "website": "https://www.zelieforshe.com",
+        "address": "PO BOX 94501 Pasadena CA 91109",
+        "city": "",
+        "state": "PO",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "trendy, chic, made in LA, ready to wear for women",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "zelie-for-she"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/zelie-for-she",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "zelie-for-she",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9ba3",
+      "current_values": {
+        "business_name": "laced",
+        "phone": "",
+        "website": "https://lacedlifestyle.com",
+        "address": "4193 Redondo Beach Blvd. Lawndale, CA 90260",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "shoes",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "laced"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/laced",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "laced",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9aee",
+      "current_values": {
+        "business_name": "bia blooms",
+        "phone": "",
+        "website": "https://www.tabiayapp.com/bloomsletter",
+        "address": "8950 W Olympic Blvd #293 Beverly Hills, CA 90211",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "BIA BLOOMS (florist – monthly arrangements)",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "bia-blooms"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/bia-blooms",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "bia-blooms",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b5f",
+      "current_values": {
+        "business_name": "galerie la",
+        "phone": "",
+        "website": "https://galerie.la",
+        "address": "767 South Alameda St. #192 Los Angeles 90021",
+        "city": "",
+        "state": "767",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "sustainable clothing, lifestyle goods, ROW DTLA",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "galerie-la"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/galerie-la",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "galerie-la",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c26",
+      "current_values": {
+        "business_name": "rockin cushions",
+        "phone": "",
+        "website": "https://rockincushions.com",
+        "address": "837 S Windsor Blvd Los Angeles, CA 90005",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "ROCKIN CUSHIONS (reupholsters Ikea furniture)",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "rockin-cushions"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/rockin-cushions",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "rockin-cushions",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9c08",
+      "current_values": {
+        "business_name": "philthy rags",
+        "phone": "",
+        "website": "https://www.shopphilthy.com",
+        "address": "201 S Market St., Inglewood, CA 90301",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "accessories, women’s clothing, shoes",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "philthy-rags"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/philthy-rags",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "philthy-rags",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b7f",
+      "current_values": {
+        "business_name": "house of aama",
+        "phone": "",
+        "website": "https://houseofaama.com",
+        "address": "6607 Cimarron St Los Angeles, CA 90047",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "men and women’s apparel, mother & daughter design duo, made in LA",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "house-of-aama"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/house-of-aama",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "house-of-aama",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9b88",
+      "current_values": {
+        "business_name": "junglegurl",
+        "phone": "",
+        "website": "https://junglegurl.com",
+        "address": "1030 Sanborn Ave Los Angeles, CA 90029",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "fun, colorful, tropical men & women’s casual-chic resort wear",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "junglegurl"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/junglegurl",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "junglegurl",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9ba2",
+      "current_values": {
+        "business_name": "lace by tanaya",
+        "phone": "",
+        "website": "https://lacebytanaya.com",
+        "address": "7952 West 3rd Street, Los Angeles, California 90048",
+        "city": "",
+        "state": "CALIFORNIA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "jewelry, body jewelry",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail",
+        "alias": "lace-by-tanaya"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "display_categories",
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/lace-by-tanaya",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "lace-by-tanaya",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9acd",
+      "current_values": {
+        "business_name": "aarmy",
+        "phone": "",
+        "website": "https://www.aarmy.com/home",
+        "address": "8599 Santa Monica Blvd West Hollywood, CA 90069",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Gym, Fitness Health and Wellness",
+        "display_categories": "Gym, Fitness Health and Wellness",
+        "description": "Boot camp-style fitness studio founded by trainer Angela Davis and former tennis pro Akin Akman. It has a daily lineup of workouts for free through Instagram Live — follow @aarmy for the schedule. 8599 Santa Monica Blvd., West Hollywood, aarmy.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "alias": "aarmy"
+      },
+      "evidence_source": [
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "low",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/aarmy",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "aarmy",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Gym, Fitness Health and Wellness",
+      "current_category_source_value": "Gym, Fitness Health and Wellness",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9ace",
+      "current_values": {
+        "business_name": "alem digital marketing",
+        "phone": "",
+        "website": "https://alemdigitalmarketing.com",
+        "address": "2219 Main St #224, Santa Monica, CA 90405",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Services",
+        "display_categories": "Services",
+        "description": "internet marketing services, small business local SEO services",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "alias": "alem-digital-marketing"
+      },
+      "evidence_source": [
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "low",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "C",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/alem-digital-marketing",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "alem-digital-marketing",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Services",
+      "current_category_source_value": "Services",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    }
+  ]
+}

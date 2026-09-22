@@ -1,0 +1,31 @@
+{
+  "environment": {
+    "database": "bwes-cluster",
+    "collection": "businesses",
+    "executionTimestamp": "2026-06-21T05:26:54.958Z",
+    "script": "/Users/blackforge/workspace/bwe/repos/repo_clean/scripts/recovery/audit_all_businesses_enrichment_readonly.js"
+  },
+  "totals": {
+    "totalAudited": 2259,
+    "protectedBusinesses": 332,
+    "remainingBusinesses": 1927,
+    "missingNameRecords": 797,
+    "missingNameRecordsWithMachineSuggestedIdentity": 59,
+    "recordsWithOfficialLookingUrlStoredInMongoDb": 553,
+    "recordsWithMultipleStoredLookupClues": 1689,
+    "recordsWithMachineDetectedDuplicateRelationship": 1558,
+    "closedBusinessesFound": 4,
+    "recordsRequiringVerificationBeforeApproval": 0,
+    "manualReviewRecords": 822,
+    "unresolvedRecords": 262,
+    "recordsFlaggedAsStillLackingEnoughInformation": 42
+  },
+  "protectedBusinessSimulation": {
+    "protectedCountBefore": 332,
+    "protectedCountAfter": 332,
+    "protectedIdsRemoved": 0,
+    "protectedBusinessesDeactivated": 0,
+    "protectedBusinessesUnapproved": 0
+  },
+  "exactRequiredSimulationText": "Protected count before: 332\nProtected count after: 332\nProtected IDs removed: 0\nProtected businesses deactivated: 0\nProtected businesses unapproved: 0"
+}

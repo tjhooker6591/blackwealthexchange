@@ -1,0 +1,55 @@
+name: Acquisition Follow-up Scan
+
+# BWE Acquisition & Proof -- schedules scripts/acquisition-followup-scan.mjs
+# using this repo's existing GitHub Actions scheduling pattern (see
+# network-alerts-scan.yml). Sends up to 2 automated follow-up nudges to
+# prospects who've gone quiet, then stops on its own. Never sends the
+# first/initial outreach email -- that fires immediately when an admin
+# adds a prospect, one at a time, from the app itself.
+#
+# OWNER ACTION REQUIRED before this runs for real:
+#   1. Add repository secrets under Settings -> Secrets and variables ->
+#      Actions: MONGODB_URI, MONGODB_DB (if not "bwes-cluster"),
+#      SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM,
+#      PUBLIC_BASE_URL. If MONGODB_URI/MONGODB_DB are already set for the
+#      existing Network Alerts Scan workflow, they're already available
+#      here too -- only the SMTP_*/PUBLIC_BASE_URL secrets are new.
+#   2. Confirm the schedule trigger below matches the desired cadence.
+# Until step 1 is done, this workflow runs but the script exits cleanly
+# without sending anything (SMTP not configured is treated as "nothing to
+# do", not an error).
+
+on:
+  schedule:
+    # Once daily. Follow-ups are only ever due after a 3-day gap, so
+    # there's no benefit to running this more often.
+    - cron: "17 14 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run acquisition follow-up scan
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          MONGODB_DB: ${{ secrets.MONGODB_DB }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          PUBLIC_BASE_URL: ${{ secrets.PUBLIC_BASE_URL }}
+        run: npm run acquisition:followup-scan

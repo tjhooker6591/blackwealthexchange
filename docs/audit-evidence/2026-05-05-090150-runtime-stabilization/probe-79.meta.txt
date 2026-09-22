@@ -1,0 +1,7 @@
+method=GET
+url=http://localhost:3000/dashboard/employer/consultants
+status=307
+location=
+content_type=
+bytes=53
+body_preview=/login?redirect=%2Fdashboard%2Femployer%2Fconsultants

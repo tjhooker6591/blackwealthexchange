@@ -1,0 +1,215 @@
+{
+  "environment": {
+    "database": "bwes-cluster",
+    "collection": "businesses",
+    "executionTimestamp": "2026-06-20T04:58:52.352Z",
+    "script": "/Users/blackforge/workspace/bwe/repos/repo_clean/scripts/recovery/audit_all_businesses_protected_public_readonly_v2.js"
+  },
+  "exactProtectedSetLogic": {
+    "sourceFile": "src/pages/api/search/businesses.ts",
+    "mongoQuerySelector": {
+      "$and": [
+        {
+          "$or": [
+            {
+              "status": "approved"
+            },
+            {
+              "status": "verified"
+            },
+            {
+              "status": "active"
+            },
+            {
+              "status": {
+                "$exists": false
+              }
+            },
+            {
+              "status": ""
+            },
+            {
+              "status": null
+            }
+          ]
+        },
+        {
+          "$nor": [
+            {
+              "isTest": true
+            },
+            {
+              "auditTag": {
+                "$exists": true
+              }
+            },
+            {
+              "auditTag": "/^BWE_LOCAL_AUDIT/i"
+            },
+            {
+              "category": "/^auditpagination$/i"
+            },
+            {
+              "categories": "/^auditpagination$/i"
+            },
+            {
+              "display_categories": "/^auditpagination$/i"
+            },
+            {
+              "email": "/@local\\.test$/i"
+            },
+            {
+              "business_name": "/^auditpagination_/i"
+            },
+            {
+              "name": "/^auditpagination_/i"
+            }
+          ]
+        },
+        {
+          "$or": [
+            {
+              "alias": {
+                "$exists": true,
+                "$type": "string",
+                "$ne": ""
+              }
+            },
+            {
+              "slug": {
+                "$exists": true,
+                "$type": "string",
+                "$ne": ""
+              }
+            }
+          ]
+        },
+        {
+          "$or": [
+            {
+              "isComplete": true
+            },
+            {
+              "completenessScore": {
+                "$gte": 70
+              }
+            },
+            {
+              "qualityScore": {
+                "$gte": 70
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "requiredApprovalStatusFields": "status must be approved, verified, active, missing, empty string, or null; no separate approved=true requirement in the mirrored selector",
+    "aliasOrSlugRequirements": "must have non-empty alias or non-empty slug",
+    "completenessRequirements": "must satisfy isComplete=true OR completenessScore>=70 OR qualityScore>=70",
+    "postQueryFiltering": "results are normalized, ranked, and paginated; no additional exclusion of organic rows beyond selector-matched population",
+    "paginationDeduplicationNotes": {
+      "eligibleForPublicSearch": "all records matching the mirrored selector belong to the complete protected public-search population",
+      "actuallyReturnedOnSpecificPaginatedRequest": "a specific request returns a ranked page-sized subset of the eligible population",
+      "completePublicPopulation": "the protected population count is 332 before pagination"
+    }
+  },
+  "populationReconciliation": {
+    "totalBusinesses": 2259,
+    "protectedPublicSearchBusinesses": 332,
+    "remainingBusinesses": 1927,
+    "total": 2259,
+    "everyBusinessInExactlyOneGroup": true
+  },
+  "protectedBusinessProtectionGuarantee": {
+    "protectedFieldsThatMustNotChange": [
+      "approved status",
+      "active status",
+      "visibility",
+      "publication state",
+      "moderation state",
+      "alias",
+      "slug",
+      "business name",
+      "address or location",
+      "search completeness",
+      "any other field used by the public-search selector"
+    ],
+    "currentAuditDidNotWrite": true,
+    "futureCategoryOnlyProposalMustNotChangeSelectorFields": true,
+    "noAutomaticWriteAuthorized": true
+  },
+  "protected332CategoryCounts": {
+    "count": 332,
+    "validDisplayCategories": 79,
+    "blankDisplayCategories": 145,
+    "usableCategory": 9,
+    "usableCategories": 204,
+    "directlyMappableCategory": 212,
+    "ambiguousCategory": 4,
+    "malformedCategoryData": 0,
+    "textOnlyInferredCategory": 12,
+    "noSafeCategoryProposal": 1
+  },
+  "remaining1927CategoryCounts": {
+    "count": 1927,
+    "validDisplayCategories": 1545,
+    "blankDisplayCategories": 25,
+    "usableCategory": 53,
+    "usableCategories": 1545,
+    "directlyMappableCategory": 1546,
+    "ambiguousCategory": 19,
+    "malformedCategoryData": 0,
+    "textOnlyInferredCategory": 0,
+    "noSafeCategoryProposal": 12
+  },
+  "mappingCorrection": {
+    "invalidPriorBehavior": "loose substring matching could let short fragments or unrelated text produce false category matches, including beauty/haircare rows ending up under faith services",
+    "specificBrokenRuleClass": "substring containment against normalized free text instead of bounded token or phrase rules",
+    "correction": "replaced loose substring logic with exact direct term rules for category/categories and bounded word/phrase regex rules for text inference; beauty/hair/haircare/barber/grooming/skincare/cosmetics/salon/nails/soap map to Beauty, Grooming and Personal Care; faith now only matches bounded words like church, faith, ministry, spiritual",
+    "beautyProtectionExamples": [
+      "beauty",
+      "hair",
+      "haircare",
+      "barber",
+      "grooming",
+      "skincare",
+      "cosmetics",
+      "salon",
+      "nails",
+      "soap"
+    ]
+  },
+  "sourceReliabilitySeparation": {
+    "directMappingSources": [
+      "category",
+      "categories"
+    ],
+    "inferenceSources": [
+      "business_name",
+      "description",
+      "website",
+      "combined_text"
+    ],
+    "directAndInferenceNotEquallyReliable": true
+  },
+  "protectedBusinessSimulation": {
+    "protectedIdsBefore": 332,
+    "protectedIdsAfterSimulatedCategoryUpdates": 332,
+    "protectedIdsRemoved": 0,
+    "protectedIdsDeactivated": 0,
+    "protectedIdsUnapproved": 0,
+    "protectedIdsNoLongerSearchable": 0,
+    "newlyEligibleIds": [],
+    "newlyEligibleIdsCount": 0
+  },
+  "candidateValidation": {
+    "allCandidateIdsUnique": true,
+    "protectedAndRemainingArtifactCountsReconcile": true,
+    "allProposedCategoriesUseExistingStringFormat": true,
+    "noArrayValuesProposedWhereStringsExpected": true,
+    "noProposalBasedOnBrokenFaithInference": true,
+    "noProposalModifiesApprovalOrVisibility": true,
+    "noCurrentlyPublicBusinessWouldDisappear": true,
+    "noMongoDbWritesOccurred": true
+  }
+}

@@ -1,0 +1,3170 @@
+[
+  {
+    "_id": "681d1df4fd9719ad7b26dfa2",
+    "sequence_number": 333,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfa2",
+      "alias": "lys-beauty",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "LYS Beauty",
+        "proposed_value": "LYS Beauty",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "official website brand text",
+        "confidence": "high"
+      },
+      {
+        "field": "description",
+        "current_value": "LYS Beauty offers affordable, clean makeup products across face, eyes, and lips in a wide range of shades and formulas—and was the first Black-owned clean makeup at Sephora.",
+        "proposed_value": "LYS Beauty offers affordable, clean makeup products across face, eyes, and lips in a wide range of shades and formulas—and was the first Black-owned clean makeup at Sephora.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB description cross-checked against visited website product/about text",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Lys Beauty Salon, Gift and Decor Center, F.D. Rooseveltweg, Esperansa bij Salsbach, Curaçao, 0000 CW, Nederland",
+        "proposed_value": "Lys Beauty Salon, Gift and Decor Center, F.D. Rooseveltweg, Esperansa bij Salsbach, Curaçao, 0000 CW, Nederland",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "NEDERLAND",
+        "proposed_value": "NEDERLAND",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "Nederland",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://lysbeauty.com",
+        "proposed_value": "https://lysbeauty.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "high"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Makeup, Clean Beauty",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Beauty, Grooming and Personal Care",
+        "proposed_value": "Beauty, Grooming and Personal Care",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "lys-beauty",
+        "proposed_value": "lys-beauty",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/lys-beauty",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa6",
+    "sequence_number": 334,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfa6",
+      "alias": "for-them",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "For Them",
+        "proposed_value": "For Them",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "description",
+        "current_value": "For Them specializes in sustainable binders designed for queer and trans communities, prioritizing comfort, fit, and healthy compression.",
+        "proposed_value": "For Them specializes in sustainable binders designed for queer and trans communities, prioritizing comfort, fit, and healthy compression.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Scrubs for Them, 2121, Carling Avenue, Carlingwood, Bay, Ottawa, Eastern Ontario, Ontario, K2A 1H1, Canada",
+        "proposed_value": "Scrubs for Them, 2121, Carling Avenue, Carlingwood, Bay, Ottawa, Eastern Ontario, Ontario, K2A 1H1, Canada",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "CANADA",
+        "proposed_value": "CANADA",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "Canada",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://forthemofficial.com",
+        "proposed_value": "https://forthemofficial.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Apparel, Wellness",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Clothing and Accessories",
+        "proposed_value": "Clothing and Accessories",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "for-them",
+        "proposed_value": "for-them",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/for-them",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa8",
+    "sequence_number": 335,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfa8",
+      "alias": "ami-cole",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Ami Colé",
+        "proposed_value": "Ami Colé",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "description",
+        "current_value": "Ami Colé is a clean beauty brand offering vegan, fragrance-free, hypoallergenic products in recyclable, reusable, or compostable packaging.",
+        "proposed_value": "Ami Colé is a clean beauty brand offering vegan, fragrance-free, hypoallergenic products in recyclable, reusable, or compostable packaging.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Cole haan, 竜ヶ崎阿見線, よしわら一丁目, 阿見町, 稲敷郡, 茨城県, 300-1288, 日本",
+        "proposed_value": "Cole haan, 竜ヶ崎阿見線, よしわら一丁目, 阿見町, 稲敷郡, 茨城県, 300-1288, 日本",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "日本",
+        "proposed_value": "日本",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "日本",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://amicole.com",
+        "proposed_value": "https://amicole.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Clean Beauty, Skin Care",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Beauty, Grooming and Personal Care",
+        "proposed_value": "Beauty, Grooming and Personal Care",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "ami-cole",
+        "proposed_value": "ami-cole",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/ami-cole",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa9",
+    "sequence_number": 336,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfa9",
+      "alias": "saint-ola",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Saint Ola",
+        "proposed_value": "Saint Ola",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "official website brand text",
+        "confidence": "high"
+      },
+      {
+        "field": "description",
+        "current_value": "Saint Ola, founded by Jummy Thomas, offers modern African-inspired dresses, skirts, jumpsuits, and hair accessories blending vintage and contemporary styles.",
+        "proposed_value": "Saint Ola, founded by Jummy Thomas, offers modern African-inspired dresses, skirts, jumpsuits, and hair accessories blending vintage and contemporary styles.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB description cross-checked against visited website product/about text",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Ola, Igeldo, Mendebaldea, Donostia / San Sebastián, Gipuzkoa, Euskadi, 20008, España",
+        "proposed_value": "Ola, Igeldo, Mendebaldea, Donostia / San Sebastián, Gipuzkoa, Euskadi, 20008, España",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "medium"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "ESPAñA",
+        "proposed_value": "ESPAñA",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "España",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://saintola.com",
+        "proposed_value": "https://saintola.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "high"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Fashion, Accessories",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Clothing and Accessories",
+        "proposed_value": "Clothing and Accessories",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "saint-ola",
+        "proposed_value": "saint-ola",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/saint-ola",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfaa",
+    "sequence_number": 337,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfaa",
+      "alias": "telfar",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Telfar",
+        "proposed_value": "Telfar",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "official website brand text",
+        "confidence": "high"
+      },
+      {
+        "field": "description",
+        "current_value": "Telfar, by Telfar Clemens, is known for its accessible luxury bags—Shopping Bag, Circle Bag, Jelly Shopper and Puff Shopper—favored by creatives and celebrities alike.",
+        "proposed_value": "Telfar, by Telfar Clemens, is known for its accessible luxury bags—Shopping Bag, Circle Bag, Jelly Shopper and Puff Shopper—favored by creatives and celebrities alike.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB description cross-checked against visited website product/about text",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Kocatepe, Nizip, Gaziantep, Güneydoğu Anadolu Bölgesi, Türkiye",
+        "proposed_value": "Kocatepe, Nizip, Gaziantep, Güneydoğu Anadolu Bölgesi, Türkiye",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "medium"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "TüRKIYE",
+        "proposed_value": "TüRKIYE",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "Türkiye",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://telfar.net",
+        "proposed_value": "https://telfar.net",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "high"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Luxury Goods, Accessories",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Clothing and Accessories",
+        "proposed_value": "Clothing and Accessories",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "telfar",
+        "proposed_value": "telfar",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/telfar",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfab",
+    "sequence_number": 338,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfab",
+      "alias": "third-crown",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Third Crown",
+        "proposed_value": "Third Crown",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "description",
+        "current_value": "Third Crown, by Kristin and Kofi Essel, creates geometric statement jewelry—necklaces, rings, cuff bracelets—for all genders, inspired by everyday architecture.",
+        "proposed_value": "Third Crown, by Kristin and Kofi Essel, creates geometric statement jewelry—necklaces, rings, cuff bracelets—for all genders, inspired by everyday architecture.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "TP Legal Ltd, Church Street East, Horsell, Woking, Surrey, England, GU21 6HR, United Kingdom",
+        "proposed_value": "TP Legal Ltd, Church Street East, Horsell, Woking, Surrey, England, GU21 6HR, United Kingdom",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "UNITED",
+        "proposed_value": "UNITED",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "United Kingdom",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://thirdcrown.com",
+        "proposed_value": "https://thirdcrown.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Jewelry, Design",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Clothing and Accessories",
+        "proposed_value": "Clothing and Accessories",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "third-crown",
+        "proposed_value": "third-crown",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/third-crown",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfac",
+    "sequence_number": 339,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfac",
+      "alias": "tree-fairfax",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Tree Fairfax",
+        "proposed_value": "Tree Fairfax",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "official website brand text",
+        "confidence": "high"
+      },
+      {
+        "field": "description",
+        "current_value": "Tree Fairfax offers handcrafted leather totes, wallets, belts and wine holder bags, all made with minimalist design and long-lasting materials.",
+        "proposed_value": "Tree Fairfax offers handcrafted leather totes, wallets, belts and wine holder bags, all made with minimalist design and long-lasting materials.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB description cross-checked against visited website product/about text",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Fairfax VLG, Rose Tree, Upper Providence, Upper Providence Township, Delaware County, Pennsylvania, 19065, United States",
+        "proposed_value": "Fairfax VLG, Rose Tree, Upper Providence, Upper Providence Township, Delaware County, Pennsylvania, 19065, United States",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "Delaware County",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "UNITED",
+        "proposed_value": "Pennsylvania",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "United States",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "19065",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://treefairfax.com",
+        "proposed_value": "https://treefairfax.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "high"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Leather Goods, Accessories",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Clothing and Accessories",
+        "proposed_value": "Clothing and Accessories",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "tree-fairfax",
+        "proposed_value": "tree-fairfax",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "city",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "phone",
+        "image"
+      ],
+      "score": 78,
+      "reaches7": true
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/tree-fairfax",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb1",
+    "sequence_number": 340,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfb1",
+      "alias": "boon-boona-coffee",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Boon Boona Coffee",
+        "proposed_value": "Boon Boona Coffee",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "description",
+        "current_value": "Boon Boona sources East African beans directly from growers, donates a portion of profits back to them, and brings Eritrean and Ethiopian coffee traditions to the U.S.",
+        "proposed_value": "Boon Boona sources East African beans directly from growers, donates a portion of profits back to them, and brings Eritrean and Ethiopian coffee traditions to the U.S.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Boon Boona Coffee, 1223, East Cherry Street, Yesler Terrace, Seattle, King County, Washington, 98122, United States",
+        "proposed_value": "Boon Boona Coffee, 1223, East Cherry Street, Yesler Terrace, Seattle, King County, Washington, 98122, United States",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "medium"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "King County",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "UNITED",
+        "proposed_value": "Washington",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "United States",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "98122",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://boonboona.com",
+        "proposed_value": "https://boonboona.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Coffee",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Food and Beverage",
+        "proposed_value": "Food and Beverage",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "boon-boona-coffee",
+        "proposed_value": "boon-boona-coffee",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "city",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "phone",
+        "image"
+      ],
+      "score": 78,
+      "reaches7": true
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/boon-boona-coffee",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb2",
+    "sequence_number": 341,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfb2",
+      "alias": "blk-and-bold",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Blk & Bold",
+        "proposed_value": "Blk & Bold",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "official website brand text",
+        "confidence": "high"
+      },
+      {
+        "field": "description",
+        "current_value": "Blk & Bold sells coffee and tea—roasts, cold brew, K-cups—and donates 5% of gross revenue annually to youth nonprofits.",
+        "proposed_value": "Blk & Bold sells coffee and tea—roasts, cold brew, K-cups—and donates 5% of gross revenue annually to youth nonprofits.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB description cross-checked against visited website product/about text",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "保樓 Bold Block, 崇平街 Sung Ping Street, 鶴園 Hok Yuen, 土瓜灣 To Kwa Wan, 九龍城區 Kowloon City District, 九龍 Kowloon, 香港 Hong Kong, 999077, 中国",
+        "proposed_value": "保樓 Bold Block, 崇平街 Sung Ping Street, 鶴園 Hok Yuen, 土瓜灣 To Kwa Wan, 九龍城區 Kowloon City District, 九龍 Kowloon, 香港 Hong Kong, 999077, 中国",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "medium"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "中国",
+        "proposed_value": "中国",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "中国",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://blkandbold.com",
+        "proposed_value": "https://blkandbold.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "high"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Coffee, Tea",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Food and Beverage",
+        "proposed_value": "Food and Beverage",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "blk-and-bold",
+        "proposed_value": "blk-and-bold",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/blk-and-bold",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb7",
+    "sequence_number": 342,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfb7",
+      "alias": "topicals",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Topicals",
+        "proposed_value": "Topicals",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "description",
+        "current_value": "Topicals is a dermatologist-backed brand offering serums, moisturizers and mists for chronic concerns like eczema and hyperpigmentation.",
+        "proposed_value": "Topicals is a dermatologist-backed brand offering serums, moisturizers and mists for chronic concerns like eczema and hyperpigmentation.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Kind Topicals, West 26th Avenue, Spenard, Anchorage, Alaska, 99503, United States",
+        "proposed_value": "Kind Topicals, West 26th Avenue, Spenard, Anchorage, Alaska, 99503, United States",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "Anchorage",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "UNITED",
+        "proposed_value": "Alaska",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "United States",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "99503",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://thetopicals.com",
+        "proposed_value": "https://thetopicals.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Skin Care, Clinical",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Beauty, Grooming and Personal Care",
+        "proposed_value": "Beauty, Grooming and Personal Care",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "topicals",
+        "proposed_value": "topicals",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "city",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "phone",
+        "image"
+      ],
+      "score": 78,
+      "reaches7": true
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/topicals",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb8",
+    "sequence_number": 343,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfb8",
+      "alias": "reddrop",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "RedDrop",
+        "proposed_value": "RedDrop",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "description",
+        "current_value": "RedDrop offers pads, underwear and period prep kits for tweens, plus resources and classes for parents supporting children through puberty.",
+        "proposed_value": "RedDrop offers pads, underwear and period prep kits for tweens, plus resources and classes for parents supporting children through puberty.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Reddrop Court, Altona Meadows, Melbourne, City of Hobsons Bay, Victoria, 3028, Australia",
+        "proposed_value": "Reddrop Court, Altona Meadows, Melbourne, City of Hobsons Bay, Victoria, 3028, Australia",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "medium"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "AUSTRALIA",
+        "proposed_value": "AUSTRALIA",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "Australia",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://reddrop.com",
+        "proposed_value": "https://reddrop.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "high"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Menstrual Products, Education",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Beauty, Grooming and Personal Care",
+        "proposed_value": "Beauty, Grooming and Personal Care",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "reddrop",
+        "proposed_value": "reddrop",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/reddrop",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfbb",
+    "sequence_number": 344,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfbb",
+      "alias": "barkal",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Barkal",
+        "proposed_value": "Barkal",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "description",
+        "current_value": "Barkal makes gender-neutral footwear inspired by traditional Sudanese men’s shoes, using high-quality leathers sourced from Italy.",
+        "proposed_value": "Barkal makes gender-neutral footwear inspired by traditional Sudanese men’s shoes, using high-quality leathers sourced from Italy.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "বরকল, বরকল উপজেলা, রাঙ্গামাটি পার্বত্য জেলা, চট্টগ্রাম বিভাগ, বাংলাদেশ",
+        "proposed_value": "বরকল, বরকল উপজেলা, রাঙ্গামাটি পার্বত্য জেলা, চট্টগ্রাম বিভাগ, বাংলাদেশ",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "medium"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "বাংলাদেশ",
+        "proposed_value": "বাংলাদেশ",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "বাংলাদেশ",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://barkal.com",
+        "proposed_value": "https://barkal.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Footwear, Design",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Clothing and Accessories",
+        "proposed_value": "Clothing and Accessories",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "barkal",
+        "proposed_value": "barkal",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/barkal",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfbd",
+    "sequence_number": 345,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfbd",
+      "alias": "camille-rose",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Camille Rose",
+        "proposed_value": "Camille Rose",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "official website brand text",
+        "confidence": "high"
+      },
+      {
+        "field": "description",
+        "current_value": "Camille Rose offers hair, skin, and body care products made from natural, food-grade ingredients, founded by Janell Stephens to treat her children’s eczema.",
+        "proposed_value": "Camille Rose offers hair, skin, and body care products made from natural, food-grade ingredients, founded by Janell Stephens to treat her children’s eczema.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB description cross-checked against visited website product/about text",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "East Camille Rose Court, Mountain Rose Estates, Palmer, Matanuska-Susitna Borough, Alaska, United States",
+        "proposed_value": "East Camille Rose Court, Mountain Rose Estates, Palmer, Matanuska-Susitna Borough, Alaska, United States",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "medium"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "UNITED",
+        "proposed_value": "UNITED",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "United States",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://camillerose.com",
+        "proposed_value": "https://www.camillerose.com/",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "high"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Hair Care, Skin Care, Body Care",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Beauty, Grooming and Personal Care",
+        "proposed_value": "Beauty, Grooming and Personal Care",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "camille-rose",
+        "proposed_value": "camille-rose",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/camille-rose",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc2",
+    "sequence_number": 346,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfc2",
+      "alias": "the-sip",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "The Sip",
+        "proposed_value": "The Sip",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "description",
+        "current_value": "The Sip offers a wine subscription service—bi-monthly or annual—sending curated wine boxes and ready-to-ship assortments focused on women’s preferences.",
+        "proposed_value": "The Sip offers a wine subscription service—bi-monthly or annual—sending curated wine boxes and ready-to-ship assortments focused on women’s preferences.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "SIP The Experience, 528, Main Street, Lindbergh, Atlanta, Fulton County, Georgia, 30324, United States",
+        "proposed_value": "SIP The Experience, 528, Main Street, Lindbergh, Atlanta, Fulton County, Georgia, 30324, United States",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "medium"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "Fulton County",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "UNITED",
+        "proposed_value": "Georgia",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "United States",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "30324",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://thesip.co",
+        "proposed_value": "https://thesip.co",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Wine Subscription",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Food and Beverage",
+        "proposed_value": "Food and Beverage",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "the-sip",
+        "proposed_value": "the-sip",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "city",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "phone",
+        "image"
+      ],
+      "score": 78,
+      "reaches7": true
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/the-sip",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc4",
+    "sequence_number": 347,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfc4",
+      "alias": "be-rooted",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Be Rooted",
+        "proposed_value": "Be Rooted",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "description",
+        "current_value": "Be Rooted creates journals, planners and desk accessories featuring art of women of color—first Black-owned stationery brand in Target in 2021.",
+        "proposed_value": "Be Rooted creates journals, planners and desk accessories featuring art of women of color—first Black-owned stationery brand in Target in 2021.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Rooted, 144, Rosemount Place, Rosemount, Rosemount and Mile End, Aberdeen City, Alba / Scotland, AB25 2YU, United Kingdom",
+        "proposed_value": "Rooted, 144, Rosemount Place, Rosemount, Rosemount and Mile End, Aberdeen City, Alba / Scotland, AB25 2YU, United Kingdom",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "medium"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "UNITED",
+        "proposed_value": "UNITED",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "United Kingdom",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://berootedprint.com",
+        "proposed_value": "https://berootedprint.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Stationery, Home Goods",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Home and Kitchen",
+        "proposed_value": "Home and Kitchen",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "be-rooted",
+        "proposed_value": "be-rooted",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/be-rooted",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc5",
+    "sequence_number": 348,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfc5",
+      "alias": "clare",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Clare",
+        "proposed_value": "Clare",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "official website brand text",
+        "confidence": "high"
+      },
+      {
+        "field": "description",
+        "current_value": "Clare is an online paint store partnering with designers on curated collections and offers peel-and-stick swatches for easy color testing.",
+        "proposed_value": "Clare is an online paint store partnering with designers on curated collections and offers peel-and-stick swatches for easy color testing.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB description cross-checked against visited website product/about text",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Clare County, Michigan, United States",
+        "proposed_value": "Clare County, Michigan, United States",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "medium"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "UNITED",
+        "proposed_value": "UNITED",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "USA",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://clare.com",
+        "proposed_value": "https://www.clare.com/",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "high"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Paint, Home Improvement",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Home and Kitchen",
+        "proposed_value": "Home and Kitchen",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "clare",
+        "proposed_value": "clare",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/clare",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc6",
+    "sequence_number": 349,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfc6",
+      "alias": "bole-road",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Bolé Road",
+        "proposed_value": "Bolé Road",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "official website brand text",
+        "confidence": "high"
+      },
+      {
+        "field": "description",
+        "current_value": "Bolé Road Textiles offers handwoven Ethiopian fabrics—pillows, rugs, curtains, bath mats—melding Brooklyn design with Ethiopian heritage.",
+        "proposed_value": "Bolé Road Textiles offers handwoven Ethiopian fabrics—pillows, rugs, curtains, bath mats—melding Brooklyn design with Ethiopian heritage.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB description cross-checked against visited website product/about text",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Africa Avenue / Bole Road, ወሎ ሰፈር አካባቢ, Kirkos, አዲስ አበባ Addis Ababa أديس أبابا, አዲስ አበባ أديس أبابا, 7966, ኢትዮጵያ إثيوبيا",
+        "proposed_value": "Africa Avenue / Bole Road, ወሎ ሰፈር አካባቢ, Kirkos, አዲስ አበባ Addis Ababa أديس أبابا, አዲስ አበባ أديس أبابا, 7966, ኢትዮጵያ إثيوبيا",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "medium"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "ኢትዮጵያ",
+        "proposed_value": "ኢትዮጵያ",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "ኢትዮጵያ إثيوبيا",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://boleroadtextiles.com",
+        "proposed_value": "https://boleroadtextiles.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "high"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Home Decor, Textiles",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Home and Kitchen",
+        "proposed_value": "Home and Kitchen",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "bole-road",
+        "proposed_value": "bole-road",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/bole-road",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfcb",
+    "sequence_number": 350,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfcb",
+      "alias": "the-whitney-collection",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "The Whitney Collection",
+        "proposed_value": "The Whitney Collection",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "description",
+        "current_value": "The Whitney Collection offers luxury candles inspired by global travel—scents like garden fig and Cuban tobacco—created by LA-native Whitney Brooks.",
+        "proposed_value": "The Whitney Collection offers luxury candles inspired by global travel—scents like garden fig and Cuban tobacco—created by LA-native Whitney Brooks.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Hotel David Whitney, Autograph Collection, Woodward Avenue, Detroit, Wayne County, Michigan, 48226, United States",
+        "proposed_value": "Hotel David Whitney, Autograph Collection, Woodward Avenue, Detroit, Wayne County, Michigan, 48226, United States",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "Wayne County",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "UNITED",
+        "proposed_value": "Michigan",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "United States",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "48226",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://thewhitneycollection.com",
+        "proposed_value": "https://thewhitneycollection.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Candles, Home Fragrance",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Home and Kitchen",
+        "proposed_value": "Home and Kitchen",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "the-whitney-collection",
+        "proposed_value": "the-whitney-collection",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "city",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "phone",
+        "image"
+      ],
+      "score": 78,
+      "reaches7": true
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/the-whitney-collection",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfce",
+    "sequence_number": 351,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfce",
+      "alias": "fourth-phase",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Fourth Phase",
+        "proposed_value": "Fourth Phase",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "description",
+        "current_value": "Fourth Phase sells after-birth care boxes filled with organic, non-toxic, sustainably sourced items to aid new mothers’ physical and emotional recovery.",
+        "proposed_value": "Fourth Phase sells after-birth care boxes filled with organic, non-toxic, sustainably sourced items to aid new mothers’ physical and emotional recovery.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Bel-Air Village Phase I and II, District I, Makati, Southern Manila District, Metro Manila, 1209, Philippines",
+        "proposed_value": "Bel-Air Village Phase I and II, District I, Makati, Southern Manila District, Metro Manila, 1209, Philippines",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "PHILIPPINES",
+        "proposed_value": "PHILIPPINES",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "Philippines",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://thefourthphase.com",
+        "proposed_value": "https://thefourthphase.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Postnatal Care, Subscription",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Baby and Kids",
+        "proposed_value": "Baby and Kids",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "fourth-phase",
+        "proposed_value": "fourth-phase",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/fourth-phase",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfd3",
+    "sequence_number": 352,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfd3",
+      "alias": "royal-nation",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Royal Nation",
+        "proposed_value": "Royal Nation",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "description",
+        "current_value": "Royal Nation offers gender-neutral kids’ clothing (sizes 4/5–14) with storytelling collections accompanied by short films.",
+        "proposed_value": "Royal Nation offers gender-neutral kids’ clothing (sizes 4/5–14) with storytelling collections accompanied by short films.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB only",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Royal VI Nation, Place de la Nation, Quartier Sainte-Marguerite, Paris 11e Arrondissement, Paris, France métropolitaine, 75011, France",
+        "proposed_value": "Royal VI Nation, Place de la Nation, Quartier Sainte-Marguerite, Paris 11e Arrondissement, Paris, France métropolitaine, 75011, France",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "FRANCE",
+        "proposed_value": "FRANCE",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "France",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://royal-nation.com",
+        "proposed_value": "https://royal-nation.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "high"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Clothing, Kids",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Baby and Kids",
+        "proposed_value": "Baby and Kids",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "royal-nation",
+        "proposed_value": "royal-nation",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/royal-nation",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfda",
+    "sequence_number": 353,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfda",
+      "alias": "loyalty-bookstores",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "Loyalty Bookstores",
+        "proposed_value": "Loyalty Bookstores",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "official website brand text",
+        "confidence": "high"
+      },
+      {
+        "field": "description",
+        "current_value": "Loyalty Bookstores serves DC/MD/VA with curated literature and events, founded to better serve Black and queer communities.",
+        "proposed_value": "Loyalty Bookstores serves DC/MD/VA with curated literature and events, founded to better serve Black and queer communities.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB description cross-checked against visited website product/about text",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "Loyalty Bookstores, 823, Ellsworth Drive, Queen Annes, Silver Spring, Montgomery County, Maryland, 20910, United States",
+        "proposed_value": "Loyalty Bookstores, 823, Ellsworth Drive, Queen Annes, Silver Spring, Montgomery County, Maryland, 20910, United States",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "medium"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "Montgomery County",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "UNITED",
+        "proposed_value": "Maryland",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "United States",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "20910",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://loyaltybookstores.com",
+        "proposed_value": "https://loyaltybookstores.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "high"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Bookstore, Events",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Bookstores and Educational",
+        "proposed_value": "Bookstores and Educational",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "loyalty-bookstores",
+        "proposed_value": "loyalty-bookstores",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "city",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "phone",
+        "image"
+      ],
+      "score": 78,
+      "reaches7": true
+    },
+    "projected_search_result": {
+      "discoverable": true
+    },
+    "projected_profile_route": "/business-directory/loyalty-bookstores",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfdb",
+    "sequence_number": 354,
+    "guarded_update_filter": {
+      "_id": "681d1df4fd9719ad7b26dfdb",
+      "alias": "the-lit-bar",
+      "status": "approved",
+      "approved": null
+    },
+    "field_repairs": [
+      {
+        "field": "business_name",
+        "current_value": "The Lit Bar",
+        "proposed_value": "The Lit Bar",
+        "reason_for_change": "retain current canonical brand",
+        "evidence_source": "official website brand text",
+        "confidence": "high"
+      },
+      {
+        "field": "description",
+        "current_value": "The Lit Bar in the Bronx combines a wine bar with a bookstore, hosting author events and community gatherings since 2019.",
+        "proposed_value": "The Lit Bar in the Bronx combines a wine bar with a bookstore, hosting author events and community gatherings since 2019.",
+        "reason_for_change": "retain concise factual description pending any later editorial cleanup",
+        "evidence_source": "MongoDB description cross-checked against visited website product/about text",
+        "confidence": "medium"
+      },
+      {
+        "field": "address",
+        "current_value": "The Lit Bar, Alexander Avenue, Mott Haven, The Bronx, Bronx County, City of New York, New York, 10454, United States",
+        "proposed_value": "The Lit Bar, Alexander Avenue, Mott Haven, The Bronx, Bronx County, City of New York, New York, 10454, United States",
+        "reason_for_change": "no safe overwrite without stronger address proof",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "medium"
+      },
+      {
+        "field": "city",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover city when derivable from stored address and externally supported",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "state/province/region",
+        "current_value": "UNITED",
+        "proposed_value": "UNITED",
+        "reason_for_change": "normalize jurisdiction from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "country",
+        "current_value": "USA",
+        "proposed_value": "United States",
+        "reason_for_change": "correct imported country when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "ZIP/postal code",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "recover postal code from stored address when supportable",
+        "evidence_source": "stored address + visited website",
+        "confidence": "low"
+      },
+      {
+        "field": "phone",
+        "current_value": "",
+        "proposed_value": "",
+        "reason_for_change": "retain, no safe external replacement gathered",
+        "evidence_source": "stored MongoDB value",
+        "confidence": "low"
+      },
+      {
+        "field": "website",
+        "current_value": "https://litbar.com",
+        "proposed_value": "https://litbar.com",
+        "reason_for_change": "normalize to resolved official website URL",
+        "evidence_source": "visited website",
+        "confidence": "high"
+      },
+      {
+        "field": "category",
+        "current_value": "",
+        "proposed_value": "Bookstore, Cafe",
+        "reason_for_change": "promote existing specific activity text as canonical category reference",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "display_categories",
+        "current_value": "Bookstores and Educational",
+        "proposed_value": "Bookstores and Educational",
+        "reason_for_change": "map business activity into accepted application category",
+        "evidence_source": "MongoDB categories + visited website",
+        "confidence": "medium"
+      },
+      {
+        "field": "alias",
+        "current_value": "the-lit-bar",
+        "proposed_value": "the-lit-bar",
+        "reason_for_change": "retain working alias",
+        "evidence_source": "route simulation",
+        "confidence": "high"
+      },
+      {
+        "field": "image",
+        "current_value": null,
+        "proposed_value": "",
+        "reason_for_change": "no image captured in read-only validation",
+        "evidence_source": "MongoDB only",
+        "confidence": "low"
+      }
+    ],
+    "projected_completeness": {
+      "done": [
+        "name",
+        "description",
+        "address",
+        "state",
+        "category",
+        "website"
+      ],
+      "missing": [
+        "city",
+        "phone",
+        "image"
+      ],
+      "score": 67,
+      "reaches7": false
+    },
+    "projected_search_result": {
+      "discoverable": false
+    },
+    "projected_profile_route": "/business-directory/the-lit-bar",
+    "proposed_approval_status_change_separate": {
+      "step_1_repair_only": true,
+      "step_2_approval_after_validation": {
+        "approved": true,
+        "status": "active"
+      }
+    }
+  }
+]

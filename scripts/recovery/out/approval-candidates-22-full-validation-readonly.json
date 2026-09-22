@@ -1,0 +1,1997 @@
+[
+  {
+    "sequence_number": 333,
+    "_id": "681d1df4fd9719ad7b26dfa2",
+    "current_business_name": "LYS Beauty",
+    "proposed_canonical_business_name": "LYS Beauty",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "lys-beauty",
+    "proposed_alias": "lys-beauty",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "stored address appears to be unrelated imported geocode artifact",
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "LYS Beauty offers affordable, clean makeup products across face, eyes, and lips in a wide range of shades and formulas—and was the first Black-owned clean makeup at Sephora.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "Lys Beauty Salon, Gift and Decor Center, F.D. Rooseveltweg, Esperansa bij Salsbach, Curaçao, 0000 CW, Nederland",
+      "city": "",
+      "state_province_region": "NEDERLAND",
+      "country": "Nederland",
+      "zip_postal_code": "",
+      "currently_associated_with_business": false,
+      "location_warning": "imported geocode artifact likely unrelated"
+    },
+    "contact_validation": {
+      "website_resolves": true,
+      "website_represents_same_business": true,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": true,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Makeup, Clean Beauty",
+      "current_category": "",
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "proposed_canonical_category": "Makeup, Clean Beauty",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "exact_accepted_category_value_used_by_application": "Beauty, Grooming and Personal Care",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://lysbeauty.com",
+        "page_title_or_source_organization": "Clean Beauty Makeup &amp; Skincare | LYS™ Beauty &ndash; LYS Beauty",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='LYS Beauty', alias='lys-beauty', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "sequence_number": 334,
+    "_id": "681d1df4fd9719ad7b26dfa6",
+    "current_business_name": "For Them",
+    "proposed_canonical_business_name": "For Them",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "for-them",
+    "proposed_alias": "for-them",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "website unavailable or inaccessible",
+      "site content did not clearly match MongoDB business record",
+      "current operation not established from visited source",
+      "stored address appears to be unrelated imported geocode artifact",
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "For Them specializes in sustainable binders designed for queer and trans communities, prioritizing comfort, fit, and healthy compression.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "Scrubs for Them, 2121, Carling Avenue, Carlingwood, Bay, Ottawa, Eastern Ontario, Ontario, K2A 1H1, Canada",
+      "city": "",
+      "state_province_region": "CANADA",
+      "country": "Canada",
+      "zip_postal_code": "",
+      "currently_associated_with_business": false,
+      "location_warning": "imported geocode artifact likely unrelated"
+    },
+    "contact_validation": {
+      "website_resolves": false,
+      "website_represents_same_business": false,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": false,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Apparel, Wellness",
+      "current_category": "",
+      "current_display_category": "Clothing and Accessories",
+      "proposed_canonical_category": "Apparel, Wellness",
+      "proposed_display_category": "Clothing and Accessories",
+      "exact_accepted_category_value_used_by_application": "Clothing and Accessories",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://forthemofficial.com",
+        "page_title_or_source_organization": "For Them",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='For Them', alias='for-them', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "sequence_number": 335,
+    "_id": "681d1df4fd9719ad7b26dfa8",
+    "current_business_name": "Ami Colé",
+    "proposed_canonical_business_name": "Ami Colé",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "ami-cole",
+    "proposed_alias": "ami-cole",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "website unavailable or inaccessible",
+      "site content did not clearly match MongoDB business record",
+      "current operation not established from visited source",
+      "stored address appears to be unrelated imported geocode artifact",
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "Ami Colé is a clean beauty brand offering vegan, fragrance-free, hypoallergenic products in recyclable, reusable, or compostable packaging.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "Cole haan, 竜ヶ崎阿見線, よしわら一丁目, 阿見町, 稲敷郡, 茨城県, 300-1288, 日本",
+      "city": "",
+      "state_province_region": "日本",
+      "country": "日本",
+      "zip_postal_code": "",
+      "currently_associated_with_business": false,
+      "location_warning": "imported geocode artifact likely unrelated"
+    },
+    "contact_validation": {
+      "website_resolves": false,
+      "website_represents_same_business": false,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": false,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Clean Beauty, Skin Care",
+      "current_category": "",
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "proposed_canonical_category": "Clean Beauty, Skin Care",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "exact_accepted_category_value_used_by_application": "Beauty, Grooming and Personal Care",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://amicole.com",
+        "page_title_or_source_organization": "Ami Colé",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Ami Colé', alias='ami-cole', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "sequence_number": 336,
+    "_id": "681d1df4fd9719ad7b26dfa9",
+    "current_business_name": "Saint Ola",
+    "proposed_canonical_business_name": "Saint Ola",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "saint-ola",
+    "proposed_alias": "saint-ola",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "Saint Ola, founded by Jummy Thomas, offers modern African-inspired dresses, skirts, jumpsuits, and hair accessories blending vintage and contemporary styles.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "Ola, Igeldo, Mendebaldea, Donostia / San Sebastián, Gipuzkoa, Euskadi, 20008, España",
+      "city": "",
+      "state_province_region": "ESPAñA",
+      "country": "España",
+      "zip_postal_code": "",
+      "currently_associated_with_business": true,
+      "location_warning": null
+    },
+    "contact_validation": {
+      "website_resolves": true,
+      "website_represents_same_business": true,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": true,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Fashion, Accessories",
+      "current_category": "",
+      "current_display_category": "Clothing and Accessories",
+      "proposed_canonical_category": "Fashion, Accessories",
+      "proposed_display_category": "Clothing and Accessories",
+      "exact_accepted_category_value_used_by_application": "Clothing and Accessories",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://saintola.com",
+        "page_title_or_source_organization": "Saint Ola",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Saint Ola', alias='saint-ola', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "sequence_number": 337,
+    "_id": "681d1df4fd9719ad7b26dfaa",
+    "current_business_name": "Telfar",
+    "proposed_canonical_business_name": "Telfar",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "telfar",
+    "proposed_alias": "telfar",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "Telfar, by Telfar Clemens, is known for its accessible luxury bags—Shopping Bag, Circle Bag, Jelly Shopper and Puff Shopper—favored by creatives and celebrities alike.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "Kocatepe, Nizip, Gaziantep, Güneydoğu Anadolu Bölgesi, Türkiye",
+      "city": "",
+      "state_province_region": "TüRKIYE",
+      "country": "Türkiye",
+      "zip_postal_code": "",
+      "currently_associated_with_business": true,
+      "location_warning": null
+    },
+    "contact_validation": {
+      "website_resolves": true,
+      "website_represents_same_business": true,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": true,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Luxury Goods, Accessories",
+      "current_category": "",
+      "current_display_category": "Clothing and Accessories",
+      "proposed_canonical_category": "Luxury Goods, Accessories",
+      "proposed_display_category": "Clothing and Accessories",
+      "exact_accepted_category_value_used_by_application": "Clothing and Accessories",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://telfar.net",
+        "page_title_or_source_organization": "TELFAR",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Telfar', alias='telfar', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "sequence_number": 338,
+    "_id": "681d1df4fd9719ad7b26dfab",
+    "current_business_name": "Third Crown",
+    "proposed_canonical_business_name": "Third Crown",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "third-crown",
+    "proposed_alias": "third-crown",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "website unavailable or inaccessible",
+      "site content did not clearly match MongoDB business record",
+      "current operation not established from visited source",
+      "stored address appears to be unrelated imported geocode artifact",
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "Third Crown, by Kristin and Kofi Essel, creates geometric statement jewelry—necklaces, rings, cuff bracelets—for all genders, inspired by everyday architecture.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "TP Legal Ltd, Church Street East, Horsell, Woking, Surrey, England, GU21 6HR, United Kingdom",
+      "city": "",
+      "state_province_region": "UNITED",
+      "country": "United Kingdom",
+      "zip_postal_code": "",
+      "currently_associated_with_business": false,
+      "location_warning": "imported geocode artifact likely unrelated"
+    },
+    "contact_validation": {
+      "website_resolves": false,
+      "website_represents_same_business": false,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": false,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Jewelry, Design",
+      "current_category": "",
+      "current_display_category": "Clothing and Accessories",
+      "proposed_canonical_category": "Jewelry, Design",
+      "proposed_display_category": "Clothing and Accessories",
+      "exact_accepted_category_value_used_by_application": "Clothing and Accessories",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://thirdcrown.com",
+        "page_title_or_source_organization": "Third Crown",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Third Crown', alias='third-crown', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "sequence_number": 339,
+    "_id": "681d1df4fd9719ad7b26dfac",
+    "current_business_name": "Tree Fairfax",
+    "proposed_canonical_business_name": "Tree Fairfax",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "tree-fairfax",
+    "proposed_alias": "tree-fairfax",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 78,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "city",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "phone",
+      "image"
+    ],
+    "technically_approvable": true,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "stored address appears to be unrelated imported geocode artifact"
+    ],
+    "description_validation": {
+      "proposed_public_description": "Tree Fairfax offers handcrafted leather totes, wallets, belts and wine holder bags, all made with minimalist design and long-lasting materials.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "storefront or headquarters",
+      "complete_formatted_location": "Fairfax VLG, Rose Tree, Upper Providence, Upper Providence Township, Delaware County, Pennsylvania, 19065, United States",
+      "city": "Delaware County",
+      "state_province_region": "Pennsylvania",
+      "country": "United States",
+      "zip_postal_code": "19065",
+      "currently_associated_with_business": false,
+      "location_warning": "imported geocode artifact likely unrelated"
+    },
+    "contact_validation": {
+      "website_resolves": true,
+      "website_represents_same_business": true,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": true,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Leather Goods, Accessories",
+      "current_category": "",
+      "current_display_category": "Clothing and Accessories",
+      "proposed_canonical_category": "Leather Goods, Accessories",
+      "proposed_display_category": "Clothing and Accessories",
+      "exact_accepted_category_value_used_by_application": "Clothing and Accessories",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://treefairfax.com",
+        "page_title_or_source_organization": "Tree Fairfax",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Tree Fairfax', alias='tree-fairfax', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "sequence_number": 340,
+    "_id": "681d1df4fd9719ad7b26dfb1",
+    "current_business_name": "Boon Boona Coffee",
+    "proposed_canonical_business_name": "Boon Boona Coffee",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "boon-boona-coffee",
+    "proposed_alias": "boon-boona-coffee",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 78,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "city",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "phone",
+      "image"
+    ],
+    "technically_approvable": true,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "website unavailable or inaccessible",
+      "site content did not clearly match MongoDB business record",
+      "current operation not established from visited source"
+    ],
+    "description_validation": {
+      "proposed_public_description": "Boon Boona sources East African beans directly from growers, donates a portion of profits back to them, and brings Eritrean and Ethiopian coffee traditions to the U.S.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "storefront or headquarters",
+      "complete_formatted_location": "Boon Boona Coffee, 1223, East Cherry Street, Yesler Terrace, Seattle, King County, Washington, 98122, United States",
+      "city": "King County",
+      "state_province_region": "Washington",
+      "country": "United States",
+      "zip_postal_code": "98122",
+      "currently_associated_with_business": false,
+      "location_warning": null
+    },
+    "contact_validation": {
+      "website_resolves": false,
+      "website_represents_same_business": false,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": false,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Coffee",
+      "current_category": "",
+      "current_display_category": "Food and Beverage",
+      "proposed_canonical_category": "Coffee",
+      "proposed_display_category": "Food and Beverage",
+      "exact_accepted_category_value_used_by_application": "Food and Beverage",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://boonboona.com",
+        "page_title_or_source_organization": "Boon Boona Coffee",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Boon Boona Coffee', alias='boon-boona-coffee', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "sequence_number": 341,
+    "_id": "681d1df4fd9719ad7b26dfb2",
+    "current_business_name": "Blk & Bold",
+    "proposed_canonical_business_name": "Blk & Bold",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "blk-and-bold",
+    "proposed_alias": "blk-and-bold",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "Blk & Bold sells coffee and tea—roasts, cold brew, K-cups—and donates 5% of gross revenue annually to youth nonprofits.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "保樓 Bold Block, 崇平街 Sung Ping Street, 鶴園 Hok Yuen, 土瓜灣 To Kwa Wan, 九龍城區 Kowloon City District, 九龍 Kowloon, 香港 Hong Kong, 999077, 中国",
+      "city": "",
+      "state_province_region": "中国",
+      "country": "中国",
+      "zip_postal_code": "",
+      "currently_associated_with_business": true,
+      "location_warning": null
+    },
+    "contact_validation": {
+      "website_resolves": true,
+      "website_represents_same_business": true,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": true,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Coffee, Tea",
+      "current_category": "",
+      "current_display_category": "Food and Beverage",
+      "proposed_canonical_category": "Coffee, Tea",
+      "proposed_display_category": "Food and Beverage",
+      "exact_accepted_category_value_used_by_application": "Food and Beverage",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://blkandbold.com",
+        "page_title_or_source_organization": "BLK &amp; Bold Specialty Beverages - Premium Coffees &amp; Teas",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Blk & Bold', alias='blk-and-bold', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "sequence_number": 342,
+    "_id": "681d1df4fd9719ad7b26dfb7",
+    "current_business_name": "Topicals",
+    "proposed_canonical_business_name": "Topicals",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "topicals",
+    "proposed_alias": "topicals",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 78,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "city",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "phone",
+      "image"
+    ],
+    "technically_approvable": true,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "website unavailable or inaccessible",
+      "site content did not clearly match MongoDB business record",
+      "current operation not established from visited source",
+      "stored address appears to be unrelated imported geocode artifact"
+    ],
+    "description_validation": {
+      "proposed_public_description": "Topicals is a dermatologist-backed brand offering serums, moisturizers and mists for chronic concerns like eczema and hyperpigmentation.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "storefront or headquarters",
+      "complete_formatted_location": "Kind Topicals, West 26th Avenue, Spenard, Anchorage, Alaska, 99503, United States",
+      "city": "Anchorage",
+      "state_province_region": "Alaska",
+      "country": "United States",
+      "zip_postal_code": "99503",
+      "currently_associated_with_business": false,
+      "location_warning": "imported geocode artifact likely unrelated"
+    },
+    "contact_validation": {
+      "website_resolves": false,
+      "website_represents_same_business": false,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": false,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Skin Care, Clinical",
+      "current_category": "",
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "proposed_canonical_category": "Skin Care, Clinical",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "exact_accepted_category_value_used_by_application": "Beauty, Grooming and Personal Care",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://thetopicals.com",
+        "page_title_or_source_organization": "Topicals",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Topicals', alias='topicals', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "sequence_number": 343,
+    "_id": "681d1df4fd9719ad7b26dfb8",
+    "current_business_name": "RedDrop",
+    "proposed_canonical_business_name": "RedDrop",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "reddrop",
+    "proposed_alias": "reddrop",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "site content did not clearly match MongoDB business record",
+      "current operation not established from visited source",
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "RedDrop offers pads, underwear and period prep kits for tweens, plus resources and classes for parents supporting children through puberty.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "Reddrop Court, Altona Meadows, Melbourne, City of Hobsons Bay, Victoria, 3028, Australia",
+      "city": "",
+      "state_province_region": "AUSTRALIA",
+      "country": "Australia",
+      "zip_postal_code": "",
+      "currently_associated_with_business": false,
+      "location_warning": null
+    },
+    "contact_validation": {
+      "website_resolves": true,
+      "website_represents_same_business": false,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": false,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Menstrual Products, Education",
+      "current_category": "",
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "proposed_canonical_category": "Menstrual Products, Education",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "exact_accepted_category_value_used_by_application": "Beauty, Grooming and Personal Care",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://reddrop.com",
+        "page_title_or_source_organization": "RedDrop",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='RedDrop', alias='reddrop', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "sequence_number": 344,
+    "_id": "681d1df4fd9719ad7b26dfbb",
+    "current_business_name": "Barkal",
+    "proposed_canonical_business_name": "Barkal",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "barkal",
+    "proposed_alias": "barkal",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "website unavailable or inaccessible",
+      "site content did not clearly match MongoDB business record",
+      "current operation not established from visited source",
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "Barkal makes gender-neutral footwear inspired by traditional Sudanese men’s shoes, using high-quality leathers sourced from Italy.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "বরকল, বরকল উপজেলা, রাঙ্গামাটি পার্বত্য জেলা, চট্টগ্রাম বিভাগ, বাংলাদেশ",
+      "city": "",
+      "state_province_region": "বাংলাদেশ",
+      "country": "বাংলাদেশ",
+      "zip_postal_code": "",
+      "currently_associated_with_business": false,
+      "location_warning": null
+    },
+    "contact_validation": {
+      "website_resolves": false,
+      "website_represents_same_business": false,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": false,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Footwear, Design",
+      "current_category": "",
+      "current_display_category": "Clothing and Accessories",
+      "proposed_canonical_category": "Footwear, Design",
+      "proposed_display_category": "Clothing and Accessories",
+      "exact_accepted_category_value_used_by_application": "Clothing and Accessories",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://barkal.com",
+        "page_title_or_source_organization": "Barkal",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Barkal', alias='barkal', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "sequence_number": 345,
+    "_id": "681d1df4fd9719ad7b26dfbd",
+    "current_business_name": "Camille Rose",
+    "proposed_canonical_business_name": "Camille Rose",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "camille-rose",
+    "proposed_alias": "camille-rose",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "Camille Rose offers hair, skin, and body care products made from natural, food-grade ingredients, founded by Janell Stephens to treat her children’s eczema.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "East Camille Rose Court, Mountain Rose Estates, Palmer, Matanuska-Susitna Borough, Alaska, United States",
+      "city": "",
+      "state_province_region": "UNITED",
+      "country": "United States",
+      "zip_postal_code": "",
+      "currently_associated_with_business": true,
+      "location_warning": null
+    },
+    "contact_validation": {
+      "website_resolves": true,
+      "website_represents_same_business": true,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": true,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Hair Care, Skin Care, Body Care",
+      "current_category": "",
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "proposed_canonical_category": "Hair Care, Skin Care, Body Care",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "exact_accepted_category_value_used_by_application": "Beauty, Grooming and Personal Care",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://www.camillerose.com/",
+        "page_title_or_source_organization": "Camille Rose &ndash; Camille Rose Naturals",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Camille Rose', alias='camille-rose', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "sequence_number": 346,
+    "_id": "681d1df4fd9719ad7b26dfc2",
+    "current_business_name": "The Sip",
+    "proposed_canonical_business_name": "The Sip",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "the-sip",
+    "proposed_alias": "the-sip",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 78,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "city",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "phone",
+      "image"
+    ],
+    "technically_approvable": true,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "website unavailable or inaccessible",
+      "site content did not clearly match MongoDB business record",
+      "current operation not established from visited source"
+    ],
+    "description_validation": {
+      "proposed_public_description": "The Sip offers a wine subscription service—bi-monthly or annual—sending curated wine boxes and ready-to-ship assortments focused on women’s preferences.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "storefront or headquarters",
+      "complete_formatted_location": "SIP The Experience, 528, Main Street, Lindbergh, Atlanta, Fulton County, Georgia, 30324, United States",
+      "city": "Fulton County",
+      "state_province_region": "Georgia",
+      "country": "United States",
+      "zip_postal_code": "30324",
+      "currently_associated_with_business": false,
+      "location_warning": null
+    },
+    "contact_validation": {
+      "website_resolves": false,
+      "website_represents_same_business": false,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": false,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Wine Subscription",
+      "current_category": "",
+      "current_display_category": "Food and Beverage",
+      "proposed_canonical_category": "Wine Subscription",
+      "proposed_display_category": "Food and Beverage",
+      "exact_accepted_category_value_used_by_application": "Food and Beverage",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://thesip.co",
+        "page_title_or_source_organization": "The Sip",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='The Sip', alias='the-sip', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "sequence_number": 347,
+    "_id": "681d1df4fd9719ad7b26dfc4",
+    "current_business_name": "Be Rooted",
+    "proposed_canonical_business_name": "Be Rooted",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "be-rooted",
+    "proposed_alias": "be-rooted",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "website unavailable or inaccessible",
+      "site content did not clearly match MongoDB business record",
+      "current operation not established from visited source",
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "Be Rooted creates journals, planners and desk accessories featuring art of women of color—first Black-owned stationery brand in Target in 2021.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "Rooted, 144, Rosemount Place, Rosemount, Rosemount and Mile End, Aberdeen City, Alba / Scotland, AB25 2YU, United Kingdom",
+      "city": "",
+      "state_province_region": "UNITED",
+      "country": "United Kingdom",
+      "zip_postal_code": "",
+      "currently_associated_with_business": false,
+      "location_warning": null
+    },
+    "contact_validation": {
+      "website_resolves": false,
+      "website_represents_same_business": false,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": false,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Stationery, Home Goods",
+      "current_category": "",
+      "current_display_category": "Home and Kitchen",
+      "proposed_canonical_category": "Stationery, Home Goods",
+      "proposed_display_category": "Home and Kitchen",
+      "exact_accepted_category_value_used_by_application": "Home and Kitchen",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://berootedprint.com",
+        "page_title_or_source_organization": "Be Rooted",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Be Rooted', alias='be-rooted', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "sequence_number": 348,
+    "_id": "681d1df4fd9719ad7b26dfc5",
+    "current_business_name": "Clare",
+    "proposed_canonical_business_name": "Clare",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "clare",
+    "proposed_alias": "clare",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "Clare is an online paint store partnering with designers on curated collections and offers peel-and-stick swatches for easy color testing.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "Clare County, Michigan, United States",
+      "city": "",
+      "state_province_region": "UNITED",
+      "country": "USA",
+      "zip_postal_code": "",
+      "currently_associated_with_business": true,
+      "location_warning": null
+    },
+    "contact_validation": {
+      "website_resolves": true,
+      "website_represents_same_business": true,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": true,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Paint, Home Improvement",
+      "current_category": "",
+      "current_display_category": "Home and Kitchen",
+      "proposed_canonical_category": "Paint, Home Improvement",
+      "proposed_display_category": "Home and Kitchen",
+      "exact_accepted_category_value_used_by_application": "Home and Kitchen",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://www.clare.com/",
+        "page_title_or_source_organization": "Clare: Premium Designer Wall Paint &amp; Supplies",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Clare', alias='clare', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "sequence_number": 349,
+    "_id": "681d1df4fd9719ad7b26dfc6",
+    "current_business_name": "Bolé Road",
+    "proposed_canonical_business_name": "Bolé Road",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "bole-road",
+    "proposed_alias": "bole-road",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "Bolé Road Textiles offers handwoven Ethiopian fabrics—pillows, rugs, curtains, bath mats—melding Brooklyn design with Ethiopian heritage.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "Africa Avenue / Bole Road, ወሎ ሰፈር አካባቢ, Kirkos, አዲስ አበባ Addis Ababa أديس أبابا, አዲስ አበባ أديس أبابا, 7966, ኢትዮጵያ إثيوبيا",
+      "city": "",
+      "state_province_region": "ኢትዮጵያ",
+      "country": "ኢትዮጵያ إثيوبيا",
+      "zip_postal_code": "",
+      "currently_associated_with_business": true,
+      "location_warning": null
+    },
+    "contact_validation": {
+      "website_resolves": true,
+      "website_represents_same_business": true,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": true,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Home Decor, Textiles",
+      "current_category": "",
+      "current_display_category": "Home and Kitchen",
+      "proposed_canonical_category": "Home Decor, Textiles",
+      "proposed_display_category": "Home and Kitchen",
+      "exact_accepted_category_value_used_by_application": "Home and Kitchen",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://boleroadtextiles.com",
+        "page_title_or_source_organization": "Bolé Road Textiles",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Bolé Road', alias='bole-road', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "sequence_number": 350,
+    "_id": "681d1df4fd9719ad7b26dfcb",
+    "current_business_name": "The Whitney Collection",
+    "proposed_canonical_business_name": "The Whitney Collection",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "the-whitney-collection",
+    "proposed_alias": "the-whitney-collection",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 78,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "city",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "phone",
+      "image"
+    ],
+    "technically_approvable": true,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "website unavailable or inaccessible",
+      "site content did not clearly match MongoDB business record",
+      "current operation not established from visited source",
+      "stored address appears to be unrelated imported geocode artifact"
+    ],
+    "description_validation": {
+      "proposed_public_description": "The Whitney Collection offers luxury candles inspired by global travel—scents like garden fig and Cuban tobacco—created by LA-native Whitney Brooks.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "storefront or headquarters",
+      "complete_formatted_location": "Hotel David Whitney, Autograph Collection, Woodward Avenue, Detroit, Wayne County, Michigan, 48226, United States",
+      "city": "Wayne County",
+      "state_province_region": "Michigan",
+      "country": "United States",
+      "zip_postal_code": "48226",
+      "currently_associated_with_business": false,
+      "location_warning": "imported geocode artifact likely unrelated"
+    },
+    "contact_validation": {
+      "website_resolves": false,
+      "website_represents_same_business": false,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": false,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Candles, Home Fragrance",
+      "current_category": "",
+      "current_display_category": "Home and Kitchen",
+      "proposed_canonical_category": "Candles, Home Fragrance",
+      "proposed_display_category": "Home and Kitchen",
+      "exact_accepted_category_value_used_by_application": "Home and Kitchen",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://thewhitneycollection.com",
+        "page_title_or_source_organization": "The Whitney Collection",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='The Whitney Collection', alias='the-whitney-collection', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "sequence_number": 351,
+    "_id": "681d1df4fd9719ad7b26dfce",
+    "current_business_name": "Fourth Phase",
+    "proposed_canonical_business_name": "Fourth Phase",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "fourth-phase",
+    "proposed_alias": "fourth-phase",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "website unavailable or inaccessible",
+      "site content did not clearly match MongoDB business record",
+      "current operation not established from visited source",
+      "stored address appears to be unrelated imported geocode artifact",
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "Fourth Phase sells after-birth care boxes filled with organic, non-toxic, sustainably sourced items to aid new mothers’ physical and emotional recovery.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "Bel-Air Village Phase I and II, District I, Makati, Southern Manila District, Metro Manila, 1209, Philippines",
+      "city": "",
+      "state_province_region": "PHILIPPINES",
+      "country": "Philippines",
+      "zip_postal_code": "",
+      "currently_associated_with_business": false,
+      "location_warning": "imported geocode artifact likely unrelated"
+    },
+    "contact_validation": {
+      "website_resolves": false,
+      "website_represents_same_business": false,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": false,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Postnatal Care, Subscription",
+      "current_category": "",
+      "current_display_category": "Baby and Kids",
+      "proposed_canonical_category": "Postnatal Care, Subscription",
+      "proposed_display_category": "Baby and Kids",
+      "exact_accepted_category_value_used_by_application": "Baby and Kids",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://thefourthphase.com",
+        "page_title_or_source_organization": "Fourth Phase",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Fourth Phase', alias='fourth-phase', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "sequence_number": 352,
+    "_id": "681d1df4fd9719ad7b26dfd3",
+    "current_business_name": "Royal Nation",
+    "proposed_canonical_business_name": "Royal Nation",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "royal-nation",
+    "proposed_alias": "royal-nation",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "site content did not clearly match MongoDB business record",
+      "current operation not established from visited source",
+      "stored address appears to be unrelated imported geocode artifact",
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "Royal Nation offers gender-neutral kids’ clothing (sizes 4/5–14) with storytelling collections accompanied by short films.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "Royal VI Nation, Place de la Nation, Quartier Sainte-Marguerite, Paris 11e Arrondissement, Paris, France métropolitaine, 75011, France",
+      "city": "",
+      "state_province_region": "FRANCE",
+      "country": "France",
+      "zip_postal_code": "",
+      "currently_associated_with_business": false,
+      "location_warning": "imported geocode artifact likely unrelated"
+    },
+    "contact_validation": {
+      "website_resolves": true,
+      "website_represents_same_business": false,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": false,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Clothing, Kids",
+      "current_category": "",
+      "current_display_category": "Baby and Kids",
+      "proposed_canonical_category": "Clothing, Kids",
+      "proposed_display_category": "Baby and Kids",
+      "exact_accepted_category_value_used_by_application": "Baby and Kids",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://royal-nation.com",
+        "page_title_or_source_organization": "Royal Nation",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Royal Nation', alias='royal-nation', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "sequence_number": 353,
+    "_id": "681d1df4fd9719ad7b26dfda",
+    "current_business_name": "Loyalty Bookstores",
+    "proposed_canonical_business_name": "Loyalty Bookstores",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "loyalty-bookstores",
+    "proposed_alias": "loyalty-bookstores",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 78,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "city",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "phone",
+      "image"
+    ],
+    "technically_approvable": true,
+    "route_ready": true,
+    "query_ready": true,
+    "final_recommendation": "recommended after externally verified repair",
+    "downgrade_reasons": [],
+    "description_validation": {
+      "proposed_public_description": "Loyalty Bookstores serves DC/MD/VA with curated literature and events, founded to better serve Black and queer communities.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "storefront or headquarters",
+      "complete_formatted_location": "Loyalty Bookstores, 823, Ellsworth Drive, Queen Annes, Silver Spring, Montgomery County, Maryland, 20910, United States",
+      "city": "Montgomery County",
+      "state_province_region": "Maryland",
+      "country": "United States",
+      "zip_postal_code": "20910",
+      "currently_associated_with_business": true,
+      "location_warning": null
+    },
+    "contact_validation": {
+      "website_resolves": true,
+      "website_represents_same_business": true,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": true,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Bookstore, Events",
+      "current_category": "",
+      "current_display_category": "Bookstores and Educational",
+      "proposed_canonical_category": "Bookstore, Events",
+      "proposed_display_category": "Bookstores and Educational",
+      "exact_accepted_category_value_used_by_application": "Bookstores and Educational",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://loyaltybookstores.com",
+        "page_title_or_source_organization": "Home Page | Loyalty Bookstores",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Loyalty Bookstores', alias='loyalty-bookstores', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "sequence_number": 354,
+    "_id": "681d1df4fd9719ad7b26dfdb",
+    "current_business_name": "The Lit Bar",
+    "proposed_canonical_business_name": "The Lit Bar",
+    "current_approval_status_values": {
+      "approved": null,
+      "status": "approved"
+    },
+    "current_alias": "the-lit-bar",
+    "proposed_alias": "the-lit-bar",
+    "current_completeness_score": 67,
+    "projected_completeness_score": 67,
+    "current_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_completed_fields": [
+      "name",
+      "description",
+      "address",
+      "state",
+      "category",
+      "website"
+    ],
+    "projected_missing_fields": [
+      "city",
+      "phone",
+      "image"
+    ],
+    "technically_approvable": false,
+    "route_ready": true,
+    "query_ready": false,
+    "final_recommendation": "unresolved",
+    "downgrade_reasons": [
+      "current operation not established from visited source",
+      "still below 7 of 9 completeness after supported repair"
+    ],
+    "description_validation": {
+      "proposed_public_description": "The Lit Bar in the Bronx combines a wine bar with a bookstore, hosting author events and community gatherings since 2019.",
+      "description_origin": "lightly cleaned MongoDB content",
+      "useful": true,
+      "issues": []
+    },
+    "location_validation": {
+      "business_type": "online business",
+      "complete_formatted_location": "The Lit Bar, Alexander Avenue, Mott Haven, The Bronx, Bronx County, City of New York, New York, 10454, United States",
+      "city": "",
+      "state_province_region": "UNITED",
+      "country": "United States",
+      "zip_postal_code": "",
+      "currently_associated_with_business": true,
+      "location_warning": null
+    },
+    "contact_validation": {
+      "website_resolves": true,
+      "website_represents_same_business": true,
+      "phone_belongs_to_same_business_when_retained": false,
+      "phone_not_generic_shared_import_value": true,
+      "contact_associated_with_business": true,
+      "copied_from_unrelated_record": false
+    },
+    "category_validation": {
+      "verified_business_activity": "Bookstore, Cafe",
+      "current_category": "",
+      "current_display_category": "Bookstores and Educational",
+      "proposed_canonical_category": "Bookstore, Cafe",
+      "proposed_display_category": "Bookstores and Educational",
+      "exact_accepted_category_value_used_by_application": "Bookstores and Educational",
+      "evidence_supporting_mapping": "Mapped from visited website brand/product language and existing MongoDB categories"
+    },
+    "external_sources_visited": [
+      {
+        "source_url": "https://litbar.com",
+        "page_title_or_source_organization": "LITBAR.COM | Strategic-Grade domain names for established businesses and funded startups",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='The Lit Bar', alias='the-lit-bar', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  }
+]

@@ -1,17 +1,50 @@
-"use client";
-
 import React from "react";
 import Head from "next/head";
+import Link from "next/link";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
+import {
+  blackUnityParagraphs,
+  closingDeclarationLines,
+  diasporaUnityParagraphs,
+  foundingHeroHeadline,
+  foundingHeroLead,
+  foundingPrincipleClosing,
+  foundingPrincipleParagraphs,
+  generationalProsperityParagraphs,
+  legalAffirmationParagraphs,
+  missionParagraphs,
+  proOurselvesStatement,
+} from "@/lib/foundingContent";
 
-const platformLanes = [
-  "Discovery through the business directory, search, and public category/state pages.",
-  "Ownership and trust through claim, verification, and profile management workflows.",
-  "Commerce through marketplace, sponsor, advertising, and future growth pathways.",
-  "Support and accountability through public contact, support, and release-history surfaces.",
-];
+function LongformSection({
+  eyebrow,
+  title,
+  paragraphs,
+}: {
+  eyebrow: string;
+  title: string;
+  paragraphs: readonly string[];
+}) {
+  return (
+    <section className="border-t border-white/8">
+      <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
+          {eyebrow}
+        </p>
+        <h2 className="mt-3 text-2xl font-bold tracking-[-0.03em] text-white sm:text-[2rem]">
+          {title}
+        </h2>
+        <div className="mt-6 space-y-5 text-[1.06rem] leading-8 text-white/78 sm:text-[1.12rem]">
+          {paragraphs.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
-export default function About() {
+export default function FoundingPrinciplePage() {
   const canonical = canonicalUrl("/founding-principle");
   const founderSchema = {
     "@context": "https://schema.org",
@@ -34,7 +67,7 @@ export default function About() {
         <meta
           name="description"
           content={truncateMeta(
-            "Read the founder story and founding principle behind Black Wealth Exchange, founded by Thomas James Hooker Sr.",
+            "Read the founder-authored founding declaration and philosophy behind Black Wealth Exchange.",
           )}
         />
         <link rel="canonical" href={canonical} />
@@ -42,156 +75,151 @@ export default function About() {
       <script type="application/ld+json">
         {JSON.stringify(founderSchema)}
       </script>
-      <div className="min-h-screen bg-black text-white">
-        <section className="container mx-auto px-4 py-16 text-left">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gold mb-8">
-            Founder Story and Founding Principle
-          </h1>
-
-          <div className="space-y-6 text-lg text-gray-300 max-w-4xl">
-            <p>
-              Black Wealth Exchange was founded by{" "}
-              <strong className="text-gold">Thomas James Hooker Sr.</strong> as
-              a founder-led platform built to help Black-owned businesses become
-              easier to discover, easier to trust, and easier to support.
+      <main className="min-h-screen bg-black text-white">
+        <section className="border-b border-white/10 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.14),transparent_40%)]">
+          <div className="mx-auto max-w-[54rem] px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">
+              Founding Principle
             </p>
-
-            <p>
-              The founding principle is straightforward: Black-owned businesses,
-              consumers, and partners need stronger economic infrastructure than
-              scattered listings and vague promises. BWE was created to connect
-              discovery, ownership, commerce, and growth in one practical
-              system.
-            </p>
-
-            <p>
-              That means helping a business get found in the directory, helping
-              the rightful owner claim and strengthen the profile, helping
-              customers discover products and offers, and building trust through
-              clear public information, responsive support, and honest platform
-              behavior.
-            </p>
-
-            <p>
-              BWE operates as a{" "}
-              <strong className="text-gold">
-                mission-driven for-profit business
-              </strong>
-              . It is not a nonprofit, not a government program, and not a
-              faceless template site. The platform exists to build durable
-              value, create useful economic pathways, and earn trust by being
-              factual about what is live now.
-            </p>
-
-            <p>
-              The goal is not to overstate scale or pretend every future feature
-              already exists. The goal is to keep building a platform where
-              Black business discovery, claim and ownership, commerce,
-              sponsorship, and growth tools fit together in a credible, useful
-              way.
-            </p>
-
-            <p className="italic text-gold">
-              Black Wealth Exchange — Black-Owned Business Discovery and Growth
-              Platform
-            </p>
-
-            <p>
-              Trust grows when people can see who built the platform, understand
-              what it offers, and reach real support when they need help. That
-              is why the founder is named publicly, why the platform description
-              stays clear, and why BWE only describes features that visitors can
-              actually use today.
+            <h1 className="mt-4 max-w-[13ch] text-[2.5rem] font-extrabold leading-[1.02] tracking-[-0.05em] text-white sm:text-[3.4rem] lg:text-[4rem]">
+              <span className="block">{foundingHeroHeadline[0]}</span>
+              <span className="mt-3 block text-[#F0D06A]">
+                {foundingHeroHeadline[1]}
+              </span>
+            </h1>
+            <p className="mt-8 max-w-[44rem] text-[1.12rem] leading-8 text-white/84 sm:text-[1.32rem] sm:leading-9 lg:text-[1.48rem] lg:leading-10">
+              {foundingHeroLead}
             </p>
           </div>
         </section>
 
-        <section className="container mx-auto px-4 py-12">
-          <h2 className="text-3xl font-bold text-gold mb-6">Our Values</h2>
-          <ul className="space-y-4 text-gray-300 text-lg list-disc list-inside max-w-4xl">
-            <li>
-              <strong>Economic Justice:</strong> Building structures that
-              correct the historical denial of access to wealth and ownership.
-            </li>
-            <li>
-              <strong>Integrity and Accountability:</strong> Operating
-              transparently, lawfully, and with unwavering commitment to
-              community trust.
-            </li>
-            <li>
-              <strong>Generational Prosperity:</strong> Laying foundations not
-              just for today, but for the prosperity of future Black
-              generations.
-            </li>
-            <li>
-              <strong>Strategic Empowerment:</strong> Creating opportunities
-              intentionally, with clear strategy and measurable outcomes.
-            </li>
-            <li>
-              <strong>Constitutional and Legal Affirmation:</strong> Asserting
-              our rightful place in the economy under the protections afforded
-              by law.
-            </li>
-          </ul>
-        </section>
+        <LongformSection
+          eyebrow="Mission"
+          title="Mission"
+          paragraphs={missionParagraphs}
+        />
+        <LongformSection
+          eyebrow="Black Unity"
+          title="Black Unity"
+          paragraphs={blackUnityParagraphs}
+        />
+        <LongformSection
+          eyebrow="Diaspora Unity"
+          title="Diaspora Unity"
+          paragraphs={diasporaUnityParagraphs}
+        />
 
-        <section className="container mx-auto px-4 py-12">
-          <h2 className="text-3xl font-bold text-gold mb-6">Leadership</h2>
-          <p className="text-lg text-gray-300 max-w-4xl">
-            Black Wealth Exchange is led by{" "}
-            <strong className="text-white">Thomas James Hooker Sr.</strong>. He
-            leads the platform&apos;s direction, public accountability, and
-            long-term growth.
-            <br />
-            <br />
-            BWE is built to serve businesses, consumers, sponsors, partners, and
-            future investors who want a clear understanding of who is leading
-            the company and what the platform is here to do.
-          </p>
-        </section>
-
-        <section className="container mx-auto px-4 py-12">
-          <h2 className="text-3xl font-bold text-gold mb-6">
-            Organizational Status
-          </h2>
-          <p className="text-lg text-gray-300 max-w-4xl">
-            Black Wealth Exchange operates as a for-profit, mission-driven
-            organization. Profit supports the business model, while the mission
-            remains focused on strengthening Black business ownership,
-            visibility, opportunity, and long-term economic participation.
-          </p>
-        </section>
-
-        <section className="container mx-auto px-4 py-12">
-          <h2 className="text-3xl font-bold text-gold mb-6">
-            What BWE Is Building
-          </h2>
-          <div className="grid gap-4 max-w-4xl md:grid-cols-2">
-            {platformLanes.map((lane) => (
-              <div
-                key={lane}
-                className="rounded-xl border border-white/10 bg-white/5 p-5 text-base text-gray-300"
-              >
-                {lane}
+        <section className="border-t border-white/8">
+          <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
+              Foundation Declaration
+            </p>
+            <div className="mt-5 border-l-2 border-[#D4AF37]/60 pl-5 sm:pl-7">
+              <div className="space-y-3 text-[1.55rem] font-semibold leading-tight tracking-[-0.03em] text-[#F0D06A] sm:text-[2rem]">
+                <p>{proOurselvesStatement[0]}</p>
+                <p>{proOurselvesStatement[1]}</p>
               </div>
-            ))}
+            </div>
           </div>
         </section>
 
-        <section className="container mx-auto px-4 py-12 text-center">
-          <h2 className="text-2xl font-bold text-gold mb-4">Contact Us</h2>
-          <p className="text-gray-400 mb-6">
-            For serious inquiries, partnerships, or collaborations, please
-            contact us at:
-            <br />
-            <strong className="text-white">info@blackwealthexchange.com</strong>
-          </p>
+        <LongformSection
+          eyebrow="Constitutional and Legal Affirmation"
+          title="Constitutional and Legal Affirmation"
+          paragraphs={legalAffirmationParagraphs}
+        />
+
+        <section className="border-t border-white/8">
+          <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
+              Generational Prosperity
+            </p>
+            <h2 className="mt-3 text-2xl font-bold tracking-[-0.03em] text-white sm:text-[2rem]">
+              Generational Prosperity
+            </h2>
+            <div className="mt-6 space-y-7">
+              <div className="space-y-2 text-[1.2rem] font-semibold uppercase leading-tight tracking-[0.08em] text-[#F0D06A] sm:text-[1.45rem]">
+                <p>{generationalProsperityParagraphs[0]}</p>
+              </div>
+              <div className="space-y-2 text-[1.2rem] font-semibold uppercase leading-tight tracking-[0.08em] text-white sm:text-[1.45rem]">
+                <p>{generationalProsperityParagraphs[1]}</p>
+              </div>
+              <p className="max-w-[44rem] text-[1.06rem] leading-8 text-white/78 sm:text-[1.12rem]">
+                {generationalProsperityParagraphs[2]}
+              </p>
+            </div>
+          </div>
         </section>
 
-        <footer className="bg-black text-center py-6">
-          <div className="text-gray-500 text-sm space-y-2" />
-        </footer>
-      </div>
+        <LongformSection
+          eyebrow="Full Founding Principle"
+          title="Founding Principle"
+          paragraphs={foundingPrincipleParagraphs}
+        />
+
+        <section className="border-t border-white/8">
+          <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
+              Declaration
+            </p>
+            <div className="mt-5 space-y-2 text-[1.25rem] font-semibold uppercase leading-tight tracking-[0.08em] text-[#F0D06A] sm:text-[1.55rem]">
+              {foundingPrincipleClosing.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-white/8">
+          <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
+              Closing Declaration
+            </p>
+            <div className="mt-5 max-w-[42rem] space-y-4 border-l-2 border-[#D4AF37]/50 pl-5 text-[1.15rem] font-medium leading-8 text-white/88 sm:pl-7 sm:text-[1.3rem] sm:leading-9">
+              {closingDeclarationLines.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </div>
+            <p className="mt-6 text-sm uppercase tracking-[0.2em] text-[#D4AF37]">
+              Black Wealth Exchange
+            </p>
+          </div>
+        </section>
+
+        <section className="border-t border-white/8 bg-white/[0.02]">
+          <div className="mx-auto max-w-[50rem] px-4 py-12 sm:px-6 sm:py-16">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#D4AF37]">
+              Related Paths
+            </p>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <Link
+                href="/about"
+                className="rounded-2xl border border-white/10 px-5 py-4 text-sm font-semibold text-white/78 transition hover:border-[#D4AF37]/40 hover:text-white"
+              >
+                <span className="block text-[11px] uppercase tracking-[0.16em] text-[#D4AF37]">
+                  About BWE
+                </span>
+                <span className="mt-2 block text-base text-white">
+                  Read who BWE is, how it operates today, and how the mission is
+                  organized.
+                </span>
+              </Link>
+              <Link
+                href="/library-of-black-history"
+                className="rounded-2xl border border-white/10 px-5 py-4 text-sm font-semibold text-white/78 transition hover:border-[#D4AF37]/40 hover:text-white"
+              >
+                <span className="block text-[11px] uppercase tracking-[0.16em] text-[#D4AF37]">
+                  Library of Black History
+                </span>
+                <span className="mt-2 block text-base text-white">
+                  Continue into the broader historical and educational body that
+                  connects BWE to Black history and economic restoration.
+                </span>
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
     </>
   );
 }

@@ -3,44 +3,16 @@
 import React, { useMemo, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import { ArrowRight, BookOpen, Globe, Landmark, Shield } from "lucide-react";
 import {
-  Search,
-  Globe,
-  BookOpen,
-  Landmark,
-  LibraryBig,
-  Shield,
-  ArrowRight,
-  ExternalLink,
-  Filter,
-  X,
-} from "lucide-react";
-
-type Region =
-  | "Global"
-  | "Africa"
-  | "Caribbean"
-  | "Europe"
-  | "Latin America"
-  | "United States"
-  | "Middle East"
-  | "Asia";
-
-type SourceType =
-  | "Museum"
-  | "Archive"
-  | "Database"
-  | "Academic"
-  | "Primary Sources"
-  | "Open Access"
-  | "Education"
-  | "Research Tool";
-
-interface ResourceLink {
-  label: string;
-  url: string;
-  type: SourceType;
-}
+  Expandable,
+  ResourceExplorer,
+} from "@/components/history/black-history-ui";
+import {
+  chapterCards,
+  type Region,
+  type ResourceLink,
+} from "@/lib/black-history-foundations";
 
 interface LibraryItem {
   id: number;
@@ -61,175 +33,192 @@ interface LibraryItem {
   links: ResourceLink[];
 }
 
-function cx(...classes: Array<string | false | null | undefined>) {
-  return classes.filter(Boolean).join(" ");
-}
-
-function Pill({
-  active,
-  children,
-  onClick,
-  icon,
-}: {
-  active?: boolean;
-  children: React.ReactNode;
-  onClick?: () => void;
-  icon?: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cx(
-        "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[12px] font-extrabold transition",
-        active
-          ? "border-[#D4AF37]/50 bg-[#D4AF37]/15 text-[#D4AF37]"
-          : "border-white/10 bg-white/[0.03] text-white/70 hover:bg-white/[0.06]",
-      )}
-    >
-      {icon}
-      {children}
-    </button>
-  );
-}
-
-function Card({
-  title,
-  kicker,
-  icon,
-  children,
-}: {
-  title: string;
-  kicker?: string;
-  icon?: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-6 md:p-7 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-      <div className="flex items-start gap-3">
-        {icon ? (
-          <div className="mt-0.5 inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-black/30">
-            {icon}
-          </div>
-        ) : null}
-
-        <div className="min-w-0 flex-1">
-          {kicker ? (
-            <div className="text-[11px] uppercase tracking-widest text-white/50 font-extrabold">
-              {kicker}
-            </div>
-          ) : null}
-          <h2 className="mt-1 text-lg sm:text-xl font-extrabold text-white">
-            {title}
-          </h2>
-        </div>
-      </div>
-
-      <div className="mt-4 text-white/75 leading-relaxed">{children}</div>
-    </section>
-  );
-}
-
-function List({ items }: { items: Array<React.ReactNode> }) {
-  return (
-    <ul className="mt-3 space-y-2">
-      {items.map((t, i) => (
-        <li key={i} className="flex items-start gap-3">
-          <span className="mt-2 h-2.5 w-2.5 rounded-full bg-[#D4AF37]/70" />
-          <span className="text-white/75">{t}</span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function Callout({
-  title,
-  tone = "gold",
-  children,
-}: {
-  title: string;
-  tone?: "gold" | "red" | "emerald";
-  children: React.ReactNode;
-}) {
-  const style =
-    tone === "red"
-      ? "border-red-500/25 bg-red-500/10"
-      : tone === "emerald"
-        ? "border-emerald-500/25 bg-emerald-500/10"
-        : "border-[#D4AF37]/25 bg-[#D4AF37]/10";
-
-  const titleColor =
-    tone === "red"
-      ? "text-red-300"
-      : tone === "emerald"
-        ? "text-emerald-300"
-        : "text-[#D4AF37]";
-
-  return (
-    <div className={cx("rounded-2xl border p-4", style)}>
-      <div className={cx("text-[12px] font-extrabold", titleColor)}>
-        {title}
-      </div>
-      <div className="mt-2 text-[13px] text-white/80 leading-relaxed">
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function ExternalA({
-  href,
-  children,
-  className,
-}: {
-  href: string;
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={className}
-    >
-      {children}
-    </a>
-  );
-}
-
-function Expandable({
-  label,
-  children,
-  defaultOpen = false,
-}: {
-  label: string;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
-  return (
-    <div className="rounded-2xl border border-white/10 bg-black/30">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="w-full px-4 py-3 flex items-center justify-between gap-3 text-left"
-      >
-        <span className="text-white font-extrabold text-sm">{label}</span>
-        <span className="text-white/60 text-xs font-extrabold">
-          {open ? "Hide" : "Expand"}
-        </span>
-      </button>
-      {open ? <div className="px-4 pb-4">{children}</div> : null}
-    </div>
-  );
-}
-
-/** ----------------------------
- *  GLOBAL, MULTI-SOURCE LIBRARY
- *  ---------------------------- */
 const libraryItems: LibraryItem[] = [
+  {
+    id: 101,
+    title: "African Government & Political Systems",
+    summary:
+      "Comparative starting points for kingdoms, councils, acephalous systems, title societies, and institutional diversity across the continent.",
+    category: "Truth & Context",
+    region: "Africa",
+    links: [
+      {
+        label: "UNESCO overview (volumes & project)",
+        url: "https://www.unesco.org/en/general-history-africa",
+        type: "Open Access",
+      },
+      {
+        label: "Met - Ways of Recording African History",
+        url: "https://www.metmuseum.org/essays/ways-of-recording-african-history",
+        type: "Museum",
+      },
+      {
+        label: "Met - Origins and Empire: Benin, Owo, and Ijebu",
+        url: "https://www.metmuseum.org/essays/origins-and-empire-the-benin-owo-and-ijebu-kingdoms",
+        type: "Academic",
+      },
+    ],
+  },
+  {
+    id: 102,
+    title: "African Writing Systems & Manuscript Cultures",
+    summary:
+      "A research trail for Egyptian scripts, Meroitic, Ge'ez, Arabic manuscript cultures, Nsibidi, Libyco-Berber/Tifinagh, and later script innovation.",
+    category: "Research Tools",
+    region: "Africa",
+    links: [
+      {
+        label: "UCL - The Meroitic Period",
+        url: "https://www.ucl.ac.uk/museums-static/digitalegypt/nubia/meroitic.html",
+        type: "Education",
+      },
+      {
+        label: "Met - Monumental Architecture of the Aksumite Empire",
+        url: "https://www.metmuseum.org/essays/monumental-architecture-and-stelae-of-the-aksumite-empire",
+        type: "Museum",
+      },
+      {
+        label: "Library of Congress - Islamic Manuscripts from Mali",
+        url: "https://www.loc.gov/collections/islamic-manuscripts-from-mali/about-this-collection/",
+        type: "Archive",
+      },
+      {
+        label: "Met - Akwanshi Stone Monoliths and Nsibidi context",
+        url: "https://www.metmuseum.org/essays/akwanshi-stone-monoliths",
+        type: "Museum",
+      },
+      {
+        label: "Library of Congress - Bamum Script Guide",
+        url: "https://guides.loc.gov/bamum-script",
+        type: "Education",
+      },
+    ],
+  },
+  {
+    id: 103,
+    title: "Benin Kingdom, Court Art, and 1897 Looting",
+    summary:
+      "Historical Edo statecraft, guild production, Portuguese contact, palace archives, and the violent dispersal of royal art in 1897.",
+    category: "Colonialism & Extraction",
+    region: "Africa",
+    links: [
+      {
+        label: "Met - Benin Chronology",
+        url: "https://www.metmuseum.org/essays/benin-chronology",
+        type: "Museum",
+      },
+      {
+        label: "Met - Idia, First Queen Mother of Benin",
+        url: "https://www.metmuseum.org/essays/idia-the-first-queen-mother-of-benin",
+        type: "Museum",
+      },
+      {
+        label: "British Museum - Benin Bronzes",
+        url: "https://www.britishmuseum.org/about-us/british-museum-story/contested-objects-collection/benin-bronzes",
+        type: "Museum",
+      },
+    ],
+  },
+  {
+    id: 104,
+    title: "Igbo-Ukwu, Great Zimbabwe, and African Technology",
+    summary:
+      "Archaeology, trade, stone architecture, metallurgy, and the caution required when the evidence is strong but popular retellings overshoot it.",
+    category: "Culture & Contribution",
+    region: "Africa",
+    links: [
+      {
+        label: "Met - Igbo-Ukwu",
+        url: "https://www.metmuseum.org/essays/igbo-ukwu-ca-9th-century",
+        type: "Museum",
+      },
+      {
+        label: "UNESCO - Great Zimbabwe National Monument",
+        url: "https://whc.unesco.org/en/list/364/",
+        type: "Open Access",
+      },
+      {
+        label: "Met - African Lost-Wax Casting",
+        url: "https://www.metmuseum.org/essays/african-lost-wax-casting",
+        type: "Museum",
+      },
+    ],
+  },
+  {
+    id: 105,
+    title: "West African Empires, Trade Networks, and State Power",
+    summary:
+      "A starting source path for Ghana or Wagadu, Mali, Songhai, caravan taxation, gold, salt, and the political geography of the western Sudan.",
+    category: "Truth & Context",
+    region: "Africa",
+    links: [
+      {
+        label: "Met - The Empires of the Western Sudan",
+        url: "https://www.metmuseum.org/essays/the-empires-of-the-western-sudan",
+        type: "Museum",
+      },
+      {
+        label: "Met - The Trans-Saharan Gold Trade",
+        url: "https://www.metmuseum.org/essays/the-trans-saharan-gold-trade-7th-14th-century",
+        type: "Academic",
+      },
+      {
+        label: "Fordham - Internet African History Sourcebook",
+        url: "https://sourcebooks.web.fordham.edu/africa/africasbook.asp",
+        type: "Primary Sources",
+      },
+    ],
+  },
+  {
+    id: 106,
+    title: "Timbuktu, Manuscripts, and Scholarly Networks",
+    summary:
+      "A focused research trail for Timbuktu as market, manuscript center, legal culture, and educational network rather than a loose legend.",
+    category: "Research Tools",
+    region: "Africa",
+    links: [
+      {
+        label: "UNESCO - Timbuktu",
+        url: "https://whc.unesco.org/en/list/119/",
+        type: "Open Access",
+      },
+      {
+        label: "Library of Congress - Ancient Manuscripts from Timbuktu",
+        url: "https://www.loc.gov/exhibits/mali/mali-exhibit.html",
+        type: "Archive",
+      },
+      {
+        label: "Library of Congress - Islamic Manuscripts from Mali",
+        url: "https://www.loc.gov/collections/islamic-manuscripts-from-mali/about-this-collection/",
+        type: "Archive",
+      },
+    ],
+  },
+  {
+    id: 107,
+    title: "Gao, Djenné, and Sahelian Urban History",
+    summary:
+      "Use this cluster for Askia, Gao, the Tomb of Askia, Djenné-Djeno, later Djenné, urban continuity, and Sudano-Sahelian architecture.",
+    category: "Culture & Contribution",
+    region: "Africa",
+    links: [
+      {
+        label: "UNESCO - Tomb of Askia",
+        url: "https://whc.unesco.org/en/list/1139/",
+        type: "Open Access",
+      },
+      {
+        label: "UNESCO - Old Towns of Djenne",
+        url: "https://whc.unesco.org/en/list/116/",
+        type: "Open Access",
+      },
+      {
+        label: "Met - Sahel: Art and Empires on the Shores of the Sahara",
+        url: "https://www.metmuseum.org/exhibitions/sahel-art-empire-sahara/inside-the-exhibition",
+        type: "Museum",
+      },
+    ],
+  },
   {
     id: 1,
     title: "UNESCO — General History of Africa (multi-volume)",
@@ -294,7 +283,7 @@ const libraryItems: LibraryItem[] = [
     id: 5,
     title: "Library of Congress — 'Born in Slavery' Narratives",
     summary:
-      "Primary-source interviews (Federal Writers’ Project) that capture voices and memories of enslaved people in the U.S.",
+      "Primary-source interviews that capture voices and memories of enslaved people in the United States.",
     category: "Slavery & Abolition",
     region: "United States",
     links: [
@@ -307,10 +296,9 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 6,
-    title:
-      "The National Archives (UK) — Research guidance on African/Caribbean ancestry",
+    title: "The National Archives (UK) — research guidance",
     summary:
-      "Practical guidance to navigate records shaped by empire, migration, and racialized documentation.",
+      "Practical guidance for records shaped by empire, migration, and racialized documentation.",
     category: "Diaspora & Migration",
     region: "Europe",
     links: [
@@ -323,7 +311,7 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 7,
-    title: "International Slavery Museum (Liverpool) — exhibitions & learning",
+    title: "International Slavery Museum — exhibitions & learning",
     summary:
       "A major institution connecting slavery to modern racism, global systems, and resistance movements.",
     category: "Slavery & Abolition",
@@ -338,9 +326,9 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 8,
-    title: "Digital Library of the Caribbean (dLOC) — Caribbean archives",
+    title: "Digital Library of the Caribbean (dLOC)",
     summary:
-      "A deep, multi-institution collection across the Caribbean: slavery, emancipation, revolution, migration, and culture.",
+      "A deep multi-institution collection across the Caribbean: slavery, emancipation, revolution, migration, and culture.",
     category: "Diaspora & Migration",
     region: "Caribbean",
     links: [
@@ -350,7 +338,7 @@ const libraryItems: LibraryItem[] = [
         type: "Archive",
       },
       {
-        label: "Early Caribbean Digital Archive (example collection)",
+        label: "Early Caribbean Digital Archive",
         url: "https://dloc.com/collections/ecda",
         type: "Open Access",
       },
@@ -358,14 +346,14 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 9,
-    title: "South African History Online — Apartheid & liberation",
+    title: "South African History Online",
     summary:
       "Accessible historical materials on apartheid, resistance, and broader African political history.",
     category: "Apartheid & Global Racial Systems",
     region: "Africa",
     links: [
       {
-        label: "SAHO (Apartheid topic portal)",
+        label: "SAHO Apartheid topic portal",
         url: "https://www.sahistory.org.za/topic/apartheid-1948-1994",
         type: "Education",
       },
@@ -373,9 +361,9 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 10,
-    title: "Apartheid Museum — learner/education materials",
+    title: "Apartheid Museum — learner materials",
     summary:
-      "Education material that connects policy, propaganda, and racial control systems to lived reality and global parallels.",
+      "Education material connecting policy, propaganda, and racial control systems to lived reality.",
     category: "Apartheid & Global Racial Systems",
     region: "Africa",
     links: [
@@ -390,7 +378,7 @@ const libraryItems: LibraryItem[] = [
     id: 11,
     title: "Enslaved.org — linked open data hub",
     summary:
-      "A collaborative data hub for the lives of enslaved people and descendants, connecting datasets across institutions.",
+      "A collaborative data hub for the lives of enslaved people and descendants across institutions.",
     category: "Research Tools",
     region: "Global",
     links: [
@@ -403,14 +391,14 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 12,
-    title: "UNESCO — The Slave Route (global memory & education)",
+    title: "UNESCO — The Slave Route",
     summary:
-      "UNESCO initiative focused on research, remembrance, and education around slavery and its legacies worldwide.",
+      "A UNESCO initiative focused on research, remembrance, and education around slavery and its legacies.",
     category: "Slavery & Abolition",
     region: "Global",
     links: [
       {
-        label: "UNESCO Slave Route (project)",
+        label: "UNESCO Slave Route",
         url: "https://en.unesco.org/themes/fostering-rights-inclusion/slave-route",
         type: "Education",
       },
@@ -418,14 +406,14 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 13,
-    title: "Schomburg Center (NYPL) — research & collections",
+    title: "Schomburg Center (NYPL)",
     summary:
       "One of the most important institutions for Black history: manuscripts, arts, photos, and research guides.",
     category: "Culture & Contribution",
     region: "United States",
     links: [
       {
-        label: "Schomburg Center (NYPL)",
+        label: "Schomburg Center",
         url: "https://www.nypl.org/locations/schomburg",
         type: "Archive",
       },
@@ -433,15 +421,14 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 14,
-    title:
-      "Pan-African & diaspora lens — diaspora definition and global influence",
+    title: "Pan-African & diaspora lens",
     summary:
       "Start with clear definitions: diaspora, displacement, migration, cultural retention, and global influence patterns.",
     category: "Diaspora & Migration",
     region: "Global",
     links: [
       {
-        label: "African diaspora overview (Britannica)",
+        label: "African diaspora overview",
         url: "https://www.britannica.com/topic/African-diaspora",
         type: "Academic",
       },
@@ -449,15 +436,14 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 15,
-    title:
-      "Racial capitalism & extraction — frameworks to explain 'why it repeats'",
+    title: "Racial capitalism & extraction",
     summary:
       "A lens for understanding how race and profit systems reinforce each other through labor, credit, housing, and media.",
     category: "Truth & Context",
     region: "Global",
     links: [
       {
-        label: "Stanford Encyclopedia (entry search)",
+        label: "Stanford Encyclopedia search",
         url: "https://plato.stanford.edu/search/searcher.py?query=racial+capitalism",
         type: "Academic",
       },
@@ -465,14 +451,14 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 16,
-    title: "Economics & Ownership — practical bridge from history to action",
+    title: "Economics & Ownership",
     summary:
       "Learn the mechanics: business formation, capital access, supply chains, ownership models, and compounding.",
     category: "Economics & Ownership",
     region: "Global",
     links: [
       {
-        label: "OECD — financial literacy topic (global context)",
+        label: "OECD financial literacy topic",
         url: "https://www.oecd.org/financial/education/",
         type: "Education",
       },
@@ -480,8 +466,7 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 17,
-    title:
-      "Modern propaganda, media literacy, and narrative control (how minds are shaped)",
+    title: "Modern propaganda and media literacy",
     summary:
       "Build skill in decoding advertising, stereotypes, consumer identity targeting, and algorithmic amplification.",
     category: "Truth & Context",
@@ -496,9 +481,9 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 18,
-    title: "Civil rights and global rights movements (comparative study)",
+    title: "Civil rights and global rights movements",
     summary:
-      "Understand the shared patterns: state power, legal systems, labor control, education, policing, and resistance.",
+      "Understand shared patterns across state power, legal systems, labor control, education, policing, and resistance.",
     category: "Resistance & Liberation",
     region: "Global",
     links: [
@@ -506,6 +491,101 @@ const libraryItems: LibraryItem[] = [
         label: "United Nations Human Rights education",
         url: "https://www.ohchr.org/en/education-and-training",
         type: "Education",
+      },
+    ],
+  },
+  {
+    id: 19,
+    title: "UNESCO — General History of Africa Volume II",
+    summary:
+      "A wide scholarly frame for Egypt, Nubia, the Ethiopian highlands, the Maghrib, the Sahara, and early states across northeastern Africa.",
+    category: "Truth & Context",
+    region: "Africa",
+    links: [
+      {
+        label: "UNESCO General History of Africa overview",
+        url: "https://www.unesco.org/en/general-history-africa",
+        type: "Open Access",
+      },
+      {
+        label: "UNESCO Volume II",
+        url: "https://unesdoc.unesco.org/ark:/48223/pf0000184265",
+        type: "Open Access",
+      },
+    ],
+  },
+  {
+    id: 20,
+    title: "The Met — Egypt, Nubia, and Sudan essays",
+    summary:
+      "Museum essays connecting the Nile Valley chronologically: Old Kingdom, Middle Kingdom, New Kingdom, later Egypt, Nubia, and Kush.",
+    category: "Truth & Context",
+    region: "Africa",
+    links: [
+      {
+        label: "The Land of Nubia",
+        url: "https://www.metmuseum.org/essays/nubia",
+        type: "Museum",
+      },
+      {
+        label: "Egypt in the New Kingdom",
+        url: "https://www.metmuseum.org/essays/egypt-in-the-new-kingdom",
+        type: "Museum",
+      },
+      {
+        label: "Egypt in the Late Period",
+        url: "https://www.metmuseum.org/essays/egypt-in-the-late-period-ca-712-332-b-c",
+        type: "Museum",
+      },
+    ],
+  },
+  {
+    id: 21,
+    title: "UCL Digital Egypt — language, religion, and writing",
+    summary:
+      "A useful teaching archive for hieratic, literacy, religious concepts, and textual framing across ancient Egypt.",
+    category: "Research Tools",
+    region: "Africa",
+    links: [
+      {
+        label: "Digital Egypt A-Z",
+        url: "https://www.ucl.ac.uk/museums-static/digitalegypt/alphabet.html",
+        type: "Education",
+      },
+      {
+        label: "UCL Hieratic",
+        url: "https://www.ucl.ac.uk/museums-static/digitalegypt/writing/hieratic.html",
+        type: "Education",
+      },
+      {
+        label: "UCL Literacy",
+        url: "https://www.ucl.ac.uk/museums-static/digitalegypt/education/literacy.html",
+        type: "Education",
+      },
+    ],
+  },
+  {
+    id: 22,
+    title: "Ancient population evidence — Egypt and biological limits",
+    summary:
+      "Scientific and archaeological research can illuminate ancient populations, but sample size, chronology, and geography limit sweeping modern racial claims.",
+    category: "Research Tools",
+    region: "Africa",
+    links: [
+      {
+        label: "Nature — Old Kingdom Egyptian genome",
+        url: "https://www.nature.com/articles/s41586-025-09195-5",
+        type: "Academic",
+      },
+      {
+        label: "Nature news coverage",
+        url: "https://www.nature.com/articles/d41586-025-02102-y",
+        type: "Academic",
+      },
+      {
+        label: "Ancient Egyptian mummy genomes",
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC5459999/",
+        type: "Open Access",
       },
     ],
   },
@@ -541,10 +621,9 @@ export default function LibraryOfBlackHistory() {
     (typeof ALL_CATEGORIES)[number] | "All"
   >("All");
   const [region, setRegion] = useState<Region | "All">("All");
-  const [openId, setOpenId] = useState<number | null>(null);
   const [showFilters, setShowFilters] = useState(false);
 
-  const filtered = useMemo(() => {
+  const filteredResources = useMemo(() => {
     const q = query.trim().toLowerCase();
     return libraryItems.filter((item) => {
       const matchQ =
@@ -554,17 +633,41 @@ export default function LibraryOfBlackHistory() {
         item.category.toLowerCase().includes(q) ||
         item.region.toLowerCase().includes(q) ||
         item.links.some(
-          (l) =>
-            l.label.toLowerCase().includes(q) ||
-            l.type.toLowerCase().includes(q),
+          (link) =>
+            link.label.toLowerCase().includes(q) ||
+            link.type.toLowerCase().includes(q),
         );
 
-      const matchCat = category === "All" ? true : item.category === category;
-      const matchRegion = region === "All" ? true : item.region === region;
+      const matchCategory = category === "All" || item.category === category;
+      const matchRegion = region === "All" || item.region === region;
 
-      return matchQ && matchCat && matchRegion;
+      return matchQ && matchCategory && matchRegion;
     });
-  }, [query, category, region]);
+  }, [category, query, region]);
+
+  const visibleResources = useMemo(() => {
+    if (query || category !== "All" || region !== "All") {
+      return filteredResources;
+    }
+
+    return filteredResources.slice(0, 3);
+  }, [category, filteredResources, query, region]);
+
+  const filteredChapters = useMemo(() => {
+    const q = query.trim().toLowerCase();
+
+    return chapterCards.filter((chapter) => {
+      if (!q) {
+        return true;
+      }
+
+      return (
+        chapter.eyebrow.toLowerCase().includes(q) ||
+        chapter.title.toLowerCase().includes(q) ||
+        chapter.summary.toLowerCase().includes(q)
+      );
+    });
+  }, [query]);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
@@ -572,435 +675,201 @@ export default function LibraryOfBlackHistory() {
         <title>Library of Black History | Black Wealth Exchange</title>
         <meta
           name="description"
-          content="Facts. No Fiction. A global library of Black history sources: museums, archives, databases, and research tools."
+          content="Explore Black history through chapter-based reading, search, museums, archives, and source-led context."
         />
       </Head>
 
-      {/* index-style glows */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 h-[820px] w-[820px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-56 right-[-10rem] h-[560px] w-[560px] rounded-full bg-emerald-500/[0.05] blur-3xl" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[30rem] bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.18),transparent_58%)]" />
+      <div className="pointer-events-none absolute bottom-[-8rem] right-[-6rem] h-[24rem] w-[24rem] rounded-full bg-emerald-500/[0.08] blur-3xl" />
 
-      <div className="relative mx-auto max-w-7xl px-3 sm:px-4 md:px-6 py-8 md:py-12">
-        {/* HERO */}
-        <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-8 md:p-10 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-1 text-[12px] font-extrabold text-[#D4AF37]">
-                <Globe className="h-4 w-4" />
-                Global Library • Multi-source • Beyond one narrative
+      <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 md:py-12">
+        <section className="rounded-[36px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur sm:p-8 md:p-10">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-1 text-[12px] font-extrabold text-[#D4AF37]">
+            <Globe className="h-4 w-4" />
+            Searchable library • Chapter reading • Source-led history
+          </div>
+
+          <h1 className="mt-5 text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
+            Library of <span className="text-[#D4AF37]">Black History</span>
+          </h1>
+
+          <p className="mt-4 max-w-4xl text-lg leading-8 text-white/78">
+            Our history did not begin in captivity. Explore the civilizations,
+            faiths, people, institutions, resistance, and economic histories
+            that shaped the Black world.
+          </p>
+
+          <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="rounded-[30px] border border-white/10 bg-black/30 p-5">
+              <div className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-white/50">
+                Search Black History
               </div>
-
-              <h1 className="mt-4 text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">
-                Library of <span className="text-[#D4AF37]">Black History</span>
-              </h1>
-
-              <p className="mt-3 max-w-3xl text-white/70 leading-relaxed">
-                Wikipedia is a starting point — not a finish line. This library
-                prioritizes{" "}
-                <span className="text-white font-bold">museums</span>,{" "}
-                <span className="text-white font-bold">archives</span>,{" "}
-                <span className="text-white font-bold">databases</span>, and{" "}
-                <span className="text-white font-bold">open education</span>{" "}
-                from around the world so readers can learn, verify, and build a
-                full picture.
+              <p className="mt-2 text-sm leading-7 text-white/70">
+                Find chapters, people, themes, regions, and source paths without
+                scrolling through the full archive on one page.
               </p>
-
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Pill icon={<Landmark className="h-4 w-4" />}>Museums</Pill>
-                <Pill icon={<LibraryBig className="h-4 w-4" />}>Archives</Pill>
-                <Pill icon={<BookOpen className="h-4 w-4" />}>Open access</Pill>
-                <Pill icon={<Shield className="h-4 w-4" />}>
-                  Verify sources
-                </Pill>
+              <div className="mt-4">
+                <ResourceExplorer
+                  query={query}
+                  setQuery={setQuery}
+                  filtered={visibleResources}
+                  category={category}
+                  setCategory={setCategory}
+                  region={region}
+                  setRegion={setRegion}
+                  showFilters={showFilters}
+                  setShowFilters={setShowFilters}
+                  allCategories={ALL_CATEGORIES}
+                  allRegions={ALL_REGIONS}
+                />
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href="/business-directory"
-                className="inline-flex items-center justify-center rounded-xl bg-[#D4AF37] px-5 py-2.5 text-[13px] font-extrabold text-black transition hover:bg-yellow-500"
-              >
-                Explore Directory <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-              <Link
-                href="/economic-freedom"
-                className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] px-5 py-2.5 text-[13px] font-extrabold text-white/80 transition hover:bg-white/[0.06]"
-              >
-                Economic Freedom <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+            <div className="space-y-4">
+              <div className="rounded-[30px] border border-white/10 bg-black/30 p-5">
+                <div className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#D4AF37]">
+                  <Shield className="h-4 w-4" />
+                  Featured Learning Tool
+                </div>
+                <h2 className="mt-3 text-2xl font-extrabold text-white">
+                  What we were taught vs what the evidence shows
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-white/72">
+                  The Truth Mirror stays here as a guide for reading history
+                  with better questions, not as the first wall of text on
+                  mobile.
+                </p>
+                <div className="mt-4">
+                  <Expandable label="Open the Truth Mirror">
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="rounded-3xl border border-red-500/20 bg-red-500/8 p-4">
+                        <div className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-red-300">
+                          What many people were taught
+                        </div>
+                        <p className="mt-3 text-sm leading-7 text-white/80">
+                          A short version of history can make slavery look
+                          finished, reduce progress to a few heroes, and turn
+                          culture into a substitute for institutions and
+                          ownership.
+                        </p>
+                      </div>
+                      <div className="rounded-3xl border border-[#D4AF37]/20 bg-[#D4AF37]/8 p-4">
+                        <div className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#D4AF37]">
+                          Missing context
+                        </div>
+                        <p className="mt-3 text-sm leading-7 text-white/80">
+                          The full story includes systems, law, finance, trade,
+                          propaganda, resistance, and the long afterlife of
+                          wealth extraction across Africa and the diaspora.
+                        </p>
+                      </div>
+                      <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/8 p-4">
+                        <div className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-emerald-300">
+                          Why it matters
+                        </div>
+                        <p className="mt-3 text-sm leading-7 text-white/80">
+                          Once readers understand the pattern, they can stop
+                          mistaking damage for destiny and start recognizing the
+                          institutions, choices, and structures that shaped it.
+                        </p>
+                      </div>
+                    </div>
+                  </Expandable>
+                </div>
+              </div>
+
+              <div className="rounded-[30px] border border-white/10 bg-black/30 p-5">
+                <div className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#D4AF37]">
+                  <BookOpen className="h-4 w-4" />
+                  Reading Paths
+                </div>
+                <p className="mt-3 text-sm leading-7 text-white/72">
+                  Move through the library by chapter. Each path keeps the story
+                  first and the evidence layers available when you want them.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* TRUTH MIRROR (expanded but mobile-friendly via expandable sections) */}
-        <div className="mt-8">
-          <Card
-            kicker="THE TRUTH MIRROR"
-            title="What many people were told — and what many people were not told"
-            icon={<Shield className="h-5 w-5 text-[#D4AF37]" />}
-          >
-            <p className="text-white/75">
-              Across many countries, people learn a simplified version of
-              history: a few famous moments, a few famous leaders, and a clean
-              ending. But for a global people, the real story is broader:
-              systems, incentives, propaganda, and long-term effects that
-              continue after “official” change.
+        <section className="mt-8">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <div className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#D4AF37]">
+                Major Pathways
+              </div>
+              <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                Read the library by chapter
+              </h2>
+            </div>
+            {query ? (
+              <div className="text-sm font-extrabold text-white/55">
+                {filteredChapters.length} chapter matches
+              </div>
+            ) : null}
+          </div>
+
+          <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+            {filteredChapters.map((chapter) => (
+              <article
+                key={chapter.slug}
+                className="rounded-[30px] border border-white/10 bg-white/[0.03] p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
+              >
+                <div className="text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#D4AF37]">
+                  {chapter.eyebrow}
+                </div>
+                <h3 className="mt-3 text-2xl font-extrabold text-white">
+                  {chapter.title}
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-white/72">
+                  {chapter.summary}
+                </p>
+                <Link
+                  href={`/library-of-black-history/${chapter.slug}`}
+                  className="mt-5 inline-flex items-center text-sm font-extrabold text-[#D4AF37] transition hover:text-yellow-300"
+                >
+                  Open chapter <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-8 grid grid-cols-1 gap-4 xl:grid-cols-3">
+          <div className="rounded-[30px] border border-white/10 bg-white/[0.03] p-5">
+            <div className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#D4AF37]">
+              <Landmark className="h-4 w-4" />
+              Ancient Africa
+            </div>
+            <p className="mt-3 text-sm leading-7 text-white/72">
+              Egypt, Nubia, Kush, Ma&apos;at, royal women, Taharqa, the
+              Kandakes, and the limits of modern racial projection.
             </p>
-
-            <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Callout title="A global pattern (not one country)" tone="gold">
-                The same architecture repeats in different places: extract labor
-                → restrict education/credit/land → shape narratives about worth
-                → sell identity back through culture/consumption → keep
-                ownership concentrated.
-              </Callout>
-
-              <Callout title="What changes everything" tone="emerald">
-                When people see the pattern, they stop blaming themselves and
-                start building systems: ownership, institutions, capital,
-                education pipelines, and group economics.
-              </Callout>
-            </div>
-
-            <div className="mt-5 space-y-3">
-              <Expandable label="1) What many people WERE taught (the short version)">
-                <List
-                  items={[
-                    <>
-                      Slavery happened, abolition happened, civil rights
-                      happened — therefore the problem is “mostly solved.”
-                    </>,
-                    <>
-                      A few heroes carried progress — therefore ordinary people
-                      are just spectators, not builders.
-                    </>,
-                    <>
-                      Culture is the main contribution — therefore entertainment
-                      success equals community advancement.
-                    </>,
-                  ]}
-                />
-                <Callout title="Why this matters" tone="red">
-                  A short story creates short solutions. If the real problem is
-                  systemic, the solution must be systemic too — not just
-                  individual motivation.
-                </Callout>
-              </Expandable>
-
-              <Expandable label="2) What many people were NOT told (the missing middle)">
-                <List
-                  items={[
-                    <>
-                      <span className="text-white font-bold">
-                        The economics:
-                      </span>{" "}
-                      slavery and colonialism were not only “prejudice” — they
-                      were business models that built wealth, banks, insurance,
-                      shipping empires, and property systems across continents.
-                    </>,
-                    <>
-                      <span className="text-white font-bold">
-                        The transition:
-                      </span>{" "}
-                      after abolition, coercion often changed form (debt
-                      peonage, forced labor, exclusion from credit/land,
-                      criminalization, segregation, discriminatory policy).
-                    </>,
-                    <>
-                      <span className="text-white font-bold">
-                        The curriculum gap:
-                      </span>{" "}
-                      many school systems teach events, but avoid mechanisms:
-                      how laws, finance, housing, media, and supply chains
-                      preserve inequality.
-                    </>,
-                    <>
-                      <span className="text-white font-bold">
-                        The global map:
-                      </span>{" "}
-                      the diaspora links Africa, the Caribbean, Latin America,
-                      Europe, and the U.S. through trade routes, plantations,
-                      rebellions, migration, and cultural exchange.
-                    </>,
-                  ]}
-                />
-                <Callout title="Reader takeaway" tone="gold">
-                  When you learn the mechanisms, you can build counter-systems:
-                  ownership loops, institutions, alternative pipelines, and
-                  capital strategies that protect the next generation.
-                </Callout>
-              </Expandable>
-
-              <Expandable label="3) The psychological & media layer (why people keep spending outward)">
-                <p className="text-white/75">
-                  Advertising is not neutral — it targets identity, belonging,
-                  status, and fear. When a community is historically excluded
-                  from ownership, the market often offers a substitute:
-                  <span className="text-white font-bold">
-                    {" "}
-                    consumption as identity
-                  </span>
-                  .
-                </p>
-                <List
-                  items={[
-                    <>
-                      <span className="text-white font-bold">
-                        Status hacking:
-                      </span>{" "}
-                      “buy this to be respected.” If ownership feels out of
-                      reach, brands sell the feeling of power.
-                    </>,
-                    <>
-                      <span className="text-white font-bold">
-                        Normalization:
-                      </span>{" "}
-                      repeated imagery teaches people what is “premium,” who is
-                      “successful,” and who deserves authority.
-                    </>,
-                    <>
-                      <span className="text-white font-bold">
-                        Algorithm loops:
-                      </span>{" "}
-                      what you watch shapes what you see next; what you see next
-                      shapes desire; desire shapes spending; spending reinforces
-                      the loop.
-                    </>,
-                    <>
-                      <span className="text-white font-bold">
-                        Scarcity mindset:
-                      </span>{" "}
-                      when the future feels unstable, short-term comfort wins —
-                      even if it harms long-term wealth.
-                    </>,
-                  ]}
-                />
-                <Callout
-                  title="How to break it (simple and real)"
-                  tone="emerald"
-                >
-                  Reduce the “brand diet.” Replace one habit with an ownership
-                  habit: one Black-owned switch, one savings/investment rule,
-                  and one community referral every week.
-                </Callout>
-              </Expandable>
-
-              <Expandable label="4) How to research like a builder (verify & cross-check)">
-                <List
-                  items={[
-                    <>
-                      Use{" "}
-                      <span className="text-white font-bold">
-                        primary sources
-                      </span>{" "}
-                      when possible (archives, recorded testimonies, government
-                      records, museum collections).
-                    </>,
-                    <>
-                      Compare{" "}
-                      <span className="text-white font-bold">
-                        multiple regions
-                      </span>{" "}
-                      — the pattern is clearer when you see it in the Caribbean,
-                      Latin America, Africa, Europe, and the U.S.
-                    </>,
-                    <>
-                      Look for{" "}
-                      <span className="text-white font-bold">
-                        data projects
-                      </span>{" "}
-                      (voyages, compensation, migration, census, labor systems)
-                      that show structure, not just stories.
-                    </>,
-                    <>
-                      Ask: “Who profits? Who owns the pipeline? Who controls the
-                      rules? Who controls the narrative?”
-                    </>,
-                  ]}
-                />
-                <Callout title="BWE purpose" tone="gold">
-                  The goal is not anger for anger’s sake — it’s clarity that
-                  produces action: ownership, investment, education, and systems
-                  that protect families.
-                </Callout>
-              </Expandable>
-            </div>
-          </Card>
-        </div>
-
-        {/* SEARCH + FILTERS */}
-        <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-          <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
-            <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/30 px-3 py-2">
-              <Search className="h-4 w-4 text-white/60" />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search topics, regions, sources…"
-                className="w-full bg-transparent text-sm text-white placeholder:text-white/40 outline-none"
-              />
-              {query ? (
-                <button
-                  type="button"
-                  onClick={() => setQuery("")}
-                  className="rounded-lg p-1 hover:bg-white/[0.06]"
-                  aria-label="Clear search"
-                >
-                  <X className="h-4 w-4 text-white/60" />
-                </button>
-              ) : null}
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setShowFilters((v) => !v)}
-                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-extrabold text-white/75 transition hover:bg-white/[0.06]"
-              >
-                <Filter className="h-4 w-4" />
-                Filters
-              </button>
-
-              <div className="text-xs text-white/50 font-extrabold">
-                Showing <span className="text-white/80">{filtered.length}</span>{" "}
-                resources
-              </div>
-            </div>
           </div>
 
-          {showFilters ? (
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <div className="text-[11px] uppercase tracking-widest text-white/50 font-extrabold">
-                  Category
-                </div>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <Pill
-                    active={category === "All"}
-                    onClick={() => setCategory("All")}
-                  >
-                    All
-                  </Pill>
-                  {ALL_CATEGORIES.map((c) => (
-                    <Pill
-                      key={c}
-                      active={category === c}
-                      onClick={() => setCategory(c)}
-                    >
-                      {c}
-                    </Pill>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <div className="text-[11px] uppercase tracking-widest text-white/50 font-extrabold">
-                  Region
-                </div>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <Pill
-                    active={region === "All"}
-                    onClick={() => setRegion("All")}
-                  >
-                    All
-                  </Pill>
-                  {ALL_REGIONS.map((r) => (
-                    <Pill
-                      key={r}
-                      active={region === r}
-                      onClick={() => setRegion(r)}
-                    >
-                      {r}
-                    </Pill>
-                  ))}
-                </div>
-              </div>
+          <div className="rounded-[30px] border border-white/10 bg-white/[0.03] p-5">
+            <div className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#D4AF37]">
+              <BookOpen className="h-4 w-4" />
+              Kingdoms & Knowledge
             </div>
-          ) : null}
-        </div>
+            <p className="mt-3 text-sm leading-7 text-white/72">
+              Government, writing systems, oral knowledge, education, Benin,
+              Igbo-Ukwu, Great Zimbabwe, and science with evidence boundaries.
+            </p>
+          </div>
 
-        {/* GRID */}
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((item) => {
-            const topLinks = item.links.slice(0, 2);
-            const hasMore = item.links.length > 2;
-            const expanded = openId === item.id;
+          <div className="rounded-[30px] border border-white/10 bg-white/[0.03] p-5">
+            <div className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.24em] text-[#D4AF37]">
+              <Globe className="h-4 w-4" />
+              West African Civilizations
+            </div>
+            <p className="mt-3 text-sm leading-7 text-white/72">
+              Ghana or Wagadu, Mali, Mansa Musa, Timbuktu, manuscripts, Songhai,
+              cities, gold, salt, and trans-Saharan networks.
+            </p>
+          </div>
+        </section>
 
-            return (
-              <div
-                key={item.id}
-                className="rounded-3xl border border-white/10 bg-black/30 p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <div className="text-[11px] uppercase tracking-widest text-white/50 font-extrabold">
-                      {item.category} • {item.region}
-                    </div>
-                    <h3 className="mt-2 text-white font-extrabold text-lg">
-                      {item.title}
-                    </h3>
-                  </div>
-                </div>
-
-                <p className="mt-2 text-white/70 text-sm leading-relaxed">
-                  {item.summary}
-                </p>
-
-                <div className="mt-4 space-y-2">
-                  {topLinks.map((l) => (
-                    <ExternalA
-                      key={l.url}
-                      href={l.url}
-                      className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white/80 hover:bg-white/[0.06] transition"
-                    >
-                      <span className="min-w-0 truncate">
-                        <span className="text-[#D4AF37] font-extrabold text-[12px]">
-                          {l.type}
-                        </span>{" "}
-                        <span className="text-white/80">•</span>{" "}
-                        <span className="font-semibold">{l.label}</span>
-                      </span>
-                      <ExternalLink className="h-4 w-4 text-white/50" />
-                    </ExternalA>
-                  ))}
-
-                  {expanded ? (
-                    <div className="mt-2 space-y-2">
-                      {item.links.slice(2).map((l) => (
-                        <ExternalA
-                          key={l.url}
-                          href={l.url}
-                          className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-white/80 hover:bg-white/[0.06] transition"
-                        >
-                          <span className="min-w-0 truncate">
-                            <span className="text-[#D4AF37] font-extrabold text-[12px]">
-                              {l.type}
-                            </span>{" "}
-                            <span className="text-white/80">•</span>{" "}
-                            <span className="font-semibold">{l.label}</span>
-                          </span>
-                          <ExternalLink className="h-4 w-4 text-white/50" />
-                        </ExternalA>
-                      ))}
-                    </div>
-                  ) : null}
-
-                  {hasMore ? (
-                    <button
-                      type="button"
-                      onClick={() => setOpenId(expanded ? null : item.id)}
-                      className="w-full rounded-2xl border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-2 text-xs font-extrabold text-[#D4AF37] hover:bg-[#D4AF37]/15 transition"
-                    >
-                      {expanded ? "Hide extra sources" : "More sources"}
-                    </button>
-                  ) : null}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* FOOTER NAV */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3 text-sm">
           <Link
             href="/"
@@ -1026,11 +895,6 @@ export default function LibraryOfBlackHistory() {
           >
             Marketplace
           </Link>
-        </div>
-
-        <div className="mt-8 pb-6 text-center text-white/45 text-sm">
-          © {new Date().getFullYear()} Black Wealth Exchange — Library of Black
-          History
         </div>
       </div>
     </div>

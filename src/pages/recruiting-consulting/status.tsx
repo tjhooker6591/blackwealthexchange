@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type Submission = {
   id: string;
@@ -52,10 +53,18 @@ export default function ConsultingSubmissionStatusPage() {
         },
       );
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to load status");
+      if (!res.ok)
+        throw new Error(
+          "We couldn't load your submission status right now. Please try again.",
+        );
       setItems(Array.isArray(data?.submissions) ? data.submissions : []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load status");
+      setError(
+        toPublicErrorMessage(err instanceof Error ? err.message : "", {
+          fallback:
+            "We couldn't load your submission status right now. Please try again.",
+        }),
+      );
       setItems([]);
     } finally {
       setLoading(false);

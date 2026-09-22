@@ -25,7 +25,7 @@ const ROLES = [
     intent: "shopper",
     title: "Buyer / Shopper",
     summary:
-      "Find trusted Black-owned products and businesses, then buy with confidence.",
+      "Find Black-owned products and businesses, then buy with confidence.",
     primary: { href: "/marketplace", label: "Shop Black-owned products" },
     secondary: {
       href: "/business-directory",
@@ -37,7 +37,7 @@ const ROLES = [
     intent: "list-business",
     title: "Business Owner (Directory)",
     summary:
-      "Get your business discovered by customers actively looking to support Black-owned companies.",
+      "Get discovered by customers already looking for Black-owned businesses.",
     primary: {
       href: "/business-directory/add-business",
       label: "Get listed in directory",
@@ -52,7 +52,7 @@ const ROLES = [
     intent: "become-seller",
     title: "Seller (Marketplace)",
     summary:
-      "Launch products, get discovered, and start selling through BWE marketplace pathways.",
+      "Launch products and start selling through the BWE marketplace path.",
     primary: {
       href: "/marketplace/become-a-seller",
       label: "Start selling on BWE",
@@ -63,8 +63,7 @@ const ROLES = [
     key: "employer",
     intent: "hire-talent",
     title: "Employer",
-    summary:
-      "Post jobs and connect with talent aligned with your company and mission.",
+    summary: "Post jobs and connect with talent through BWE.",
     primary: { href: "/post-job", label: "Post a job" },
     secondary: { href: "/jobs", label: "View jobs discovery hub" },
   },
@@ -72,8 +71,7 @@ const ROLES = [
     key: "user",
     intent: "find-jobs",
     title: "Job Seeker / Talent",
-    summary:
-      "Explore roles, filter by niche, and continue your job search journey in one place.",
+    summary: "Explore roles and keep your job search moving in one place.",
     primary: { href: "/job-listings", label: "Browse live jobs" },
     secondary: { href: "/jobs", label: "Explore job niches" },
   },
@@ -120,9 +118,8 @@ export default function StartHerePage() {
               Choose the BWE path that matches what you want to do next.
             </h1>
             <p className="bwe-lead mt-4 max-w-2xl">
-              Discover businesses, shop products, build a business presence,
-              sell, hire, or find opportunities without hunting through the full
-              platform first.
+              Search first, then move into the right next step without hunting
+              through the whole platform.
             </p>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -145,28 +142,6 @@ export default function StartHerePage() {
               >
                 Browse live marketplace
               </Link>
-            </div>
-
-            <div className="bwe-divider mt-6" />
-
-            <div className="mt-4 grid gap-4 sm:grid-cols-[1.1fr_0.9fr]">
-              <div>
-                <div className="text-[11px] uppercase tracking-[0.14em] text-white/42">
-                  What BWE helps you do
-                </div>
-                <p className="mt-2 max-w-xl text-sm leading-6 text-white/62">
-                  Move into trusted discovery, commerce, opportunity, and
-                  ownership flows with clearer navigation and fewer wrong turns.
-                </p>
-              </div>
-              <div className="grid gap-2 sm:grid-cols-2">
-                <div className="bwe-soft-tile px-4 py-3 text-sm text-white/78">
-                  Discover, shop, and support Black-owned businesses.
-                </div>
-                <div className="bwe-soft-tile px-4 py-3 text-sm text-white/78">
-                  List, sell, hire, and keep moving into growth paths.
-                </div>
-              </div>
             </div>
           </div>
         </header>
@@ -246,12 +221,11 @@ export default function StartHerePage() {
           <div className="bwe-soft-tile p-6 text-sm text-white/75">
             <div className="bwe-eyebrow">Why join now</div>
             <ul className="mt-3 space-y-2 text-sm leading-6 text-white/82">
-              <li>Save opportunities and continue where you left off.</li>
+              <li>Return without starting over.</li>
+              <li>Move into the right seller, employer, or business path.</li>
               <li>
-                Unlock faster role-based onboarding for sellers, employers, and
-                businesses.
+                Keep discovery, buying, hiring, and growth closer together.
               </li>
-              <li>Get a cleaner path to buying, hiring, and growth actions.</li>
             </ul>
           </div>
 

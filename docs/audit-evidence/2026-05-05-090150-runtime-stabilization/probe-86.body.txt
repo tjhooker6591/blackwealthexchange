@@ -1,0 +1,1 @@
+{"ok":true,"authenticated":false,"hasAccess":false,"reason":"login_required"}

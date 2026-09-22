@@ -28,10 +28,12 @@ export async function resolveBusinessGrowthAttribution(
         { ownershipReviewStatus: { $in: ["ownership_verified", "verified"] } },
       ],
     }),
-    db.collection("bmev_records").distinct("businessId", {
-      paymentVerified: true,
-      businessId: { $ne: null },
-    }),
+    db
+      .collection("bmev_records")
+      .distinct("businessId", {
+        paymentVerified: true,
+        businessId: { $ne: null },
+      }),
   ]);
 
   const sellingBusinessCount =

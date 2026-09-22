@@ -1,0 +1,4628 @@
+{
+  "rowCount": 75,
+  "rows": [
+    {
+      "_id": "67c9ead1818d604b84e5a61a",
+      "current_values": {
+        "business_name": "Silverback Coffee Of Rwanda Los Angeles 3",
+        "phone": "",
+        "website": "",
+        "address": "1712 W Sunset Blvd Los Angeles, CA 90026",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Restaurants",
+        "display_categories": "Restaurants",
+        "description": "Founded by Jack Karuletwa, Silverback sources its coffee from farms in Rwanda, where he grew up. A portion of proceeds are donated to Rwandan organizations. The Echo Park location is open for takeout and limited dine-in. 1712 W. Sunset Blvd., Echo Park,",
+        "alias": "silverback-coffee-of-rwanda-los-angeles-3",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Food and Beverage"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/silverback-coffee-of-rwanda-los-angeles-3",
+      "projected_route": "/business-directory/silverback-coffee-of-rwanda-los-angeles-3",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "Restaurants",
+      "current_category_source_value": "Restaurants",
+      "proposed_display_category": "Food and Beverage",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a67a",
+      "current_values": {
+        "business_name": "Vanillablack Los Angeles",
+        "phone": "",
+        "website": "",
+        "address": "1825 Sunset Blvd Los Angeles, CA 90026",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Restaurants",
+        "display_categories": "Restaurants",
+        "description": "Vanessa Butler’s small coffee shop in Echo Park has a variety of coffee drinks including a “vanilla bomb” and vegan food options. 1825 Sunset Blvd., Echo Park.",
+        "alias": "vanillablack-los-angeles",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Food and Beverage"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/vanillablack-los-angeles",
+      "projected_route": "/business-directory/vanillablack-los-angeles",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "Restaurants",
+      "current_category_source_value": "Restaurants",
+      "proposed_display_category": "Food and Beverage",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfa6",
+      "current_values": {
+        "business_name": "For Them",
+        "phone": "",
+        "website": "https://forthemofficial.com",
+        "address": "Scrubs for Them, 2121, Carling Avenue, Carlingwood, Bay, Ottawa, Eastern Ontario, Ontario, K2A 1H1, Canada",
+        "city": "",
+        "state": "CANADA",
+        "category": "",
+        "categories": "Apparel, Wellness",
+        "display_categories": "Clothing and Accessories",
+        "description": "For Them specializes in sustainable binders designed for queer and trans communities, prioritizing comfort, fit, and healthy compression.",
+        "alias": "for-them",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/for-them",
+      "projected_route": "/business-directory/for-them",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "Clothing and Accessories",
+      "current_category_source_value": "Clothing and Accessories",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfa9",
+      "current_values": {
+        "business_name": "Saint Ola",
+        "phone": "",
+        "website": "https://saintola.com",
+        "address": "Ola, Igeldo, Mendebaldea, Donostia / San Sebastián, Gipuzkoa, Euskadi, 20008, España",
+        "city": "",
+        "state": "ESPAñA",
+        "category": "",
+        "categories": "Fashion, Accessories",
+        "display_categories": "Clothing and Accessories",
+        "description": "Saint Ola, founded by Jummy Thomas, offers modern African-inspired dresses, skirts, jumpsuits, and hair accessories blending vintage and contemporary styles.",
+        "alias": "saint-ola",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/saint-ola",
+      "projected_route": "/business-directory/saint-ola",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "Clothing and Accessories",
+      "current_category_source_value": "Clothing and Accessories",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfaa",
+      "current_values": {
+        "business_name": "Telfar",
+        "phone": "",
+        "website": "https://telfar.net",
+        "address": "Kocatepe, Nizip, Gaziantep, Güneydoğu Anadolu Bölgesi, Türkiye",
+        "city": "",
+        "state": "TüRKIYE",
+        "category": "",
+        "categories": "Luxury Goods, Accessories",
+        "display_categories": "Clothing and Accessories",
+        "description": "Telfar, by Telfar Clemens, is known for its accessible luxury bags—Shopping Bag, Circle Bag, Jelly Shopper and Puff Shopper—favored by creatives and celebrities alike.",
+        "alias": "telfar",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/telfar",
+      "projected_route": "/business-directory/telfar",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "Clothing and Accessories",
+      "current_category_source_value": "Clothing and Accessories",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfab",
+      "current_values": {
+        "business_name": "Third Crown",
+        "phone": "",
+        "website": "https://thirdcrown.com",
+        "address": "TP Legal Ltd, Church Street East, Horsell, Woking, Surrey, England, GU21 6HR, United Kingdom",
+        "city": "",
+        "state": "UNITED",
+        "category": "",
+        "categories": "Jewelry, Design",
+        "display_categories": "Clothing and Accessories",
+        "description": "Third Crown, by Kristin and Kofi Essel, creates geometric statement jewelry—necklaces, rings, cuff bracelets—for all genders, inspired by everyday architecture.",
+        "alias": "third-crown",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/third-crown",
+      "projected_route": "/business-directory/third-crown",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "Clothing and Accessories",
+      "current_category_source_value": "Clothing and Accessories",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfac",
+      "current_values": {
+        "business_name": "Tree Fairfax",
+        "phone": "",
+        "website": "https://treefairfax.com",
+        "address": "Fairfax VLG, Rose Tree, Upper Providence, Upper Providence Township, Delaware County, Pennsylvania, 19065, United States",
+        "city": "",
+        "state": "UNITED",
+        "category": "",
+        "categories": "Leather Goods, Accessories",
+        "display_categories": "Clothing and Accessories",
+        "description": "Tree Fairfax offers handcrafted leather totes, wallets, belts and wine holder bags, all made with minimalist design and long-lasting materials.",
+        "alias": "tree-fairfax",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/tree-fairfax",
+      "projected_route": "/business-directory/tree-fairfax",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "Clothing and Accessories",
+      "current_category_source_value": "Clothing and Accessories",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfd3",
+      "current_values": {
+        "business_name": "Royal Nation",
+        "phone": "",
+        "website": "https://royal-nation.com",
+        "address": "Royal VI Nation, Place de la Nation, Quartier Sainte-Marguerite, Paris 11e Arrondissement, Paris, France métropolitaine, 75011, France",
+        "city": "",
+        "state": "FRANCE",
+        "category": "",
+        "categories": "Clothing, Kids",
+        "display_categories": "Baby and Kids",
+        "description": "Royal Nation offers gender-neutral kids’ clothing (sizes 4/5–14) with storytelling collections accompanied by short films.",
+        "alias": "royal-nation",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/royal-nation",
+      "projected_route": "/business-directory/royal-nation",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "Baby and Kids",
+      "current_category_source_value": "Baby and Kids",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a625",
+      "current_values": {
+        "business_name": "Sip And Sonder Inglewood",
+        "phone": "",
+        "website": "",
+        "address": "108 S Market St Inglewood, CA 90301",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Restaurants",
+        "display_categories": "Restaurants",
+        "description": "Two lawyers, Amanda-Jane Thomas and Shanita Nicholas, became friends and launched Sip and Sonder, an entrepreneurial and creative hub that also houses a coffee house. Open for takeout. 108 S Market St, Inglewood,",
+        "alias": "sip-and-sonder-inglewood",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Food and Beverage"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/sip-and-sonder-inglewood",
+      "projected_route": "/business-directory/sip-and-sonder-inglewood",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "Restaurants",
+      "current_category_source_value": "Restaurants",
+      "proposed_display_category": "Food and Beverage",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "698ff52ae8467526b29ede85",
+      "current_values": {
+        "business_name": "Gentlemen’s Quarters",
+        "phone": "",
+        "website": "",
+        "address": "1014 Quarrier St, Charleston, WV 25301",
+        "city": "Charleston",
+        "state": "WV",
+        "category": "Barber Shop",
+        "categories": "Barbershop",
+        "display_categories": "Grooming",
+        "description": "Gentlemen’s Quarters is a barbershop in Charleston, WV offering haircuts, fades, line-ups, and grooming services. Call ahead or check their website for hours, services, and appointment details.",
+        "alias": "gentlemen-s-quarters-wv-charleston",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/gentlemen-s-quarters-wv-charleston",
+      "projected_route": "/business-directory/gentlemen-s-quarters-wv-charleston",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "Grooming",
+      "current_category_source_value": "Grooming",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "698ff52ae8467526b29ede86",
+      "current_values": {
+        "business_name": "Fade-N-Up",
+        "phone": "",
+        "website": "",
+        "address": "403 S 2nd St, Laramie, WY 82070",
+        "city": "Laramie",
+        "state": "WY",
+        "category": "Barber Shop",
+        "categories": "Barbershop",
+        "display_categories": "Grooming",
+        "description": "Fade-N-Up is a barbershop in Laramie, WY offering haircuts, fades, line-ups, and grooming services. Call ahead or check their website for hours, services, and appointment details.",
+        "alias": "fade-n-up-wy-laramie",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/fade-n-up-wy-laramie",
+      "projected_route": "/business-directory/fade-n-up-wy-laramie",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "Grooming",
+      "current_category_source_value": "Grooming",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "698ff52ae8467526b29ede87",
+      "current_values": {
+        "business_name": "Quality Barbershop",
+        "phone": "",
+        "website": "",
+        "address": "1804 E Yesler Way, Seattle, WA 98122",
+        "city": "Seattle",
+        "state": "WA",
+        "category": "Barber Shop",
+        "categories": "Barbershop",
+        "display_categories": "",
+        "description": "Quality Barbershop is a barbershop in Seattle, WA offering haircuts, fades, line-ups, and grooming services. Call ahead or check their website for hours, services, and appointment details.",
+        "alias": "quality-barbershop-wa-seattle",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/quality-barbershop-wa-seattle",
+      "projected_route": "/business-directory/quality-barbershop-wa-seattle",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "",
+      "current_category_source_value": "Barbershop",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "698ff52ae8467526b29ede88",
+      "current_values": {
+        "business_name": "Cuts for Men",
+        "phone": "",
+        "website": "",
+        "address": "116 Archibald St, Burlington, VT 5401.0",
+        "city": "Burlington",
+        "state": "VT",
+        "category": "Barber Shop",
+        "categories": "Barbershop",
+        "display_categories": "",
+        "description": "Cuts for Men is a barbershop in Burlington, VT offering haircuts, fades, line-ups, and grooming services. Call ahead or check their website for hours, services, and appointment details.",
+        "alias": "cuts-for-men-vt-burlington",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/cuts-for-men-vt-burlington",
+      "projected_route": "/business-directory/cuts-for-men-vt-burlington",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "",
+      "current_category_source_value": "Barbershop",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "698ff8647af60943e08680fa",
+      "current_values": {
+        "business_name": "Kuttz",
+        "phone": "",
+        "website": "",
+        "address": "Flagstaff, AZ 86001",
+        "city": "Flagstaff",
+        "state": "AZ",
+        "category": "",
+        "categories": "Barbershop",
+        "display_categories": "",
+        "description": "Kuttz is a barbershop in Flagstaff, AZ offering haircuts, fades, line-ups, and grooming services. Call ahead or check their website for hours, services, and appointment details.",
+        "alias": "kuttz-az-flagstaff",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/kuttz-az-flagstaff",
+      "projected_route": "/business-directory/kuttz-az-flagstaff",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "",
+      "current_category_source_value": "Barbershop",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "698ff8647af60943e086811b",
+      "current_values": {
+        "business_name": "Elegance & Style Barber Lounge",
+        "phone": "",
+        "website": "",
+        "address": "35 W General Screven Way, Hinesville, GA 31313",
+        "city": "Hinesville",
+        "state": "GA",
+        "category": "",
+        "categories": "Barbershop",
+        "display_categories": "",
+        "description": "Elegance & Style Barber Lounge is a barbershop in Hinesville, GA offering haircuts, fades, line-ups, and grooming services. Call ahead or check their website for hours, services, and appointment details.",
+        "alias": "elegance-style-barber-lounge-ga-hinesville",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/elegance-style-barber-lounge-ga-hinesville",
+      "projected_route": "/business-directory/elegance-style-barber-lounge-ga-hinesville",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "",
+      "current_category_source_value": "Barbershop",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "698ff8647af60943e086811e",
+      "current_values": {
+        "business_name": "Supreme Cuts",
+        "phone": "",
+        "website": "",
+        "address": "1230 E. 14th St., Unit 1, Des Moines, IA 50316",
+        "city": "Des Moines",
+        "state": "IA",
+        "category": "",
+        "categories": "Barbershop",
+        "display_categories": "",
+        "description": "Supreme Cuts is a barbershop in Des Moines, IA offering haircuts, fades, line-ups, and grooming services. Call ahead or check their website for hours, services, and appointment details.",
+        "alias": "supreme-cuts-ia-des-moines",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/supreme-cuts-ia-des-moines",
+      "projected_route": "/business-directory/supreme-cuts-ia-des-moines",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "",
+      "current_category_source_value": "Barbershop",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "698ff8647af60943e086811f",
+      "current_values": {
+        "business_name": "Cut-N-Up",
+        "phone": "",
+        "website": "",
+        "address": "6409 W. Ustick Rd., Boise, ID 83704",
+        "city": "Boise",
+        "state": "ID",
+        "category": "",
+        "categories": "Barbershop",
+        "display_categories": "",
+        "description": "Cut-N-Up is a barbershop in Boise, ID offering haircuts, fades, line-ups, and grooming services. Call ahead or check their website for hours, services, and appointment details.",
+        "alias": "cut-n-up-id-boise",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/cut-n-up-id-boise",
+      "projected_route": "/business-directory/cut-n-up-id-boise",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "",
+      "current_category_source_value": "Barbershop",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "698ff8647af60943e086812a",
+      "current_values": {
+        "business_name": "Royalty Kutz",
+        "phone": "",
+        "website": "",
+        "address": "3912 E. 13th St. N, Wichita, KS 67208",
+        "city": "Wichita",
+        "state": "KS",
+        "category": "",
+        "categories": "Barbershop",
+        "display_categories": "",
+        "description": "Royalty Kutz is a barbershop in Wichita, KS offering haircuts, fades, line-ups, and grooming services. Call ahead or check their website for hours, services, and appointment details.",
+        "alias": "royalty-kutz-ks-wichita",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/royalty-kutz-ks-wichita",
+      "projected_route": "/business-directory/royalty-kutz-ks-wichita",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "",
+      "current_category_source_value": "Barbershop",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "698ff8647af60943e0868133",
+      "current_values": {
+        "business_name": "Stop Jockin Barber Shop",
+        "phone": "",
+        "website": "",
+        "address": "3600 Jumonville St, New Orleans, LA 70122",
+        "city": "New Orleans",
+        "state": "LA",
+        "category": "",
+        "categories": "Barbershop",
+        "display_categories": "",
+        "description": "Stop Jockin Barber Shop is a barbershop in New Orleans, LA offering haircuts, fades, line-ups, and grooming services. Call ahead or check their website for hours, services, and appointment details.",
+        "alias": "stop-jockin-barber-shop-la-new-orleans",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/stop-jockin-barber-shop-la-new-orleans",
+      "projected_route": "/business-directory/stop-jockin-barber-shop-la-new-orleans",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "",
+      "current_category_source_value": "Barbershop",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "698ff8647af60943e086813b",
+      "current_values": {
+        "business_name": "Kings and Queens",
+        "phone": "",
+        "website": "",
+        "address": "50 Maine Street, Brunswick, ME 4011.0",
+        "city": "Brunswick",
+        "state": "ME",
+        "category": "",
+        "categories": "Barbershop",
+        "display_categories": "",
+        "description": "Kings and Queens is a barbershop in Brunswick, ME offering haircuts, fades, line-ups, and grooming services. Call ahead or check their website for hours, services, and appointment details.",
+        "alias": "kings-and-queens-me-brunswick",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/kings-and-queens-me-brunswick",
+      "projected_route": "/business-directory/kings-and-queens-me-brunswick",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "",
+      "current_category_source_value": "Barbershop",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "698ff8647af60943e086813c",
+      "current_values": {
+        "business_name": "Dre’s",
+        "phone": "",
+        "website": "",
+        "address": "25511 Southfield Rd., Southfield, MI 48075",
+        "city": "Southfield",
+        "state": "MI",
+        "category": "",
+        "categories": "Barbershop",
+        "display_categories": "",
+        "description": "Dre’s is a barbershop in Southfield, MI offering haircuts, fades, line-ups, and grooming services. Call ahead or check their website for hours, services, and appointment details.",
+        "alias": "dre-s-mi-southfield",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/dre-s-mi-southfield",
+      "projected_route": "/business-directory/dre-s-mi-southfield",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "",
+      "current_category_source_value": "Barbershop",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "698ff8647af60943e0868151",
+      "current_values": {
+        "business_name": "Lyle Styles and Cuts",
+        "phone": "",
+        "website": "",
+        "address": "318 S 72nd St, Omaha, NE 68114",
+        "city": "Omaha",
+        "state": "NE",
+        "category": "",
+        "categories": "Barbershop",
+        "display_categories": "",
+        "description": "Lyle Styles and Cuts is a barbershop in Omaha, NE offering haircuts, fades, line-ups, and grooming services. Call ahead or check their website for hours, services, and appointment details.",
+        "alias": "lyle-styles-and-cuts-ne-omaha",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/lyle-styles-and-cuts-ne-omaha",
+      "projected_route": "/business-directory/lyle-styles-and-cuts-ne-omaha",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "",
+      "current_category_source_value": "Barbershop",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "698ff8647af60943e0868159",
+      "current_values": {
+        "business_name": "Masterpiece Barbershop",
+        "phone": "",
+        "website": "",
+        "address": "1200 W Lake Mead Blvd, Las Vegas, NV 89106",
+        "city": "Las Vegas",
+        "state": "NV",
+        "category": "",
+        "categories": "Barbershop",
+        "display_categories": "",
+        "description": "Masterpiece Barbershop is a barbershop in Las Vegas, NV offering haircuts, fades, line-ups, and grooming services. Call ahead or check their website for hours, services, and appointment details.",
+        "alias": "masterpiece-barbershop-nv-las-vegas",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/masterpiece-barbershop-nv-las-vegas",
+      "projected_route": "/business-directory/masterpiece-barbershop-nv-las-vegas",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "",
+      "current_category_source_value": "Barbershop",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "698ff8647af60943e086816c",
+      "current_values": {
+        "business_name": "Another Level",
+        "phone": "",
+        "website": "",
+        "address": "631 W. North Temple, Salt Lake City, UT 84116",
+        "city": "Salt Lake City",
+        "state": "UT",
+        "category": "",
+        "categories": "Barbershop",
+        "display_categories": "",
+        "description": "Another Level is a barbershop in Salt Lake City, UT offering haircuts, fades, line-ups, and grooming services. Call ahead or check their website for hours, services, and appointment details.",
+        "alias": "another-level-ut-salt-lake-city",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [],
+      "approval_readiness": "requires verification before approval",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [
+        "near_approval"
+      ],
+      "current_route": "/business-directory/another-level-ut-salt-lake-city",
+      "projected_route": "/business-directory/another-level-ut-salt-lake-city",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "",
+      "current_category_source_value": "Barbershop",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67f73df01d08a04e139a9ecb",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "108 S Market St Inglewood, CA 90301",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Restaurants",
+        "display_categories": "Restaurants",
+        "description": "Two lawyers, Amanda-Jane Thomas and Shanita Nicholas, became friends and launched Sip and Sonder, an entrepreneurial and creative hub that also houses a coffee house. Open for takeout. 108 S Market St, Inglewood,",
+        "alias": "sip-and-sonder-inglewood",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Food and Beverage"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": "/business-directory/sip-and-sonder-inglewood",
+      "projected_route": "/business-directory/sip-and-sonder-inglewood",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "Restaurants",
+      "current_category_source_value": "Restaurants",
+      "proposed_display_category": "Food and Beverage",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67f73df01d08a04e139a9f1d",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "1825 Sunset Blvd Los Angeles, CA 90026",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Restaurants",
+        "display_categories": "Restaurants",
+        "description": "Vanessa Butler’s small coffee shop in Echo Park has a variety of coffee drinks including a “vanilla bomb” and vegan food options. 1825 Sunset Blvd., Echo Park.",
+        "alias": "vanillablack-los-angeles",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Food and Beverage"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": "/business-directory/vanillablack-los-angeles",
+      "projected_route": "/business-directory/vanillablack-los-angeles",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "Restaurants",
+      "current_category_source_value": "Restaurants",
+      "proposed_display_category": "Food and Beverage",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67f73df01d08a04e139a9ec9",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "1712 W Sunset Blvd Los Angeles, CA 90026",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Restaurants",
+        "display_categories": "Restaurants",
+        "description": "Founded by Jack Karuletwa, Silverback sources its coffee from farms in Rwanda, where he grew up. A portion of proceeds are donated to Rwandan organizations. The Echo Park location is open for takeout and limited dine-in. 1712 W. Sunset Blvd., Echo Park,",
+        "alias": "silverback-coffee-of-rwanda-los-angeles-3",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Food and Beverage"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": "/business-directory/silverback-coffee-of-rwanda-los-angeles-3",
+      "projected_route": "/business-directory/silverback-coffee-of-rwanda-los-angeles-3",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": false,
+      "current_display_category": "Restaurants",
+      "current_category_source_value": "Restaurants",
+      "proposed_display_category": "Food and Beverage",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a58a",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "7952 West 3rd Street, Los Angeles, California 90048",
+        "city": "",
+        "state": "CALIFORNIA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "jewelry, body jewelry",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a4ec",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "2524 10th Ave Los Angeles, CA 90018",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "The use of rocks and stones, wood, seashells and plants gives Len Brown’s handmade unisex bracelets and necklaces a chunky, hewn-from-nature vibe. Prices at the Etsy shop range from $25 (for a wood and nut Downward Dog necklace) to $65 for the Deep Blue Stone necklace that uses glass, leather, silver and stone. Instagram: @brownhazeshop",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a5f3",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "201 S Market St., Inglewood, CA 90301",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "accessories, women’s clothing, shoes",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a60e",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "837 S Windsor Blvd Los Angeles, CA 90005",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "ROCKIN CUSHIONS (reupholsters Ikea furniture)",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a4b2",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "8500 Burton Way #612 Los Angeles Beverly Hills, CA 90048",
+        "city": "Los Angeles Beverly Hills",
+        "state": "CA",
+        "category": "Shopping",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "Menswear designer Sauvage, a London-to-Beverly Hills transplant of Ghanian descent, has dressed the likes of Dwyane Wade, LeBron James and, most recently, 2019 NBA draft pick Zion Williamson, who was tapped by the New Orleans Pelicans in a cream-colored, shawl-collar made-to-measure House of A. Sauvage tuxedo. asauvage.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a4f4",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "600 S Spring St Los Angeles, CA 90014",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "simple, dainty, beautiful jewelry – made in LA",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a590",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "4193 Redondo Beach Blvd. Lawndale, CA 90260",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "shoes",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a576",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "1030 Sanborn Ave Los Angeles, CA 90029",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "fun, colorful, tropical men & women’s casual-chic resort wear",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a612",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "1600 Vine St Los Angeles, CA 90028",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "head wraps",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a5e6",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "1620 Morton Ave Los Angeles, CA 90026",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "women’s vintage apparel",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a699",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "PO BOX 94501 Pasadena CA 91109",
+        "city": "",
+        "state": "PO",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "trendy, chic, made in LA, ready to wear for women",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a65e",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "6230 Wilshire Blvd #71 Los Angeles, CA 90048",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "masks, mugs, graphic t’s, and more",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9d60",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "4705 Melrose Ave Los Angeles, CA 90029",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "leather goods",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9dad",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "4003 Sunswept Dr Studio City, CA 91604",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "CHRISTINA BENTLEY (floral design)",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9df2",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "767 South Alameda St. #192 Los Angeles 90021",
+        "city": "",
+        "state": "767",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "sustainable clothing, lifestyle goods, ROW DTLA",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9e06",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "6607 Cimarron St Los Angeles, CA 90047",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "men and women’s apparel, mother & daughter design duo, made in LA",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9e4b",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "623 SOUTH LONG BEACH COMPTON, CA 90221",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "cosmetic and beauty supply",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73df01d08a04e139a9eaf",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "2959 Potomac Ave Los Angeles, CA 90016",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "beautifully curated vintage womenswear",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a4b4",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "4705 Melrose Ave Los Angeles, CA 90029",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "leather goods",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9de6",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "Fashion District Los Angeles, CA",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "contemporary women’s clothing brand, ethically made in LA",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9da1",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "600 S Spring St Los Angeles, CA 90014",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "simple, dainty, beautiful jewelry – made in LA",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9e1e",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "1030 Sanborn Ave Los Angeles, CA 90029",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "fun, colorful, tropical men & women’s casual-chic resort wear",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a5a5",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "623 SOUTH LONG BEACH COMPTON, CA 90221",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "cosmetic and beauty supply",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Beauty, Grooming and Personal Care",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a517",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "311 N. Robertson Blvd., Suite 458 Beverly Hills, CA 90211",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "Launched in L.A. in 1989, Carl Jones’ and T.J. Walkers’ streetwear label with a bold color palette inspired by the Pan-African flag and motto “clothing without prejudice” was embraced by hip-hop and then, seemingly, the whole world. The founders and the brand are still around — and their message seems more relevant than ever. (It’s also the subject of an ongoing exhibition at the temporarily closed California African American Museum in Exposition Park.) crosscolours.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a537",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "3940 Laurel Canyon Blvd #427 Studio City, CA 91604",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "Jerry Lorenzo’s upscale streetwear label has collaborated with some of the biggest names in the business — sneaker maker Nike and Italian luxury menswear label Ermenegildo Zegna, to name just two. fearofgod.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9dc4",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "311 N. Robertson Blvd., Suite 458 Beverly Hills, CA 90211",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "Launched in L.A. in 1989, Carl Jones’ and T.J. Walkers’ streetwear label with a bold color palette inspired by the Pan-African flag and motto “clothing without prejudice” was embraced by hip-hop and then, seemingly, the whole world. The founders and the brand are still around — and their message seems more relevant than ever. (It’s also the subject of an ongoing exhibition at the temporarily closed California African American Museum in Exposition Park.) crosscolours.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a545",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "767 South Alameda St. #192 Los Angeles 90021",
+        "city": "",
+        "state": "767",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "sustainable clothing, lifestyle goods, ROW DTLA",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a507",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "4003 Sunswept Dr Studio City, CA 91604",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "CHRISTINA BENTLEY (floral design)",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9d7c",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "8950 W Olympic Blvd #293 Beverly Hills, CA 90211",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "BIA BLOOMS (florist – monthly arrangements)",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9d59",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "8500 Burton Way #612 Los Angeles Beverly Hills, CA 90048",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "Menswear designer Sauvage, a London-to-Beverly Hills transplant of Ghanian descent, has dressed the likes of Dwyane Wade, LeBron James and, most recently, 2019 NBA draft pick Zion Williamson, who was tapped by the New Orleans Pelicans in a cream-colored, shawl-collar made-to-measure House of A. Sauvage tuxedo. asauvage.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a53a",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "Fashion District Los Angeles, CA",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "contemporary women’s clothing brand, ethically made in LA",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a55b",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "6607 Cimarron St Los Angeles, CA 90047",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "men and women’s apparel, mother & daughter design duo, made in LA",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a5d1",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "12211 Arbor Pl Los Angeles, CA 90044",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "contemporary women’s designer",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9d9a",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "2524 10th Ave Los Angeles, CA 90018",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "The use of rocks and stones, wood, seashells and plants gives Len Brown’s handmade unisex bracelets and necklaces a chunky, hewn-from-nature vibe. Prices at the Etsy shop range from $25 (for a wood and nut Downward Dog necklace) to $65 for the Deep Blue Stone necklace that uses glass, leather, silver and stone. Instagram: @brownhazeshop",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9ded",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "3940 Laurel Canyon Blvd #427 Studio City, CA 91604",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "Jerry Lorenzo’s upscale streetwear label has collaborated with some of the biggest names in the business — sneaker maker Nike and Italian luxury menswear label Ermenegildo Zegna, to name just two. fearofgod.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a619",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "2959 Potomac Ave Los Angeles, CA 90016",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "beautifully curated vintage womenswear",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9e30",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "4193 Redondo Beach Blvd. Lawndale, CA 90260",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "shoes",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a661",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "4501 W Exposition Blvd Los Angeles, CA 90016",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "The former fashion designer-turned-Gangsta Gardener recently taught MasterClass lessons on gardening and sells T-shirts online. ronfinley.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9e36",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "7952 West 3rd Street, Los Angeles, California 90048",
+        "city": "",
+        "state": "CALIFORNIA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "jewelry, body jewelry",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73df01d08a04e139a9e7a",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "12211 Arbor Pl Los Angeles, CA 90044",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "contemporary women’s designer",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73df01d08a04e139a9e8c",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "1620 Morton Ave Los Angeles, CA 90026",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "women’s vintage apparel",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73df01d08a04e139a9e90",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "201 S Market St., Inglewood, CA 90301",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "accessories, women’s clothing, shoes",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73df01d08a04e139a9eb2",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "837 S Windsor Blvd Los Angeles, CA 90005",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "ROCKIN CUSHIONS (reupholsters Ikea furniture)",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73df01d08a04e139a9f00",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "6230 Wilshire Blvd #71 Los Angeles, CA 90048",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "masks, mugs, graphic t’s, and more",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73df01d08a04e139a9eb7",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "1600 Vine St Los Angeles, CA 90028",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "head wraps",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73df01d08a04e139a9f02",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "4501 W Exposition Blvd Los Angeles, CA 90016",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "The former fashion designer-turned-Gangsta Gardener recently taught MasterClass lessons on gardening and sells T-shirts online. ronfinley.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67f73df01d08a04e139a9f5d",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "PO BOX 94501 Pasadena CA 91109",
+        "city": "",
+        "state": "PO",
+        "category": "",
+        "categories": "Shopping",
+        "display_categories": "Shopping",
+        "description": "trendy, chic, made in LA, ready to wear for women",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "Shopping",
+      "current_category_source_value": "Shopping",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    },
+    {
+      "_id": "67ea165aca2270d775407020",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "",
+        "city": "",
+        "state": "",
+        "category": "",
+        "categories": "",
+        "display_categories": "",
+        "description": "Fashion Clothing line",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "display_categories": "Shopping and Retail"
+      },
+      "evidence_source": [
+        {
+          "field": "display_categories",
+          "source": "mongodb_cross_field_category_mapping",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "business_name",
+        "location",
+        "alias_or_slug"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "email_domain_plus_missing_name"
+      ],
+      "primary_queue": "B",
+      "secondary_change_types": [],
+      "current_route": null,
+      "projected_route": null,
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "",
+      "current_category_source_value": "",
+      "proposed_display_category": "Shopping and Retail",
+      "category_would_change_search_results": true,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    }
+  ]
+}

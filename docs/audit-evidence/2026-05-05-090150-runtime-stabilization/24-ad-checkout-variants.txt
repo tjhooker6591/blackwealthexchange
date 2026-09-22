@@ -1,0 +1,57 @@
+PAYLOAD:{"option":"banner","placement":"home_top","duration":30,"campaignId":"audit-A"}
+HTTP/1.1 500 Internal Server Error
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; frame-src 'self' https:; form-action 'self'
+Content-Type: application/json; charset=utf-8
+ETag: "c5c5rswjk010"
+Content-Length: 36
+Vary: Accept-Encoding
+Date: Tue, 05 May 2026 21:50:51 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":"Stripe is not configured"}
+----
+
+PAYLOAD:{"option":"directory","placement":"city","duration":14,"campaignId":"audit-B","metadata":{"x":"y"}}
+HTTP/1.1 500 Internal Server Error
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; frame-src 'self' https:; form-action 'self'
+Content-Type: application/json; charset=utf-8
+ETag: "c5c5rswjk010"
+Content-Length: 36
+Vary: Accept-Encoding
+Date: Tue, 05 May 2026 21:50:51 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":"Stripe is not configured"}
+----
+
+PAYLOAD:{"adType":"featured","itemId":"ad-slot","campaignId":"audit-C"}
+HTTP/1.1 500 Internal Server Error
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; frame-src 'self' https:; form-action 'self'
+Content-Type: application/json; charset=utf-8
+ETag: "c5c5rswjk010"
+Content-Length: 36
+Vary: Accept-Encoding
+Date: Tue, 05 May 2026 21:50:51 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":"Stripe is not configured"}
+----
+

@@ -1,0 +1,567 @@
+[
+  {
+    "ts": "2026-05-05T16:50:09.775Z",
+    "kind": "console",
+    "type": "info",
+    "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+  },
+  {
+    "ts": "2026-05-05T16:50:09.853Z",
+    "kind": "console",
+    "type": "log",
+    "text": "[HMR] connected"
+  },
+  {
+    "ts": "2026-05-05T16:50:10.091Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] auth/me 175ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:10.195Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 161ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:10.201Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 168ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:10.384Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 178ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:10.385Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 179ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:10.394Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 187ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:10.492Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/billing/subscription-status 97ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:10.493Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/applications-overview?email=audit.user.local%40blackwealthexchange.test 98ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:10.651Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/get-dashboard?email=audit.user.local%40blackwealthexchange.test 257ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:11.153Z",
+    "kind": "checkpoint",
+    "step": "reload_1"
+  },
+  {
+    "ts": "2026-05-05T16:50:11.483Z",
+    "kind": "console",
+    "type": "info",
+    "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+  },
+  {
+    "ts": "2026-05-05T16:50:11.492Z",
+    "kind": "console",
+    "type": "log",
+    "text": "[HMR] connected"
+  },
+  {
+    "ts": "2026-05-05T16:50:11.713Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] auth/me 189ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:11.792Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 189ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:11.801Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 199ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:11.982Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 176ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:11.998Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 191ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:11.998Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 189ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:12.079Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/applications-overview?email=audit.user.local%40blackwealthexchange.test 96ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:12.080Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/billing/subscription-status 98ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:12.220Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/get-dashboard?email=audit.user.local%40blackwealthexchange.test 237ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:13.049Z",
+    "kind": "console",
+    "type": "info",
+    "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+  },
+  {
+    "ts": "2026-05-05T16:50:13.057Z",
+    "kind": "console",
+    "type": "log",
+    "text": "[HMR] connected"
+  },
+  {
+    "ts": "2026-05-05T16:50:13.241Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] auth/me 164ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:13.314Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 165ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:13.314Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 166ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:13.491Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 162ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:13.506Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 176ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:13.506Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 175ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:13.587Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/billing/subscription-status 95ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:13.587Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/applications-overview?email=audit.user.local%40blackwealthexchange.test 96ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:13.767Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/get-dashboard?email=audit.user.local%40blackwealthexchange.test 275ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:14.268Z",
+    "kind": "checkpoint",
+    "step": "reload_2"
+  },
+  {
+    "ts": "2026-05-05T16:50:14.598Z",
+    "kind": "console",
+    "type": "info",
+    "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+  },
+  {
+    "ts": "2026-05-05T16:50:14.607Z",
+    "kind": "console",
+    "type": "log",
+    "text": "[HMR] connected"
+  },
+  {
+    "ts": "2026-05-05T16:50:14.827Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] auth/me 200ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:14.876Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 169ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:14.885Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 178ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:15.053Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 163ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:15.061Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 172ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:15.061Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 171ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:15.156Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/applications-overview?email=audit.user.local%40blackwealthexchange.test 94ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:15.177Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/billing/subscription-status 115ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:15.313Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/get-dashboard?email=audit.user.local%40blackwealthexchange.test 251ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:16.138Z",
+    "kind": "console",
+    "type": "info",
+    "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+  },
+  {
+    "ts": "2026-05-05T16:50:16.147Z",
+    "kind": "console",
+    "type": "log",
+    "text": "[HMR] connected"
+  },
+  {
+    "ts": "2026-05-05T16:50:16.327Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] auth/me 170ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:16.389Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 156ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:16.391Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 157ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:16.585Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 179ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:16.596Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 192ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:16.597Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 190ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:16.697Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/applications-overview?email=audit.user.local%40blackwealthexchange.test 111ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:16.698Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/billing/subscription-status 112ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:16.862Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/get-dashboard?email=audit.user.local%40blackwealthexchange.test 276ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:17.363Z",
+    "kind": "checkpoint",
+    "step": "reload_3"
+  },
+  {
+    "ts": "2026-05-05T16:50:17.709Z",
+    "kind": "console",
+    "type": "info",
+    "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+  },
+  {
+    "ts": "2026-05-05T16:50:17.721Z",
+    "kind": "console",
+    "type": "log",
+    "text": "[HMR] connected"
+  },
+  {
+    "ts": "2026-05-05T16:50:17.916Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] auth/me 159ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:17.993Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 159ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:17.993Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 160ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:18.174Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 167ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:18.180Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 173ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:18.183Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 176ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:18.275Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/applications-overview?email=audit.user.local%40blackwealthexchange.test 93ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:18.276Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/billing/subscription-status 94ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:18.420Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/get-dashboard?email=audit.user.local%40blackwealthexchange.test 238ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:19.242Z",
+    "kind": "console",
+    "type": "info",
+    "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+  },
+  {
+    "ts": "2026-05-05T16:50:19.250Z",
+    "kind": "console",
+    "type": "log",
+    "text": "[HMR] connected"
+  },
+  {
+    "ts": "2026-05-05T16:50:19.431Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] auth/me 170ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:19.489Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 156ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:19.503Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 170ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:19.677Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 173ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:19.697Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 194ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:19.699Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 195ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:19.794Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/applications-overview?email=audit.user.local%40blackwealthexchange.test 117ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:19.829Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/billing/subscription-status 150ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:20.108Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/get-dashboard?email=audit.user.local%40blackwealthexchange.test 430ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:20.616Z",
+    "kind": "checkpoint",
+    "step": "hard_refresh_done"
+  },
+  {
+    "ts": "2026-05-05T16:50:20.638Z",
+    "kind": "checkpoint",
+    "step": "logout_status",
+    "status": 403
+  },
+  {
+    "ts": "2026-05-05T16:50:20.644Z",
+    "kind": "checkpoint",
+    "step": "login_status",
+    "status": 403
+  },
+  {
+    "ts": "2026-05-05T16:50:20.957Z",
+    "kind": "console",
+    "type": "info",
+    "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+  },
+  {
+    "ts": "2026-05-05T16:50:20.965Z",
+    "kind": "console",
+    "type": "log",
+    "text": "[HMR] connected"
+  },
+  {
+    "ts": "2026-05-05T16:50:21.137Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] auth/me 161ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:21.210Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 162ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:21.220Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 172ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:21.401Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 177ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:21.402Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 178ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:21.409Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/auth/me 184ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:21.513Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/billing/subscription-status 103ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:21.513Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/applications-overview?email=audit.user.local%40blackwealthexchange.test 104ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:21.649Z",
+    "kind": "console",
+    "type": "info",
+    "text": "[timing] fetch /api/user/get-dashboard?email=audit.user.local%40blackwealthexchange.test 239ms status=200"
+  },
+  {
+    "ts": "2026-05-05T16:50:22.149Z",
+    "kind": "checkpoint",
+    "step": "post_relogin_dashboard_loaded"
+  }
+]

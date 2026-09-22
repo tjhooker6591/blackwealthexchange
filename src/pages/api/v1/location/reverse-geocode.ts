@@ -26,10 +26,12 @@ export default async function handler(
 
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
-    return res.status(405).json({
-      ok: false,
-      error: { code: "METHOD_NOT_ALLOWED", message: "POST only" },
-    });
+    return res
+      .status(405)
+      .json({
+        ok: false,
+        error: { code: "METHOD_NOT_ALLOWED", message: "POST only" },
+      });
   }
 
   const body: any =
@@ -47,13 +49,15 @@ export default async function handler(
     lng < -180 ||
     lng > 180
   ) {
-    return res.status(400).json({
-      ok: false,
-      error: {
-        code: "INVALID_COORDINATES",
-        message: "lat/lng are required and must be valid.",
-      },
-    });
+    return res
+      .status(400)
+      .json({
+        ok: false,
+        error: {
+          code: "INVALID_COORDINATES",
+          message: "lat/lng are required and must be valid.",
+        },
+      });
   }
 
   const client = await clientPromise;
@@ -64,10 +68,12 @@ export default async function handler(
   const limit = await hitApiRateLimit(db, `reverse-geocode:ip:${ip}`, 20, 5);
   if (limit.blocked) {
     res.setHeader("Retry-After", String(limit.retryAfterSeconds));
-    return res.status(429).json({
-      ok: false,
-      error: { code: "RATE_LIMITED", message: "Too many location requests." },
-    });
+    return res
+      .status(429)
+      .json({
+        ok: false,
+        error: { code: "RATE_LIMITED", message: "Too many location requests." },
+      });
   }
 
   try {
@@ -75,12 +81,14 @@ export default async function handler(
     return res.status(200).json({ ok: true, data: result });
   } catch (error) {
     console.error("[api/v1/location/reverse-geocode] failed:", error);
-    return res.status(502).json({
-      ok: false,
-      error: {
-        code: "GEOCODE_FAILED",
-        message: "Could not resolve location.",
-      },
-    });
+    return res
+      .status(502)
+      .json({
+        ok: false,
+        error: {
+          code: "GEOCODE_FAILED",
+          message: "Could not resolve location.",
+        },
+      });
   }
 }

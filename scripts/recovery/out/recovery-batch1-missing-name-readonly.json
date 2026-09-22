@@ -1,0 +1,75 @@
+{
+  "rowCount": 1,
+  "rows": [
+    {
+      "_id": "67f19866e8787c4174d84544",
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "",
+        "city": "",
+        "state": "",
+        "category": "",
+        "categories": "",
+        "display_categories": "",
+        "description": "ash brand",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {
+        "business_name": "Gamil",
+        "alias": "gamil"
+      },
+      "evidence_source": [
+        {
+          "field": "business_name",
+          "source": "mongodb_email_domain",
+          "type": "MongoDB cross-field"
+        },
+        {
+          "field": "alias",
+          "source": "derived_from_business_name",
+          "type": "MongoDB cross-field"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB cross-field",
+        "MongoDB cross-field"
+      ],
+      "duplicate_status": "none",
+      "matched_existing_record_id": "",
+      "duplicate_evidence": [],
+      "confidence": "medium",
+      "fields_still_missing": [
+        "location",
+        "category"
+      ],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "email_domain_plus_missing_name"
+      ],
+      "primary_queue": "D",
+      "secondary_change_types": [
+        "alias_or_slug"
+      ],
+      "current_route": null,
+      "projected_route": "/business-directory/gamil",
+      "page_currently_resolves": false,
+      "generated_alias_or_slug": "gamil",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": true,
+      "current_alias_exists": false,
+      "current_slug_exists": false,
+      "current_display_category": "",
+      "current_category_source_value": "",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "mongodb_email_domain",
+      "could_require_external_research": true,
+      "exact_reason_not_currently_public": "missing alias/slug or public completeness path"
+    }
+  ]
+}

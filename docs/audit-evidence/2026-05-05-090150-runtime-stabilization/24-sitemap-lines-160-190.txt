@@ -1,0 +1,31 @@
+   160	        changefreq: "daily",
+   161	        priority: "0.75",
+   162	      });
+   163	    }
+   164	
+   165	    for (const c of categories.slice(0, 100)) {
+   166	      const cat = slugify(String(c || ""));
+   167	      if (!cat) continue;
+   168	      urls.push({
+   169	        loc: `${base}/black-owned-businesses/category/${encodeURIComponent(cat)}`,
+   170	        changefreq: "weekly",
+   171	        priority: "0.68",
+   172	      });
+   173	    }
+   174	
+   175	    for (const row of cityStatePairs) {
+   176	      const city = slugify(String(row?._id?.city || ""));
+   177	      const state = slugify(String(row?._id?.state || "")).slice(0, 2);
+   178	      if (!city || !state) continue;
+   179	      urls.push({
+   180	        loc: `${base}/black-owned-businesses/city/${encodeURIComponent(`${city}-${state}`)}`,
+   181	        changefreq: "weekly",
+   182	        priority: "0.66",
+   183	      });
+   184	    }
+   185	  } catch {
+   186	    // keep base sitemap available even if dynamic collections fail
+   187	  }
+   188	
+   189	  res.setHeader("Content-Type", "application/xml");
+   190	  res.write(buildUrlSet(urls));

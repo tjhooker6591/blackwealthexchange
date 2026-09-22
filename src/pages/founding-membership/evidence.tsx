@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import { toPublicErrorMessage } from "@/lib/publicError";
 import type { GetServerSideProps } from "next";
 
 type MatchField = {
@@ -191,7 +192,14 @@ export default function FoundingMembershipEvidencePage() {
               : [{ ...BLANK_EVIDENCE }],
         });
       } catch (err: any) {
-        setError(err?.message || "Unable to load ownership evidence");
+        setError(
+          toPublicErrorMessage(err?.message, {
+            fallback:
+              "We couldn't load your ownership evidence details right now. Please try again.",
+            authFallback:
+              "Please sign in to continue with ownership verification.",
+          }),
+        );
       } finally {
         setLoading(false);
       }
@@ -289,13 +297,20 @@ export default function FoundingMembershipEvidencePage() {
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json?.ok) {
-        throw new Error(json?.error || "Unable to save ownership evidence");
+        throw new Error(
+          "We couldn't save your ownership evidence right now. Please try again.",
+        );
       }
       setMessage(
         "Ownership evidence intake saved. Public listing data remains unchanged until verification.",
       );
     } catch (err: any) {
-      setError(err?.message || "Unable to save ownership evidence");
+      setError(
+        toPublicErrorMessage(err?.message, {
+          fallback:
+            "We couldn't save your ownership evidence right now. Please try again.",
+        }),
+      );
     } finally {
       setSaving(false);
     }

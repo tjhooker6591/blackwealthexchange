@@ -1,0 +1,29 @@
+{
+  "desktop": {
+    "mobile": false,
+    "control": "button|a text=2",
+    "beforeUrl": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&search=auditpagination",
+    "afterUrl": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&search=auditpagination&page=2",
+    "urlChanged": true,
+    "apiCalled": true,
+    "contentDelta": true,
+    "loadingVisible": true,
+    "timingMs": 1254,
+    "consoleErrors": [],
+    "networkErrors": []
+  },
+  "mobile": {
+    "mobile": true,
+    "control": "button|a text=2",
+    "beforeUrl": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&search=auditpagination",
+    "afterUrl": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&search=auditpagination&page=2",
+    "urlChanged": true,
+    "apiCalled": true,
+    "contentDelta": true,
+    "loadingVisible": true,
+    "timingMs": 374,
+    "consoleErrors": [],
+    "networkErrors": []
+  },
+  "route": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&page=1"
+}

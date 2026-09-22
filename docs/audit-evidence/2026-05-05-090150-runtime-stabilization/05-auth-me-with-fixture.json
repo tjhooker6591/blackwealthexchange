@@ -1,0 +1,26 @@
+{
+  "user": {
+    "_id": "69fa1e792aeb239dc0349ef7",
+    "email": "audit.user.local@blackwealthexchange.test",
+    "accountType": "user",
+    "isPremium": false,
+    "currentPlan": "free",
+    "premiumStatus": "inactive",
+    "premiumActivatedAt": null,
+    "createdAt": "2026-05-05T16:44:41.548Z",
+    "updatedAt": "2026-05-05T16:44:41.548Z",
+    "id": "69fa1e792aeb239dc0349ef7",
+    "isAdmin": false,
+    "blackCardTier": null,
+    "blackCardStatus": "inactive",
+    "blackCardMemberSince": null,
+    "stripeSubscriptionId": null,
+    "stripeCustomerId": null,
+    "subscriptionStatus": null,
+    "subscriptionCurrentPeriodStart": null,
+    "subscriptionCurrentPeriodEnd": null,
+    "subscriptionCancelAtPeriodEnd": false,
+    "nextBillingDate": null,
+    "renewalStatus": null
+  }
+}

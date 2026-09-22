@@ -1,0 +1,7 @@
+method=GET
+url=http://localhost:3000/api/businesses
+status=200
+location=
+content_type=application/json; charset=utf-8
+bytes=11942
+body_preview={"results":[{"_id":"67c9ead1818d604b84e5a463","business_name":"Powder Beauty Los Angeles","categories":"Nail Salons, Waxing, Eyelash Service","display_categories":"Beauty, Grooming and Personal Care","description":"Nail 

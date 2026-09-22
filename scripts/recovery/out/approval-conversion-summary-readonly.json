@@ -1,0 +1,32 @@
+{
+  "totalMongoBusinesses": 2259,
+  "currentProtectedPublicBusinesses": 332,
+  "formattingOperationsProposed": 1744,
+  "recordsAffectedByFormatting": 1476,
+  "businessesProvenApprovalReadyAfterFormattingOperations": 332,
+  "projectedPublicCountAfterFormattingOnlyWork": 332,
+  "nonPublicRecords": 1927,
+  "groups": {
+    "approvalReadyNow": 150,
+    "oneMongoRepairAway": 0,
+    "twoOrMoreDeterministicRepairsAway": 0,
+    "limitedExternalResearchRequired": 580,
+    "duplicateReviewRequired": 411,
+    "invalidClosedOrUnusable": 0,
+    "insufficientInformation": 786
+  },
+  "projectedIncrease": {
+    "currentPublicBusinesses": 332,
+    "approvalReadyNow": "+150",
+    "approvalReadyAfterOneDeterministicRepair": "+0",
+    "approvalReadyAfterMultipleDeterministicRepairs": "+0",
+    "potentiallyReadyAfterLimitedResearch": "+580",
+    "blockedByStrongDuplicateEvidence": 411,
+    "invalidClosedUnusable": 0,
+    "insufficientInformation": 786,
+    "conservativeProjectedPublicTotal": 482,
+    "projectedTotalAfterDeterministicRepairs": 482,
+    "potentialTotalAfterLimitedResearch": 1062
+  },
+  "exactGroupTotalCheck": 1927
+}

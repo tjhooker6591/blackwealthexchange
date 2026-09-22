@@ -1,0 +1,7 @@
+method=GET
+url=http://localhost:3000/api/auth/me
+status=200
+location=
+content_type=application/json; charset=utf-8
+bytes=13
+body_preview={"user":null}

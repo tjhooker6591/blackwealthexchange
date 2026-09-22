@@ -3,6 +3,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 interface BuyNowButtonProps {
   userId?: string; // optional explicit id for dev/testing
@@ -123,9 +124,9 @@ export default function BuyNowButton({
             return;
           }
           setMsg(
-            data?.message ||
-              data?.error ||
-              "Checkout is unavailable right now.",
+            toPublicErrorMessage(data?.message || data?.error, {
+              fallback: "Checkout is unavailable right now. Please try again.",
+            }),
           );
           return;
         }
@@ -135,7 +136,7 @@ export default function BuyNowButton({
           return;
         }
 
-        setMsg("Checkout is unavailable right now (missing redirect URL).");
+        setMsg("Checkout is unavailable right now. Please try again.");
         return;
       }
 
@@ -182,7 +183,10 @@ export default function BuyNowButton({
       }
 
       setMsg(
-        data?.message || data?.error || "Checkout failed. Please try again.",
+        toPublicErrorMessage(data?.message || data?.error, {
+          fallback: "Checkout is unavailable right now. Please try again.",
+          authFallback: "Please sign in to continue to secure checkout.",
+        }),
       );
     } catch (err: any) {
       console.error("BuyNowButton error:", err);

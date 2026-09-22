@@ -1,0 +1,1849 @@
+{
+  "status": "R2_DONE",
+  "updatedIds": [
+    "67c9ead1818d604b84e5a497",
+    "67c9ead1818d604b84e5a498",
+    "67c9ead1818d604b84e5a499",
+    "67c9ead1818d604b84e5a49b",
+    "67c9ead1818d604b84e5a49c",
+    "67c9ead1818d604b84e5a49e",
+    "67c9ead1818d604b84e5a49f",
+    "67c9ead1818d604b84e5a4a6",
+    "67c9ead1818d604b84e5a4a8",
+    "67c9ead1818d604b84e5a4ab",
+    "67c9ead1818d604b84e5a4ad",
+    "67c9ead1818d604b84e5a4b1",
+    "67c9ead1818d604b84e5a4b2",
+    "67c9ead1818d604b84e5a4b3",
+    "67c9ead1818d604b84e5a4b6",
+    "67c9ead1818d604b84e5a4b8",
+    "67c9ead1818d604b84e5a4bb",
+    "67c9ead1818d604b84e5a4bc",
+    "67c9ead1818d604b84e5a4c0",
+    "67c9ead1818d604b84e5a4c1",
+    "67c9ead1818d604b84e5a4c3",
+    "67c9ead1818d604b84e5a4c9",
+    "67c9ead1818d604b84e5a4ca",
+    "67c9ead1818d604b84e5a4cb",
+    "67c9ead1818d604b84e5a4d7"
+  ],
+  "rollbackFile": "/Users/blackforge/workspace/bwe/repos/repo_clean/scripts/recovery/out/rollback-recovery-batch-R2-25.json",
+  "records": [
+    {
+      "id": "67c9ead1818d604b84e5a497",
+      "name": "Render Pasadena Pasadena 2",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "Pasadena"
+        },
+        "category": {
+          "before": null,
+          "after": "Beauty"
+        },
+        "slug": {
+          "before": null,
+          "after": "render-pasadena-pasadena-2-pasadena-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "Pasadena",
+              "rule": "address_city_state_zip",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Beauty",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "render-pasadena-pasadena-2-pasadena-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a498",
+      "name": "Quo Vadis Shave Studio Los Angeles",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "Los Angeles"
+        },
+        "category": {
+          "before": null,
+          "after": "Beauty"
+        },
+        "slug": {
+          "before": null,
+          "after": "quo-vadis-shave-studio-los-angeles-los-angeles-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "Los Angeles",
+              "rule": "address_city_state_zip",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Beauty",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "quo-vadis-shave-studio-los-angeles-los-angeles-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a499",
+      "name": "Jason Scott The Barber Gardena 3",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "Gardena"
+        },
+        "category": {
+          "before": null,
+          "after": "Beauty"
+        },
+        "slug": {
+          "before": null,
+          "after": "jason-scott-the-barber-gardena-3-gardena-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "Gardena",
+              "rule": "address_city_state_zip",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Beauty",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "jason-scott-the-barber-gardena-3-gardena-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a49b",
+      "name": "Chi Town Cuts And Fades Los Angeles 4",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "Los Angeles"
+        },
+        "category": {
+          "before": null,
+          "after": "Beauty"
+        },
+        "slug": {
+          "before": null,
+          "after": "chi-town-cuts-and-fades-los-angeles-4-los-angeles-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "Los Angeles",
+              "rule": "address_city_state_zip",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Beauty",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "chi-town-cuts-and-fades-los-angeles-4-los-angeles-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a49c",
+      "name": "Crownd Barber Lounge Hawthorne 2",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "Hawthorne"
+        },
+        "category": {
+          "before": null,
+          "after": "Beauty"
+        },
+        "slug": {
+          "before": null,
+          "after": "crownd-barber-lounge-hawthorne-2-hawthorne-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "Hawthorne",
+              "rule": "address_city_state_zip",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Beauty",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "crownd-barber-lounge-hawthorne-2-hawthorne-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a49e",
+      "name": "The Barber Bureau Monrovia",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "Monrovia"
+        },
+        "category": {
+          "before": null,
+          "after": "Beauty"
+        },
+        "slug": {
+          "before": null,
+          "after": "the-barber-bureau-monrovia-monrovia-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "Monrovia",
+              "rule": "address_city_state_zip",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Beauty",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "the-barber-bureau-monrovia-monrovia-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a49f",
+      "name": "The Galaxy Hair Salon Barbershop Carson",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "Carson"
+        },
+        "category": {
+          "before": null,
+          "after": "Beauty"
+        },
+        "slug": {
+          "before": null,
+          "after": "the-galaxy-hair-salon-barbershop-carson-carson-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "Carson",
+              "rule": "address_city_state_zip",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Beauty",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "the-galaxy-hair-salon-barbershop-carson-carson-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4a6",
+      "name": "2Nd Healthy Eatery Bellflower",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "Clark Ave Ste A Bellflower"
+        },
+        "category": {
+          "before": null,
+          "after": "Restaurants"
+        },
+        "slug": {
+          "before": null,
+          "after": "2nd-healthy-eatery-bellflower-clark-ave-ste-a-bellflower-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "Clark Ave Ste A Bellflower",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Restaurants",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "2nd-healthy-eatery-bellflower-clark-ave-ste-a-bellflower-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4a8",
+      "name": "45 Three Modern Vintage Home Los Angeles 2",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "S Fairfax Ave Los Angeles"
+        },
+        "category": {
+          "before": null,
+          "after": "Shopping"
+        },
+        "slug": {
+          "before": null,
+          "after": "45-three-modern-vintage-home-los-angeles-2-s-fairfax-ave-los-angeles-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "S Fairfax Ave Los Angeles",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Shopping",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "45-three-modern-vintage-home-los-angeles-2-s-fairfax-ave-los-angeles-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4ab",
+      "name": "A Beautiful California Florist Long Beach",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "Atlantic Ave Long Beach"
+        },
+        "category": {
+          "before": null,
+          "after": "Shopping"
+        },
+        "slug": {
+          "before": null,
+          "after": "a-beautiful-california-florist-long-beach-atlantic-ave-long-beach-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "Atlantic Ave Long Beach",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Shopping",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "a-beautiful-california-florist-long-beach-atlantic-ave-long-beach-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4ad",
+      "name": "Abeautifullife Jamaican Cafe Los Angeles",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "S Spring St Los Angeles"
+        },
+        "category": {
+          "before": null,
+          "after": "Restaurants"
+        },
+        "slug": {
+          "before": null,
+          "after": "abeautifullife-jamaican-cafe-los-angeles-s-spring-st-los-angeles-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "S Spring St Los Angeles",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Restaurants",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "abeautifullife-jamaican-cafe-los-angeles-s-spring-st-los-angeles-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4b1",
+      "name": "Aduke Nigerian Cuisine Inglewood 3",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "W Manchester Blvd Ste C Inglewood"
+        },
+        "category": {
+          "before": null,
+          "after": "Restaurants"
+        },
+        "slug": {
+          "before": null,
+          "after": "aduke-nigerian-cuisine-inglewood-3-w-manchester-blvd-ste-c-inglewood-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "W Manchester Blvd Ste C Inglewood",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Restaurants",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "aduke-nigerian-cuisine-inglewood-3-w-manchester-blvd-ste-c-inglewood-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4b2",
+      "name": "",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "Los Angeles Beverly Hills"
+        },
+        "category": {
+          "before": null,
+          "after": "Shopping"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "Los Angeles Beverly Hills",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Shopping",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4b3",
+      "name": "",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "Santa Monica"
+        },
+        "category": {
+          "before": null,
+          "after": "Services"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "Santa Monica",
+              "rule": "address_city_state_zip",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Services",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4b6",
+      "name": "All Flavor No Grease Los Angeles",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "St Los Angeles"
+        },
+        "category": {
+          "before": null,
+          "after": "Restaurants"
+        },
+        "slug": {
+          "before": null,
+          "after": "all-flavor-no-grease-los-angeles-st-los-angeles-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "St Los Angeles",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Restaurants",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "all-flavor-no-grease-los-angeles-st-los-angeles-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4b8",
+      "name": "Alex Fish Market Los Angeles",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "W Martin Luther King Jr Blvd Los Angeles"
+        },
+        "category": {
+          "before": null,
+          "after": "Restaurants"
+        },
+        "slug": {
+          "before": null,
+          "after": "alex-fish-market-los-angeles-w-martin-luther-king-jr-blvd-los-angeles-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "W Martin Luther King Jr Blvd Los Angeles",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Restaurants",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "alex-fish-market-los-angeles-w-martin-luther-king-jr-blvd-los-angeles-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4bb",
+      "name": "Annies Soul Delicious Los Angeles",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "S Fairfax Ave Los Angeles"
+        },
+        "category": {
+          "before": null,
+          "after": "Restaurants"
+        },
+        "slug": {
+          "before": null,
+          "after": "annies-soul-delicious-los-angeles-s-fairfax-ave-los-angeles-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "S Fairfax Ave Los Angeles",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Restaurants",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "annies-soul-delicious-los-angeles-s-fairfax-ave-los-angeles-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4bc",
+      "name": "Antidote Eats Los Angeles",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "Los Angeles"
+        },
+        "category": {
+          "before": null,
+          "after": "Restaurants"
+        },
+        "slug": {
+          "before": null,
+          "after": "antidote-eats-los-angeles-los-angeles-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "Los Angeles",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Restaurants",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "antidote-eats-los-angeles-los-angeles-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4c0",
+      "name": "Awash Restaurant Los Angeles",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "W Pico Blvd Los Angeles"
+        },
+        "category": {
+          "before": null,
+          "after": "Restaurants"
+        },
+        "slug": {
+          "before": null,
+          "after": "awash-restaurant-los-angeles-w-pico-blvd-los-angeles-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "W Pico Blvd Los Angeles",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Restaurants",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "awash-restaurant-los-angeles-w-pico-blvd-los-angeles-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4c1",
+      "name": "Ayda Ethiopian Restaurant Loma Linda",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "Redlands Blvd Loma Linda"
+        },
+        "category": {
+          "before": null,
+          "after": "Restaurants"
+        },
+        "slug": {
+          "before": null,
+          "after": "ayda-ethiopian-restaurant-loma-linda-redlands-blvd-loma-linda-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "Redlands Blvd Loma Linda",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Restaurants",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "ayda-ethiopian-restaurant-loma-linda-redlands-blvd-loma-linda-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4c3",
+      "name": "B And Rs Old Fashion Burgers Hawthorne 2",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "W Rosecrans Ave Hawthorne"
+        },
+        "category": {
+          "before": null,
+          "after": "Restaurants"
+        },
+        "slug": {
+          "before": null,
+          "after": "b-and-rs-old-fashion-burgers-hawthorne-2-w-rosecrans-ave-hawthorne-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "W Rosecrans Ave Hawthorne",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Restaurants",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "b-and-rs-old-fashion-burgers-hawthorne-2-w-rosecrans-ave-hawthorne-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4c9",
+      "name": "Barsha Hermosa Beach",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "Aviation Blvd Hermosa Beach"
+        },
+        "category": {
+          "before": null,
+          "after": "Restaurants"
+        },
+        "slug": {
+          "before": null,
+          "after": "barsha-hermosa-beach-aviation-blvd-hermosa-beach-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "Aviation Blvd Hermosa Beach",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Restaurants",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "barsha-hermosa-beach-aviation-blvd-hermosa-beach-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4ca",
+      "name": "Banadir Somali Restaurant Inglewood",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "W Arbor Vitae Unit C Inglewood"
+        },
+        "category": {
+          "before": null,
+          "after": "Restaurants"
+        },
+        "slug": {
+          "before": null,
+          "after": "banadir-somali-restaurant-inglewood-w-arbor-vitae-unit-c-inglewood-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "W Arbor Vitae Unit C Inglewood",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Restaurants",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "banadir-somali-restaurant-inglewood-w-arbor-vitae-unit-c-inglewood-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4cb",
+      "name": "Bbs Cafe Covina",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "N Citrus Ave Covina"
+        },
+        "category": {
+          "before": null,
+          "after": "Restaurants"
+        },
+        "slug": {
+          "before": null,
+          "after": "bbs-cafe-covina-n-citrus-ave-covina-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "N Citrus Ave Covina",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Restaurants",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "bbs-cafe-covina-n-citrus-ave-covina-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4d7",
+      "name": "Big Daddys Kickin Chicken Inglewood",
+      "ruleSummary": [
+        {
+          "field": "city",
+          "rule": "address_city_state_zip_loose",
+          "confidence": "high"
+        },
+        {
+          "field": "category",
+          "rule": "category_from_display_categories",
+          "confidence": "high"
+        },
+        {
+          "field": "slug",
+          "rule": "slugify(name-city-state)",
+          "confidence": "high"
+        }
+      ],
+      "fields": {
+        "city": {
+          "before": "",
+          "after": "E Nutwood St Inglewood"
+        },
+        "category": {
+          "before": null,
+          "after": "Restaurants"
+        },
+        "slug": {
+          "before": null,
+          "after": "big-daddys-kickin-chicken-inglewood-e-nutwood-st-inglewood-ca"
+        },
+        "recoveryStatus": {
+          "before": null,
+          "after": "internal_deterministic_recovered"
+        },
+        "recoveryEvidence": {
+          "before": null,
+          "after": [
+            {
+              "field": "city",
+              "value": "E Nutwood St Inglewood",
+              "rule": "address_city_state_zip_loose",
+              "confidence": "high",
+              "safe": "Exact structured address parse"
+            },
+            {
+              "field": "category",
+              "value": "Restaurants",
+              "rule": "category_from_display_categories",
+              "confidence": "high",
+              "safe": "Existing internal category text"
+            },
+            {
+              "field": "slug",
+              "value": "big-daddys-kickin-chicken-inglewood-e-nutwood-st-inglewood-ca",
+              "rule": "slugify(name-city-state)",
+              "confidence": "high",
+              "safe": "Deterministic normalization from internal fields"
+            }
+          ]
+        },
+        "recoveredAt": {
+          "before": null,
+          "after": "2026-05-10T04:08:18.609Z"
+        },
+        "recoveredBy": {
+          "before": null,
+          "after": "openclaw-main"
+        }
+      }
+    }
+  ],
+  "noUnrelatedRecordsChangedProof": {
+    "expectedWindowMinimum": 25,
+    "observedRecoveredByWindow": 25,
+    "allUpdatedIdsMatch": true
+  },
+  "reclassification": {
+    "eligibleNow": 23,
+    "stillNeedsEnrichment": 25
+  },
+  "canonicalReference": {
+    "url": "/api/search/businesses?query=&page=1&limit=20&_t=1778386100797",
+    "requestHeaderXSearchCache": "MISS",
+    "responseHeaderXSearchCache": "MISS",
+    "total": 337
+  },
+  "promotionsPerformed": false,
+  "trackingQueues": {
+    "r1EligibleButEnrichmentNeeded": 24,
+    "r1NotMinimumDataEligible": 1,
+    "r1StillNeedsEnrichment": 25,
+    "q1OwnerBusinessInputHold": 10,
+    "enrichmentFailedMethodGuardrail": "remaining enrichment-needed records should not be processed using the same failed method"
+  }
+}

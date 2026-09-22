@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es2020",
+    "outDir": "/tmp/bwe-package1-tests",
+    "noEmit": false,
+    "incremental": false
+  },
+  "include": [
+    "../src/lib/marketplace/__tests__/package1-tests.ts",
+    "../src/lib/marketplace/inventory.ts",
+    "../src/lib/marketplace/orderLifecycle.ts",
+    "../src/lib/marketplace/paymentLinkage.ts",
+    "../src/lib/payments/revenue.ts"
+  ]
+}

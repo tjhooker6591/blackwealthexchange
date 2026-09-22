@@ -22,18 +22,22 @@ export default async function handler(
 ) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
-    return res.status(405).json({
-      ok: false,
-      error: { code: "METHOD_NOT_ALLOWED", message: "GET only" },
-    });
+    return res
+      .status(405)
+      .json({
+        ok: false,
+        error: { code: "METHOD_NOT_ALLOWED", message: "GET only" },
+      });
   }
 
   const session = getNetworkSession(req);
   if (!session) {
-    return res.status(401).json({
-      ok: false,
-      error: { code: "UNAUTHORIZED", message: "Login required" },
-    });
+    return res
+      .status(401)
+      .json({
+        ok: false,
+        error: { code: "UNAUTHORIZED", message: "Login required" },
+      });
   }
 
   const hasAppleWalletCredentials = Boolean(

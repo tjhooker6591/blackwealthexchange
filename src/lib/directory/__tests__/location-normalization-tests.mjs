@@ -22,9 +22,7 @@ const transpiled = ts.transpileModule(source, {
 
 await fs.writeFile(targetPath, transpiled, "utf8");
 
-const { normalizeDirectoryLocationParts } = await import(
-  `file://${targetPath}`
-);
+const { normalizeDirectoryLocationParts } = await import(`file://${targetPath}`);
 
 const normalized = normalizeDirectoryLocationParts({
   address: "3301 Main St",

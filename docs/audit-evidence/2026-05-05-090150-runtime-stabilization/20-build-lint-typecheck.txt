@@ -1,0 +1,44 @@
+build/lint/typecheck probes
+
+/Users/blackforge/workspace/bwe/repos/repo_clean/src/components/pulse/MomentArcCard.tsx
+  132:11  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/blackforge/workspace/bwe/repos/repo_clean/src/hooks/useAuth.ts
+  49:6  warning  React Hook useEffect has a missing dependency: 'options?.silentOnPublic'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/blackforge/workspace/bwe/repos/repo_clean/src/pages/admin/command-center.tsx
+  133:9  warning  The 'company' logical expression could make the dependencies of useMemo Hook (at line 194) change on every render. To fix this, wrap the initialization of 'company' in its own useMemo() Hook                                               react-hooks/exhaustive-deps
+  135:9  warning  The 'support' logical expression could make the dependencies of useMemo Hook (at line 194) change on every render. To fix this, wrap the initialization of 'support' in its own useMemo() Hook                                               react-hooks/exhaustive-deps
+  138:9  warning  The 'priorities' logical expression could make the dependencies of useMemo Hook (at line 194) change on every render. Move it inside the useMemo callback. Alternatively, wrap the initialization of 'priorities' in its own useMemo() Hook  react-hooks/exhaustive-deps
+
+/Users/blackforge/workspace/bwe/repos/repo_clean/src/pages/black-entertainment-news.tsx
+  582:9  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/blackforge/workspace/bwe/repos/repo_clean/src/pages/index.tsx
+  1157:17  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  1605:23  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/blackforge/workspace/bwe/repos/repo_clean/src/pages/job/[id]/apply.tsx
+  94:6  warning  React Hook useEffect has a missing dependency: 'trackApplyEvent'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/blackforge/workspace/bwe/repos/repo_clean/src/pages/job/[id]/index.tsx
+  122:6  warning  React Hook useEffect has a missing dependency: 'trackJobEvent'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/blackforge/workspace/bwe/repos/repo_clean/src/pages/payment/cancel.tsx
+  11:6  warning  React Hook useEffect has a missing dependency: 'router'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/blackforge/workspace/bwe/repos/repo_clean/src/pages/payment/success.tsx
+  21:6  warning  React Hook useEffect has a missing dependency: 'router'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/blackforge/workspace/bwe/repos/repo_clean/src/pages/search-results.tsx
+  161:6   warning  React Hook useEffect has a missing dependency: 'trackSearchEvent'. Either include it or remove the dependency array                                                                                                                                                                      react-hooks/exhaustive-deps
+  178:6   warning  React Hook useEffect has a missing dependency: 'trackSearchEvent'. Either include it or remove the dependency array                                                                                                                                                                      react-hooks/exhaustive-deps
+  304:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+✖ 15 problems (0 errors, 15 warnings)
+
+src/pages/post-job.tsx(162,19): error TS2345: Argument of type '{ title: string; company: string; location: string; type: string; description: string; salary: string; contactEmail: string; }' is not assignable to parameter of type 'SetStateAction<{ title: string; company: string; location: string; type: string; description: string; salary: string; contactEmail: string; requiredSkills: string; requiredCertifications: string; minimumYearsExperience: string; requiresResume: boolean; workAuthorizationRequired: boolean; }>'.
+  Type '{ title: string; company: string; location: string; type: string; description: string; salary: string; contactEmail: string; }' is missing the following properties from type '{ title: string; company: string; location: string; type: string; description: string; salary: string; contactEmail: string; requiredSkills: string; requiredCertifications: string; minimumYearsExperience: string; requiresResume: boolean; workAuthorizationRequired: boolean; }': requiredSkills, requiredCertifications, minimumYearsExperience, requiresResume, workAuthorizationRequired
+src/pages/post-job.tsx(168,25): error TS2345: Argument of type '{ title: string; company: string; location: string; type: string; description: string; salary: string; contactEmail: string; }' is not assignable to parameter of type '{ title: string; company: string; location: string; type: string; description: string; salary: string; contactEmail: string; requiredSkills: string; requiredCertifications: string; minimumYearsExperience: string; requiresResume: boolean; workAuthorizationRequired: boolean; }'.
+  Type '{ title: string; company: string; location: string; type: string; description: string; salary: string; contactEmail: string; }' is missing the following properties from type '{ title: string; company: string; location: string; type: string; description: string; salary: string; contactEmail: string; requiredSkills: string; requiredCertifications: string; minimumYearsExperience: string; requiresResume: boolean; workAuthorizationRequired: boolean; }': requiredSkills, requiredCertifications, minimumYearsExperience, requiresResume, workAuthorizationRequired
+src/pages/sitemap.xml.ts(175,23): error TS2304: Cannot find name 'cityStatePairs'.

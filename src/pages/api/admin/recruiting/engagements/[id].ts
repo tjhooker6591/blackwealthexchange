@@ -131,10 +131,12 @@ export default async function handler(
     await col.updateOne({ _id }, updateOperators as any);
 
     const updated = await col.findOne({ _id });
-    return res.status(200).json({
-      ok: true,
-      engagement: { ...updated, _id: String(updated!._id) },
-    });
+    return res
+      .status(200)
+      .json({
+        ok: true,
+        engagement: { ...updated, _id: String(updated!._id) },
+      });
   }
 
   res.setHeader("Allow", ["GET", "PATCH"]);

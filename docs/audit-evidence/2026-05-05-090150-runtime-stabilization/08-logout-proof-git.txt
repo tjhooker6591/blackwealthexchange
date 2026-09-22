@@ -1,0 +1,5 @@
+69c917d fix(auth): normalize logout method-not-allowed response to JSON
+ src/pages/api/auth/logout.ts | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+---
+src/pages/api/auth/logout.ts

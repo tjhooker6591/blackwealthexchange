@@ -1,0 +1,7 @@
+method=GET
+url=http://localhost:3000/admin
+status=307
+location=
+content_type=
+bytes=24
+body_preview=/login?redirect=%2Fadmin

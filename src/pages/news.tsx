@@ -16,6 +16,7 @@ import {
   Filter,
   Clock,
 } from "lucide-react";
+import { toPublicErrorMessage } from "@/lib/publicError";
 
 type Region = "US" | "Africa" | "Global";
 
@@ -76,6 +77,12 @@ function safeDate(ts?: string) {
   if (!ts) return null;
   const d = new Date(ts);
   return isNaN(d.getTime()) ? null : d;
+}
+
+function safeImageUrl(url?: string | null) {
+  if (!url) return null;
+  if (url.startsWith("https://") || url.startsWith("data:")) return url;
+  return null;
 }
 
 function timeAgo(date?: Date | null) {
@@ -290,7 +297,7 @@ export default function NewsPage() {
       const res = await fetch(`/api/news/black?${params.toString()}`);
       const data = (await res.json()) as ApiResponse;
       if (!res.ok)
-        throw new Error((data as any)?.error || "Failed to load news");
+        throw new Error("We couldn't load news right now. Please try again.");
 
       const gotItems = Array.isArray(data?.items) ? data.items : [];
       const gotSources = Array.isArray(data?.sources) ? data.sources : [];
@@ -315,9 +322,11 @@ export default function NewsPage() {
         );
       }
     } catch (e: any) {
-      setError(e?.message || "Failed to load news");
-      setSuccessfulFeedCount(0);
-      setFailedFeedCount(0);
+      setError(
+        toPublicErrorMessage(e?.message, {
+          fallback: "We couldn't load news right now. Please try again.",
+        }),
+      );
     } finally {
       setLoading(false);
     }
@@ -336,7 +345,12 @@ export default function NewsPage() {
     const list = items.map((it) => {
       const dt = safeDate(it.publishedAt);
       const cat = categorize(it);
-      return { ...it, _dt: dt, _cat: cat } as NewsItem & {
+      return {
+        ...it,
+        image: safeImageUrl(it.image),
+        _dt: dt,
+        _cat: cat,
+      } as NewsItem & {
         _dt: Date | null;
         _cat: CategoryKey;
       };
@@ -804,13 +818,14 @@ export default function NewsPage() {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {enriched.slice(0, 60).map((it) => {
+            {enriched.slice(0, 60).map((it, idx) => {
               const dt = safeDate(it.publishedAt);
               const cat = categorize(it);
+              const itemKey = `${it.id}:${it.url}:${idx}`;
 
               return (
                 <a
-                  key={it.id}
+                  key={itemKey}
                   href={it.url}
                   target="_blank"
                   rel="noreferrer"

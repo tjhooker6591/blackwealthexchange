@@ -1,7 +1,7 @@
 import type { GetServerSideProps, GetServerSidePropsContext } from "next";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
-import { getJwtSecretOrNull } from "@/lib/env";
+import { getJwtSecret } from "@/lib/env";
 
 type SessionPayload = {
   accountType?: string;
@@ -36,17 +36,7 @@ export function requireAdminPageProps(
         };
       }
 
-      const secret = getJwtSecretOrNull();
-      if (!secret) {
-        return {
-          redirect: {
-            destination: `/login?redirect=${encodeURIComponent(redirectPath)}`,
-            permanent: false,
-          },
-        };
-      }
-
-      const payload = jwt.verify(token, secret) as SessionPayload;
+      const payload = jwt.verify(token, getJwtSecret()) as SessionPayload;
 
       if (!isAdminPayload(payload)) {
         return {

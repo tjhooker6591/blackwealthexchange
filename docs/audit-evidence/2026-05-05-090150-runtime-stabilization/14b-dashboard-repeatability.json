@@ -1,0 +1,220 @@
+{
+  "steps": [
+    {
+      "name": "load_dashboard_initial",
+      "ok": true,
+      "start": "2026-05-05T18:58:55.401Z",
+      "end": "2026-05-05T18:58:57.570Z",
+      "url": "http://localhost:3000/dashboard"
+    },
+    {
+      "name": "reload_1",
+      "ok": true,
+      "start": "2026-05-05T18:58:57.570Z",
+      "end": "2026-05-05T18:58:58.165Z",
+      "url": "http://localhost:3000/dashboard"
+    },
+    {
+      "name": "reload_2",
+      "ok": true,
+      "start": "2026-05-05T18:58:58.165Z",
+      "end": "2026-05-05T18:58:58.500Z",
+      "url": "http://localhost:3000/dashboard"
+    },
+    {
+      "name": "reload_3",
+      "ok": true,
+      "start": "2026-05-05T18:58:58.500Z",
+      "end": "2026-05-05T18:58:58.863Z",
+      "url": "http://localhost:3000/dashboard"
+    },
+    {
+      "name": "hard_refresh",
+      "ok": true,
+      "start": "2026-05-05T18:58:58.863Z",
+      "end": "2026-05-05T18:58:59.190Z",
+      "url": "http://localhost:3000/dashboard?hard=1"
+    },
+    {
+      "name": "logout_once",
+      "ok": true,
+      "start": "2026-05-05T18:58:59.190Z",
+      "end": "2026-05-05T18:58:59.202Z",
+      "url": "http://localhost:3000/dashboard?hard=1"
+    },
+    {
+      "name": "login_once",
+      "ok": true,
+      "start": "2026-05-05T18:58:59.202Z",
+      "end": "2026-05-05T18:58:59.207Z",
+      "url": "http://localhost:3000/dashboard?hard=1"
+    },
+    {
+      "name": "load_dashboard_final",
+      "ok": true,
+      "start": "2026-05-05T18:58:59.207Z",
+      "end": "2026-05-05T18:58:59.520Z",
+      "url": "http://localhost:3000/dashboard"
+    }
+  ],
+  "consoleLogs": [
+    {
+      "ts": "2026-05-05T18:58:57.505Z",
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "ts": "2026-05-05T18:58:57.571Z",
+      "type": "log",
+      "text": "[HMR] connected"
+    },
+    {
+      "ts": "2026-05-05T18:58:57.656Z",
+      "type": "log",
+      "text": "[Fast Refresh] rebuilding"
+    },
+    {
+      "ts": "2026-05-05T18:58:57.716Z",
+      "type": "log",
+      "text": "[Fast Refresh] done in 62ms"
+    },
+    {
+      "ts": "2026-05-05T18:58:57.757Z",
+      "type": "log",
+      "text": "[Fast Refresh] rebuilding"
+    },
+    {
+      "ts": "2026-05-05T18:58:57.845Z",
+      "type": "error",
+      "text": "[next-auth][error][CLIENT_FETCH_ERROR] \nhttps://next-auth.js.org/errors#client_fetch_error Failed to fetch {error: Object, url: /api/auth/session, message: Failed to fetch}"
+    },
+    {
+      "ts": "2026-05-05T18:58:58.153Z",
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "ts": "2026-05-05T18:58:58.166Z",
+      "type": "log",
+      "text": "[HMR] connected"
+    },
+    {
+      "ts": "2026-05-05T18:58:58.339Z",
+      "type": "info",
+      "text": "[timing] auth/me 45ms status=200"
+    },
+    {
+      "ts": "2026-05-05T18:58:58.490Z",
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "ts": "2026-05-05T18:58:58.500Z",
+      "type": "log",
+      "text": "[HMR] connected"
+    },
+    {
+      "ts": "2026-05-05T18:58:58.602Z",
+      "type": "info",
+      "text": "[timing] auth/me 48ms status=200"
+    },
+    {
+      "ts": "2026-05-05T18:58:58.855Z",
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "ts": "2026-05-05T18:58:58.863Z",
+      "type": "log",
+      "text": "[HMR] connected"
+    },
+    {
+      "ts": "2026-05-05T18:58:58.958Z",
+      "type": "info",
+      "text": "[timing] auth/me 33ms status=200"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.058Z",
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 37ms status=200"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.085Z",
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 63ms status=200"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.092Z",
+      "type": "log",
+      "text": "Failed to fetch devPagesManifest: TypeError: Failed to fetch\n    at App.useEffect (webpack-internal:///(pages-dir-browser)/./src/pages/_app.tsx:77:43)\n    at PageLoader.getPageList (webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/page-loader.js:27:83)\n    at Router.change (webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/shared/lib/router/router.js:628:33)"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.182Z",
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.192Z",
+      "type": "log",
+      "text": "[HMR] connected"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.282Z",
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 38ms status=200"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.283Z",
+      "type": "info",
+      "text": "[timing] auth/me 38ms status=200"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.383Z",
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 34ms status=200"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.383Z",
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 34ms status=200"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.383Z",
+      "type": "info",
+      "text": "[timing] route start -> /login?redirect=/dashboard"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.383Z",
+      "type": "info",
+      "text": "[timing] route start -> /login?redirect=/dashboard"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.408Z",
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 59ms status=200"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.408Z",
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 59ms status=200"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.408Z",
+      "type": "info",
+      "text": "[timing] route start -> /login?redirect=/dashboard"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.408Z",
+      "type": "info",
+      "text": "[timing] route start -> /login?redirect=/dashboard"
+    },
+    {
+      "ts": "2026-05-05T18:58:59.512Z",
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    }
+  ],
+  "pageErrors": [],
+  "hasElementTypeInvalid": false,
+  "pageerror_count": 0
+}

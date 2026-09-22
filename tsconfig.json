@@ -23,8 +23,10 @@
       "@/hooks/*": ["./src/hooks/*"]
     },
 
+    "types": ["node"],
+    "typeRoots": ["./types", "./node_modules/@types"],
     "forceConsistentCasingInFileNames": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "mobile/**/*", "scripts/**/*"]
+  "exclude": ["node_modules", "handoff_packages", "mobile", "scripts"]
 }

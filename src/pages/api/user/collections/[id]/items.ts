@@ -139,13 +139,15 @@ export default async function handler(
       return res.status(200).json({ ok: true });
     }
 
-    await db.collection("collection_items").updateOne(
-      { collectionId, itemType, itemId },
-      {
-        $setOnInsert: { collectionId, itemType, itemId, addedAt: new Date() },
-      },
-      { upsert: true },
-    );
+    await db
+      .collection("collection_items")
+      .updateOne(
+        { collectionId, itemType, itemId },
+        {
+          $setOnInsert: { collectionId, itemType, itemId, addedAt: new Date() },
+        },
+        { upsert: true },
+      );
     return res.status(201).json({ ok: true });
   }
 

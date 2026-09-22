@@ -1,0 +1,17 @@
+HTTP/1.1 200 OK
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; frame-src 'self' https:; form-action 'self'
+Cache-Control: no-store, must-revalidate
+X-Powered-By: Next.js
+ETag: "15ullkl5z56940"
+Content-Type: text/html; charset=utf-8
+Content-Length: 11809
+Vary: Accept-Encoding
+Date: Tue, 05 May 2026 17:13:56 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+

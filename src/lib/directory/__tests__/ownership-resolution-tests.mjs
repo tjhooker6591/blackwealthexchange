@@ -32,7 +32,11 @@ const transpiled = ts.transpileModule(
     },
   },
 ).outputText;
-await fs.writeFile(testablePath, transpiled, "utf8");
+await fs.writeFile(
+  testablePath,
+  transpiled,
+  "utf8",
+);
 
 const {
   isOwnershipBlocked,
@@ -127,9 +131,7 @@ function createDb(fixtures) {
                 return (
                   review.userId === query.userId &&
                   businessId === queryBusinessId &&
-                  query.reviewStatus?.$in?.includes(
-                    String(review.reviewStatus),
-                  ) &&
+                  query.reviewStatus?.$in?.includes(String(review.reviewStatus)) &&
                   review.revokedAt == null
                 );
               }) || null
@@ -147,10 +149,8 @@ function createDb(fixtures) {
             return (
               fixtures.businesses.find((business) => {
                 const matchesUser =
-                  business.claimedByUserId ===
-                    query.$and?.[1]?.$or?.[0]?.claimedByUserId ||
-                  business.managedByUserId ===
-                    query.$and?.[1]?.$or?.[1]?.managedByUserId ||
+                  business.claimedByUserId === query.$and?.[1]?.$or?.[0]?.claimedByUserId ||
+                  business.managedByUserId === query.$and?.[1]?.$or?.[1]?.managedByUserId ||
                   business.ownerUserIds?.includes(
                     query.$and?.[1]?.$or?.[2]?.ownerUserIds,
                   );
@@ -315,9 +315,7 @@ assert.equal(unrelated, null);
 const pendingPrimary = await resolvePrimaryVerifiedBusinessOwnership(
   createDb({
     ...fixtures,
-    claims: fixtures.claims.filter(
-      (claim) => claim.businessId === "biz-pending",
-    ),
+    claims: fixtures.claims.filter((claim) => claim.businessId === "biz-pending"),
     reviews: [],
     businesses: fixtures.businesses,
   }),

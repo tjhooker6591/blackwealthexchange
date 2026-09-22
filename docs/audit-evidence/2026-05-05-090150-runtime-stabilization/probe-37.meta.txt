@@ -1,0 +1,7 @@
+method=GET
+url=http://localhost:3000/api/advertising/public-placements
+status=200
+location=
+content_type=application/json; charset=utf-8
+bytes=203
+body_preview={"ok":true,"placements":{"bannerHomepageTop":[],"bannerSidebar":[],"directoryFeatured":[]},"caps":{"bannerHomepageTop":1,"bannerSidebar":3,"directoryFeatured":6},"generatedAt":"2026-05-05T16:36:35.011Z"}

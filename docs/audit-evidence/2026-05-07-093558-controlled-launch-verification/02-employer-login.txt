@@ -1,0 +1,19 @@
+HTTP/1.1 200 OK
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; frame-src 'self' https:; form-action 'self'
+Cache-Control: no-store, max-age=0
+Set-Cookie: session_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWZiN2M0ZTA3OGM3M2I1NzM2ZGIyNzkiLCJlbWFpbCI6ImF1ZGl0X2VtcGxveWVyXzIwMjYwNTA2QGxvY2FsLnRlc3QiLCJhY2NvdW50VHlwZSI6ImVtcGxveWVyIiwiaXNBZG1pbiI6ZmFsc2UsInRva2VuVmVyc2lvbiI6MCwiaWF0IjoxNzc4MTcxNzY4LCJleHAiOjE3NzgxNzM1Njh9.bG7jtPMzJrbQHnp1NnHMaoU2sCpZFpigGM8vJaw6GSc; Max-Age=1800; Path=/; HttpOnly; SameSite=Lax
+Set-Cookie: accountType=employer; Max-Age=1800; Path=/; SameSite=Lax
+Content-Type: application/json; charset=utf-8
+ETag: "umfwq209qu5s"
+Content-Length: 208
+Vary: Accept-Encoding
+Date: Thu, 07 May 2026 16:36:08 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"success":true,"message":"Login successful","user":{"id":"69fb7c4e078c73b5736db279","userId":"69fb7c4e078c73b5736db279","email":"audit_employer_20260506@local.test","accountType":"employer","isAdmin":false}}

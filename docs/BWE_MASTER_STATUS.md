@@ -4,19 +4,12 @@ Last updated commit: 59d45ae
 
 ## Overall platform status
 
-- Core web/app routes: functional; runtime health gate added to detect text-only/asset failures early.
-- P1 stabilization pass: completed (headers/CSP, smoke scripts, index checks).
-- P2 role regression: completed and accepted.
-- Growth architecture + persistent operating system docs: created and enforced.
-- Referral engine v1 API foundation: shipped.
-- Link integrity gate and runtime health gate are now in release validation path.
-- Canonical resources route corrected (`inclusive-job-descriptions`) with backward redirect from typo slug.
-- Marketplace products are visible again on recovered runtime after env/process pinning.
-- Marketplace checkout session blocker resolved by runtime env correction (`STRIPE_SECRET_KEY` was missing).
-- Marketplace Buy Now matrix pass is now GO.
-- Local runtime validation currently uses live Stripe mode.
-- Local validation pack re-confirmed green on healthy runtime: smoke routes PASS, P2 regression PASS (26/26), critical paths PASS (35/35), runtime health PASS.
-- Stock policy follow-up noted: products with `stock=0` still create checkout sessions until inventory gate decision is implemented.
+- Revenue-first owner directive is now in force for the period 2026-06-28 through 2027-06-30. Canonical directive: `docs/BWE_12_MONTH_REVENUE_FIRST_GOVERNING_DIRECTIVE_2026-06-28.md`.
+- All previous broad expansion framing is subordinate to the new Revenue Gate.
+- Core web/app routes appear functional in prior local proof cycles, but revenue readiness is still not closed because end-to-end paid fulfillment proof and collected-revenue evidence remain incomplete.
+- Current active technical mandate is no longer broad platform expansion. It is: minimum safe recovery closure, payment integrity, business inventory activation, sponsor fulfillment proof, customer operations support, and revenue activation for the three approved offers.
+- Marketplace checkout-session creation has prior local proof, but actual collected-revenue and webhook-fulfilled final-state proof remain the real business gate.
+- Existing growth, creator, travel, and other expansion documents remain historical context, not active authorization, unless they directly support the approved BWE offers or another Revenue Gate condition.
 
 ## Complete
 

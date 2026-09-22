@@ -19,24 +19,41 @@ export async function register() {
   // used in a way in which dependencies cannot be statically extracted"
   // warning this produces on dev server start is expected and harmless;
   // do not "fix" it by making this require statically analyzable again.
-  const runtimeRequire =
-    typeof __non_webpack_require__ === "function"
-      ? __non_webpack_require__
-      : typeof require === "function"
-        ? require
-        : globalThis.__non_webpack_require__;
-  if (typeof runtimeRequire !== "function") {
-    throw new Error("Server-side require is unavailable for sharp blocking");
+  //
+  // Everything below is wrapped in try/catch and never throws (2026-09-08):
+  // this hook runs on every server startup for every route, so a hard
+  // throw here means one image-format hardening step takes down the
+  // entire site if sharp's native binary is ever missing/mismatched for
+  // any reason (confirmed in production this session -- see
+  // next.config.ts's outputFileTracingIncludes comment for the actual
+  // fix to the missing-binary problem; this try/catch is a second,
+  // independent layer so the same failure mode can never fully outage
+  // the site again even if that fix is ever incomplete).
+  try {
+    const runtimeRequire =
+      typeof __non_webpack_require__ === "function"
+        ? __non_webpack_require__
+        : typeof require === "function"
+          ? require
+          : globalThis.__non_webpack_require__;
+    if (typeof runtimeRequire !== "function") {
+      throw new Error("Server-side require is unavailable for sharp blocking");
+    }
+
+    const sharpPackageName = ["sh", "arp"].join("");
+    const sharp = runtimeRequire(sharpPackageName);
+
+    sharp.block({
+      operation: [
+        "VipsForeignLoadNsgif",
+        "VipsForeignLoadTiff",
+        "VipsForeignLoadVips",
+      ],
+    });
+  } catch (err) {
+    console.error(
+      "instrumentation: failed to load sharp / apply format blocklist -- continuing without it",
+      err,
+    );
   }
-
-  const sharpPackageName = ["sh", "arp"].join("");
-  const sharp = runtimeRequire(sharpPackageName);
-
-  sharp.block({
-    operation: [
-      "VipsForeignLoadNsgif",
-      "VipsForeignLoadTiff",
-      "VipsForeignLoadVips",
-    ],
-  });
 }

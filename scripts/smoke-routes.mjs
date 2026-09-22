@@ -10,7 +10,7 @@ const checks = [
   ["GET", "/business-directory"],
   ["GET", "/recruiting-consulting"],
   ["GET", "/api/auth/session"],
-  ["GET", "/api/searchBusinesses?query=food&limit=3"],
+  ["GET", "/api/search/businesses?search=food&limit=3"],
   ["GET", "/api/searchOrganizations?query=church&limit=3"],
   ...(allowWriteChecks
     ? [
