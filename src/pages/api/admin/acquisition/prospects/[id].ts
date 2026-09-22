@@ -4,6 +4,7 @@ import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 import {
   getProspect,
+  setContactEmail,
   setPaidStatus,
   setProspectLossState,
   transitionProspectStage,
@@ -72,6 +73,16 @@ export default async function handler(
       return res.status(result.ok ? 200 : 400).json(result);
     }
 
+    if (action === "set_contact_email") {
+      const result = await setContactEmail(db, {
+        prospectId: id,
+        contactEmail: body.contactEmail,
+        actorId,
+        actorEmail,
+      });
+      return res.status(result.ok ? 200 : 400).json(result);
+    }
+
     if (action === "send_outreach") {
       // Manual re-trigger for a prospect that already exists but never got
       // automatic outreach when it was created (e.g. a contact email was
@@ -82,13 +93,11 @@ export default async function handler(
       // prospect has actually moved forward.
       const current = await getProspect(db, id);
       if (!current) {
-        return res
-          .status(404)
-          .json({
-            ok: false,
-            code: "NOT_FOUND",
-            message: "Prospect not found.",
-          });
+        return res.status(404).json({
+          ok: false,
+          code: "NOT_FOUND",
+          message: "Prospect not found.",
+        });
       }
       const currentStage = (current as any).stage;
       if (currentStage !== "researched") {

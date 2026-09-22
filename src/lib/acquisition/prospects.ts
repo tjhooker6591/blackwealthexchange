@@ -301,6 +301,48 @@ export async function setPaidStatus(
   return { ok: true };
 }
 
+export async function setContactEmail(
+  db: Db,
+  input: {
+    prospectId: string;
+    contactEmail: string;
+    actorId: string;
+    actorEmail: string;
+  },
+): Promise<{ ok: true } | { ok: false; code: string; message: string }> {
+  if (!ObjectId.isValid(input.prospectId)) {
+    return { ok: false, code: "INVALID_ID", message: "Invalid prospect id." };
+  }
+  const email = s(input.contactEmail);
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return {
+      ok: false,
+      code: "INVALID_EMAIL",
+      message: "A valid email address is required.",
+    };
+  }
+  const now = nowIso();
+  const result = await db.collection(COLLECTIONS.prospects).updateOne(
+    { _id: new ObjectId(input.prospectId) },
+    {
+      $set: { contactEmail: email, lastActivityAt: now, updatedAt: now },
+    },
+  );
+  if (!result.matchedCount) {
+    return { ok: false, code: "NOT_FOUND", message: "Prospect not found." };
+  }
+  await db.collection(COLLECTIONS.activities).insertOne({
+    prospectId: input.prospectId,
+    fromStage: null,
+    toStage: null,
+    actorId: input.actorId,
+    actorEmail: input.actorEmail,
+    note: `Contact email set to ${email}.`,
+    timestamp: now,
+  });
+  return { ok: true };
+}
+
 export async function listProspects(
   db: Db,
   filter: { stage?: ProspectStage; lossState?: string; q?: string } = {},

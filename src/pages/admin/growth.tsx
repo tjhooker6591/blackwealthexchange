@@ -205,6 +205,7 @@ function ProspectDetail({
   const [stories, setStories] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [emailDraft, setEmailDraft] = useState("");
 
   async function load() {
     try {
@@ -395,6 +396,35 @@ function ProspectDetail({
           <span>Email: {detail.contactEmail || "— (no automation)"}</span>
           <span>Priority: {detail.priorityTotal}/10</span>
         </div>
+        {!detail.contactEmail && detail.stage === "researched" ? (
+          <div className="mt-2 flex items-center gap-2">
+            <input
+              className="bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-xs flex-1"
+              placeholder="Add a real published contact email to enable automation"
+              type="email"
+              value={emailDraft}
+              onChange={(e) => setEmailDraft(e.target.value)}
+            />
+            <button
+              disabled={busy || !emailDraft}
+              onClick={() =>
+                act(async () => {
+                  await api(`/api/admin/acquisition/prospects/${prospectId}`, {
+                    method: "PATCH",
+                    body: JSON.stringify({
+                      action: "set_contact_email",
+                      contactEmail: emailDraft,
+                    }),
+                  });
+                  setEmailDraft("");
+                })
+              }
+              className="rounded border border-yellow-500/40 text-yellow-300 px-2 py-1 text-xs whitespace-nowrap"
+            >
+              Save email
+            </button>
+          </div>
+        ) : null}
       </div>
 
       {/* Onboarding checklist */}
