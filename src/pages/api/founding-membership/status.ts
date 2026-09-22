@@ -8,6 +8,7 @@ import {
   findFoundingSourcePayment,
   formatUsdFromCents,
   getFoundingClaimStatusLabel,
+  getFoundingEngagementReport,
   normalizeFoundingClaimStage,
   normalizeFoundingPaymentStatus,
 } from "@/lib/founding-membership";
@@ -139,6 +140,14 @@ export default async function handler(
         .trim()
         .toLowerCase() !== "approved";
 
+    // Real report, not just a status label -- only meaningful once ownership
+    // is actually verified (an unverified business has no engagement of its
+    // own to report on yet).
+    const engagementReport =
+      business && !managementAccessLocked
+        ? await getFoundingEngagementReport(db, String((business as any)._id))
+        : null;
+
     return res.status(200).json({
       ok: true,
       membership: {
@@ -223,6 +232,7 @@ export default async function handler(
         baselineStatus:
           baseline?.baselineStatus || fulfillment?.baselineStatus || null,
         monthlyReportingStatus: fulfillment?.monthlyReportingStatus || null,
+        engagementReport,
         supportStatus: fulfillment?.supportStatus || null,
         checklist: Array.isArray(fulfillment?.checklist)
           ? fulfillment.checklist

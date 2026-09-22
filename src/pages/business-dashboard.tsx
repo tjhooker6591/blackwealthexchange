@@ -1,47 +1,16 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import type { GetServerSideProps } from "next";
 import { requirePageRole } from "@/lib/security/pageRoleGuard";
 
-interface User {
-  email: string;
-  // Add any additional properties as needed.
+// This page has no real functionality of its own yet -- the actual
+// business-management surface is /edit-business (profile editing) and
+// /founding-membership/status (membership/report status). Redirecting here
+// instead of rendering a placeholder so nothing looks built that isn't.
+export default function BusinessDashboardRedirect() {
+  return null;
 }
 
-const BusinessDashboard = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const router = useRouter();
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-
-    if (!storedUser) {
-      console.warn("No user found. Redirecting to login.");
-      router.push("/login");
-      return;
-    }
-
-    const parsedUser = JSON.parse(storedUser) as User;
-    setUser(parsedUser);
-  }, [router]); // Added router to dependency array
-
-  return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-        <h1 className="text-4xl font-bold text-gray-800">
-          Welcome, {user?.email || "Business"}!
-        </h1>
-        <p className="text-gray-600 mt-2">
-          Manage your business and explore opportunities for growth.
-        </p>
-        {/* Additional Business Dashboard Content */}
-      </div>
-    </div>
-  );
-};
-
-export default BusinessDashboard;
-
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  return requirePageRole(ctx, ["business"], "/business-dashboard");
+  const guardResult = requirePageRole(ctx, ["business"], "/edit-business");
+  if ("redirect" in guardResult) return guardResult;
+  return { redirect: { destination: "/edit-business", permanent: false } };
 };

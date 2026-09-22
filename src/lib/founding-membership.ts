@@ -541,6 +541,98 @@ export function getFoundingClaimStatusLabel(value: unknown) {
   return null;
 }
 
+export type FoundingEngagementReport = {
+  generatedAt: string;
+  periodLabel: string;
+  followers: { total: number; newThisPeriod: number };
+  saves: { total: number; newThisPeriod: number };
+  reviews: {
+    total: number;
+    newThisPeriod: number;
+    averageRating: number | null;
+  };
+  searchRanking: {
+    verifiedBoost: boolean;
+    advertisingBoost: boolean;
+    note: string;
+  };
+};
+
+// Real, currently-tracked engagement data for a claimed business -- built
+// from the same "follows"/"saved_businesses"/"business_reviews" collections
+// and documents/counts already used elsewhere in the app (follow.ts,
+// save-business.ts, reviews.ts), not a new tracking system. BWE does not
+// store a fixed directory "rank" anywhere -- search order in
+// src/pages/api/search/businesses.ts is computed per query, not persisted --
+// so this deliberately reports the real ranking *factors* (verified status,
+// active paid placement) instead of a fabricated position number.
+export async function getFoundingEngagementReport(
+  db: Db,
+  businessId: string,
+): Promise<FoundingEngagementReport> {
+  const now = new Date();
+  const periodStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const id = String(businessId || "").trim();
+
+  const [followTotal, followNew, saveTotal, saveNew, reviews, business] =
+    await Promise.all([
+      db.collection("follows").countDocuments({ businessId: id }),
+      db
+        .collection("follows")
+        .countDocuments({ businessId: id, createdAt: { $gte: periodStart } }),
+      db.collection("saved_businesses").countDocuments({ businessId: id }),
+      db
+        .collection("saved_businesses")
+        .countDocuments({ businessId: id, savedAt: { $gte: periodStart } }),
+      db
+        .collection("business_reviews")
+        .find({ businessId: id })
+        .project({ createdAt: 1, rating: 1 })
+        .toArray(),
+      db
+        .collection("businesses")
+        .findOne(buildMongoIdOrStringQuery("_id", id) || { _id: id as any }, {
+          projection: { verified: 1, amountPaid: 1 },
+        }),
+    ]);
+
+  const reviewsThisPeriod = reviews.filter((r: any) => {
+    const created =
+      r.createdAt instanceof Date ? r.createdAt : new Date(r.createdAt || 0);
+    return created >= periodStart;
+  }).length;
+  const ratings = reviews
+    .map((r: any) => Number(r.rating) || 0)
+    .filter((n: number) => n > 0);
+  const averageRating = ratings.length
+    ? Math.round(
+        (ratings.reduce((sum: number, n: number) => sum + n, 0) /
+          ratings.length) *
+          10,
+      ) / 10
+    : null;
+
+  return {
+    generatedAt: now.toISOString(),
+    periodLabel: now.toLocaleString("en-US", {
+      month: "long",
+      year: "numeric",
+    }),
+    followers: { total: followTotal, newThisPeriod: followNew },
+    saves: { total: saveTotal, newThisPeriod: saveNew },
+    reviews: {
+      total: reviews.length,
+      newThisPeriod: reviewsThisPeriod,
+      averageRating,
+    },
+    searchRanking: {
+      verifiedBoost: (business as any)?.verified === true,
+      advertisingBoost: Number((business as any)?.amountPaid || 0) > 0,
+      note: "BWE doesn't store a fixed directory rank -- results are ordered per search. Verified listings and active paid placement each receive a real, consistent boost in every search's ranking.",
+    },
+  };
+}
+
 export async function countActiveFoundingMemberships(db: Db) {
   return db.collection("business_memberships").countDocuments({
     productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
