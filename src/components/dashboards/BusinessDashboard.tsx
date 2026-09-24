@@ -214,7 +214,7 @@ export default function BusinessDashboard({
               </span>
 
               <Link
-                href="/profile"
+                href="/business/profile"
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm transition hover:bg-white/10"
               >
                 <UserCircle2 className="h-4 w-4 text-yellow-300" />
