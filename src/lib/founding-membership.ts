@@ -637,6 +637,9 @@ export async function countActiveFoundingMemberships(db: Db) {
   return db.collection("business_memberships").countDocuments({
     productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
     membershipStatus: "active",
+    // Internal test memberships (owner walking through the flow, not a real
+    // paying customer) don't consume a real pilot slot in the public count.
+    isTestMembership: { $ne: true },
   });
 }
 

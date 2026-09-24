@@ -1,5 +1,6 @@
 import { GetServerSideProps } from "next";
 import React from "react";
+import Link from "next/link";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import {
@@ -56,7 +57,23 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
 export default function BusinessProfile({ business }: Props) {
   return (
     <div className="min-h-screen bg-black p-6 text-white">
-      <h1 className="mb-6 text-3xl font-bold text-gold">Business Profile</h1>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-3xl font-bold text-gold">Business Profile</h1>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/founding-membership/status"
+            className="rounded-full border border-yellow-500/40 px-4 py-2 text-sm font-semibold text-yellow-300 hover:bg-yellow-500/10"
+          >
+            Membership &amp; report
+          </Link>
+          <Link
+            href="/dashboard"
+            className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
+          >
+            Dashboard
+          </Link>
+        </div>
+      </div>
       {business ? (
         <BusinessProfileContent
           business={business}
