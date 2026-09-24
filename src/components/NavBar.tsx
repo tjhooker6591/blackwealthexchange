@@ -26,14 +26,16 @@ export default function NavBar() {
   const isBusinessOwner =
     user?.accountType === "business" || user?.hasVerifiedBusiness === true;
 
+  // Dashboard and Profile must point somewhere genuinely different --
+  // both resolving to /business/profile meant clicking either one while
+  // already on that page was a same-URL no-op with no visible effect,
+  // which read as "the dropdown doesn't work" (found 2026-09-24).
   const dashboardHref =
     user?.accountType === "seller"
       ? "/marketplace/dashboard"
       : user?.accountType === "employer"
         ? "/employer/jobs"
-        : isBusinessOwner
-          ? "/business/profile"
-          : "/dashboard";
+        : "/dashboard";
 
   const profileHref = isBusinessOwner ? "/business/profile" : "/profile";
 
