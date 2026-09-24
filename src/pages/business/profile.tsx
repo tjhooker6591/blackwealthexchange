@@ -5,15 +5,21 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import {
   buildObjectIdOrStringFilter,
+  listVerifiedBusinessOwnerships,
   parseSessionIdentity,
-  resolvePrimaryVerifiedBusinessOwnership,
   resolveVerifiedOwnership,
 } from "@/lib/directoryOwnership";
 import { mapDirectoryProfileFromDoc } from "@/lib/directoryProfileContract";
 import BusinessProfileContent from "@/components/business/BusinessProfileContent";
 
+interface OwnedBusinessSummary {
+  id: string;
+  name: string;
+}
+
 interface Props {
   business: ReturnType<typeof mapDirectoryProfileFromDoc> | null;
+  ownedBusinesses: OwnedBusinessSummary[];
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async ({
@@ -29,16 +35,48 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
 
   const client = await clientPromise;
   const db = client.db(getMongoDbName());
+
+  // Every business this account owns -- lets an owner with more than one
+  // claimed business switch between them instead of only ever seeing
+  // whichever one happens to resolve first.
+  const ownerships = await listVerifiedBusinessOwnerships(db, session.userId);
+  const ownedDocs = ownerships.length
+    ? await db
+        .collection("businesses")
+        .find(
+          {
+            $or: ownerships
+              .map((o) => buildObjectIdOrStringFilter("_id", o.entityId))
+              .filter(Boolean) as any[],
+          },
+          { projection: { business_name: 1, businessName: 1, name: 1 } },
+        )
+        .toArray()
+    : [];
+  const ownedBusinesses: OwnedBusinessSummary[] = ownerships
+    .map((o) => {
+      const doc = ownedDocs.find((d) => String(d._id) === o.entityId);
+      return {
+        id: o.entityId,
+        name:
+          (doc as any)?.business_name ||
+          (doc as any)?.businessName ||
+          (doc as any)?.name ||
+          "Business",
+      };
+    })
+    .filter((b) => Boolean(b.id));
+
   const ownership = requestedBusinessId
     ? await resolveVerifiedOwnership(db, {
         entityType: "business",
         entityId: requestedBusinessId,
         userId: session.userId,
       })
-    : await resolvePrimaryVerifiedBusinessOwnership(db, session.userId);
+    : ownerships[0] || null;
 
   if (!ownership) {
-    return { props: { business: null } };
+    return { props: { business: null, ownedBusinesses } };
   }
 
   const doc = await db.collection("businesses").findOne(
@@ -47,14 +85,14 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     },
   );
 
-  if (!doc) return { props: { business: null } };
+  if (!doc) return { props: { business: null, ownedBusinesses } };
   const business = JSON.parse(
     JSON.stringify(mapDirectoryProfileFromDoc(doc)),
   ) as ReturnType<typeof mapDirectoryProfileFromDoc>;
-  return { props: { business } };
+  return { props: { business, ownedBusinesses } };
 };
 
-export default function BusinessProfile({ business }: Props) {
+export default function BusinessProfile({ business, ownedBusinesses }: Props) {
   return (
     <div className="min-h-screen bg-black p-6 text-white">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
@@ -74,6 +112,23 @@ export default function BusinessProfile({ business }: Props) {
           </Link>
         </div>
       </div>
+      {ownedBusinesses.length > 1 ? (
+        <div className="mb-6 flex flex-wrap gap-2">
+          {ownedBusinesses.map((b) => (
+            <Link
+              key={b.id}
+              href={`/business/profile?businessId=${encodeURIComponent(b.id)}`}
+              className={
+                business?.id === b.id
+                  ? "rounded-full bg-[#D4AF37] px-4 py-1.5 text-sm font-semibold text-black"
+                  : "rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-white/75 hover:bg-white/10"
+              }
+            >
+              {b.name}
+            </Link>
+          ))}
+        </div>
+      ) : null}
       {business ? (
         <BusinessProfileContent
           business={business}
