@@ -601,7 +601,7 @@ export default function Home() {
                     </button>
                   </Link>
                 </div>
-                <div className="flex w-full flex-col gap-2 text-left sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+                <div className="flex w-full flex-col items-center gap-2 text-center sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:text-left">
                   <Link
                     href="/signup?intent=join-bwe-free"
                     onClick={() =>
