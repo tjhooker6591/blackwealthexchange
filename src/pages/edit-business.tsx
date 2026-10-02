@@ -501,12 +501,20 @@ export default function EditBusinessPage({
           >
             ← Back
           </button>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center rounded-full bg-yellow-400 px-4 py-2 font-semibold text-black hover:bg-yellow-300 transition"
-          >
-            Dashboard
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/founding-membership/status"
+              className="inline-flex items-center rounded-full border border-yellow-500/40 px-4 py-2 text-sm font-semibold text-yellow-300 hover:bg-yellow-500/10 transition"
+            >
+              Membership &amp; report
+            </Link>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center rounded-full bg-yellow-400 px-4 py-2 font-semibold text-black hover:bg-yellow-300 transition"
+            >
+              Dashboard
+            </Link>
+          </div>
         </div>
 
         <header>

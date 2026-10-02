@@ -1,47 +1,28 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import type { GetServerSideProps } from "next";
-import { requirePageRole } from "@/lib/security/pageRoleGuard";
+import { parseSessionIdentity } from "@/lib/directoryOwnership";
 
-interface User {
-  email: string;
-  // Add any additional properties as needed.
+// This page has no real functionality of its own yet -- the actual
+// business-management surfaces are /business/profile (ownership-aware hub),
+// /edit-business (profile editing), and /founding-membership/status
+// (membership/report status). Redirecting to /business/profile, which
+// resolves the signed-in user's verified business on its own and shows an
+// honest "not verified yet" state rather than a placeholder if there isn't
+// one -- not gated on accountType === "business" here, since a verified
+// founding member's account can carry accountType "user" (ownership is
+// tracked separately, in business_claims/businesses, not the account role).
+export default function BusinessDashboardRedirect() {
+  return null;
 }
 
-const BusinessDashboard = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const router = useRouter();
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-
-    if (!storedUser) {
-      console.warn("No user found. Redirecting to login.");
-      router.push("/login");
-      return;
-    }
-
-    const parsedUser = JSON.parse(storedUser) as User;
-    setUser(parsedUser);
-  }, [router]); // Added router to dependency array
-
-  return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-        <h1 className="text-4xl font-bold text-gray-800">
-          Welcome, {user?.email || "Business"}!
-        </h1>
-        <p className="text-gray-600 mt-2">
-          Manage your business and explore opportunities for growth.
-        </p>
-        {/* Additional Business Dashboard Content */}
-      </div>
-    </div>
-  );
-};
-
-export default BusinessDashboard;
-
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  return requirePageRole(ctx, ["business"], "/business-dashboard");
+  const session = parseSessionIdentity(ctx.req as any);
+  if (!session) {
+    return {
+      redirect: {
+        destination: `/login?redirect=${encodeURIComponent("/business/profile")}`,
+        permanent: false,
+      },
+    };
+  }
+  return { redirect: { destination: "/business/profile", permanent: false } };
 };

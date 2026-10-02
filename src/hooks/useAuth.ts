@@ -8,6 +8,7 @@ type User = {
   fullName?: string;
   businessName?: string;
   profileVisibility?: "public" | "private";
+  hasVerifiedBusiness?: boolean;
   // Add more fields as needed!
 };
 

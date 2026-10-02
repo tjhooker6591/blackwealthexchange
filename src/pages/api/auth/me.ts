@@ -4,6 +4,7 @@ import cookie from "cookie";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
+import { listVerifiedBusinessOwnerships } from "@/lib/directoryOwnership";
 
 interface JwtPayload {
   userId: string;
@@ -217,6 +218,17 @@ export default async function handler(
 
     const { password: _password, ...sanitized } = profile;
 
+    // A real verified business owner's accountType often stays "user" --
+    // the founding-membership claim flow tracks ownership in
+    // business_claims/businesses, not the account role (found 2026-09-24
+    // when a verified owner's nav "Profile" link sent them to the generic
+    // personal profile page instead of anywhere business-related, because
+    // this whole file previously only ever checked accountType). Checking
+    // real ownership here instead lets the nav route correctly regardless
+    // of what accountType says.
+    const hasVerifiedBusiness =
+      (await listVerifiedBusinessOwnerships(db, payload.userId)).length > 0;
+
     // The login/session token role is the canonical runtime role for the
     // active session. Some legacy documents still carry drifted accountType
     // values, and echoing those here can route a valid business session into
@@ -288,6 +300,7 @@ export default async function handler(
         id: payload.userId,
         email: payload.email,
         accountType: normalizedAccountType,
+        hasVerifiedBusiness,
         isAdmin,
         isPremium: normalizedIsPremium,
         currentPlan: normalizedCurrentPlan,

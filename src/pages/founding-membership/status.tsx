@@ -36,6 +36,22 @@ type MembershipStatusPayload = {
     profileReviewStatus: string | null;
     baselineStatus: string | null;
     monthlyReportingStatus: string | null;
+    engagementReport: null | {
+      generatedAt: string;
+      periodLabel: string;
+      followers: { total: number; newThisPeriod: number };
+      saves: { total: number; newThisPeriod: number };
+      reviews: {
+        total: number;
+        newThisPeriod: number;
+        averageRating: number | null;
+      };
+      searchRanking: {
+        verifiedBoost: boolean;
+        advertisingBoost: boolean;
+        note: string;
+      };
+    };
     supportStatus: string | null;
     checklist: Array<{ key?: string; label?: string; status?: string }>;
     billing: {
@@ -256,6 +272,82 @@ export default function FoundingMembershipStatusPage() {
                     </div>
                   </div>
                 </div>
+              </section>
+
+              <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
+                <h2 className="text-xl font-bold text-white">
+                  {membership.engagementReport
+                    ? `Your report -- ${membership.engagementReport.periodLabel}`
+                    : "Your report"}
+                </h2>
+                {membership.engagementReport ? (
+                  <>
+                    <p className="mt-1 text-sm text-white/60">
+                      Real activity on your listing, not a projection.
+                    </p>
+                    <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                      <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
+                        <div className="text-sm text-white/50">Followers</div>
+                        <div className="mt-1 text-2xl font-bold text-white">
+                          {membership.engagementReport.followers.total}
+                        </div>
+                        <div className="mt-1 text-xs text-white/55">
+                          +{membership.engagementReport.followers.newThisPeriod}{" "}
+                          this month
+                        </div>
+                      </div>
+                      <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
+                        <div className="text-sm text-white/50">Saves</div>
+                        <div className="mt-1 text-2xl font-bold text-white">
+                          {membership.engagementReport.saves.total}
+                        </div>
+                        <div className="mt-1 text-xs text-white/55">
+                          +{membership.engagementReport.saves.newThisPeriod}{" "}
+                          this month
+                        </div>
+                      </div>
+                      <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
+                        <div className="text-sm text-white/50">Reviews</div>
+                        <div className="mt-1 text-2xl font-bold text-white">
+                          {membership.engagementReport.reviews.total}
+                          {membership.engagementReport.reviews.averageRating !=
+                          null
+                            ? ` (${membership.engagementReport.reviews.averageRating}★ avg)`
+                            : ""}
+                        </div>
+                        <div className="mt-1 text-xs text-white/55">
+                          +{membership.engagementReport.reviews.newThisPeriod}{" "}
+                          this month
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-4 rounded-2xl border border-white/10 bg-black/25 p-4 text-sm text-white/70">
+                      <div className="font-semibold text-white">
+                        Search ranking
+                      </div>
+                      <div className="mt-1">
+                        Verified boost:{" "}
+                        {membership.engagementReport.searchRanking.verifiedBoost
+                          ? "active"
+                          : "not active"}{" "}
+                        · Paid placement boost:{" "}
+                        {membership.engagementReport.searchRanking
+                          .advertisingBoost
+                          ? "active"
+                          : "not active"}
+                      </div>
+                      <div className="mt-2 text-xs text-white/50">
+                        {membership.engagementReport.searchRanking.note}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <p className="mt-2 text-sm text-white/60">
+                    Your report becomes available once ownership verification is
+                    complete -- it will show real followers, saves, reviews, and
+                    search-ranking factors for your listing, not a projection.
+                  </p>
+                )}
               </section>
 
               <section className="space-y-6">

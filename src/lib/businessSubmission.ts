@@ -954,7 +954,7 @@ export function deriveNewBusinessVerificationDecision(
 }
 
 export function getCreateBusinessDuplicateError() {
-  return "A business with this name appears to already exist. Please update the business name slightly or contact support if this is your listing.";
+  return "A business with this name is already listed and active on Black Wealth Exchange. If this is your business, visit /support to request a listing claim instead of submitting a new one.";
 }
 
 export function getCreateBusinessSuccessMessage() {

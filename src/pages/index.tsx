@@ -42,7 +42,7 @@ const HOME_SCOPE_CONFIG: Record<
       tab: "businesses",
     }),
     icon: Search,
-    destinationLabel: "Open directory",
+    destinationLabel: "Find Black-owned businesses",
   },
   marketplace: {
     label: "Marketplace",
@@ -617,19 +617,19 @@ export default function Home() {
                     Join BWE Free
                   </Link>
                   <Link
-                    href="/start-here"
+                    href="/business-directory/add-business"
                     onClick={() =>
                       trackHomepageEvent("homepage_cta_clicked", {
                         section: "hero",
                         ctaId: "hero_business_owner_path",
-                        ctaLabel: "Business Owner Path",
-                        destination: "/start-here",
+                        ctaLabel: "Add or claim your business",
+                        destination: "/business-directory/add-business",
                       })
                     }
-                    className="text-sm text-white/66 transition hover:text-white"
                   >
-                    Business owner? Claim a listing, add your business, sell, or
-                    hire.
+                    <button className="bwe-cta-secondary bwe-focus-ring h-11 px-5 text-sm font-semibold text-white/88">
+                      Add or claim your business
+                    </button>
                   </Link>
                 </div>
               </div>

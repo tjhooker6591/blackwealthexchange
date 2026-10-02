@@ -17,17 +17,27 @@ export default function NavBar() {
   const router = useRouter();
   const { user, loading, logout } = useAuth({ silentOnPublic: true });
 
+  // A verified business owner's accountType often stays "user" -- the
+  // founding-membership claim flow tracks ownership in
+  // business_claims/businesses, not the account role -- so checking
+  // accountType alone missed real owners and sent them to the generic
+  // personal dashboard/profile instead (found 2026-09-24). /api/auth/me
+  // now also reports real verified ownership directly.
+  const isBusinessOwner =
+    user?.accountType === "business" || user?.hasVerifiedBusiness === true;
+
+  // Dashboard and Profile must point somewhere genuinely different --
+  // both resolving to /business/profile meant clicking either one while
+  // already on that page was a same-URL no-op with no visible effect,
+  // which read as "the dropdown doesn't work" (found 2026-09-24).
   const dashboardHref =
     user?.accountType === "seller"
       ? "/marketplace/dashboard"
       : user?.accountType === "employer"
         ? "/employer/jobs"
-        : user?.accountType === "business"
-          ? "/dashboard/edit-business"
-          : "/dashboard";
+        : "/dashboard";
 
-  const profileHref =
-    user?.accountType === "business" ? "/dashboard/edit-business" : "/profile";
+  const profileHref = isBusinessOwner ? "/business/profile" : "/profile";
 
   // Show who's actually logged in instead of the generic word "Account" --
   // users reported it was hard to tell they were logged in / find their way
