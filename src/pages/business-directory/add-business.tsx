@@ -340,6 +340,20 @@ export default function AddBusinessForm() {
           </div>
         )}
 
+        <div className="mb-5 rounded-lg border border-gold/20 bg-gold/5 px-4 py-3 text-sm text-gray-200">
+          <p className="font-semibold text-gold">
+            Fields marked <span className="text-red-400">*</span> are required.
+          </p>
+          <p className="mt-1 text-gray-300">
+            You&apos;ll need: business name, category, location, phone, email, a
+            short description, your name/email/phone as claimant, your
+            relationship to the business, and at least one qualifying owner
+            record (name, ownership %, role, control role, attestation date).
+            Business contact email and evidence references help verification go
+            faster but are not required to submit.
+          </p>
+        </div>
+
         <form
           onSubmit={handleSubmit}
           encType="multipart/form-data"
@@ -350,7 +364,9 @@ export default function AddBusinessForm() {
               Business Information
             </legend>
             <label className="block mt-3">
-              <span className="block">Business Name</span>
+              <span className="block">
+                Business Name <span className="text-red-400">*</span>
+              </span>
               <input
                 type="text"
                 value={businessName}
@@ -360,7 +376,9 @@ export default function AddBusinessForm() {
               />
             </label>
             <label className="block mt-3">
-              <span className="block">Category</span>
+              <span className="block">
+                Category <span className="text-red-400">*</span>
+              </span>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
@@ -378,7 +396,9 @@ export default function AddBusinessForm() {
               </select>
             </label>
             <label className="block mt-3">
-              <span className="block">Location</span>
+              <span className="block">
+                Location <span className="text-red-400">*</span>
+              </span>
               <input
                 type="text"
                 value={location}
@@ -435,7 +455,9 @@ export default function AddBusinessForm() {
             </legend>
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="block mt-3">
-                <span className="block">Phone Number</span>
+                <span className="block">
+                  Phone Number <span className="text-red-400">*</span>
+                </span>
                 <input
                   type="tel"
                   value={phone}
@@ -445,7 +467,9 @@ export default function AddBusinessForm() {
                 />
               </label>
               <label className="block mt-3">
-                <span className="block">Primary Email Address</span>
+                <span className="block">
+                  Primary Email Address <span className="text-red-400">*</span>
+                </span>
                 <input
                   type="email"
                   value={email}
@@ -455,12 +479,14 @@ export default function AddBusinessForm() {
                 />
               </label>
               <label className="block mt-3">
-                <span className="block">Business Contact Email</span>
+                <span className="block">
+                  Business Contact Email{" "}
+                  <span className="text-gray-400">(optional)</span>
+                </span>
                 <input
                   type="email"
                   value={businessEmail}
                   onChange={(e) => setBusinessEmail(e.target.value)}
-                  required
                   className="w-full p-2 rounded bg-gray-700 text-white mt-1"
                 />
               </label>
@@ -486,7 +512,9 @@ export default function AddBusinessForm() {
             </legend>
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="block mt-3">
-                <span className="block">Claimant Name</span>
+                <span className="block">
+                  Claimant Name <span className="text-red-400">*</span>
+                </span>
                 <input
                   type="text"
                   value={claimantName}
@@ -496,7 +524,9 @@ export default function AddBusinessForm() {
                 />
               </label>
               <label className="block mt-3">
-                <span className="block">Claimant Email</span>
+                <span className="block">
+                  Claimant Email <span className="text-red-400">*</span>
+                </span>
                 <input
                   type="email"
                   value={claimantEmail}
@@ -506,7 +536,9 @@ export default function AddBusinessForm() {
                 />
               </label>
               <label className="block mt-3">
-                <span className="block">Claimant Phone</span>
+                <span className="block">
+                  Claimant Phone <span className="text-red-400">*</span>
+                </span>
                 <input
                   type="tel"
                   value={claimantPhone}
@@ -516,7 +548,10 @@ export default function AddBusinessForm() {
                 />
               </label>
               <label className="block mt-3">
-                <span className="block">Relationship to Business</span>
+                <span className="block">
+                  Relationship to Business{" "}
+                  <span className="text-red-400">*</span>
+                </span>
                 <select
                   value={relationshipToBusiness}
                   onChange={(e) => setRelationshipToBusiness(e.target.value)}
@@ -589,7 +624,9 @@ export default function AddBusinessForm() {
                   </div>
                   <div className="grid gap-3 sm:grid-cols-2 mt-3">
                     <label className="block">
-                      <span className="block">Owner Name</span>
+                      <span className="block">
+                        Owner Name <span className="text-red-400">*</span>
+                      </span>
                       <input
                         type="text"
                         value={owner.ownerName}
@@ -601,7 +638,10 @@ export default function AddBusinessForm() {
                       />
                     </label>
                     <label className="block">
-                      <span className="block">Ownership Percentage</span>
+                      <span className="block">
+                        Ownership Percentage{" "}
+                        <span className="text-red-400">*</span>
+                      </span>
                       <input
                         type="number"
                         min="0"
@@ -620,7 +660,9 @@ export default function AddBusinessForm() {
                       />
                     </label>
                     <label className="block">
-                      <span className="block">Role / Title</span>
+                      <span className="block">
+                        Role / Title <span className="text-red-400">*</span>
+                      </span>
                       <input
                         type="text"
                         value={owner.roleTitle}
@@ -632,7 +674,10 @@ export default function AddBusinessForm() {
                       />
                     </label>
                     <label className="block">
-                      <span className="block">Control / Management Role</span>
+                      <span className="block">
+                        Control / Management Role{" "}
+                        <span className="text-red-400">*</span>
+                      </span>
                       <input
                         type="text"
                         value={owner.controlRole}
@@ -645,7 +690,9 @@ export default function AddBusinessForm() {
                       />
                     </label>
                     <label className="block">
-                      <span className="block">Attestation Date</span>
+                      <span className="block">
+                        Attestation Date <span className="text-red-400">*</span>
+                      </span>
                       <input
                         type="date"
                         value={owner.attestationDate}
@@ -830,14 +877,18 @@ export default function AddBusinessForm() {
                       </select>
                     </label>
                     <label className="block">
-                      <span className="block">Document link or file note</span>
+                      <span className="block">
+                        Document link or file note{" "}
+                        <span className="text-gray-400">
+                          (optional, speeds up verification)
+                        </span>
+                      </span>
                       <input
                         type="text"
                         value={item.reference}
                         onChange={(e) =>
                           updateEvidence(index, "reference", e.target.value)
                         }
-                        required
                         className="w-full p-2 rounded bg-gray-700 text-white mt-1"
                       />
                     </label>
@@ -892,7 +943,9 @@ export default function AddBusinessForm() {
               Business Profile
             </legend>
             <label className="block mt-3">
-              <span className="block">Description</span>
+              <span className="block">
+                Description <span className="text-red-400">*</span>
+              </span>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}

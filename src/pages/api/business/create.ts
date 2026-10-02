@@ -171,6 +171,13 @@ export default async function handler(
       }),
     );
 
+    if (existingBusinessConflict && !existingSubmission) {
+      return res.status(409).json({
+        ok: false,
+        error: getCreateBusinessDuplicateError(),
+      });
+    }
+
     const verificationDecision = deriveNewBusinessVerificationDecision(
       validation.value,
       { existingBusinessConflict },
