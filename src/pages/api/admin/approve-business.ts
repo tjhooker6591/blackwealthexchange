@@ -15,6 +15,7 @@ import {
   normalizeAdminApprovalRow,
   resolveUniqueBusinessSlugAndAlias,
 } from "@/lib/adminBusinessApprovals";
+import { stampListingCompleteness } from "@/lib/directory/completeness";
 
 export default async function handler(
   req: NextApiRequest,
@@ -167,6 +168,8 @@ export default async function handler(
         .status(404)
         .json({ error: "Business not found or already approved" });
     }
+
+    await stampListingCompleteness(businesses, { _id: existing._id });
 
     return res.status(200).json({
       success: true,

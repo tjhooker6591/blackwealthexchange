@@ -10,6 +10,7 @@ import {
   buildDirectoryProfileUpdate,
   normalizeDirectoryProfileInput,
 } from "@/lib/directoryProfileContract";
+import { stampListingCompleteness } from "@/lib/directory/completeness";
 
 export default async function handler(
   req: NextApiRequest,
@@ -69,6 +70,13 @@ export default async function handler(
     if (!result.matchedCount) {
       return res.status(404).json({ error: "Business not found" });
     }
+
+    await stampListingCompleteness(
+      db.collection("businesses"),
+      buildObjectIdOrStringFilter("_id", ownership.entityId) || {
+        _id: ownership.entityId as any,
+      },
+    );
 
     return res.status(200).json({
       message: "Business updated successfully",

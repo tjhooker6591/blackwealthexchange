@@ -3,6 +3,7 @@ import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
+import { stampListingCompleteness } from "@/lib/directory/completeness";
 
 export default async function handler(
   req: NextApiRequest,
@@ -46,6 +47,10 @@ export default async function handler(
         .status(404)
         .json({ error: "Business not found or already approved" });
     }
+
+    await stampListingCompleteness(db.collection("businesses"), {
+      _id: objectId,
+    });
 
     return res.status(200).json({ message: "Business approved successfully" });
   } catch (error) {
