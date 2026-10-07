@@ -154,6 +154,19 @@ export default async function handler(
         })
       : null;
 
+    // Only the account's own first listing is attached to it. Once the
+    // account already carries a submitted listing, a form for a differently
+    // named business is a second business and gets its own record.
+    const normalizeName = (value: string) =>
+      value.trim().toLowerCase().replace(/\s+/g, " ");
+    const attachAccount =
+      ownAccount &&
+      (!ownAccount.claimantVerification ||
+        normalizeName(getCanonicalBusinessName(ownAccount)) ===
+          normalizeName(businessName))
+        ? ownAccount
+        : null;
+
     if (!ownAccount) {
       const accountForEmail = await businesses.findOne({
         accountType: "business",
@@ -205,7 +218,7 @@ export default async function handler(
       }),
     );
 
-    if (existingBusinessConflict && !existingSubmission && !ownAccount) {
+    if (existingBusinessConflict && !existingSubmission && !attachAccount) {
       return res.status(409).json({
         ok: false,
         error: getCreateBusinessDuplicateError(),
@@ -218,10 +231,10 @@ export default async function handler(
     );
 
     const slug =
-      ownAccount?.slug ||
+      attachAccount?.slug ||
       existingSubmission?.slug ||
       buildUniqueSlug(slugBase, existingWithSlug);
-    const alias = ownAccount?.alias || existingSubmission?.alias || slug;
+    const alias = attachAccount?.alias || existingSubmission?.alias || slug;
 
     const doc: any = {
       business_name: businessName,
@@ -283,7 +296,7 @@ export default async function handler(
 
     let savedBusinessId = "";
 
-    if (ownAccount?._id) {
+    if (attachAccount?._id) {
       // Attach the submission to the signed-in account's own record. The
       // account keeps its login email, name, timestamps and, once approved,
       // its approval state.
@@ -295,14 +308,15 @@ export default async function handler(
         title: _title,
         ...listingFields
       } = doc;
-      const accountName = getCanonicalBusinessName(ownAccount) || businessName;
-      if (ownAccount.approved === true) {
+      const accountName =
+        getCanonicalBusinessName(attachAccount) || businessName;
+      if (attachAccount.approved === true) {
         delete listingFields.status;
         delete listingFields.approved;
         delete listingFields.listingStatus;
       }
       await businesses.updateOne(
-        { _id: ownAccount._id },
+        { _id: attachAccount._id },
         {
           $set: {
             ...listingFields,
@@ -313,8 +327,8 @@ export default async function handler(
           },
         },
       );
-      await stampListingCompleteness(businesses, { _id: ownAccount._id });
-      savedBusinessId = String(ownAccount._id);
+      await stampListingCompleteness(businesses, { _id: attachAccount._id });
+      savedBusinessId = String(attachAccount._id);
     } else if (existingSubmission?._id) {
       await businesses.updateOne(
         { _id: existingSubmission._id },

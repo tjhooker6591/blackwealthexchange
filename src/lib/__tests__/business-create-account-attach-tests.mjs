@@ -310,6 +310,63 @@ const account = () => ({
   assert.equal(businesses.docs.length, 1);
 }
 
+// An owner whose account already has a submitted listing adds a second,
+// differently named business: it gets its own record and the first listing
+// is left untouched.
+{
+  const businesses = seedDb([
+    {
+      ...account(),
+      approved: true,
+      status: "active",
+      slug: "wolf-of-fitness",
+      description: "First business description.",
+      city: "Parsippany",
+      claimantVerification: { claimantEmail: "owner@example.com" },
+    },
+  ]);
+  const res = await submit(
+    submission({
+      businessName: "Second Venture Bakery",
+      description: "A different business entirely.",
+      city: "Newark",
+    }),
+    { userId: "acct-1", email: "owner@example.com", accountType: "business" },
+  );
+  assert.equal(res.statusCode, 201, JSON.stringify(res.body));
+  assert.equal(businesses.inserted.length, 1);
+  assert.equal(businesses.docs.length, 2);
+  assert.equal(businesses.docs[0].description, "First business description.");
+  assert.equal(businesses.docs[0].city, "Parsippany");
+  assert.equal(businesses.docs[0].businessName, "Wolf of Fitness");
+  assert.equal(businesses.inserted[0].businessName, "Second Venture Bakery");
+  assert.equal(businesses.inserted[0].password, undefined);
+}
+
+// Resubmitting the same business from an account that already has a listing
+// still updates that one record.
+{
+  const businesses = seedDb([
+    {
+      ...account(),
+      description: "Old description.",
+      claimantVerification: { claimantEmail: "owner@example.com" },
+    },
+  ]);
+  const res = await submit(submission({ businessName: "wolf of  fitness" }), {
+    userId: "acct-1",
+    email: "owner@example.com",
+    accountType: "business",
+  });
+  assert.equal(res.statusCode, 201, JSON.stringify(res.body));
+  assert.equal(businesses.inserted.length, 0);
+  assert.equal(businesses.docs.length, 1);
+  assert.equal(
+    businesses.docs[0].description,
+    "Performance coaching and conditioning.",
+  );
+}
+
 // A signed-in personal user is not a business account, so the email guard
 // still applies to them.
 {
