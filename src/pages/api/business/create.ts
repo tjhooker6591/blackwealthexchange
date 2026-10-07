@@ -5,12 +5,18 @@ import clientPromise from "@/lib/mongodb";
 import {
   buildUniqueSlug,
   getCanonicalBusinessName,
+  getCreateBusinessAccountExistsError,
   getCreateBusinessDuplicateError,
   getCreateBusinessSuccessMessage,
   deriveNewBusinessVerificationDecision,
   validateBusinessSubmission,
 } from "@/lib/businessSubmission";
 import { uploadImageBufferToCloudinary } from "@/lib/cloudinaryUpload";
+import {
+  buildObjectIdOrStringFilter,
+  parseSessionIdentity,
+} from "@/lib/directoryOwnership";
+import { stampListingCompleteness } from "@/lib/directory/completeness";
 
 export const config = {
   api: { bodyParser: false },
@@ -133,6 +139,34 @@ export default async function handler(
 
     const businesses = db.collection("businesses");
 
+    // A business account's login record is also its listing record. Without
+    // this, an owner who signs up and then fills out this form ends up with
+    // two separate business documents (one login, one listing).
+    const session = parseSessionIdentity(req);
+    const sessionAccountFilter =
+      session?.accountType === "business"
+        ? buildObjectIdOrStringFilter("_id", session.userId)
+        : null;
+    const ownAccount = sessionAccountFilter
+      ? await businesses.findOne({
+          ...sessionAccountFilter,
+          accountType: "business",
+        })
+      : null;
+
+    if (!ownAccount) {
+      const accountForEmail = await businesses.findOne({
+        accountType: "business",
+        email: { $in: [claimantEmail, email, businessEmail].filter(Boolean) },
+      });
+      if (accountForEmail) {
+        return res.status(409).json({
+          ok: false,
+          error: getCreateBusinessAccountExistsError(),
+        });
+      }
+    }
+
     const existingWithSlug = slugBase
       ? await db.collection("businesses").countDocuments({
           slug: { $regex: `^${slugBase}(-\\d+)?$`, $options: "i" },
@@ -171,7 +205,7 @@ export default async function handler(
       }),
     );
 
-    if (existingBusinessConflict && !existingSubmission) {
+    if (existingBusinessConflict && !existingSubmission && !ownAccount) {
       return res.status(409).json({
         ok: false,
         error: getCreateBusinessDuplicateError(),
@@ -184,8 +218,10 @@ export default async function handler(
     );
 
     const slug =
-      existingSubmission?.slug || buildUniqueSlug(slugBase, existingWithSlug);
-    const alias = existingSubmission?.alias || slug;
+      ownAccount?.slug ||
+      existingSubmission?.slug ||
+      buildUniqueSlug(slugBase, existingWithSlug);
+    const alias = ownAccount?.alias || existingSubmission?.alias || slug;
 
     const doc: any = {
       business_name: businessName,
@@ -247,7 +283,39 @@ export default async function handler(
 
     let savedBusinessId = "";
 
-    if (existingSubmission?._id) {
+    if (ownAccount?._id) {
+      // Attach the submission to the signed-in account's own record. The
+      // account keeps its login email, name, timestamps and, once approved,
+      // its approval state.
+      const {
+        email: _submittedEmail,
+        createdAt: _createdAt,
+        business_name: _businessName,
+        businessName: _businessNameAlt,
+        title: _title,
+        ...listingFields
+      } = doc;
+      const accountName = getCanonicalBusinessName(ownAccount) || businessName;
+      if (ownAccount.approved === true) {
+        delete listingFields.status;
+        delete listingFields.approved;
+        delete listingFields.listingStatus;
+      }
+      await businesses.updateOne(
+        { _id: ownAccount._id },
+        {
+          $set: {
+            ...listingFields,
+            business_name: accountName,
+            businessName: accountName,
+            title: accountName,
+            updatedAt: new Date(),
+          },
+        },
+      );
+      await stampListingCompleteness(businesses, { _id: ownAccount._id });
+      savedBusinessId = String(ownAccount._id);
+    } else if (existingSubmission?._id) {
       await businesses.updateOne(
         { _id: existingSubmission._id },
         {

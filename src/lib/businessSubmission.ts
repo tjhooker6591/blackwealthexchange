@@ -957,6 +957,10 @@ export function getCreateBusinessDuplicateError() {
   return "A business with this name is already listed and active on Black Wealth Exchange. If this is your business, visit /support to request a listing claim instead of submitting a new one.";
 }
 
+export function getCreateBusinessAccountExistsError() {
+  return "A business account already exists for this email. Sign in to that account first, then submit this form again and it will be added to your existing listing instead of creating a second one.";
+}
+
 export function getCreateBusinessSuccessMessage() {
   return "Business submitted for automated verification.";
 }
