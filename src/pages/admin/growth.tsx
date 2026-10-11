@@ -647,6 +647,12 @@ export default function GrowthOperationsPage() {
           </div>
           <div className="flex gap-2">
             <Link
+              href="/admin/business-of-the-day"
+              className="text-sm border border-zinc-700 px-3 py-2 rounded"
+            >
+              Business of the Day
+            </Link>
+            <Link
               href="/admin/acquisition-report"
               className="text-sm border border-zinc-700 px-3 py-2 rounded"
             >

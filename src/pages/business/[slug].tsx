@@ -43,6 +43,7 @@ import {
 import BusinessEngagement from "@/components/business/BusinessEngagement";
 import AcquisitionProfileViewTracker from "@/components/acquisition/AcquisitionProfileViewTracker";
 import { trackAcquisitionEvent } from "@/lib/acquisition/clientTrack";
+import BusinessOfTheDayBadge from "@/components/social/BusinessOfTheDayBadge";
 
 type BusinessEntry = {
   claimStage: string | null;
@@ -307,6 +308,7 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                       {entry.category}
                     </span>
                   ) : null}
+                  <BusinessOfTheDayBadge businessId={businessId} slug={slug} />
                   {entry.publicListingStatus === "ownership_verified" ? (
                     <span className="text-[11px] sm:text-xs rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2.5 py-0.5 sm:px-3 sm:py-1 text-emerald-200">
                       Ownership Verified

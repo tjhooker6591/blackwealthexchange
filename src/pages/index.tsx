@@ -12,6 +12,7 @@ import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import { FEATURED_SPONSOR_RAIL_CAP } from "@/lib/advertising/placementDefinitions";
 import HomepagePulsePreview from "@/components/pulse/HomepagePulsePreview";
 import HomepagePulseJoinTeaser from "@/components/pulse/HomepagePulseJoinTeaser";
+import BusinessOfTheDaySpot from "@/components/social/BusinessOfTheDaySpot";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -704,6 +705,8 @@ export default function Home() {
           // account and are logged in (see HomepagePulseJoinTeaser).
           <HomepagePulseJoinTeaser />
         )}
+
+        <BusinessOfTheDaySpot />
 
         <section className="mb-8 border-t border-white/8 pt-6">
           <div className="mb-2.5 flex items-center justify-between">
