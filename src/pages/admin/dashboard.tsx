@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import AdminFilterBar from "@/components/admin/AdminFilterBar";
+import AdminAllPages from "@/components/admin/AdminAllPages";
 import { getJwtSecret } from "@/lib/env";
 import type { AdminFilters } from "@/components/admin/AdminFilterBar";
 
@@ -847,6 +848,8 @@ const AdminDashboard = ({
           </div>
         )}
       </header>
+
+      <AdminAllPages />
 
       <section className="mt-8 rounded-xl border border-gray-700 bg-gray-800/70 p-5">
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
