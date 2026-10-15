@@ -447,36 +447,3 @@ h4 {
   background-color: #ffd700;
   color: #000000;
 }
-
-/* Phones and tablets: several Android GPUs render stacked blur effects as
-   corrupted, blocky tiles (seen on the homepage). On touch screens and
-   narrower viewports, drop the see-through blur behind panels and the nav,
-   hide the two very large blurred background glows, and hold the pulsing
-   glow still. Desktop keeps the full effect. */
-@media (max-width: 1024px), (hover: none) {
-  .bwe-shell-panel,
-  .bwe-hero-panel,
-  .backdrop-blur,
-  .backdrop-blur-sm,
-  .backdrop-blur-md,
-  .backdrop-blur-lg,
-  .backdrop-blur-xl,
-  .backdrop-blur-2xl,
-  .backdrop-blur-3xl {
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-  }
-  .bwe-ambient-glow {
-    display: none;
-  }
-  .animate-pulseGlow {
-    animation: none;
-    box-shadow: 0 0 16px rgba(212, 175, 55, 0.32);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-pulseGlow {
-    animation: none;
-  }
-}

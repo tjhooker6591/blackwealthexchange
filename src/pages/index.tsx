@@ -440,8 +440,8 @@ export default function Home() {
       </script>
       <div className="absolute inset-0 bg-neutral-950" />
       <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-950/70 to-black/90" />
-      <div className="bwe-ambient-glow pointer-events-none absolute -top-40 left-1/2 h-[900px] w-[900px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
-      <div className="bwe-ambient-glow pointer-events-none absolute -bottom-56 right-[-10rem] h-[560px] w-[560px] rounded-full bg-emerald-500/[0.05] blur-3xl" />
+      <div className="pointer-events-none absolute -top-40 left-1/2 h-[900px] w-[900px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-56 right-[-10rem] h-[560px] w-[560px] rounded-full bg-emerald-500/[0.05] blur-3xl" />
 
       <header className="relative z-10 pb-5 pt-8 sm:pb-7 sm:pt-11">
         <div className="bwe-section-wrap relative z-10 max-w-6xl">
