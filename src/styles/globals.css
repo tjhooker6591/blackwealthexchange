@@ -480,3 +480,34 @@ h4 {
     animation: none;
   }
 }
+
+/* TEMPORARY graphics diagnosis (see _app.tsx): ?gfx=... switches off one
+   group of effects. Remove together with the _app.tsx hook. */
+.gfx-off-all .bwe-hero-image,
+.gfx-off-image .bwe-hero-image {
+  display: none !important;
+}
+.gfx-off-all *,
+.gfx-off-shadow * {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+.gfx-off-all *,
+.gfx-off-motion * {
+  animation: none !important;
+  transition: none !important;
+}
+.gfx-off-all .bwe-hero-panel,
+.gfx-off-clip .bwe-hero-panel {
+  overflow: visible !important;
+  isolation: auto !important;
+  border-radius: 0 !important;
+}
+.gfx-off-all .bwe-page-bg,
+.gfx-off-layers .bwe-page-bg {
+  display: none !important;
+}
+.gfx-off-all body,
+.gfx-off-layers body {
+  background: #0a0a0a;
+}

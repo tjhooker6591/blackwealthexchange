@@ -26,6 +26,22 @@ export default function App({
   pageProps: { session, ...pageProps },
 }: AppProps) {
   const router = useRouter();
+  // TEMPORARY graphics diagnosis for an Android rendering glitch: ?gfx=all,
+  // image, shadow, motion, clip or layers switches off one group of visual
+  // effects so the culprit can be found on the affected phone. Remove once
+  // the cause is fixed.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const groups = (
+      new URLSearchParams(window.location.search).get("gfx") || ""
+    )
+      .split(",")
+      .map((g) => g.trim())
+      .filter((g) => /^(all|image|shadow|motion|clip|layers)$/.test(g));
+    groups.forEach((g) =>
+      document.documentElement.classList.add(`gfx-off-${g}`),
+    );
+  }, []);
   useEffect(() => {
     const trackPageView = (url: string) => {
       emitFlowEvent({

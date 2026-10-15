@@ -438,8 +438,8 @@ export default function Home() {
       <script type="application/ld+json">
         {JSON.stringify(founderSchema)}
       </script>
-      <div className="absolute inset-0 bg-neutral-950" />
-      <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-950/70 to-black/90" />
+      <div className="bwe-page-bg absolute inset-0 bg-neutral-950" />
+      <div className="bwe-page-bg absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-950/70 to-black/90" />
       <div className="bwe-ambient-glow pointer-events-none absolute -top-40 left-1/2 h-[900px] w-[900px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
       <div className="bwe-ambient-glow pointer-events-none absolute -bottom-56 right-[-10rem] h-[560px] w-[560px] rounded-full bg-emerald-500/[0.05] blur-3xl" />
 
@@ -462,7 +462,7 @@ export default function Home() {
 
             <div className="bwe-hero-panel relative isolate mx-auto mt-4 max-w-5xl overflow-hidden rounded-[32px] px-4 py-5 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
               <div
-                className="pointer-events-none absolute inset-0 -z-10 opacity-[0.22]"
+                className="bwe-hero-image pointer-events-none absolute inset-0 -z-10 opacity-[0.22]"
                 style={{
                   backgroundImage: "url('/images/story3.jpg')",
                   backgroundSize: "cover",
