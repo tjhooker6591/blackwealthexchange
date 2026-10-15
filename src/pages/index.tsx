@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { optimizedImageSrc } from "@/lib/optimizedImageSrc";
 import Head from "next/head";
 import { canonicalUrl, getBaseUrl, truncateMeta } from "@/lib/seo";
 import { Search, ShoppingBag } from "lucide-react";
@@ -207,6 +208,17 @@ export default function Home() {
     targetUrl: string;
   } | null>(null);
   const [sponsorFeedLoaded, setSponsorFeedLoaded] = useState(false);
+  // Touch screens get a swipeable sponsor strip instead of the endless
+  // scrolling animation, which strains graphics memory on some phones.
+  const [touchScreen, setTouchScreen] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const query = window.matchMedia("(hover: none)");
+    const update = () => setTouchScreen(query.matches);
+    update();
+    query.addEventListener?.("change", update);
+    return () => query.removeEventListener?.("change", update);
+  }, []);
   const [trustStats, setTrustStats] = useState<{
     businesses: number | null;
     organizations: number | null;
@@ -440,8 +452,8 @@ export default function Home() {
       </script>
       <div className="absolute inset-0 bg-neutral-950" />
       <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-950/70 to-black/90" />
-      <div className="pointer-events-none absolute -top-40 left-1/2 h-[900px] w-[900px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-56 right-[-10rem] h-[560px] w-[560px] rounded-full bg-emerald-500/[0.05] blur-3xl" />
+      <div className="pointer-events-none absolute -top-40 left-1/2 h-[900px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(212,175,55,0.07),rgba(212,175,55,0.03)_55%,transparent)]" />
+      <div className="pointer-events-none absolute -bottom-56 right-[-10rem] h-[560px] w-[560px] rounded-full bg-[radial-gradient(closest-side,rgba(16,185,129,0.06),rgba(16,185,129,0.025)_55%,transparent)]" />
 
       <header className="relative z-10 pb-5 pt-8 sm:pb-7 sm:pt-11">
         <div className="bwe-section-wrap relative z-10 max-w-6xl">
@@ -730,7 +742,13 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="relative h-28 w-full overflow-hidden rounded-[24px] border border-white/10 bg-black/20 sm:h-36">
+          <div
+            className={`relative h-28 w-full rounded-[24px] border border-white/10 bg-black/20 sm:h-36 ${
+              touchScreen
+                ? "overflow-x-auto overflow-y-hidden"
+                : "overflow-hidden"
+            }`}
+          >
             {!sponsorFeedLoaded ? (
               <div className="absolute inset-0 flex items-center justify-center text-[11px] text-white/55">
                 Loading live sponsors...
@@ -740,12 +758,19 @@ export default function Home() {
             <div className="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-black/70 to-transparent" />
 
             {sponsorRail.length ? (
-              <div className="animate-scroll absolute flex space-x-4 px-4 py-4 sm:space-x-5">
-                {[...sponsorRail, ...sponsorRail].map((sponsor, index) => {
+              <div
+                className={`flex space-x-4 px-4 py-4 sm:space-x-5 ${
+                  touchScreen ? "w-max" : "animate-scroll absolute"
+                }`}
+              >
+                {(touchScreen
+                  ? sponsorRail
+                  : [...sponsorRail, ...sponsorRail]
+                ).map((sponsor, index) => {
                   const card = (
                     <div className="relative h-20 w-36 overflow-hidden rounded-[18px] border border-white/10 shadow sm:h-24 sm:w-44">
                       <img
-                        src={sponsor.img}
+                        src={optimizedImageSrc(sponsor.img, 176)}
                         alt={sponsor.name}
                         className="h-full w-full object-cover"
                         loading={index < 4 ? "eager" : "lazy"}

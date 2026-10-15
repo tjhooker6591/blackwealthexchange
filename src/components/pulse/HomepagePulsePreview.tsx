@@ -12,6 +12,7 @@
 // blending in as just another muted content block.
 
 import Link from "next/link";
+import { optimizedImageSrc } from "@/lib/optimizedImageSrc";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
@@ -89,7 +90,7 @@ export default function HomepagePulsePreview() {
                 {item.authorAvatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={item.authorAvatarUrl}
+                    src={optimizedImageSrc(item.authorAvatarUrl, 36)}
                     alt={item.authorName}
                     className="h-9 w-9 shrink-0 rounded-full object-cover"
                   />
