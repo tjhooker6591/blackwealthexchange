@@ -126,7 +126,14 @@ export default async function handler(
     const db = client.db(getMongoDbName());
     const col = db.collection(collectionFor(payload.accountType));
 
-    const doc = await col.findOne({ email });
+    // Several accounts can share one email (e.g. an owner with more than one
+    // business account), so load the exact account this session signed in
+    // to. Email is only a fallback for old sessions without a userId.
+    const userId = String(payload?.userId || "").trim();
+    const doc =
+      (userId && ObjectId.isValid(userId)
+        ? await col.findOne({ _id: new ObjectId(userId) })
+        : null) || (await col.findOne({ email }));
     if (!doc) return res.status(404).json({ error: "Profile not found" });
 
     if (req.method === "GET") {
