@@ -17,6 +17,7 @@ import {
   UserCircle2,
 } from "lucide-react";
 import BusinessGrowthCenter from "./BusinessGrowthCenter";
+import ProfileViewersCard from "@/components/business/ProfileViewersCard";
 
 type AccountType =
   | "user"
@@ -223,6 +224,8 @@ export default function BusinessDashboard({
             </div>
           </div>
         </div>
+
+        <ProfileViewersCard />
 
         <BusinessGrowthCenter />
 

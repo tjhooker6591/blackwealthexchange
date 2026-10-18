@@ -28,6 +28,9 @@ type ProfileResponse = {
   // profile is never public unless the account holder explicitly turns
   // this on (see src/pages/profile.tsx).
   profileVisibility: "private" | "public";
+  // When true, visits to business pages are counted but never show this
+  // account's name to the business ("Who viewed your business").
+  browsePrivately: boolean;
 };
 
 function collectionFor(accountType?: string) {
@@ -97,6 +100,7 @@ function mapProfile(doc: any, email: string): ProfileResponse {
     resumeUrl: resume?.url || "",
     profileVisibility:
       doc.profileVisibility === "public" ? "public" : "private",
+    browsePrivately: doc.browsePrivately === true,
   };
 }
 
@@ -155,6 +159,10 @@ export default async function handler(
       ) {
         updateSet.profileVisibility =
           req.body.profileVisibility === "public" ? "public" : "private";
+      }
+
+      if (typeof req.body?.browsePrivately === "boolean") {
+        updateSet.browsePrivately = req.body.browsePrivately;
       }
 
       // explicit remove contract

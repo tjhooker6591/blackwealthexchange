@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import type { GetServerSideProps } from "next";
 import Link from "next/link";
+import ProfileViewTracker from "@/components/business/ProfileViewTracker";
 import { useRouter } from "next/router";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
@@ -259,6 +260,7 @@ export default function BusinessDetail({
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
+      <ProfileViewTracker businessId={canonicalBusinessId} page="directory" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-[#D4AF37]/16 via-transparent to-transparent" />
       <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-[40rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
 

@@ -11,6 +11,7 @@ import {
 } from "@/lib/directoryOwnership";
 import { mapDirectoryProfileFromDoc } from "@/lib/directoryProfileContract";
 import BusinessProfileContent from "@/components/business/BusinessProfileContent";
+import ProfileViewersCard from "@/components/business/ProfileViewersCard";
 
 interface OwnedBusinessSummary {
   id: string;
@@ -134,6 +135,12 @@ export default function BusinessProfile({ business, ownedBusinesses }: Props) {
                 {b.name}
               </Link>
             ))}
+          </div>
+        ) : null}
+
+        {business?.id ? (
+          <div className="mb-6">
+            <ProfileViewersCard businessId={business.id} />
           </div>
         ) : null}
 

@@ -39,6 +39,7 @@ type MembershipStatusPayload = {
     engagementReport: null | {
       generatedAt: string;
       periodLabel: string;
+      views?: { thisPeriod: number; lastPeriod: number };
       followers: { total: number; newThisPeriod: number };
       saves: { total: number; newThisPeriod: number };
       reviews: {
@@ -285,7 +286,18 @@ export default function FoundingMembershipStatusPage() {
                     <p className="mt-1 text-sm text-white/60">
                       Real activity on your listing, not a projection.
                     </p>
-                    <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                    <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                      <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
+                        <div className="text-sm text-white/50">Page views</div>
+                        <div className="mt-1 text-2xl font-bold text-white">
+                          {membership.engagementReport.views?.thisPeriod ?? 0}
+                        </div>
+                        <div className="mt-1 text-xs text-white/55">
+                          this month ·{" "}
+                          {membership.engagementReport.views?.lastPeriod ?? 0}{" "}
+                          last month
+                        </div>
+                      </div>
                       <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
                         <div className="text-sm text-white/50">Followers</div>
                         <div className="mt-1 text-2xl font-bold text-white">
@@ -344,8 +356,9 @@ export default function FoundingMembershipStatusPage() {
                 ) : (
                   <p className="mt-2 text-sm text-white/60">
                     Your report becomes available once ownership verification is
-                    complete -- it will show real followers, saves, reviews, and
-                    search-ranking factors for your listing, not a projection.
+                    complete -- it will show real page views, followers, saves,
+                    reviews, and search-ranking factors for your listing, not a
+                    projection.
                   </p>
                 )}
               </section>

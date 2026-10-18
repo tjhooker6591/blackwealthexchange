@@ -42,6 +42,7 @@ import {
 } from "@/lib/directoryPublicMedia";
 import BusinessEngagement from "@/components/business/BusinessEngagement";
 import AcquisitionProfileViewTracker from "@/components/acquisition/AcquisitionProfileViewTracker";
+import ProfileViewTracker from "@/components/business/ProfileViewTracker";
 import { trackAcquisitionEvent } from "@/lib/acquisition/clientTrack";
 import BusinessOfTheDayBadge from "@/components/social/BusinessOfTheDayBadge";
 
@@ -409,6 +410,7 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
             {businessId ? (
               <div className="mt-3 sm:mt-4">
                 <AcquisitionProfileViewTracker businessId={businessId} />
+                <ProfileViewTracker businessId={businessId} page="business" />
                 <BusinessEngagement businessId={businessId} variant="header" />
               </div>
             ) : null}

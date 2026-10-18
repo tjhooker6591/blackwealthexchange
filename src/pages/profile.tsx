@@ -39,6 +39,7 @@ type UserProfile = {
   profileImage?: string;
   resumeUrl?: string;
   profileVisibility?: "private" | "public";
+  browsePrivately?: boolean;
 };
 
 function cx(...classes: Array<string | false | null | undefined>) {
@@ -87,6 +88,7 @@ export default function ProfilePage() {
   const [profileVisibility, setProfileVisibility] = useState<
     "private" | "public"
   >("private");
+  const [browsePrivately, setBrowsePrivately] = useState(false);
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
 
@@ -146,6 +148,7 @@ export default function ProfilePage() {
       setProfileVisibility(
         data.profileVisibility === "public" ? "public" : "private",
       );
+      setBrowsePrivately(data.browsePrivately === true);
     },
     [router],
   );
@@ -204,7 +207,7 @@ export default function ProfilePage() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ name, bio, profileVisibility }),
+        body: JSON.stringify({ name, bio, profileVisibility, browsePrivately }),
       });
       if (!res.ok) throw new Error();
       await fetchProfile();
@@ -503,6 +506,26 @@ export default function ProfilePage() {
                 </span>
               </label>
             ) : null}
+
+            <label className="flex items-start gap-3 rounded-xl border border-white/10 bg-black/30 px-3 py-3">
+              <input
+                type="checkbox"
+                checked={browsePrivately}
+                onChange={(e) => setBrowsePrivately(e.target.checked)}
+                className="mt-1"
+              />
+              <span>
+                <span className="block text-sm font-semibold text-gray-200">
+                  Browse businesses privately
+                </span>
+                <span className="block text-xs text-gray-400">
+                  Businesses that claim their listing can see the names of
+                  signed-in members who viewed their page. Turn this on to be
+                  counted as a private visitor instead. Your email is never
+                  shown either way.
+                </span>
+              </span>
+            </label>
 
             <div className="flex items-center gap-3">
               <button

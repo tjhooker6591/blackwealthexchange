@@ -119,7 +119,7 @@ function FinePrint({ children }: { children: React.ReactNode }) {
 }
 
 const PrivacyPolicy = () => {
-  const lastUpdated = "February 15, 2026"; // Update as needed
+  const lastUpdated = "October 18, 2026"; // Update as needed
 
   return (
     <>
@@ -601,6 +601,15 @@ const PrivacyPolicy = () => {
               <li>
                 <strong>With your direction:</strong> when you choose to publish
                 or share content (e.g., public business profile).
+              </li>
+              <li>
+                <strong>Business page visits:</strong> when you are signed in
+                and view a business&rsquo;s page, a business that has claimed
+                its listing can see your name and profile photo and when you
+                visited. Your email address and contact details are never shown.
+                You can turn on &ldquo;Browse businesses privately&rdquo; in
+                your profile settings at any time to be counted as a private
+                visitor instead.
               </li>
             </BulletList>
 

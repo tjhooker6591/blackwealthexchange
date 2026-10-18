@@ -1,4 +1,5 @@
 import { ObjectId, type Db, type Document } from "mongodb";
+import { PROFILE_VIEWS_COLLECTION } from "@/lib/profileViews";
 
 export type ClaimableBusinessSummary = {
   id: string;
@@ -544,6 +545,7 @@ export function getFoundingClaimStatusLabel(value: unknown) {
 export type FoundingEngagementReport = {
   generatedAt: string;
   periodLabel: string;
+  views: { thisPeriod: number; lastPeriod: number };
   followers: { total: number; newThisPeriod: number };
   saves: { total: number; newThisPeriod: number };
   reviews: {
@@ -574,27 +576,43 @@ export async function getFoundingEngagementReport(
   const periodStart = new Date(now.getFullYear(), now.getMonth(), 1);
   const id = String(businessId || "").trim();
 
-  const [followTotal, followNew, saveTotal, saveNew, reviews, business] =
-    await Promise.all([
-      db.collection("follows").countDocuments({ businessId: id }),
-      db
-        .collection("follows")
-        .countDocuments({ businessId: id, createdAt: { $gte: periodStart } }),
-      db.collection("saved_businesses").countDocuments({ businessId: id }),
-      db
-        .collection("saved_businesses")
-        .countDocuments({ businessId: id, savedAt: { $gte: periodStart } }),
-      db
-        .collection("business_reviews")
-        .find({ businessId: id })
-        .project({ createdAt: 1, rating: 1 })
-        .toArray(),
-      db
-        .collection("businesses")
-        .findOne(buildMongoIdOrStringQuery("_id", id) || { _id: id as any }, {
-          projection: { verified: 1, amountPaid: 1 },
-        }),
-    ]);
+  const lastPeriodStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const [
+    followTotal,
+    followNew,
+    saveTotal,
+    saveNew,
+    reviews,
+    business,
+    viewsThisPeriod,
+    viewsLastPeriod,
+  ] = await Promise.all([
+    db.collection("follows").countDocuments({ businessId: id }),
+    db
+      .collection("follows")
+      .countDocuments({ businessId: id, createdAt: { $gte: periodStart } }),
+    db.collection("saved_businesses").countDocuments({ businessId: id }),
+    db
+      .collection("saved_businesses")
+      .countDocuments({ businessId: id, savedAt: { $gte: periodStart } }),
+    db
+      .collection("business_reviews")
+      .find({ businessId: id })
+      .project({ createdAt: 1, rating: 1 })
+      .toArray(),
+    db
+      .collection("businesses")
+      .findOne(buildMongoIdOrStringQuery("_id", id) || { _id: id as any }, {
+        projection: { verified: 1, amountPaid: 1 },
+      }),
+    db
+      .collection(PROFILE_VIEWS_COLLECTION)
+      .countDocuments({ businessId: id, viewedAt: { $gte: periodStart } }),
+    db.collection(PROFILE_VIEWS_COLLECTION).countDocuments({
+      businessId: id,
+      viewedAt: { $gte: lastPeriodStart, $lt: periodStart },
+    }),
+  ]);
 
   const reviewsThisPeriod = reviews.filter((r: any) => {
     const created =
@@ -618,6 +636,7 @@ export async function getFoundingEngagementReport(
       month: "long",
       year: "numeric",
     }),
+    views: { thisPeriod: viewsThisPeriod, lastPeriod: viewsLastPeriod },
     followers: { total: followTotal, newThisPeriod: followNew },
     saves: { total: saveTotal, newThisPeriod: saveNew },
     reviews: {
