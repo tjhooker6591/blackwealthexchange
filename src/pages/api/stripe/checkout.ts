@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { BLACK_CARD_TIERS } from "@/lib/black-card";
 import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
