@@ -3,6 +3,7 @@ import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
 import clientPromise from "@/lib/mongodb";
+import { resolveVerifiedOwnership } from "@/lib/directoryOwnership";
 import {
   buildMongoIdOrStringQuery,
   findFoundingSourcePayment,
@@ -41,14 +42,54 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
 
-    const membership = await db.collection("business_memberships").findOne(
-      {
-        productKey: "founding_verified_business_growth_membership",
-        membershipStatus: { $in: ["active", "past_due", "cancelled"] },
-        $or: [{ userId }, { email }],
-      },
-      { sort: { updatedAt: -1, createdAt: -1 } },
-    );
+    const membershipBase = {
+      productKey: "founding_verified_business_growth_membership",
+      membershipStatus: { $in: ["active", "past_due", "cancelled"] },
+    };
+    const membershipSort = { sort: { updatedAt: -1, createdAt: -1 } } as const;
+
+    // One person can own several businesses (and one email can have several
+    // accounts), so the report is for the business being looked at: the
+    // ?businessId= one if given (after checking it's theirs), otherwise a
+    // business account's own business, otherwise their latest membership.
+    const requestedBusinessId = String(req.query.businessId || "").trim();
+    let membership: any = null;
+    if (requestedBusinessId) {
+      const ownsIt =
+        (decoded?.accountType === "business" &&
+          requestedBusinessId === userId) ||
+        Boolean(
+          userId &&
+          (await resolveVerifiedOwnership(db, {
+            entityType: "business",
+            entityId: requestedBusinessId,
+            userId,
+          })),
+        );
+      if (!ownsIt) {
+        return res.status(403).json({ ok: false, error: "forbidden" });
+      }
+      membership = await db
+        .collection("business_memberships")
+        .findOne(
+          { ...membershipBase, businessId: requestedBusinessId },
+          membershipSort,
+        );
+    } else {
+      if (decoded?.accountType === "business" && userId) {
+        membership = await db
+          .collection("business_memberships")
+          .findOne({ ...membershipBase, businessId: userId }, membershipSort);
+      }
+      if (!membership) {
+        membership = await db
+          .collection("business_memberships")
+          .findOne(
+            { ...membershipBase, $or: [{ userId }, { email }] },
+            membershipSort,
+          );
+      }
+    }
 
     if (!membership) {
       return res.status(200).json({ ok: true, membership: null });

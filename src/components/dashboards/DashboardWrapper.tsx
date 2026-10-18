@@ -7,12 +7,17 @@ import EmployerDashboard from "./EmployerDashboard";
 import BusinessDashboard, { type DashboardUser } from "./BusinessDashboard";
 import UserDashboard from "./UserDashboard";
 import DashboardFrame from "./DashboardFrame";
+import YourBusinessesPanel from "@/components/business/YourBusinessesPanel";
 
 export default function DashboardWrapper() {
   const router = useRouter();
   const [accountType, setAccountType] = useState<string | null>(null);
   const [user, setUser] = useState<DashboardUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const businessId =
+    typeof router.query.businessId === "string"
+      ? router.query.businessId.trim()
+      : "";
 
   useEffect(() => {
     (async () => {
@@ -63,9 +68,25 @@ export default function DashboardWrapper() {
       {accountType === "seller" && <SellerDashboard />}
       {accountType === "employer" && <EmployerDashboard />}
       {(accountType === "business" || accountType === "admin") && (
-        <BusinessDashboard user={user} />
+        <BusinessDashboard
+          key={businessId || "own"}
+          user={user}
+          businessId={businessId || undefined}
+        />
       )}
-      {accountType === "user" && <UserDashboard />}
+      {accountType === "user" &&
+        (businessId ? (
+          <BusinessDashboard
+            key={businessId}
+            user={user}
+            businessId={businessId}
+          />
+        ) : (
+          <>
+            <YourBusinessesPanel />
+            <UserDashboard />
+          </>
+        ))}
       {accountType &&
         !["seller", "employer", "business", "user", "admin"].includes(
           accountType,

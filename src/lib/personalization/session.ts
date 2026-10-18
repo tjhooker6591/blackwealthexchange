@@ -11,7 +11,10 @@ import cookie from "cookie";
 import { ObjectId, type Db } from "mongodb";
 import { getJwtSecret } from "@/lib/env";
 import { resolvePerson360, type Person360Resolved } from "@/lib/person360";
-import { resolvePrimaryVerifiedBusinessOwnership } from "@/lib/directoryOwnership";
+import {
+  resolvePrimaryVerifiedBusinessOwnership,
+  resolveVerifiedOwnership,
+} from "@/lib/directoryOwnership";
 
 export type PersonalizationSession = {
   userId: string;
@@ -121,6 +124,14 @@ export async function resolveRequestedBusinessId(
         );
       return business ? requestedBusinessId : null;
     }
+    // A verified (claimed) owner -- the same rule the business profile hub
+    // uses -- may open their business whatever their account type.
+    const verified = await resolveVerifiedOwnership(db, {
+      entityType: "business",
+      entityId: requestedBusinessId,
+      userId: session.userId,
+    });
+    if (verified) return requestedBusinessId;
     const authorized = await authorizeBusinessAccess(
       db,
       session,

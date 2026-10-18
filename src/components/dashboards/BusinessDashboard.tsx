@@ -43,8 +43,12 @@ function cx(...classes: Array<string | false | null | undefined>) {
 
 export default function BusinessDashboard({
   user: initialUser,
+  businessId: requestedBusinessId,
 }: {
   user?: DashboardUser | null;
+  // The business to show (from /dashboard?businessId=). Owners whose
+  // account is a personal one reach their workspace this way.
+  businessId?: string;
 }) {
   const router = useRouter();
 
@@ -54,6 +58,35 @@ export default function BusinessDashboard({
   const [loading, setLoading] = useState(!initialUser);
   const [accessDenied, setAccessDenied] = useState(false);
   const [dataError, setDataError] = useState<string | null>(null);
+  const [myBusinesses, setMyBusinesses] = useState<
+    Array<{ id: string; name: string; claimed: boolean }>
+  >([]);
+  const [myBusinessesLoaded, setMyBusinessesLoaded] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/business/my-businesses", {
+      credentials: "include",
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d?.ok && Array.isArray(d.businesses)) setMyBusinesses(d.businesses);
+        setMyBusinessesLoaded(true);
+      })
+      .catch((err) => {
+        if (err?.name !== "AbortError") setMyBusinessesLoaded(true);
+      });
+    return () => controller.abort();
+  }, []);
+
+  const selectedBusiness = requestedBusinessId
+    ? myBusinesses.find((b) => b.id === requestedBusinessId) || null
+    : myBusinesses[0] || null;
+  const selectedBusinessId = selectedBusiness?.id;
+  const notYourBusiness =
+    Boolean(requestedBusinessId) && myBusinessesLoaded && !selectedBusiness;
 
   useEffect(() => {
     if (initialUser) return;
@@ -107,19 +140,52 @@ export default function BusinessDashboard({
 
   const t = String(user?.accountType || "");
 
-  const showAds = t === "business" || t === "admin";
+  const showAds =
+    t === "business" || t === "admin" || Boolean(selectedBusiness);
   const isSeller = t === "seller" || t === "admin";
   const isEmployer = t === "employer" || t === "admin";
   const isAdmin = t === "admin";
 
   const displayName = useMemo(() => {
     return (
-      user?.businessName || user?.fullName || user?.email || "Business Account"
+      selectedBusiness?.name ||
+      user?.businessName ||
+      user?.fullName ||
+      user?.email ||
+      "Business Account"
     );
-  }, [user?.businessName, user?.fullName, user?.email]);
+  }, [selectedBusiness?.name, user?.businessName, user?.fullName, user?.email]);
 
-  if (loading) {
+  const withBusiness = (path: string) =>
+    selectedBusinessId
+      ? `${path}?businessId=${encodeURIComponent(selectedBusinessId)}`
+      : path;
+
+  if (loading || (requestedBusinessId && !myBusinessesLoaded)) {
     return <BusinessDashboardSkeleton />;
+  }
+
+  if (notYourBusiness) {
+    return (
+      <div className="min-h-[calc(100vh-80px)] overflow-x-hidden bg-black text-white">
+        <div className="mx-auto max-w-6xl px-3 py-4 sm:px-4 sm:py-8">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl sm:p-6">
+            <h2 className="text-base font-extrabold text-yellow-300 sm:text-xl">
+              This business isn&rsquo;t linked to your account
+            </h2>
+            <p className="mt-1 text-sm text-gray-300">
+              You can only open the workspace for businesses you own.
+            </p>
+            <Link
+              href="/dashboard"
+              className="mt-4 inline-flex rounded-xl border border-white/10 bg-white/5 px-5 py-2.5 text-sm transition hover:bg-white/10"
+            >
+              Back to your dashboard
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (accessDenied) {
@@ -210,15 +276,37 @@ export default function BusinessDashboard({
                 Manage your profile, visibility, listings, and growth tools
                 across the platform.
               </p>
+
+              {myBusinesses.length > 1 ? (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {myBusinesses.map((b) => (
+                    <Link
+                      key={b.id}
+                      href={`/dashboard?businessId=${encodeURIComponent(b.id)}`}
+                      className={
+                        b.id === selectedBusinessId
+                          ? "rounded-full bg-yellow-400 px-3 py-1 text-xs font-bold text-black"
+                          : "rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-white/75 transition hover:bg-white/10"
+                      }
+                    >
+                      {b.name}
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex w-fit shrink-0 items-center rounded-full border border-yellow-500/25 bg-yellow-500/10 px-3 py-1 text-[11px] font-semibold text-yellow-200">
-                {String(t || "business").toUpperCase()}
+                {String(
+                  selectedBusiness && t === "user"
+                    ? "business"
+                    : t || "business",
+                ).toUpperCase()}
               </span>
 
               <Link
-                href="/business/profile"
+                href={withBusiness("/business/profile")}
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm transition hover:bg-white/10"
               >
                 <UserCircle2 className="h-4 w-4 text-yellow-300" />
@@ -227,7 +315,7 @@ export default function BusinessDashboard({
 
               {listingClaimed ? (
                 <Link
-                  href="/founding-membership/status"
+                  href={withBusiness("/founding-membership/status")}
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-yellow-500/40 bg-yellow-500/10 px-4 py-2 text-sm font-semibold text-yellow-200 transition hover:bg-yellow-500/20"
                 >
                   <BarChart3 className="h-4 w-4 text-yellow-300" />
@@ -248,10 +336,15 @@ export default function BusinessDashboard({
         </div>
 
         <ProfileViewersCard
+          key={selectedBusinessId || "own"}
+          businessId={selectedBusinessId}
           onLoaded={({ claimed }) => setListingClaimed(claimed)}
         />
 
-        <BusinessGrowthCenter />
+        <BusinessGrowthCenter
+          key={`growth-${selectedBusinessId || "own"}`}
+          businessId={selectedBusinessId}
+        />
 
         {/* Data warning */}
         {dataError ? (
@@ -275,7 +368,7 @@ export default function BusinessDashboard({
           <DashboardCard
             title="Edit Business Profile"
             description="Update your business info, contact details, and description."
-            href="/dashboard/edit-business"
+            href={withBusiness("/dashboard/edit-business")}
             variant="default"
             icon={<Briefcase className="h-5 w-5 text-yellow-300" />}
           />

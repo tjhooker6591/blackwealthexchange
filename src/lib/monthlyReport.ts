@@ -177,7 +177,7 @@ export function buildMonthlyReportEmail(
   const listing = d.alias
     ? `${SITE}/business-directory/${encodeURIComponent(d.alias)}`
     : SITE;
-  const reportUrl = `${SITE}/founding-membership/status`;
+  const reportUrl = `${SITE}/founding-membership/status?businessId=${encodeURIComponent(d.businessId)}`;
   const viewersUrl = `${SITE}/business/profile?businessId=${encodeURIComponent(d.businessId)}`;
 
   const rows: Array<[string, string]> = [

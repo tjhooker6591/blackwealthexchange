@@ -184,7 +184,15 @@ export default function DashboardFrame({
     };
   }, [router.events]);
 
-  const accountType = me?.accountType ?? "user";
+  // Inside a business's workspace (/dashboard?businessId=), show the same
+  // business frame a business login gets, whatever account opened it.
+  const viewingBusiness =
+    typeof router.query.businessId === "string" &&
+    router.query.businessId.trim() !== "";
+  const accountType: AccountType =
+    viewingBusiness && (me?.accountType ?? "user") === "user"
+      ? ("business" as AccountType)
+      : (me?.accountType ?? "user");
   const navItems = useMemo(() => buildNav(accountType), [accountType]);
 
   const isPremiumActive =

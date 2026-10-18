@@ -79,10 +79,15 @@ export default function FoundingMembershipStatusPage() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/api/founding-membership/status", {
-          credentials: "include",
-          cache: "no-store",
-        });
+        const businessId =
+          new URLSearchParams(window.location.search).get("businessId") || "";
+        const res = await fetch(
+          `/api/founding-membership/status${businessId ? `?businessId=${encodeURIComponent(businessId)}` : ""}`,
+          {
+            credentials: "include",
+            cache: "no-store",
+          },
+        );
         const json = await res.json().catch(() => ({}));
         if (!res.ok)
           throw new Error(

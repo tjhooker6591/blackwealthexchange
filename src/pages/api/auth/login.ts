@@ -233,10 +233,16 @@ export default async function handler(
     // verify mailbox ownership, so anyone could have created an account
     // matching that literal string and been granted isAdmin:true at
     // login regardless of their real DB record.
+    // Admin rights belong to the personal (users) account only. Signup does
+    // not verify mailbox ownership, so a business/seller/employer account
+    // that merely shares an admin's email must never be granted admin --
+    // otherwise anyone could register one and open the admin pages.
+    // (adminAuth re-verifies against users by userId for the same reason.)
     const isAdmin =
-      isAllowlistedAdminEmail(emailNorm) ||
-      canonicalUser?.isAdmin === true ||
-      user.isAdmin === true;
+      resolvedRole === "user" &&
+      (isAllowlistedAdminEmail(emailNorm) ||
+        canonicalUser?.isAdmin === true ||
+        user.isAdmin === true);
 
     const tokenVersion =
       typeof user.tokenVersion === "number" &&

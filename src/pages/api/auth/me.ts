@@ -211,10 +211,18 @@ export default async function handler(
       .collection<UserProfile>("users")
       .findOne({ email: payload.email }, { projection: { isAdmin: 1 } });
 
+    // Admin is a property of the personal (users) account only; a business,
+    // seller or employer account that shares an admin's email is not an
+    // admin (see the matching rule in /api/auth/login).
+    const personalSession =
+      !payload.accountType ||
+      payload.accountType === "user" ||
+      payload.accountType === "admin";
     const isAdmin =
-      canonicalIdentity?.isAdmin === true ||
-      profile.isAdmin === true ||
-      isAdminPayload(payload);
+      personalSession &&
+      (canonicalIdentity?.isAdmin === true ||
+        profile.isAdmin === true ||
+        isAdminPayload(payload));
 
     const { password: _password, ...sanitized } = profile;
 
