@@ -37,6 +37,114 @@ function s(v: unknown): string | null {
   return typeof v === "string" && v.trim() ? v.trim() : null;
 }
 
+function escapeRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function emailsOf(b: any): string[] {
+  return [b?.email, b?.businessEmail, b?.ownerEmail]
+    .map((v) => s(v)?.toLowerCase())
+    .filter((v): v is string => Boolean(v));
+}
+
+// What the applicant said about ownership, for the admin to check before
+// ticking "Verified Black-owned".
+function ownershipSubmission(b: any) {
+  const owners = Array.isArray(b?.blackOwnedVerification?.owners)
+    ? b.blackOwnedVerification.owners.map((o: any) => ({
+        name: s(o?.ownerName),
+        percent:
+          typeof o?.ownershipPercentage === "number"
+            ? o.ownershipPercentage
+            : null,
+        role: s(o?.controlRole) || s(o?.roleTitle),
+        attestedBlackOwned: o?.isBlackAttested === true,
+      }))
+    : [];
+  const claimant = b?.claimantVerification;
+  return {
+    owners,
+    claimantName: s(claimant?.claimantName),
+    claimantRelationship: s(claimant?.relationshipToBusiness),
+    claimantRole: s(claimant?.claimantRoleTitle),
+  };
+}
+
+// Other records with the same email or the same business name, so a
+// signup and a separate add-listing submission are caught before approval.
+async function findPossibleDuplicates(col: any, docs: any[]) {
+  const out = new Map<string, any[]>();
+  if (!docs.length) return out;
+  const emails = [...new Set(docs.flatMap(emailsOf))];
+  const names = [
+    ...new Set(
+      docs
+        .map((d) => getCanonicalBusinessName(d)?.trim().toLowerCase())
+        .filter((v): v is string => Boolean(v)),
+    ),
+  ];
+  const or: any[] = [];
+  for (const e of emails) {
+    const rx = new RegExp(`^${escapeRegex(e)}$`, "i");
+    or.push({ email: rx }, { businessEmail: rx }, { ownerEmail: rx });
+  }
+  for (const n of names) {
+    const rx = new RegExp(`^\\s*${escapeRegex(n)}\\s*$`, "i");
+    or.push({ business_name: rx }, { businessName: rx });
+  }
+  if (!or.length) return out;
+  const candidates = await col
+    .find(
+      { $or: or, status: { $nin: ["rejected", "archived"] } },
+      {
+        projection: {
+          business_name: 1,
+          businessName: 1,
+          title: 1,
+          name: 1,
+          email: 1,
+          businessEmail: 1,
+          ownerEmail: 1,
+          status: 1,
+          approved: 1,
+          alias: 1,
+          slug: 1,
+          createdAt: 1,
+        },
+      },
+    )
+    .limit(500)
+    .toArray();
+  for (const d of docs) {
+    const id = String(d._id);
+    const myEmails = new Set(emailsOf(d));
+    const myName = getCanonicalBusinessName(d)?.trim().toLowerCase() || "";
+    const matches = candidates
+      .filter((c: any) => String(c._id) !== id)
+      .map((c: any) => {
+        const sameEmail = emailsOf(c).some((e) => myEmails.has(e));
+        const sameName =
+          Boolean(myName) &&
+          (getCanonicalBusinessName(c)?.trim().toLowerCase() || "") === myName;
+        if (!sameEmail && !sameName) return null;
+        return {
+          _id: String(c._id),
+          businessName: getCanonicalBusinessName(c) || "Unnamed Business",
+          status: s(c.status),
+          approved: c.approved === true,
+          alias: s(c.alias) || s(c.slug),
+          createdAt: iso(c.createdAt),
+          matchedOn: [sameEmail ? "email" : null, sameName ? "name" : null]
+            .filter(Boolean)
+            .join(" + "),
+        };
+      })
+      .filter(Boolean);
+    if (matches.length) out.set(id, matches);
+  }
+  return out;
+}
+
 function iso(v: unknown): string | null {
   if (!v) return null;
   const d = v instanceof Date ? v : new Date(v as any);
@@ -170,8 +278,13 @@ export default async function handler(
         .toArray();
     }
 
+    const duplicatesById = await findPossibleDuplicates(
+      businessesCol,
+      businesses,
+    );
+
     // ---- Normalize for UI use ----
-    const rows = businesses.map((b: any) => {
+    const rows = businesses.map(({ password: _password, ...b }: any) => {
       const businessName = getCanonicalBusinessName(b) || "Unnamed Business";
 
       const derivedStatus = deriveAdminBusinessStatus(b);
@@ -204,6 +317,8 @@ export default async function handler(
         )
           ? b.blackOwnedVerification.decision.requiredActions
           : [],
+        ownershipSubmission: ownershipSubmission(b),
+        possibleDuplicates: duplicatesById.get(String(b._id)) || [],
         createdAtIso: iso(b.createdAt),
         submittedAtIso: iso(b.submittedAt),
         updatedAtIso: iso(b.updatedAt),

@@ -26,6 +26,26 @@ type Business = {
   automationDisposition?: string | null;
   automationSummary?: string | null;
   requiredActions?: Array<{ code?: string; message?: string }>;
+  ownershipSubmission?: {
+    owners: Array<{
+      name: string | null;
+      percent: number | null;
+      role: string | null;
+      attestedBlackOwned: boolean;
+    }>;
+    claimantName: string | null;
+    claimantRelationship: string | null;
+    claimantRole: string | null;
+  };
+  possibleDuplicates?: Array<{
+    _id: string;
+    businessName: string;
+    status: string | null;
+    approved: boolean;
+    alias: string | null;
+    createdAt: string | null;
+    matchedOn: string;
+  }>;
 };
 
 const PAGE_SIZE = 25;
@@ -79,6 +99,10 @@ export default function BusinessApprovals() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
   const [summary, setSummary] = useState<Summary | null>(null);
+  // Per-row "I verified this business is Black-owned" tick; Approve needs it.
+  const [blackOwnedChecked, setBlackOwnedChecked] = useState<
+    Record<string, boolean>
+  >({});
 
   const fetchPending = useCallback(async () => {
     const params = new URLSearchParams({
@@ -178,8 +202,17 @@ export default function BusinessApprovals() {
     }
   };
 
-  const handleApprove = async (id: string) => {
-    if (!window.confirm("Approve this business?")) return;
+  const handleApprove = async (biz: Business) => {
+    const id = biz._id;
+    if (!blackOwnedChecked[id]) {
+      setError('Tick "Verified Black-owned" before approving.');
+      return;
+    }
+    const dupes = biz.possibleDuplicates || [];
+    const message = dupes.length
+      ? `This business may already be in the directory (${dupes.length} possible duplicate${dupes.length === 1 ? "" : "s"}). Approve anyway?`
+      : "Approve this business?";
+    if (!window.confirm(message)) return;
 
     try {
       setError("");
@@ -188,7 +221,7 @@ export default function BusinessApprovals() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ businessId: id }),
+        body: JSON.stringify({ businessId: id, blackOwnedVerified: true }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -384,6 +417,77 @@ export default function BusinessApprovals() {
                                   ) : null}
                                 </div>
                               ) : null}
+                              {biz.possibleDuplicates?.length ? (
+                                <div className="mt-2 rounded-lg border border-red-500/40 bg-red-950/30 px-3 py-2 text-xs text-red-100">
+                                  <div className="font-semibold text-red-200">
+                                    Possible duplicate
+                                  </div>
+                                  <ul className="mt-1 space-y-1">
+                                    {biz.possibleDuplicates.map((d) => (
+                                      <li key={`${biz._id}-dup-${d._id}`}>
+                                        {d.alias && d.approved ? (
+                                          <Link
+                                            href={`/business-directory/${d.alias}`}
+                                            target="_blank"
+                                            className="underline"
+                                          >
+                                            {d.businessName}
+                                          </Link>
+                                        ) : (
+                                          <span>{d.businessName}</span>
+                                        )}{" "}
+                                        <span className="text-red-200/70">
+                                          (
+                                          {d.approved
+                                            ? "approved"
+                                            : d.status || "pending"}
+                                          {d.createdAt
+                                            ? `, created ${new Date(d.createdAt).toLocaleDateString()}`
+                                            : ""}
+                                          , same {d.matchedOn}) ID: {d._id}
+                                        </span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              ) : null}
+                              {biz.ownershipSubmission &&
+                              (biz.ownershipSubmission.owners.length ||
+                                biz.ownershipSubmission.claimantName) ? (
+                                <div className="mt-2 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-xs text-zinc-200">
+                                  <div className="font-semibold text-gold">
+                                    Ownership they submitted
+                                  </div>
+                                  {biz.ownershipSubmission.owners.map(
+                                    (o, index) => (
+                                      <div
+                                        key={`${biz._id}-owner-${index}`}
+                                        className="mt-1"
+                                      >
+                                        {o.name || "Unnamed owner"}
+                                        {o.percent !== null
+                                          ? ` · ${o.percent}%`
+                                          : ""}
+                                        {o.role ? ` · ${o.role}` : ""}
+                                        {" · "}
+                                        {o.attestedBlackOwned
+                                          ? "says Black-owned"
+                                          : "did not say Black-owned"}
+                                      </div>
+                                    ),
+                                  )}
+                                  {biz.ownershipSubmission.claimantName ? (
+                                    <div className="mt-1 text-zinc-400">
+                                      Submitted by{" "}
+                                      {biz.ownershipSubmission.claimantName}
+                                      {biz.ownershipSubmission
+                                        .claimantRelationship
+                                        ? ` (${biz.ownershipSubmission.claimantRelationship.toLowerCase()}${biz.ownershipSubmission.claimantRole ? `, ${biz.ownershipSubmission.claimantRole}` : ""})`
+                                        : ""}
+                                    </div>
+                                  ) : null}
+                                </div>
+                              ) : null}
                               {biz.queueKind &&
                               biz.queueKind !== "approvable_submission" ? (
                                 <div className="mt-1 text-xs text-yellow-300">
@@ -425,15 +529,35 @@ export default function BusinessApprovals() {
                               ) : null}
                             </td>
                             <td className="p-3">
+                              <label className="mb-2 flex items-start gap-2 text-xs text-zinc-200">
+                                <input
+                                  type="checkbox"
+                                  className="mt-0.5"
+                                  checked={Boolean(blackOwnedChecked[biz._id])}
+                                  disabled={!biz.canApprove}
+                                  onChange={(e) =>
+                                    setBlackOwnedChecked((prev) => ({
+                                      ...prev,
+                                      [biz._id]: e.target.checked,
+                                    }))
+                                  }
+                                />
+                                <span>Verified Black-owned</span>
+                              </label>
                               <div className="flex gap-2">
                                 <button
-                                  onClick={() => handleApprove(biz._id)}
-                                  disabled={!biz.canApprove}
+                                  onClick={() => handleApprove(biz)}
+                                  disabled={
+                                    !biz.canApprove ||
+                                    !blackOwnedChecked[biz._id]
+                                  }
                                   className="rounded bg-green-600 px-3 py-1 font-semibold text-black hover:bg-green-500 transition disabled:cursor-not-allowed disabled:opacity-40"
                                   title={
-                                    biz.canApprove
-                                      ? "Approve this business"
-                                      : "Only valid pending submissions can be approved"
+                                    !biz.canApprove
+                                      ? "Only valid pending submissions can be approved"
+                                      : blackOwnedChecked[biz._id]
+                                        ? "Approve this business"
+                                        : "Tick Verified Black-owned first"
                                   }
                                 >
                                   Approve

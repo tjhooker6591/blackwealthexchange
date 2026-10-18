@@ -446,7 +446,7 @@ export default function AdminToolsPage() {
         label: "Approve Business",
         path: "/api/admin/approve-business",
         method: "POST",
-        sampleBody: { businessId: "<mongo_id>" },
+        sampleBody: { businessId: "<mongo_id>", blackOwnedVerified: true },
       },
       {
         id: "x-approve-product",

@@ -34,10 +34,21 @@ export default async function handler(
       ? JSON.parse(req.body || "{}")
       : req.body || {};
 
-  const { businessId } = body;
+  const { businessId, blackOwnedVerified } = body;
 
   if (!businessId || !ObjectId.isValid(businessId)) {
     return res.status(400).json({ error: "Valid businessId is required" });
+  }
+
+  // Being listed means an admin has checked the business is Black-owned.
+  // This is listing approval only -- it is not the paid ownership claim, so
+  // it never touches verified / publicListingStatus / claimStage.
+  if (blackOwnedVerified !== true) {
+    return res.status(400).json({
+      error:
+        "Confirm you verified this business is Black-owned before approving",
+      kind: "black_owned_verification_required",
+    });
   }
 
   try {
@@ -87,6 +98,8 @@ export default async function handler(
       });
     }
 
+    const approvedBy = admin.email || admin.userId || "admin";
+
     const applyApprovalUpdate = async (options?: {
       ignoreExistingValues?: boolean;
     }) => {
@@ -129,7 +142,9 @@ export default async function handler(
             approved: true,
             status: "active",
             approvedAt: new Date(),
-            approvedBy: admin.email || admin.userId || "admin",
+            approvedBy,
+            blackOwnedVerifiedAt: new Date(),
+            blackOwnedVerifiedBy: approvedBy,
             updatedAt: new Date(),
           },
         },
