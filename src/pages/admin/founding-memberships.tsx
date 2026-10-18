@@ -28,6 +28,46 @@ function money(value: unknown) {
 export default function AdminFoundingMembershipsPage() {
   const [data, setData] = useState<Payload | null>(null);
   const [loading, setLoading] = useState(true);
+  const [reportNotice, setReportNotice] = useState("");
+  const [reportBusy, setReportBusy] = useState(false);
+
+  const runReports = async (body: Record<string, string>) => {
+    if (
+      body.action === "send_now" &&
+      !window.confirm(
+        "Send last month's report to every active Founding member now? Anyone who already got it this month is skipped.",
+      )
+    )
+      return;
+    setReportBusy(true);
+    setReportNotice("");
+    try {
+      const res = await fetch("/api/admin/monthly-reports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(body),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json?.error || "Report send failed");
+      const results: any[] = Array.isArray(json.results) ? json.results : [];
+      setReportNotice(
+        results.length
+          ? `${json.period}: ` +
+              results
+                .map(
+                  (r) =>
+                    `${r.businessName} ${String(r.status).replace("_", " ")}${body.action === "test" ? ` to ${r.to}` : ""}`,
+                )
+                .join(" · ")
+          : "No active memberships to send to.",
+      );
+    } catch (err: any) {
+      setReportNotice(err?.message || "Report send failed");
+    } finally {
+      setReportBusy(false);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -69,6 +109,26 @@ export default function AdminFoundingMembershipsPage() {
                 Back to Admin Dashboard
               </Link>
             </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-white/15 bg-white/5 p-4 text-sm">
+            <div className="flex-1 text-white/75">
+              Monthly member reports go out automatically on the 1st of each
+              month for the month before.
+            </div>
+            <button
+              type="button"
+              disabled={reportBusy}
+              onClick={() => runReports({ action: "send_now" })}
+              className="rounded-lg border border-yellow-500/40 bg-yellow-500/10 px-3 py-1.5 font-semibold text-yellow-200 hover:bg-yellow-500/20 disabled:opacity-50"
+            >
+              Send last month&rsquo;s reports now
+            </button>
+            {reportNotice ? (
+              <div className="w-full text-xs text-green-200">
+                {reportNotice}
+              </div>
+            ) : null}
           </div>
 
           {loading ? <div>Loading…</div> : null}
@@ -127,8 +187,25 @@ export default function AdminFoundingMembershipsPage() {
                           {String(row.membershipId || "-")}
                         </div>
                       </div>
-                      <div className="rounded-full border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 text-xs font-bold text-yellow-100">
-                        {labelize(row.membershipStatus)}
+                      <div className="flex flex-col items-end gap-2">
+                        <div className="rounded-full border border-yellow-500/30 bg-yellow-500/10 px-3 py-1 text-xs font-bold text-yellow-100">
+                          {labelize(row.membershipStatus)}
+                        </div>
+                        {row.membershipId ? (
+                          <button
+                            type="button"
+                            disabled={reportBusy}
+                            onClick={() =>
+                              runReports({
+                                action: "test",
+                                membershipId: String(row.membershipId),
+                              })
+                            }
+                            className="rounded-lg border border-white/15 bg-black/30 px-3 py-1 text-xs text-white/80 hover:bg-white/10 disabled:opacity-50"
+                          >
+                            Send test report to me
+                          </button>
+                        ) : null}
                       </div>
                     </div>
 
