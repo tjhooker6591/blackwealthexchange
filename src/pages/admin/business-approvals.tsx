@@ -99,6 +99,7 @@ export default function BusinessApprovals() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
   const [summary, setSummary] = useState<Summary | null>(null);
+  const [notice, setNotice] = useState("");
   // Per-row "I verified this business is Black-owned" tick; Approve needs it.
   const [blackOwnedChecked, setBlackOwnedChecked] = useState<
     Record<string, boolean>
@@ -216,6 +217,7 @@ export default function BusinessApprovals() {
 
     try {
       setError("");
+      setNotice("");
 
       const res = await fetch("/api/admin/approve-business", {
         method: "POST",
@@ -231,6 +233,16 @@ export default function BusinessApprovals() {
       }
 
       setPendingBusinesses((prev) => prev.filter((biz) => biz._id !== id));
+      const mail = data?.approvalEmail;
+      setNotice(
+        mail?.sent
+          ? `${biz.businessName} approved. The "you're live" email was sent.`
+          : mail?.reason === "already_sent"
+            ? `${biz.businessName} approved. The "you're live" email had already been sent before.`
+            : mail?.reason === "no_email"
+              ? `${biz.businessName} approved. No email on file, so no "you're live" email was sent.`
+              : `${biz.businessName} approved, but the "you're live" email could not be sent.`,
+      );
     } catch (err: any) {
       setError(err?.message || "Approval failed");
     }
@@ -353,6 +365,11 @@ export default function BusinessApprovals() {
               {error ? (
                 <div className="mb-6 rounded-xl border border-red-500/30 bg-red-950/20 p-4 text-red-200">
                   {error}
+                </div>
+              ) : null}
+              {notice ? (
+                <div className="mb-6 rounded-xl border border-green-500/30 bg-green-950/20 p-4 text-green-200">
+                  {notice}
                 </div>
               ) : null}
 

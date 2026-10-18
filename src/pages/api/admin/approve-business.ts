@@ -16,6 +16,7 @@ import {
   resolveUniqueBusinessSlugAndAlias,
 } from "@/lib/adminBusinessApprovals";
 import { stampListingCompleteness } from "@/lib/directory/completeness";
+import { sendBusinessApprovedEmail } from "@/lib/businessApprovedEmail";
 
 export default async function handler(
   req: NextApiRequest,
@@ -186,12 +187,20 @@ export default async function handler(
 
     await stampListingCompleteness(businesses, { _id: existing._id });
 
+    const approvalEmail = await sendBusinessApprovedEmail({
+      businesses,
+      doc: existing,
+      businessName: canonicalName,
+      alias: nextAlias,
+    });
+
     return res.status(200).json({
       success: true,
       businessId,
       status: "active",
       slug: nextSlug,
       alias: nextAlias,
+      approvalEmail,
       message: "Business approved successfully",
     });
   } catch (error: any) {
