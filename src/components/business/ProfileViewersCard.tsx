@@ -7,7 +7,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Viewer = {
   name: string;
@@ -52,10 +52,16 @@ function plural(n: number, one: string, many: string) {
 
 export default function ProfileViewersCard({
   businessId,
+  onLoaded,
 }: {
   businessId?: string | null;
+  // Lets the page react to whether the listing is claimed (e.g. enable the
+  // Membership & report button) without a second request.
+  onLoaded?: (info: { claimed: boolean; businessId: string }) => void;
 }) {
   const [data, setData] = useState<Data | null>(null);
+  const onLoadedRef = useRef(onLoaded);
+  onLoadedRef.current = onLoaded;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -69,7 +75,13 @@ export default function ProfileViewersCard({
     })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
-        if (d?.ok) setData(d);
+        if (d?.ok) {
+          setData(d);
+          onLoadedRef.current?.({
+            claimed: d.claimed === true,
+            businessId: d.businessId,
+          });
+        }
       })
       .catch(() => {});
     return () => controller.abort();

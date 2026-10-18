@@ -15,6 +15,7 @@ import {
   Lock,
   AlertTriangle,
   UserCircle2,
+  BarChart3,
 } from "lucide-react";
 import BusinessGrowthCenter from "./BusinessGrowthCenter";
 import ProfileViewersCard from "@/components/business/ProfileViewersCard";
@@ -48,6 +49,8 @@ export default function BusinessDashboard({
   const router = useRouter();
 
   const [user, setUser] = useState<DashboardUser | null>(initialUser ?? null);
+  // Set by ProfileViewersCard once it knows whether the listing is claimed.
+  const [listingClaimed, setListingClaimed] = useState(false);
   const [loading, setLoading] = useState(!initialUser);
   const [accessDenied, setAccessDenied] = useState(false);
   const [dataError, setDataError] = useState<string | null>(null);
@@ -221,11 +224,32 @@ export default function BusinessDashboard({
                 <UserCircle2 className="h-4 w-4 text-yellow-300" />
                 Profile
               </Link>
+
+              {listingClaimed ? (
+                <Link
+                  href="/founding-membership/status"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-yellow-500/40 bg-yellow-500/10 px-4 py-2 text-sm font-semibold text-yellow-200 transition hover:bg-yellow-500/20"
+                >
+                  <BarChart3 className="h-4 w-4 text-yellow-300" />
+                  Membership &amp; report
+                </Link>
+              ) : (
+                <span
+                  aria-disabled="true"
+                  title="Claim your listing to unlock your membership and monthly report"
+                  className="inline-flex cursor-not-allowed select-none items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-white/35"
+                >
+                  <Lock className="h-4 w-4" />
+                  Membership &amp; report
+                </span>
+              )}
             </div>
           </div>
         </div>
 
-        <ProfileViewersCard />
+        <ProfileViewersCard
+          onLoaded={({ claimed }) => setListingClaimed(claimed)}
+        />
 
         <BusinessGrowthCenter />
 
