@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { BLACK_CARD_TIERS } from "@/lib/black-card";
 import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
@@ -442,7 +443,8 @@ export default async function handler(
         }
       > = {
         premium: {
-          amount: 1200,
+          // Same source as the pricing page, so the two can't drift apart.
+          amount: BLACK_CARD_TIERS.standard.priceCents ?? 2900,
           name: "Plan Upgrade (premium)",
           billingInterval: "annual",
         },

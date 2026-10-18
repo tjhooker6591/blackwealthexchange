@@ -8,7 +8,7 @@ import { toPublicErrorMessage } from "@/lib/publicError";
 
 const PLAN_LABELS: Record<string, string> = {
   premium: "Premium Plan",
-  founder: "Founding Member Plan",
+  founder: "Signature Member Plan",
 };
 
 function asMoney(v: unknown) {

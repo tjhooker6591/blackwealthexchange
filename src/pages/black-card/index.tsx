@@ -31,10 +31,11 @@ const TIER_CONTEXT: Record<
   },
   signature: {
     segment: "Growth Membership",
-    valueSummary: "Included with Founding Member plan.",
-    cta: "View Founding plan",
+    valueSummary: "Signature membership is coming soon.",
+    cta: "Coming soon",
     badge: "SIGNATURE",
     ctaHref: "/pricing",
+    ctaDisabled: true,
   },
   elite: {
     segment: "Executive Membership",

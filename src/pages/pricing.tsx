@@ -233,7 +233,7 @@ export default function Pricing() {
                   </span>
                   <span className="bwe-badge">
                     <Users className="h-4 w-4" />
-                    Founding billed monthly
+                    Business membership billed monthly
                   </span>
                   <span className="bwe-badge" data-tone="accent">
                     <Sparkles className="h-4 w-4" />
@@ -259,7 +259,7 @@ export default function Pricing() {
                     Premium
                   </div>
                   <div className="mt-1 text-2xl font-semibold text-white">
-                    $12 / year
+                    $29 / year
                   </div>
                   <div className="mt-1 text-sm text-white/58">
                     Includes Standard Black Card
@@ -267,13 +267,13 @@ export default function Pricing() {
                 </div>
                 <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
                   <div className="text-[11px] uppercase tracking-[0.14em] text-white/40">
-                    Founding Member
+                    Business Founding Membership
                   </div>
                   <div className="mt-1 text-2xl font-semibold text-white">
                     $49 / month
                   </div>
                   <div className="mt-1 text-sm text-white/58">
-                    Includes Signature Black Card
+                    For business owners who claim their listing
                   </div>
                 </div>
                 <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
@@ -346,7 +346,7 @@ export default function Pricing() {
 
             <PlanCard
               title="Premium"
-              price="$12 / year"
+              price="$29 / year"
               cadence="Billed annually • Auto-renews annually • Cancel anytime"
               summary="Premium includes the Standard Black Card and paid-plan access tied to the current system."
               tier="Standard Black Card"
@@ -370,21 +370,21 @@ export default function Pricing() {
             />
 
             <PlanCard
-              title="Founding Member"
+              title="Own a business?"
               price="$49 / month"
-              cadence="Billed monthly • Auto-renews monthly • Cancel anytime"
-              summary="Founding Member includes the Signature Black Card and starts the claim and membership process."
-              tier="Signature Black Card"
-              bestFor="Members who want the current higher-tier membership path."
+              cadence="Business Founding Membership • Billed monthly • Cancel anytime"
+              summary="Claim your business listing to confirm you as the owner and grow it with us."
+              tier="For business owners"
+              bestFor="Black-owned businesses already listed in the BWE directory."
               features={[
-                "Everything in Premium",
-                "Black Card tier mapping under the current membership configuration",
-                "Keeps higher existing tier if one is already assigned",
-                "Access to founding-member releases only when marked active",
+                "Confirms you as the owner of your listing",
+                "See who viewed your business",
+                "Monthly report on your page views, followers, saves and reviews",
+                "Professional review of your profile and help strengthening it",
               ]}
-              ctaText="Become a Founder"
-              onCta={() => goCheckout("founder")}
-              finePrint="Payment begins the claim and membership process. Ownership verification remains a separate manual review."
+              ctaText="Claim your business"
+              onCta={() => router.push("/founding-membership")}
+              finePrint="Your free listing stays up either way. Ownership is confirmed through a short review after you join."
             />
           </section>
 
@@ -396,9 +396,9 @@ export default function Pricing() {
                 without decoding a long sales page.
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-white/62 sm:text-[15px]">
-                Free stays free. Premium remains annual. Founding Member remains
-                monthly. Elite remains invite-only. This page only clarifies the
-                decision and the next action.
+                Free stays free. Premium is billed yearly. Business owners claim
+                their listing with the monthly Business Founding Membership.
+                Elite remains invite-only.
               </p>
             </div>
 
@@ -432,9 +432,8 @@ export default function Pricing() {
                     Your membership plan determines your Black Card tier.
                   </h3>
                   <p className="mt-2 text-sm leading-6 text-white/64">
-                    Premium includes Standard. Founding Member includes
-                    Signature. Elite remains a high-touch invite-only tier and
-                    is not self-serve checkout.
+                    Premium includes the Standard Black Card. Elite remains a
+                    high-touch invite-only tier and is not self-serve checkout.
                   </p>
                 </div>
                 <span className="bwe-badge" data-tone="accent">
@@ -471,7 +470,7 @@ export default function Pricing() {
               <KeyPoint
                 icon={<Users className="h-4 w-4" />}
                 title="Who it is for"
-                copy="Free supports exploration. Premium supports member access. Founding Member supports the higher-tier membership path with current Signature mapping."
+                copy="Free supports exploration. Premium supports member access with the Standard Black Card. Business owners grow their listing with the Business Founding Membership."
               />
               <KeyPoint
                 icon={<ShieldCheck className="h-4 w-4" />}

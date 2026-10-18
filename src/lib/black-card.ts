@@ -18,8 +18,8 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     tier: "standard",
     label: "BWE Black Card Standard",
     checkoutItemId: "premium",
-    priceCents: 1200,
-    priceLabel: "$12/year",
+    priceCents: 2900,
+    priceLabel: "$29/year",
     billingModel: "annual",
     tagline:
       "Activate verified BWE membership identity and start using Black Card rewards tools today.",

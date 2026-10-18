@@ -141,7 +141,7 @@ export default function BlackCardJoinPage() {
                   {tier === "standard"
                     ? "Included with Premium plan"
                     : tier === "signature"
-                      ? "Included with Founding Member plan"
+                      ? "Signature tier coming soon"
                       : "Invite Only"}
                 </div>
                 <div className="text-sm text-white/70">
@@ -149,8 +149,8 @@ export default function BlackCardJoinPage() {
                 </div>
                 <p className="mt-3 text-xs text-white/70">
                   Your membership plan determines your Black Card tier. Premium
-                  activates Standard. Founding Member activates Signature. Elite
-                  is invite-only. Use /pricing and choose the matching plan.
+                  activates Standard. Signature is coming soon. Elite is
+                  invite-only. See /pricing to choose a plan.
                 </p>
               </div>
 
@@ -185,7 +185,7 @@ export default function BlackCardJoinPage() {
                       {k === "standard"
                         ? "Included with Premium plan"
                         : k === "signature"
-                          ? "Included with Founding Member plan"
+                          ? "Signature tier coming soon"
                           : "Invite Only (not purchasable)"}
                     </div>
                   </Link>
