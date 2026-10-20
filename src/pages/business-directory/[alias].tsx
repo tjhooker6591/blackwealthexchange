@@ -1,4 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
+import {
+  isOrganizationListing,
+  listingTypeLabel,
+} from "@/lib/directory/listingTypes";
 import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import ProfileViewTracker from "@/components/business/ProfileViewTracker";
@@ -44,6 +48,9 @@ type Business = {
   primaryCtaUrl?: string;
   additionalCtas?: Array<{ label?: string; url?: string }>;
   verified?: boolean;
+  listingType?: string | null;
+  typeLabel?: string | null;
+  orgType?: string | null;
   isVerified?: boolean;
   status?: string;
   claimStage?: string;
@@ -111,6 +118,9 @@ function normalizeBusinessDoc(doc: any): Business {
   const locationParts = normalizeDirectoryLocationParts(doc);
   return {
     _id: safeStr(doc?._id || profile.id),
+    listingType: safeStr(doc?.listingType) || null,
+    typeLabel: safeStr(doc?.typeLabel) || null,
+    orgType: safeStr(doc?.orgType) || null,
     alias: safeStr(doc?.alias || doc?.slug),
     business_name: safeStr(profile.displayName),
     name: safeStr(doc?.name),
@@ -342,7 +352,9 @@ export default function BusinessDetail({
             <>
               <header className="border-b border-white/10 p-6 md:p-8">
                 <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.09em] text-[#D4AF37]/90">
-                  Business profile
+                  {isOrganizationListing(business)
+                    ? `${listingTypeLabel(business)} profile`
+                    : "Business profile"}
                 </div>
                 <h1 className="text-2xl font-black tracking-tight text-[#F1D57A] md:text-3xl">
                   {getTitle(business)}
@@ -356,7 +368,10 @@ export default function BusinessDetail({
                       safeStr(business.address),
                   ]
                     .filter(Boolean)
-                    .join(" • ") || "Black-owned business"}
+                    .join(" • ") ||
+                    (isOrganizationListing(business)
+                      ? listingTypeLabel(business)
+                      : "Black-owned business")}
                 </div>
                 {safeStr(business.serviceArea) ? (
                   <div className="mt-2 text-sm text-white/80">
@@ -758,6 +773,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
       { $or: [{ alias }, { slug: alias }] },
       {
         projection: {
+          listingType: 1,
+          typeLabel: 1,
+          orgType: 1,
+          entityType: 1,
           _id: 1,
           alias: 1,
           slug: 1,

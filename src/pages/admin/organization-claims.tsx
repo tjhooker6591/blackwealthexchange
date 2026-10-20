@@ -118,8 +118,8 @@ export default function AdminOrganizationClaimsPage() {
                 Organization Claims
               </h1>
               <p className="text-sm text-white/60">
-                Churches and organizations that claimed their listing. Paid
-                claims use the same $49/month Founding membership as businesses.
+                Organizations that claimed their listing. Paid claims use the
+                same $49/month Founding membership as businesses.
               </p>
             </div>
             <Link

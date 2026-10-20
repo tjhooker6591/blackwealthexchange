@@ -1,5 +1,6 @@
 // src/pages/api/admin/dashboard-stats.ts
 import type { NextApiRequest, NextApiResponse } from "next";
+import { organizationsAreUnified } from "@/lib/directory/listingTypes";
 import clientPromise from "@/lib/mongodb";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { getMongoDbName } from "@/lib/env";
@@ -79,6 +80,9 @@ export default async function handler(
 
     // ---- Core collections ----
     const organizations = db.collection("organizations");
+    const orgCounts = (await organizationsAreUnified(db))
+      ? await getAdminBusinessCounts(db, "organizations")
+      : null;
     const affiliatePayouts = db.collection("affiliatePayouts");
     const affiliates = db.collection("affiliates");
     const jobs = db.collection("jobs");
@@ -134,11 +138,19 @@ export default async function handler(
       // Founding membership claim verification queue
       pendingClaimVerifications,
     ] = await Promise.all([
-      // Organizations (separate from businesses)
-      organizations.countDocuments({ status: "pending" }),
-      organizations.countDocuments({ status: "approved" }),
-      organizations.countDocuments({ status: "rejected" }),
-      organizations.countDocuments({}),
+      // Organizations: listings in businesses once unified, else the old list.
+      orgCounts
+        ? Promise.resolve(orgCounts.pending)
+        : organizations.countDocuments({ status: "pending" }),
+      orgCounts
+        ? Promise.resolve(orgCounts.approved)
+        : organizations.countDocuments({ status: "approved" }),
+      orgCounts
+        ? Promise.resolve(orgCounts.rejected)
+        : organizations.countDocuments({ status: "rejected" }),
+      orgCounts
+        ? Promise.resolve(orgCounts.total)
+        : organizations.countDocuments({}),
 
       // Affiliate payouts
       affiliatePayouts.countDocuments({ status: "pending" }),

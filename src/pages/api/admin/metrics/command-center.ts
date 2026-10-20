@@ -1,4 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import {
+  ORGANIZATION_LISTING,
+  organizationsAreUnified,
+} from "@/lib/directory/listingTypes";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
@@ -71,7 +75,11 @@ export default async function handler(
     businessCountsPromise,
     financeSummaryPromise,
     db.collection("users").countDocuments({}),
-    db.collection("organizations").countDocuments({ status: "pending" }),
+    (await organizationsAreUnified(db))
+      ? db
+          .collection("businesses")
+          .countDocuments({ ...ORGANIZATION_LISTING, status: "pending" })
+      : db.collection("organizations").countDocuments({ status: "pending" }),
     db.collection("jobs").countDocuments({ status: "pending" }),
     db.collection("products").countDocuments({ status: "pending" }),
     db.collection("affiliatePayouts").countDocuments({ status: "pending" }),

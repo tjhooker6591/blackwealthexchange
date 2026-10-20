@@ -1,5 +1,10 @@
 // src/pages/api/admin/analytics.ts
 import type { NextApiRequest, NextApiResponse } from "next";
+import {
+  NOT_ORGANIZATION_LISTING,
+  ORGANIZATION_LISTING,
+  organizationsAreUnified,
+} from "@/lib/directory/listingTypes";
 import clientPromise from "@/lib/mongodb";
 import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
 import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
@@ -68,8 +73,13 @@ export default async function handler(
 
     // Users & Core Entities (✅ businesses and organizations kept separate)
     const users = await db.collection("users").countDocuments();
-    const businesses = await db.collection("businesses").countDocuments();
-    const organizations = await db.collection("organizations").countDocuments();
+    const unified = await organizationsAreUnified(db);
+    const businesses = await db
+      .collection("businesses")
+      .countDocuments(NOT_ORGANIZATION_LISTING);
+    const organizations = unified
+      ? await db.collection("businesses").countDocuments(ORGANIZATION_LISTING)
+      : await db.collection("organizations").countDocuments();
     const products = await db.collection("products").countDocuments();
     const jobs = await db.collection("jobs").countDocuments();
     const sellers = await db.collection("sellers").countDocuments();

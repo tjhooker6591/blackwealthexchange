@@ -6,6 +6,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { toPublicErrorMessage } from "@/lib/publicError";
+import type { GetServerSideProps } from "next";
+import { ObjectId } from "mongodb";
+import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 
 type OrgItem = {
   _id: string;
@@ -238,8 +242,8 @@ export default function OrganizationDetailPage() {
                       className="inline-flex items-center justify-center rounded-xl border border-yellow-500/50 bg-yellow-500/10 px-4 py-2 font-semibold text-yellow-200 transition hover:bg-yellow-500/20"
                     >
                       {String(item?.orgType || "").toLowerCase() === "church"
-                        ? "Claim this church"
-                        : "Claim this organization"}
+                        ? "Claim this listing"
+                        : "Claim this listing"}
                     </a>
                   ) : null}
                   {websiteUsable ? (
@@ -376,3 +380,41 @@ export default function OrganizationDetailPage() {
     </div>
   );
 }
+
+// Organizations are listings like businesses: once moved into the shared
+// listings, this address forwards to the same listing page businesses use
+// (claiming, owner tools, who-viewed, reports). Before the move, the page
+// above keeps rendering from the old organizations list.
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  const slug = String(params?.slug || "").trim();
+  if (!slug) return { props: {} };
+  try {
+    const client = await clientPromise;
+    const db = client.db(getMongoDbName());
+    const idQuery =
+      ObjectId.isValid(slug) && String(new ObjectId(slug)) === slug
+        ? [{ _id: new ObjectId(slug) }]
+        : [];
+    const listing = await db.collection("businesses").findOne(
+      {
+        listingType: "organization",
+        $or: [...idQuery, { alias: slug }, { slug }],
+      },
+      { projection: { alias: 1, slug: 1 } },
+    );
+    const alias = String(
+      (listing as any)?.alias || (listing as any)?.slug || "",
+    );
+    if (alias) {
+      return {
+        redirect: {
+          destination: `/business-directory/${encodeURIComponent(alias)}`,
+          permanent: false,
+        },
+      };
+    }
+  } catch (err) {
+    console.error("[organizations/[slug]] forward lookup failed", err);
+  }
+  return { props: {} };
+};

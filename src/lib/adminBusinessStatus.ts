@@ -1,4 +1,8 @@
 import type { Db, Filter } from "mongodb";
+import {
+  NOT_ORGANIZATION_LISTING,
+  ORGANIZATION_LISTING,
+} from "@/lib/directory/listingTypes";
 
 export type AdminBusinessBucket =
   | "pending"
@@ -159,17 +163,31 @@ export function getAdminBusinessBucketFilter(
   };
 }
 
-export async function getAdminBusinessCounts(db: Db) {
+// `kind` picks which listings to count: businesses (default) or
+// organizations -- both live in the businesses collection.
+export async function getAdminBusinessCounts(
+  db: Db,
+  kind: "businesses" | "organizations" = "businesses",
+) {
   const businesses = db.collection("businesses");
+  const scope =
+    kind === "organizations" ? ORGANIZATION_LISTING : NOT_ORGANIZATION_LISTING;
+  const scoped = (filter: any) => ({ $and: [filter, scope] });
   const [pending, approved, rejected, duplicateReview, total] =
     await Promise.all([
-      businesses.countDocuments(getAdminBusinessBucketFilter("pending")),
-      businesses.countDocuments(getAdminBusinessBucketFilter("approved")),
-      businesses.countDocuments(getAdminBusinessBucketFilter("rejected")),
       businesses.countDocuments(
-        getAdminBusinessBucketFilter("duplicate_review"),
+        scoped(getAdminBusinessBucketFilter("pending")),
       ),
-      businesses.countDocuments({}),
+      businesses.countDocuments(
+        scoped(getAdminBusinessBucketFilter("approved")),
+      ),
+      businesses.countDocuments(
+        scoped(getAdminBusinessBucketFilter("rejected")),
+      ),
+      businesses.countDocuments(
+        scoped(getAdminBusinessBucketFilter("duplicate_review")),
+      ),
+      businesses.countDocuments(scope),
     ]);
 
   return { pending, approved, rejected, duplicateReview, total };

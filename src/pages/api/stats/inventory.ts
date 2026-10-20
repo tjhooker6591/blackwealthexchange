@@ -1,4 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import {
+  NOT_ORGANIZATION_LISTING,
+  ORGANIZATION_LISTING,
+  organizationsAreUnified,
+} from "@/lib/directory/listingTypes";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { publicBusinessBaseQuery } from "@/lib/directory/publicBusinessQuery";
@@ -28,12 +33,19 @@ export default async function handler(
     const db = client.db(getMongoDbName());
     const now = new Date();
 
-    const businessesFilter = publicBusinessBaseQuery();
+    const unified = await organizationsAreUnified(db);
+    const businessesFilter = {
+      $and: [publicBusinessBaseQuery(), NOT_ORGANIZATION_LISTING],
+    };
 
     const [businesses, organizations, opportunities, products] =
       await Promise.all([
         db.collection("businesses").countDocuments(businessesFilter),
-        db.collection("organizations").countDocuments(approvedFilter),
+        unified
+          ? db.collection("businesses").countDocuments({
+              $and: [publicBusinessBaseQuery(), ORGANIZATION_LISTING],
+            })
+          : db.collection("organizations").countDocuments(approvedFilter),
         db.collection("jobs").countDocuments({ status: "approved" }),
         db
           .collection("products")

@@ -404,7 +404,7 @@ export default function FoundingMembershipPage() {
         <title>Founding Verified Business Growth Membership | BWE</title>
         <meta
           name="description"
-          content="Claim your existing public BWE listing (business, church or organization) and start the Founding membership."
+          content="Claim your existing public BWE listing (business or organization) and start the Founding membership."
         />
       </Head>
       <main className="min-h-screen bg-black px-4 py-10 text-white">
@@ -421,8 +421,8 @@ export default function FoundingMembershipPage() {
                 <p className="mt-3 max-w-3xl text-white/75">
                   Claim your listing. Strengthen your profile. Measure your
                   visibility and growth. One offer, one price, and one path for
-                  existing public BWE listings: Black-owned businesses, churches
-                  and organizations.
+                  existing public BWE listings: Black-owned businesses and and
+                  organizations.
                 </p>
               </div>
               <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-100">
@@ -553,7 +553,6 @@ export default function FoundingMembershipPage() {
                   <p className="mt-2 max-w-3xl text-sm text-white/75">
                     Search the BWE directory in claim mode, open your existing
                     listing, and return here with it selected automatically.
-                    Churches and organizations continue on their own claim page.
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-3">
@@ -600,8 +599,8 @@ export default function FoundingMembershipPage() {
                 </h2>
                 <p className="mt-2 text-sm text-white/70">
                   This membership applies to an existing public, claimable BWE
-                  listing: a business, church or organization. Availability is
-                  shown here and rechecked during checkout.
+                  listing: a business or an organization. Availability is shown
+                  here and rechecked during checkout.
                 </p>
 
                 {error ? (

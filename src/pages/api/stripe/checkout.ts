@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { organizationsAreUnified } from "@/lib/directory/listingTypes";
 import { checkOrganizationClaimable } from "@/lib/organizationFoundingMembership";
 import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
@@ -349,7 +350,7 @@ export default async function handler(
   const requestedJobId = firstString(payload.jobId, metadataIn.jobId);
   // The Founding membership can be bought for a business or an organization
   // (church): same product, price and checkout; only the claim target differs.
-  const requestedOrganizationId = firstString(
+  let requestedOrganizationId = firstString(
     (payload as any).organizationId,
     (metadataIn as any).organizationId,
   );
@@ -379,7 +380,13 @@ export default async function handler(
     let unitAmount = 0;
 
     let normalizedDurationDays: number | undefined = requestedDurationDays;
-    const normalizedBusinessId = requestedBusinessId || "";
+    let normalizedBusinessId = requestedBusinessId || "";
+    // Once organizations are listings like businesses, an organization claim
+    // (including old ?organizationId= links) is a normal listing claim.
+    if (requestedOrganizationId && (await organizationsAreUnified(db))) {
+      normalizedBusinessId = normalizedBusinessId || requestedOrganizationId;
+      requestedOrganizationId = undefined as any;
+    }
     const normalizedCampaignId = requestedCampaignId || "";
     const normalizedPlacement = requestedPlacement || "";
     let normalizedJobId = requestedJobId || "";

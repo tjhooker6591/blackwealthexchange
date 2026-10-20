@@ -1,4 +1,10 @@
 import { performance } from "node:perf_hooks";
+import {
+  NOT_ORGANIZATION_LISTING,
+  ORGANIZATION_LISTING,
+  listingTypeLabel,
+  organizationsAreUnified,
+} from "@/lib/directory/listingTypes";
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import {
@@ -397,6 +403,9 @@ function normalizeResultItem(item: any, isOrganizations: boolean) {
 
   return {
     ...item,
+    typeLabel: listingTypeLabel(
+      isOrganizations ? { listingType: "organization", ...item } : item,
+    ),
     kind: isOrganizations ? "organization" : "business",
     title,
     primaryCategory,
@@ -537,7 +546,12 @@ export default async function handler(
       normalizedType === "org" ||
       normalizedType === "orgs";
 
-    const col = db.collection(isOrganizations ? "organizations" : "businesses");
+    // Organizations are listings in `businesses` once unified; until then
+    // they still come from the old `organizations` collection.
+    const unifiedOrganizations = await organizationsAreUnified(db);
+    const col = db.collection(
+      isOrganizations && !unifiedOrganizations ? "organizations" : "businesses",
+    );
     const exposureCol = db.collection("sponsor_search_exposure");
     const sessionCapCol = db.collection("sponsor_search_session_caps");
 
@@ -609,6 +623,11 @@ export default async function handler(
           "state",
           "country",
         ];
+
+    // The Businesses tab never shows organizations, and the Organizations
+    // tab only shows organizations.
+    if (isOrganizations && unifiedOrganizations) and.push(ORGANIZATION_LISTING);
+    if (!isOrganizations) and.push(NOT_ORGANIZATION_LISTING);
 
     if (!includeAllStatuses) {
       if (isOrganizations) {
@@ -762,6 +781,8 @@ export default async function handler(
 
     const resultProjection = {
       _id: 1,
+      listingType: 1,
+      typeLabel: 1,
       business_name: 1,
       businessName: 1,
       title: 1,

@@ -1296,7 +1296,7 @@ export default function BusinessDirectory({
                   </h1>
                   <p className="mt-3 max-w-2xl text-sm leading-6 text-white/66 sm:text-[15px]">
                     {claimMode
-                      ? "Search for your existing BWE listing (business, church or organization), select it, and continue to the Founding Membership process. If your listing is not on BWE yet, use the separate listing path below."
+                      ? "Search for your existing BWE listing (business or organization), select it, and continue to the Founding Membership process. If your listing is not on BWE yet, use the separate listing path below."
                       : "Use this directory hub to discover trusted listings by city, state, and category, then compare and contact the best fit."}
                   </p>
                 </div>
@@ -2382,6 +2382,13 @@ export default function BusinessDirectory({
                             </Link>
 
                             <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                              {safeStr((item as any).typeLabel) &&
+                              safeStr((item as any).typeLabel) !==
+                                "Business" ? (
+                                <span className="rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-2 py-0.5 text-[10px] font-bold text-[#F1D57A]">
+                                  {safeStr((item as any).typeLabel)}
+                                </span>
+                              ) : null}
                               {getTrustMeta(item as Row).ownershipVerified ? (
                                 <span className="rounded-full border border-emerald-400/30 bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
                                   Ownership Verified
