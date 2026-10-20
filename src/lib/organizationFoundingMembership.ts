@@ -116,6 +116,16 @@ export async function recordOrganizationFoundingPurchase(
 ) {
   const organizationId = s(args.organizationId);
   const membershipId = organizationMembershipId(organizationId);
+
+  // Stripe can deliver the same event more than once: record it once and
+  // never send the claim emails twice.
+  const alreadyRecorded = await db.collection("entity_claims").findOne({
+    entityType: "organization",
+    entityId: organizationId,
+    stripeSessionId: args.stripeSessionId,
+    paymentStatus: "paid",
+  });
+  if (alreadyRecorded) return { membershipId, duplicate: true };
   const organization = await db
     .collection("organizations")
     .findOne(idFilter(organizationId));

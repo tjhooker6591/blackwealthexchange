@@ -152,6 +152,36 @@ export default async function handler(
       ),
     ]);
 
+    // An organization (church) membership is the same Founding membership;
+    // its listing lives in organizations and its claim in entity_claims.
+    let listing: any = business;
+    let claimDoc: any = claim;
+    if (membership.entityType === "organization" && membership.organizationId) {
+      const orgQuery = buildMongoIdOrStringQuery(
+        "_id",
+        membership.organizationId,
+      );
+      const org: any = orgQuery
+        ? await db.collection("organizations").findOne(orgQuery, {
+            projection: { _id: 1, name: 1, city: 1, state: 1, claimStage: 1 },
+          })
+        : null;
+      listing = org
+        ? {
+            _id: org._id,
+            business_name: org.name,
+            alias: String(org._id),
+            slug: String(org._id),
+            city: org.city,
+            state: org.state,
+            claimStage: org.claimStage,
+          }
+        : null;
+      claimDoc = await db
+        .collection("entity_claims")
+        .findOne({ membershipId: membership.membershipId });
+    }
+
     const sourcePayment = await findFoundingSourcePayment(db, membership);
     const normalizedPaymentStatus = normalizeFoundingPaymentStatus(
       sourcePayment || membership,
@@ -182,11 +212,11 @@ export default async function handler(
         .toLowerCase() !== "approved";
 
     // Real report, not just a status label -- only meaningful once ownership
-    // is actually verified (an unverified business has no engagement of its
+    // is actually verified (an unverified listing has no engagement of its
     // own to report on yet).
     const engagementReport =
-      business && !managementAccessLocked
-        ? await getFoundingEngagementReport(db, String((business as any)._id))
+      listing && !managementAccessLocked
+        ? await getFoundingEngagementReport(db, String((listing as any)._id))
         : null;
 
     return res.status(200).json({
@@ -212,49 +242,49 @@ export default async function handler(
             membership.currency ||
             "usd",
         ).toLowerCase(),
-        business: business
+        business: listing
           ? {
-              id: String((business as any)._id),
-              name: business.business_name || null,
-              slug: business.alias || business.slug || null,
-              alias: business.alias || null,
-              city: business.city || null,
-              state: business.state || null,
+              id: String((listing as any)._id),
+              name: listing.business_name || null,
+              slug: listing.alias || listing.slug || null,
+              alias: listing.alias || null,
+              city: listing.city || null,
+              state: listing.state || null,
             }
           : null,
-        claimStatus: normalizeFoundingClaimStage(claim?.claimStatus || null),
+        claimStatus: normalizeFoundingClaimStage(claimDoc?.claimStatus || null),
         claimStatusLabel: getFoundingClaimStatusLabel(
-          claim?.claimStatus ||
+          claimDoc?.claimStatus ||
             review?.reviewStatus ||
             membership.ownershipReviewStatus,
         ),
         reviewStatus: normalizeFoundingClaimStage(review?.reviewStatus || null),
         publicListingStatus:
-          String((business as any)?.publicListingStatus || "").trim() ||
+          String((listing as any)?.publicListingStatus || "").trim() ||
           (normalizeFoundingClaimStage(
-            business && (business as any).claimStage
-              ? (business as any).claimStage
+            listing && (listing as any).claimStage
+              ? (listing as any).claimStage
               : membership.ownershipReviewStatus,
           ) === "ownership_verified"
             ? "ownership_verified"
             : normalizeFoundingClaimStage(
-                  business && (business as any).claimStage
-                    ? (business as any).claimStage
+                  listing && (listing as any).claimStage
+                    ? (listing as any).claimStage
                     : membership.ownershipReviewStatus,
                 ) === "claim_initiated" ||
                 normalizeFoundingClaimStage(
-                  business && (business as any).claimStage
-                    ? (business as any).claimStage
+                  listing && (listing as any).claimStage
+                    ? (listing as any).claimStage
                     : membership.ownershipReviewStatus,
                 ) === "ownership_verification_pending" ||
                 normalizeFoundingClaimStage(
-                  business && (business as any).claimStage
-                    ? (business as any).claimStage
+                  listing && (listing as any).claimStage
+                    ? (listing as any).claimStage
                     : membership.ownershipReviewStatus,
                 ) === "additional_evidence_required" ||
                 normalizeFoundingClaimStage(
-                  business && (business as any).claimStage
-                    ? (business as any).claimStage
+                  listing && (listing as any).claimStage
+                    ? (listing as any).claimStage
                     : membership.ownershipReviewStatus,
                 ) === "disputed"
               ? "verification_pending"

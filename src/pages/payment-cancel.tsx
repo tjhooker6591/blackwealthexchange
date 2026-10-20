@@ -6,12 +6,13 @@ import { useMemo } from "react";
 export default function PaymentCancelPage() {
   const params = useMemo(() => {
     if (typeof window === "undefined") {
-      return { context: "", businessId: "" };
+      return { context: "", businessId: "", organizationId: "" };
     }
     const search = new URLSearchParams(window.location.search);
     return {
       context: search.get("context") || "",
       businessId: search.get("businessId") || "",
+      organizationId: search.get("organizationId") || "",
     };
   }, []);
 
@@ -51,7 +52,13 @@ export default function PaymentCancelPage() {
               <Link
                 href={
                   foundingMembership
-                    ? `/founding-membership${params.businessId ? `?businessId=${encodeURIComponent(params.businessId)}` : ""}`
+                    ? `/founding-membership${
+                        params.organizationId
+                          ? `?organizationId=${encodeURIComponent(params.organizationId)}`
+                          : params.businessId
+                            ? `?businessId=${encodeURIComponent(params.businessId)}`
+                            : ""
+                      }`
                     : "/business-directory"
                 }
                 className="inline-flex items-center rounded-md bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 transition"

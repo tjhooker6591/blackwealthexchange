@@ -797,6 +797,45 @@ export default async function webhookHandler(
       }
     }
 
+    // A Founding membership (business or organization) is not a Premium /
+    // Black Card subscription: its renewals, failures and cancellations
+    // update the membership above and must not switch the member's own
+    // Premium plan or Black Card on or off.
+    const foundingMembership = await db
+      .collection("business_memberships")
+      .findOne(
+        { stripeSubscriptionId: subscriptionId },
+        { projection: { email: 1, organizationName: 1, businessId: 1 } },
+      );
+    if (
+      foundingMembership ||
+      isFoundingMembershipProductKey(
+        asString((subscription as any).metadata?.productKey).toLowerCase(),
+      )
+    ) {
+      if (event.type === "invoice.payment_failed") {
+        await sendMembershipEmailSafe({
+          to:
+            (foundingMembership as any)?.email || (user as any)?.email || null,
+          subject:
+            "Your Black Wealth Exchange Founding membership payment failed",
+          text: "We couldn't process this month's payment for your Founding membership. Please update your card so your claim and listing benefits stay active. Reply to this email if you need help.",
+        });
+      }
+      await db.collection("subscription_events").insertOne({
+        eventId: event.id,
+        eventType: event.type,
+        subscriptionId,
+        customerId: customerId || null,
+        product: "founding_membership",
+        status: statusForEntitlement,
+        createdAt: now,
+      });
+      return res
+        .status(200)
+        .json({ received: true, product: "founding_membership" });
+    }
+
     if (event.type === "invoice.payment_failed") {
       await applySubscriptionEntitlement(db, {
         userId: user?._id ? String(user._id) : null,
