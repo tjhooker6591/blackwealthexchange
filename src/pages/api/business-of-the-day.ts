@@ -4,6 +4,7 @@ import { getMongoDbName } from "@/lib/env";
 import {
   getCurrentFeature,
   getFeaturedDateForBusiness,
+  getPreviewFeature,
 } from "@/lib/social/businessOfTheDay";
 
 // Public, read-only. With no query it returns the current Business of the
@@ -24,6 +25,23 @@ export default async function handler(
     const businessId =
       typeof req.query.businessId === "string" ? req.query.businessId : "";
     const slug = typeof req.query.slug === "string" ? req.query.slug : "";
+
+    // ?preview=1 shows how a feature would look without approving one. It
+    // is ignored on the deployed site.
+    const preview =
+      process.env.NODE_ENV !== "production" && req.query.preview === "1";
+    if (preview) {
+      res.setHeader("Cache-Control", "no-store");
+      if (businessId || slug) {
+        return res
+          .status(200)
+          .json({ ok: true, featuredAt: new Date().toISOString() });
+      }
+      const city = typeof req.query.city === "string" ? req.query.city : "";
+      return res
+        .status(200)
+        .json({ ok: true, feature: await getPreviewFeature(db, city) });
+    }
 
     res.setHeader("Cache-Control", "public, s-maxage=60, max-age=0");
 

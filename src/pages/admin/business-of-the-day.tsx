@@ -44,6 +44,8 @@ type HistoryRow = {
   decidedAt: string | null;
   ownerEmailSentAt: string | null;
   ownerEmailTo: string | null;
+  instagramPostedAt: string | null;
+  instagramPermalink: string | null;
 };
 
 const CARD_WIDTH = 1080;
@@ -151,6 +153,7 @@ export default function BusinessOfTheDayPage() {
   const [appliedCity, setAppliedCity] = useState("");
   const [approved, setApproved] = useState<Candidate | null>(null);
   const [emailSentTo, setEmailSentTo] = useState("");
+  const [instagramConfigured, setInstagramConfigured] = useState(false);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState("");
@@ -170,6 +173,7 @@ export default function BusinessOfTheDayPage() {
       setCaption(json.candidate?.caption || "");
       setRemaining(json.remaining);
       setHistory(json.history || []);
+      setInstagramConfigured(Boolean(json.instagramConfigured));
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -233,6 +237,27 @@ export default function BusinessOfTheDayPage() {
       setEmailSentTo(ok.to);
       setNotice(`Owner email sent to ${ok.to}.`);
     }
+  }
+
+  async function postToInstagram(businessId: string) {
+    const ok = await act("publish_instagram", businessId);
+    if (!ok) return;
+    setNotice(
+      ok.permalink
+        ? `Posted to Instagram: ${ok.permalink}`
+        : "Posted to Instagram.",
+    );
+    setHistory((rows) =>
+      rows.map((row) =>
+        row.businessId === businessId
+          ? {
+              ...row,
+              instagramPostedAt: new Date().toISOString(),
+              instagramPermalink: ok.permalink || null,
+            }
+          : row,
+      ),
+    );
   }
 
   async function next() {
@@ -476,6 +501,12 @@ export default function BusinessOfTheDayPage() {
 
         <div className="rounded border border-zinc-800 bg-zinc-950 p-4">
           <h2 className="mb-2 font-semibold text-yellow-300">Recent</h2>
+          {!instagramConfigured ? (
+            <p className="mb-2 text-xs text-zinc-500">
+              Instagram is not connected yet, so posting is manual: download the
+              card and copy the caption.
+            </p>
+          ) : null}
           {history.length === 0 ? (
             <p className="text-sm text-zinc-500">Nothing featured yet.</p>
           ) : (
@@ -496,6 +527,32 @@ export default function BusinessOfTheDayPage() {
                     ? ` · ${new Date(row.decidedAt).toLocaleDateString()}`
                     : ""}
                   {row.ownerEmailSentAt ? " · owner emailed" : ""}
+                  {row.instagramPostedAt ? (
+                    <>
+                      {" · "}
+                      {row.instagramPermalink ? (
+                        <a
+                          href={row.instagramPermalink}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-yellow-400 underline"
+                        >
+                          on Instagram
+                        </a>
+                      ) : (
+                        "on Instagram"
+                      )}
+                    </>
+                  ) : row.status === "approved" && instagramConfigured ? (
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => postToInstagram(row.businessId)}
+                      className="ml-2 rounded border border-yellow-600 px-2 py-0.5 text-xs text-yellow-300 disabled:opacity-50"
+                    >
+                      Post to Instagram
+                    </button>
+                  ) : null}
                 </li>
               ))}
             </ul>

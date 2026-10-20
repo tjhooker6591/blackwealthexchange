@@ -339,6 +339,8 @@ export async function listRecentFeatures(db: Db, limit = 15) {
     decidedAt: row.decidedAt || null,
     ownerEmailSentAt: row.ownerEmailSentAt || null,
     ownerEmailTo: row.ownerEmailTo || null,
+    instagramPostedAt: row.instagramPostedAt || null,
+    instagramPermalink: row.instagramPermalink || null,
   }));
 }
 
@@ -394,4 +396,33 @@ export async function getFeaturedDateForBusiness(
     .collection(SOCIAL_FEATURES_COLLECTION)
     .findOne({ status: "approved", $or: or });
   return row?.decidedAt ? new Date(row.decidedAt).toISOString() : null;
+}
+
+// Local-only preview: the listing that would be proposed next, shaped like a
+// live feature. Reads only -- nothing is recorded as featured.
+export async function getPreviewFeature(
+  db: Db,
+  city = "",
+): Promise<PublicFeature | null> {
+  const { listing } = await pickCandidate(db, { city });
+  if (!listing) return null;
+  return {
+    businessId: listing.id,
+    name: listing.name,
+    slug: listing.slug,
+    location: listing.location,
+    category: listing.category,
+    line: summarizeDescription(listing.description),
+    featuredAt: new Date().toISOString(),
+  };
+}
+
+// Instagram fetches the card itself, so the address must be the public site
+// even when the admin page is being used from localhost.
+export function getPublicCardUrl(businessId: string): string {
+  const base = getSiteBaseUrl();
+  const origin = /localhost|127\.0\.0\.1/.test(base)
+    ? "https://www.blackwealthexchange.com"
+    : base;
+  return `${origin}/api/social/card/${encodeURIComponent(businessId)}.jpg`;
 }

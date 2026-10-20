@@ -10,6 +10,7 @@ import {
 } from "@/lib/directoryOwnership";
 import BusinessUpdateComposer from "@/components/business/BusinessUpdateComposer";
 import BusinessPostNudge from "@/components/business/BusinessPostNudge";
+import ImageUploadField from "@/components/business/ImageUploadField";
 
 type AccountType =
   | "user"
@@ -437,8 +438,6 @@ export default function EditBusinessPage({
     { key: "shortSummary", label: "Short Summary", textarea: true },
     { key: "description", label: "Full Description", textarea: true },
     { key: "secondaryCategoriesText", label: "Secondary Categories" },
-    { key: "logo", label: "Logo URL" },
-    { key: "coverImage", label: "Primary / Cover Image URL" },
     {
       key: "galleryImagesText",
       label: "Gallery Images (one per line)",
@@ -551,6 +550,24 @@ export default function EditBusinessPage({
           <form onSubmit={handleSubmit} className="space-y-6">
             <input type="hidden" name="id" value={business.id} />
             <div className="grid gap-4 md:grid-cols-2">
+              <ImageUploadField
+                businessId={business.id}
+                slot="logo"
+                label="Logo"
+                currentUrl={business.logo}
+                onUploaded={(url) =>
+                  setBusiness((prev) => ({ ...prev, logo: url }))
+                }
+              />
+              <ImageUploadField
+                businessId={business.id}
+                slot="cover"
+                label="Primary / Cover Image"
+                currentUrl={business.coverImage}
+                onUploaded={(url) =>
+                  setBusiness((prev) => ({ ...prev, coverImage: url }))
+                }
+              />
               {fields.map((field) => (
                 <div
                   key={field.key}

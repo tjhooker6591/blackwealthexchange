@@ -9,11 +9,17 @@ import {
   buildCard,
   buildOwnerEmail,
   findListingById,
+  getPublicCardUrl,
   getListingUrl,
   listRecentFeatures,
   pickCandidate,
   recordDecision,
 } from "@/lib/social/businessOfTheDay";
+import {
+  InstagramError,
+  isInstagramConfigured,
+  publishImageToInstagram,
+} from "@/lib/social/instagram";
 
 export default async function handler(
   req: NextApiRequest,
@@ -32,14 +38,17 @@ export default async function handler(
 
     if (req.method === "GET") {
       const city = typeof req.query.city === "string" ? req.query.city : "";
-      const [{ listing, remaining }, history] = await Promise.all([
-        pickCandidate(db, { city }),
-        listRecentFeatures(db),
-      ]);
+      const [{ listing, remaining }, history, instagramConfigured] =
+        await Promise.all([
+          pickCandidate(db, { city }),
+          listRecentFeatures(db),
+          isInstagramConfigured(db),
+        ]);
       return res.status(200).json({
         ok: true,
         remaining,
         history,
+        instagramConfigured,
         candidate: listing
           ? {
               listing,
@@ -109,8 +118,48 @@ export default async function handler(
       return res.status(200).json({ ok: true, action, to: email.to });
     }
 
+    if (action === "publish_instagram") {
+      const features = db.collection(SOCIAL_FEATURES_COLLECTION);
+      const feature = await features.findOne({ businessId: listing.id });
+      if (!feature || feature.status !== "approved") {
+        return res.status(409).json({
+          ok: false,
+          error: "Approve the feature before posting it to Instagram.",
+        });
+      }
+      if (feature.instagramMediaId) {
+        return res.status(409).json({
+          ok: false,
+          error: "This feature has already been posted to Instagram.",
+        });
+      }
+      const caption =
+        String(feature.caption || "").trim() || buildCaption(listing, 0);
+      const post = await publishImageToInstagram(db, {
+        imageUrl: getPublicCardUrl(listing.id),
+        caption,
+      });
+      await features.updateOne(
+        { businessId: listing.id },
+        {
+          $set: {
+            instagramMediaId: post.mediaId,
+            instagramPermalink: post.permalink,
+            instagramPostedAt: new Date(),
+            instagramPostedBy: decidedBy,
+          },
+        },
+      );
+      return res
+        .status(200)
+        .json({ ok: true, action, permalink: post.permalink });
+    }
+
     return res.status(400).json({ ok: false, error: "Unknown action" });
   } catch (error: any) {
+    if (error instanceof InstagramError) {
+      return res.status(502).json({ ok: false, error: error.message });
+    }
     console.error("[admin/social/business-of-the-day]", error);
     return res
       .status(500)

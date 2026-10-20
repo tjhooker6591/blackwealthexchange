@@ -18,7 +18,16 @@ export default function BusinessOfTheDaySpot() {
   const [feature, setFeature] = useState<Feature | null>(null);
 
   useEffect(() => {
-    fetch("/api/business-of-the-day")
+    // Opening the page with ?botdPreview=1 (optionally &botdCity=Atlanta)
+    // previews the spot on localhost; the deployed API ignores it.
+    const query = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams();
+    if (query.get("botdPreview") === "1") {
+      params.set("preview", "1");
+      if (query.get("botdCity")) params.set("city", query.get("botdCity")!);
+    }
+    const qs = params.toString();
+    fetch(`/api/business-of-the-day${qs ? `?${qs}` : ""}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => setFeature(data?.feature || null))
       .catch(() => setFeature(null));

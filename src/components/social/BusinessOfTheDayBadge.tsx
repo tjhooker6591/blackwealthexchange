@@ -17,6 +17,11 @@ export default function BusinessOfTheDayBadge({
     const params = new URLSearchParams();
     if (businessId) params.set("businessId", businessId);
     if (slug) params.set("slug", slug);
+    if (
+      new URLSearchParams(window.location.search).get("botdPreview") === "1"
+    ) {
+      params.set("preview", "1");
+    }
     fetch(`/api/business-of-the-day?${params.toString()}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => setFeaturedAt(data?.featuredAt || null))
