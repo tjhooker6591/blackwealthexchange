@@ -543,9 +543,9 @@ export default async function handler(
 
       if (isFoundingMembershipItemId(itemId) && requestedOrganizationId) {
         successUrl = withCheckoutSessionId(
-          `${origin}/organizations/claim?organizationId=${encodeURIComponent(requestedOrganizationId)}&checkout=success`,
+          `${origin}/payment-success?context=founding-membership&organizationId=${encodeURIComponent(requestedOrganizationId)}`,
         );
-        cancelUrl = `${origin}/organizations/claim?organizationId=${encodeURIComponent(requestedOrganizationId)}&checkout=cancel`;
+        cancelUrl = `${origin}/payment-cancel?context=founding-membership&organizationId=${encodeURIComponent(requestedOrganizationId)}`;
       } else if (isFoundingMembershipItemId(itemId)) {
         successUrl = withCheckoutSessionId(
           `${origin}/payment-success?context=founding-membership&businessId=${encodeURIComponent(normalizedBusinessId)}`,

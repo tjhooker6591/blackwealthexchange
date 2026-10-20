@@ -1296,7 +1296,7 @@ export default function BusinessDirectory({
                   </h1>
                   <p className="mt-3 max-w-2xl text-sm leading-6 text-white/66 sm:text-[15px]">
                     {claimMode
-                      ? "Search for your existing BWE listing, select it, and continue to the Founding Membership process. If your business is not listed yet, use the separate listing path below."
+                      ? "Search for your existing BWE listing (business, church or organization), select it, and continue to the Founding Membership process. If your listing is not on BWE yet, use the separate listing path below."
                       : "Use this directory hub to discover trusted listings by city, state, and category, then compare and contact the best fit."}
                   </p>
                 </div>
@@ -2484,9 +2484,19 @@ export default function BusinessDirectory({
                                   ].includes(trustMeta.claimStage || "");
 
                                 if (canClaim) {
+                                  // Churches and organizations have their own claim page,
+                                  // with the selected listing carried over.
+                                  const isOrgResult =
+                                    scope === "organizations" ||
+                                    safeStr((item as any).entityType) ===
+                                      "organization";
                                   return (
                                     <Link
-                                      href={`/founding-membership?businessId=${encodeURIComponent(businessId)}`}
+                                      href={
+                                        isOrgResult
+                                          ? `/founding-membership?organizationId=${encodeURIComponent(businessId)}`
+                                          : `/founding-membership?businessId=${encodeURIComponent(businessId)}`
+                                      }
                                       className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-1.5 text-[11px] font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
                                     >
                                       Claim This Listing

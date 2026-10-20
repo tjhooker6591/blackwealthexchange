@@ -27,7 +27,18 @@ type BusinessOption = {
   claimable: boolean;
   currentClaimState: string | null;
   unavailableReason: string | null;
+  entityType?: "business" | "organization";
 };
+
+// The page address for a selected listing.
+function listingPath(
+  listing: { id: string; entityType?: string } | null | undefined,
+) {
+  if (!listing) return "/founding-membership";
+  const key =
+    listing.entityType === "organization" ? "organizationId" : "businessId";
+  return `/founding-membership?${key}=${encodeURIComponent(listing.id)}`;
+}
 
 type OptionsPayload = {
   ok: boolean;
@@ -83,7 +94,7 @@ function normalizeResumeState(args: {
       resumeCheckoutRequested: false,
       resumeBusinessName: "",
       error:
-        "We couldn't confirm that business for membership right now. Please choose one from the list below.",
+        "We couldn't confirm that listing for membership right now. Please choose one from the list below.",
     };
   }
 
@@ -110,13 +121,18 @@ function shouldAutoResumeCheckout(args: {
   );
 }
 
-function buildCheckoutPayload(businessId: string) {
+function buildCheckoutPayload(listing: { id: string; entityType?: string }) {
+  const isOrganization = listing.entityType === "organization";
   return {
     type: "plan",
     itemId: "founding-verified-business-growth-membership",
-    businessId,
+    ...(isOrganization
+      ? { organizationId: listing.id }
+      : { businessId: listing.id }),
     metadata: {
-      businessId,
+      ...(isOrganization
+        ? { organizationId: listing.id }
+        : { businessId: listing.id }),
       checkoutContext: "founding_membership",
     },
   };
@@ -150,12 +166,21 @@ export default function FoundingMembershipPage() {
   const checkoutInFlightRef = useRef(false);
   const autoResumeConsumedRef = useRef(false);
 
+  const requestedListingId =
+    typeof router.query.businessId === "string"
+      ? router.query.businessId.trim()
+      : typeof router.query.organizationId === "string"
+        ? router.query.organizationId.trim()
+        : "";
+
   useEffect(() => {
+    if (!router.isReady) return;
     (async () => {
       try {
-        const res = await fetch("/api/founding-membership/options", {
-          cache: "no-store",
-        });
+        const res = await fetch(
+          `/api/founding-membership/options${requestedListingId ? `?listingId=${encodeURIComponent(requestedListingId)}` : ""}`,
+          { cache: "no-store" },
+        );
         const json = await res.json().catch(() => ({}));
         if (!res.ok || !json?.ok) {
           throw new Error(MEMBERSHIP_LOAD_ERROR);
@@ -169,15 +194,12 @@ export default function FoundingMembershipPage() {
         );
       }
     })();
-  }, []);
+  }, [router.isReady, requestedListingId]);
 
   useEffect(() => {
     if (!router.isReady || !data?.businesses?.length) return;
 
-    const requestedBusinessId =
-      typeof router.query.businessId === "string"
-        ? router.query.businessId.trim()
-        : "";
+    const requestedBusinessId = requestedListingId;
     const resumeParam =
       typeof router.query.resume === "string" ? router.query.resume.trim() : "";
 
@@ -209,13 +231,11 @@ export default function FoundingMembershipPage() {
 
     if (!normalized.resumeCheckoutRequested && typeof window !== "undefined") {
       const cleanPath = normalized.selectedBusinessId
-        ? `/founding-membership?businessId=${encodeURIComponent(
-            normalized.selectedBusinessId,
-          )}`
+        ? listingPath(found || { id: normalized.selectedBusinessId })
         : "/founding-membership";
       window.history.replaceState(null, "", cleanPath);
     }
-  }, [router.isReady, router.query.businessId, router.query.resume, data]);
+  }, [router.isReady, requestedListingId, router.query.resume, data]);
 
   const businesses = useMemo(() => data?.businesses || [], [data?.businesses]);
   const selectedBusiness = useMemo(
@@ -242,7 +262,11 @@ export default function FoundingMembershipPage() {
       const activeBusinessId =
         businessIdOverride || confirmedBusinessId || selectedBusinessId;
       const cleanPath = activeBusinessId
-        ? `/founding-membership?businessId=${encodeURIComponent(activeBusinessId)}`
+        ? listingPath(
+            businesses.find((b) => b.id === activeBusinessId) || {
+              id: activeBusinessId,
+            },
+          )
         : "/founding-membership";
       window.history.replaceState(null, "", cleanPath);
     }
@@ -269,9 +293,9 @@ export default function FoundingMembershipPage() {
     }
 
     if (!confirmedBusinessId) {
-      setError("Confirm the selected business before starting membership.");
+      setError("Confirm the selected listing before starting membership.");
       setCheckoutState("checkout_error");
-      setCheckoutMessage("Confirm your business first.");
+      setCheckoutMessage("Confirm your listing first.");
       return;
     }
 
@@ -302,7 +326,11 @@ export default function FoundingMembershipPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify(buildCheckoutPayload(confirmedBusinessId)),
+        body: JSON.stringify(
+          buildCheckoutPayload(
+            confirmedBusiness || { id: confirmedBusinessId },
+          ),
+        ),
       });
 
       const json = await res.json().catch(() => ({}));
@@ -357,8 +385,8 @@ export default function FoundingMembershipPage() {
 
   const buttonReason = !confirmedBusinessId
     ? activeBusiness && !activeBusiness.claimable
-      ? "Business is unavailable"
-      : "Confirm your business first"
+      ? "Listing is unavailable"
+      : "Confirm your listing first"
     : !hasRemainingSlots
       ? "No pilot positions remain"
       : checkoutUnavailable
@@ -374,7 +402,7 @@ export default function FoundingMembershipPage() {
         <title>Founding Verified Business Growth Membership | BWE</title>
         <meta
           name="description"
-          content="Claim your existing public BWE business profile and start the Founding Verified Business Growth Membership pilot."
+          content="Claim your existing public BWE listing (business, church or organization) and start the Founding membership."
         />
       </Head>
       <main className="min-h-screen bg-black px-4 py-10 text-white">
@@ -389,10 +417,10 @@ export default function FoundingMembershipPage() {
                   Founding Verified Business Growth Membership
                 </h1>
                 <p className="mt-3 max-w-3xl text-white/75">
-                  Claim your Black-owned business. Strengthen your profile.
-                  Measure your visibility and growth. This pilot starts with one
-                  offer, one price, and one customer path for existing public
-                  BWE business listings.
+                  Claim your listing. Strengthen your profile. Measure your
+                  visibility and growth. One offer, one price, and one path for
+                  existing public BWE listings: Black-owned businesses, churches
+                  and organizations.
                 </p>
               </div>
               <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-100">
@@ -415,7 +443,7 @@ export default function FoundingMembershipPage() {
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div>
                     <div className="text-xs font-bold uppercase tracking-[0.12em] text-yellow-200/80">
-                      Selected business
+                      Selected listing
                     </div>
                     <h2 className="mt-2 text-2xl font-black text-white">
                       {resumeBusinessName || activeBusiness.businessName}
@@ -428,7 +456,7 @@ export default function FoundingMembershipPage() {
                           .join(", "),
                       ]
                         .filter(Boolean)
-                        .join(" • ") || "Business details recorded"}
+                        .join(" • ") || "Listing details recorded"}
                     </div>
                     {activeBusiness.address ? (
                       <div className="mt-1 text-sm text-white/55">
@@ -444,7 +472,7 @@ export default function FoundingMembershipPage() {
                         : getUnavailableLabel(activeBusiness)}
                     </div>
                     <div className="mt-1 text-white/55">
-                      Business ID: {activeBusiness.id}
+                      Listing ID: {activeBusiness.id}
                     </div>
                   </div>
                 </div>
@@ -504,7 +532,7 @@ export default function FoundingMembershipPage() {
                     href="/business-directory?mode=claim"
                     className="rounded-xl border border-white/15 px-4 py-2 font-bold text-white/85 transition hover:bg-white/10"
                   >
-                    Find another business
+                    Find another listing
                   </Link>
                   <button
                     type="button"
@@ -522,12 +550,12 @@ export default function FoundingMembershipPage() {
                     Start with your listing
                   </div>
                   <h2 className="mt-2 text-2xl font-black text-white">
-                    Find your public business first
+                    Find your public listing first
                   </h2>
                   <p className="mt-2 max-w-3xl text-sm text-white/75">
                     Search the BWE directory in claim mode, open your existing
-                    listing, and return here with your business selected
-                    automatically.
+                    listing, and return here with it selected automatically.
+                    Churches and organizations continue on their own claim page.
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-3">
@@ -535,13 +563,13 @@ export default function FoundingMembershipPage() {
                     href="/business-directory?mode=claim"
                     className="inline-flex items-center justify-center rounded-xl bg-yellow-500 px-5 py-3 text-base font-black text-black transition hover:bg-yellow-400"
                   >
-                    Find My Business
+                    Find My Listing
                   </Link>
                   <Link
                     href="/business-directory/add-business"
                     className="inline-flex items-center justify-center rounded-xl border border-white/15 px-5 py-3 text-base font-bold text-white/85 transition hover:bg-white/10"
                   >
-                    My business is not listed
+                    My listing is not on BWE yet
                   </Link>
                 </div>
               </div>
@@ -552,30 +580,30 @@ export default function FoundingMembershipPage() {
             {!activeBusiness ? (
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
                 <h2 className="text-xl font-bold text-white">
-                  1. Select your public business
+                  1. Select your public listing
                 </h2>
                 <p className="mt-2 text-sm text-white/70">
-                  Search for your business in claim mode first, then return here
-                  with the business already selected.
+                  Search for your listing in claim mode first, then return here
+                  with it already selected.
                 </p>
                 <div className="mt-5">
                   <Link
                     href="/business-directory?mode=claim"
                     className="inline-flex items-center justify-center rounded-xl bg-yellow-500 px-4 py-3 font-bold text-black transition hover:bg-yellow-400"
                   >
-                    Find My Business
+                    Find My Listing
                   </Link>
                 </div>
               </div>
             ) : (
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
                 <h2 className="text-xl font-bold text-white">
-                  1. Selected public business
+                  1. Selected public listing
                 </h2>
                 <p className="mt-2 text-sm text-white/70">
-                  This membership only applies to an existing public, claimable
-                  BWE business. Availability is shown here and rechecked again
-                  during checkout.
+                  This membership applies to an existing public, claimable BWE
+                  listing: a business, church or organization. Availability is
+                  shown here and rechecked during checkout.
                 </p>
 
                 {error ? (
@@ -595,15 +623,15 @@ export default function FoundingMembershipPage() {
                           .join(", "),
                       ]
                         .filter(Boolean)
-                        .join(" • ") || "Business details recorded"}
+                        .join(" • ") || "Listing details recorded"}
                     </div>
                     <div className="text-white/55">
                       {activeBusiness.claimable
-                        ? "This business is confirmed for secure checkout."
+                        ? "This listing is confirmed for secure checkout."
                         : `${activeBusiness.businessName} is not currently available for a new founding membership claim.`}
                     </div>
                     <div className="text-xs text-white/45">
-                      Business ID: {activeBusiness.id}
+                      Listing ID: {activeBusiness.id}
                     </div>
                     <div className="text-xs text-white/45">
                       Server availability:{" "}
@@ -617,7 +645,7 @@ export default function FoundingMembershipPage() {
                       href="/business-directory?mode=claim"
                       className="inline-flex items-center justify-center rounded-xl border border-white/15 px-4 py-3 font-bold text-white/85 transition hover:bg-white/10"
                     >
-                      Choose a different business
+                      Choose a different listing
                     </Link>
                   </div>
                 </div>
@@ -630,7 +658,7 @@ export default function FoundingMembershipPage() {
                 className="rounded-3xl border border-white/10 bg-white/5 p-6"
               >
                 <h2 className="text-xl font-bold text-white">
-                  2. Confirm business and membership
+                  2. Confirm listing and membership
                 </h2>
                 <div className="mt-4 rounded-2xl border border-yellow-500/20 bg-black/20 p-4">
                   <div className="text-3xl font-black text-yellow-300">
@@ -647,8 +675,7 @@ export default function FoundingMembershipPage() {
                     </div>
                     <ul className="mt-2 list-disc space-y-1 pl-5 text-white/75">
                       <li>
-                        Business claim initiation tied to the selected public
-                        listing
+                        Claim initiation tied to the selected public listing
                       </li>
                       <li>
                         Ownership-review intake and manual review handling
@@ -719,7 +746,7 @@ export default function FoundingMembershipPage() {
                   <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white/75 space-y-3">
                     <div>
                       <div className="font-semibold text-white">
-                        Selected business
+                        Selected listing
                       </div>
                       <div className="mt-1">
                         {resumeBusinessName || confirmedBusiness.businessName}
@@ -825,7 +852,7 @@ export default function FoundingMembershipPage() {
                           ? "Opening secure checkout…"
                           : confirmedBusinessId || resumeCheckoutRequested
                             ? "Continue to Secure Checkout"
-                            : "Find My Business First"}
+                            : "Find My Listing First"}
                 </button>
 
                 {buttonReason ? (

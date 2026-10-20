@@ -59,7 +59,14 @@ export default function PaymentSuccessPage() {
   const businessId =
     typeof router.query.businessId === "string" ? router.query.businessId : "";
 
-  const foundingMembership = context === "founding-membership";
+  const organizationId =
+    typeof router.query.organizationId === "string"
+      ? router.query.organizationId
+      : "";
+  const organizationClaim =
+    context === "founding-membership" && Boolean(organizationId);
+  const foundingMembership =
+    context === "founding-membership" && !organizationClaim;
   const [membershipStatus, setMembershipStatus] =
     useState<MembershipStatus | null>(null);
   const [marketplaceOrder, setMarketplaceOrder] =
@@ -190,6 +197,35 @@ export default function PaymentSuccessPage() {
       body: "Payment may have completed, but setup requires support review.",
     };
   }, [foundingMembership, statusState]);
+
+  if (organizationClaim) {
+    return (
+      <>
+        <Head>
+          <title>Claim received | Black Wealth Exchange</title>
+        </Head>
+        <main className="min-h-screen bg-black px-6 py-12 text-white">
+          <div className="mx-auto max-w-2xl rounded-2xl border border-yellow-500/20 bg-white/5 p-6 shadow-xl md:p-8">
+            <h1 className="text-3xl font-bold text-yellow-400">
+              Thank you, your claim is in
+            </h1>
+            <p className="mt-3 text-white/80">
+              Your Founding membership is active. We&rsquo;ll confirm that you
+              represent this listing, usually within one to two business days,
+              and we&rsquo;ve emailed you a confirmation. Questions? Reply to
+              that email.
+            </p>
+            <a
+              href={`/organizations/${encodeURIComponent(organizationId)}`}
+              className="mt-5 inline-flex rounded-xl border border-white/15 px-4 py-2 text-sm hover:bg-white/10"
+            >
+              Back to your listing
+            </a>
+          </div>
+        </main>
+      </>
+    );
+  }
 
   return (
     <>

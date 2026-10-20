@@ -234,7 +234,7 @@ export default function OrganizationDetailPage() {
                 <div className="flex flex-col sm:flex-row gap-2">
                   {item?._id ? (
                     <a
-                      href={`/organizations/claim?organizationId=${encodeURIComponent(String(item._id))}`}
+                      href={`/founding-membership?organizationId=${encodeURIComponent(String(item._id))}`}
                       className="inline-flex items-center justify-center rounded-xl border border-yellow-500/50 bg-yellow-500/10 px-4 py-2 font-semibold text-yellow-200 transition hover:bg-yellow-500/20"
                     >
                       {String(item?.orgType || "").toLowerCase() === "church"
