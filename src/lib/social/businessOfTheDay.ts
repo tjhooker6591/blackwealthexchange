@@ -341,6 +341,9 @@ export async function listRecentFeatures(db: Db, limit = 15) {
     ownerEmailTo: row.ownerEmailTo || null,
     instagramPostedAt: row.instagramPostedAt || null,
     instagramPermalink: row.instagramPermalink || null,
+    instagramLastError: row.instagramMediaId
+      ? null
+      : row.instagramLastError || null,
   }));
 }
 

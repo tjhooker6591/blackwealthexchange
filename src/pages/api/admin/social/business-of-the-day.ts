@@ -9,17 +9,13 @@ import {
   buildCard,
   buildOwnerEmail,
   findListingById,
-  getPublicCardUrl,
   getListingUrl,
   listRecentFeatures,
   pickCandidate,
   recordDecision,
 } from "@/lib/social/businessOfTheDay";
-import {
-  InstagramError,
-  isInstagramConfigured,
-  publishImageToInstagram,
-} from "@/lib/social/instagram";
+import { InstagramError, isInstagramConfigured } from "@/lib/social/instagram";
+import { postFeatureToInstagram } from "@/lib/social/instagramFeature";
 
 export default async function handler(
   req: NextApiRequest,
@@ -119,37 +115,7 @@ export default async function handler(
     }
 
     if (action === "publish_instagram") {
-      const features = db.collection(SOCIAL_FEATURES_COLLECTION);
-      const feature = await features.findOne({ businessId: listing.id });
-      if (!feature || feature.status !== "approved") {
-        return res.status(409).json({
-          ok: false,
-          error: "Approve the feature before posting it to Instagram.",
-        });
-      }
-      if (feature.instagramMediaId) {
-        return res.status(409).json({
-          ok: false,
-          error: "This feature has already been posted to Instagram.",
-        });
-      }
-      const caption =
-        String(feature.caption || "").trim() || buildCaption(listing, 0);
-      const post = await publishImageToInstagram(db, {
-        imageUrl: getPublicCardUrl(listing.id),
-        caption,
-      });
-      await features.updateOne(
-        { businessId: listing.id },
-        {
-          $set: {
-            instagramMediaId: post.mediaId,
-            instagramPermalink: post.permalink,
-            instagramPostedAt: new Date(),
-            instagramPostedBy: decidedBy,
-          },
-        },
-      );
+      const post = await postFeatureToInstagram(db, listing.id, decidedBy);
       return res
         .status(200)
         .json({ ok: true, action, permalink: post.permalink });

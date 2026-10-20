@@ -46,6 +46,7 @@ type HistoryRow = {
   ownerEmailTo: string | null;
   instagramPostedAt: string | null;
   instagramPermalink: string | null;
+  instagramLastError: string | null;
 };
 
 const CARD_WIDTH = 1080;
@@ -501,12 +502,18 @@ export default function BusinessOfTheDayPage() {
 
         <div className="rounded border border-zinc-800 bg-zinc-950 p-4">
           <h2 className="mb-2 font-semibold text-yellow-300">Recent</h2>
-          {!instagramConfigured ? (
+          {instagramConfigured ? (
+            <p className="mb-2 text-xs text-zinc-500">
+              Approved features post to Instagram automatically, one each
+              morning (about 9am Pacific, 8am in winter). Post now sends one
+              right away.
+            </p>
+          ) : (
             <p className="mb-2 text-xs text-zinc-500">
               Instagram is not connected yet, so posting is manual: download the
               card and copy the caption.
             </p>
-          ) : null}
+          )}
           {history.length === 0 ? (
             <p className="text-sm text-zinc-500">Nothing featured yet.</p>
           ) : (
@@ -550,8 +557,13 @@ export default function BusinessOfTheDayPage() {
                       onClick={() => postToInstagram(row.businessId)}
                       className="ml-2 rounded border border-yellow-600 px-2 py-0.5 text-xs text-yellow-300 disabled:opacity-50"
                     >
-                      Post to Instagram
+                      Post now
                     </button>
+                  ) : null}
+                  {!row.instagramPostedAt && row.instagramLastError ? (
+                    <span className="block text-xs text-red-400">
+                      Instagram post failed: {row.instagramLastError}
+                    </span>
                   ) : null}
                 </li>
               ))}
