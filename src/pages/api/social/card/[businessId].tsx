@@ -3,7 +3,6 @@
 // public URL, so this renders the same card the admin page draws.
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ImageResponse } from "next/og";
 import sharp from "sharp";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
@@ -11,6 +10,17 @@ import { buildCard, findListingById } from "@/lib/social/businessOfTheDay";
 
 const WIDTH = 1080;
 const HEIGHT = 1350;
+
+// next/og's renderer is an ES module. Bundling next/og (the site bundles its
+// dependencies) turns Next's own import() of it into require(), which
+// Vercel's function runtime rejects with ERR_REQUIRE_ESM. Loading it with a
+// native import() that webpack leaves untouched avoids that.
+async function loadImageResponse() {
+  const og = await import(
+    /* webpackIgnore: true */ "next/dist/compiled/@vercel/og/index.node.js"
+  );
+  return og.ImageResponse;
+}
 const GOLD = "#eab308";
 
 export default async function handler(
@@ -41,6 +51,7 @@ export default async function handler(
     const nameSize =
       card.name.length > 34 ? 72 : card.name.length > 20 ? 88 : 104;
 
+    const ImageResponse = await loadImageResponse();
     const image = new ImageResponse(
       <div
         style={{
