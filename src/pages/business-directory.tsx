@@ -26,6 +26,7 @@ import {
   normalizeSort,
 } from "@/lib/directory/queryState";
 import { publicBusinessBaseQuery } from "@/lib/directory/publicBusinessQuery";
+import { NOT_ORGANIZATION_LISTING } from "@/lib/directory/listingTypes";
 import { resolveBusinessImage } from "@/lib/imageResolver";
 import UseMyLocationButton from "@/components/location/UseMyLocationButton";
 
@@ -2664,45 +2665,50 @@ export const getServerSideProps: GetServerSideProps<
 
     const raw = await db
       .collection("businesses")
-      .find(publicBusinessBaseQuery(), {
-        projection: {
-          _id: 1,
-          alias: 1,
-          slug: 1,
-          image: 1,
-          business_name: 1,
-          businessName: 1,
-          title: 1,
-          name: 1,
-          description: 1,
-          phone: 1,
-          address: 1,
-          city: 1,
-          state: 1,
-          category: 1,
-          categories: 1,
-          display_categories: 1,
-          rating: 1,
-          reviewCount: 1,
-          priceRange: 1,
-          website: 1,
-          verified: 1,
-          isVerified: 1,
-          status: 1,
-          approved: 1,
-          amountPaid: 1,
-          claimStage: 1,
-          publicListingStatus: 1,
-          ownershipReviewStatus: 1,
-          directoryVisibilityApproved: 1,
-          country: 1,
-          createdAt: 1,
-          updatedAt: 1,
-          qualityScore: 1,
-          completenessScore: 1,
-          isComplete: 1,
+      // Businesses only: organizations share this collection and have
+      // their own Organizations tab.
+      .find(
+        { $and: [publicBusinessBaseQuery(), NOT_ORGANIZATION_LISTING] },
+        {
+          projection: {
+            _id: 1,
+            alias: 1,
+            slug: 1,
+            image: 1,
+            business_name: 1,
+            businessName: 1,
+            title: 1,
+            name: 1,
+            description: 1,
+            phone: 1,
+            address: 1,
+            city: 1,
+            state: 1,
+            category: 1,
+            categories: 1,
+            display_categories: 1,
+            rating: 1,
+            reviewCount: 1,
+            priceRange: 1,
+            website: 1,
+            verified: 1,
+            isVerified: 1,
+            status: 1,
+            approved: 1,
+            amountPaid: 1,
+            claimStage: 1,
+            publicListingStatus: 1,
+            ownershipReviewStatus: 1,
+            directoryVisibilityApproved: 1,
+            country: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            qualityScore: 1,
+            completenessScore: 1,
+            isComplete: 1,
+          },
         },
-      })
+      )
       .sort({ directoryVisibilityApproved: -1, updatedAt: -1, createdAt: -1 })
       .toArray();
 

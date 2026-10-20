@@ -140,9 +140,80 @@ async function main() {
       updatedAt: now,
     };
     Object.assign(doc, completeness(doc));
+    // The businesses collection validates field types: these must be text
+    // (a ZIP stored as the number 11575 becomes "11575"), these true/false.
+    for (const f of [
+      "business_name",
+      "slug",
+      "category",
+      "subcategory",
+      "description",
+      "phone",
+      "website",
+      "address",
+      "city",
+      "state",
+      "zip",
+    ]) {
+      if (doc[f] !== undefined && doc[f] !== null && typeof doc[f] !== "string")
+        doc[f] = String(doc[f]);
+    }
+    for (const f of ["verified", "sponsored", "featured"]) {
+      if (
+        doc[f] !== undefined &&
+        doc[f] !== null &&
+        typeof doc[f] !== "boolean"
+      )
+        doc[f] = Boolean(doc[f]);
+    }
+    if (
+      doc.images !== undefined &&
+      doc.images !== null &&
+      !Array.isArray(doc.images)
+    )
+      doc.images = [doc.images];
     if (doc.postalCode === undefined) delete doc.postalCode;
     return { o, doc, wasPublic };
   });
+
+  // Check every record against the collection's own rules before writing.
+  const info = (await db.listCollections({ name: "businesses" }).toArray())[0];
+  const props = info?.options?.validator?.$jsonSchema?.properties || {};
+  const typeOk = (v, types) => {
+    const list = [].concat(types || []);
+    return list.some(
+      (t) =>
+        (t === "null" && v === null) ||
+        (t === "string" && typeof v === "string") ||
+        (t === "bool" && typeof v === "boolean") ||
+        (t === "array" && Array.isArray(v)) ||
+        (t === "object" &&
+          v &&
+          typeof v === "object" &&
+          !Array.isArray(v) &&
+          !(v instanceof Date)) ||
+        (t === "date" && v instanceof Date) ||
+        (["double", "int", "long", "decimal"].includes(t) &&
+          typeof v === "number"),
+    );
+  };
+  const invalid = [];
+  for (const p of plan)
+    for (const [f, rule] of Object.entries(props)) {
+      if (p.doc[f] === undefined) continue;
+      if (!typeOk(p.doc[f], rule.bsonType))
+        invalid.push(
+          `${p.doc.business_name}: ${f}=${JSON.stringify(p.doc[f])}`,
+        );
+    }
+  console.log(
+    `checked against the collection rules: ${invalid.length ? invalid.length + " problems" : "all records pass"}`,
+  );
+  if (invalid.length) {
+    console.log(invalid.slice(0, 10).join("\n"));
+    await client.close();
+    process.exit(1);
+  }
 
   const publicNow = plan.filter((p) => p.wasPublic).length;
   const byLabel = {};
