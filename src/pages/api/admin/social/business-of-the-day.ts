@@ -17,6 +17,10 @@ import {
 import { InstagramError, isInstagramConfigured } from "@/lib/social/instagram";
 import { postFeatureToInstagram } from "@/lib/social/instagramFeature";
 
+// Posting to Instagram waits for Instagram to process the image, which can
+// take longer than the default 10 seconds.
+export const config = { maxDuration: 60 };
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
