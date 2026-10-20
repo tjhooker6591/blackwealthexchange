@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { cancelAndRefundFoundingMembership } from "@/lib/foundingMembershipRefund";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
@@ -205,9 +206,22 @@ export default async function handler(
       claimId: redactId(claimId),
       resultingStatus: transition.claimStatus,
     });
+    // Rejected claim: cancel the membership and refund what was paid.
+    const refund =
+      action === "verification_failed" && claim.membershipId
+        ? await cancelAndRefundFoundingMembership(
+            db,
+            String(claim.membershipId),
+            {
+              email: String((admin as any).email || "") || null,
+              reason: reason || null,
+            },
+          )
+        : null;
+
     return res
       .status(200)
-      .json({ ok: true, claimId, status: transition.claimStatus });
+      .json({ ok: true, claimId, status: transition.claimStatus, refund });
   } catch (error) {
     console.error("[admin/organizations/claims]", error);
     return res.status(500).json({ ok: false, error: "internal_error" });

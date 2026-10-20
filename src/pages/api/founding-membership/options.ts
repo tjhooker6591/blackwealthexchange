@@ -3,7 +3,6 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import {
   FOUNDING_MEMBERSHIP_NAME,
-  FOUNDING_MEMBERSHIP_PILOT_LIMIT,
   FOUNDING_MEMBERSHIP_PRICE_CENTS,
   getClaimablePublicBusinesses,
   countActiveFoundingMemberships,
@@ -87,10 +86,8 @@ export default async function handler(
       ? [selected, ...list.filter((b: any) => b.id !== selected.id)]
       : list;
 
-    const remainingSlots = Math.max(
-      0,
-      FOUNDING_MEMBERSHIP_PILOT_LIMIT - activeCount,
-    );
+    // No membership cap: every claimable listing can be claimed.
+    const remainingSlots = null;
 
     return res.status(200).json({
       ok: true,
@@ -99,7 +96,7 @@ export default async function handler(
         amountCents: FOUNDING_MEMBERSHIP_PRICE_CENTS,
         currency: "usd",
         billing: "monthly",
-        pilotLimit: FOUNDING_MEMBERSHIP_PILOT_LIMIT,
+        pilotLimit: null,
         activeCount,
         remainingSlots,
       },

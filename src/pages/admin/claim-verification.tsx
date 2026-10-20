@@ -117,6 +117,14 @@ export default function ClaimVerificationPage() {
   }, [data]);
 
   async function takeAction(membershipId: string, action: string) {
+    if (
+      action === "verification_failed" &&
+      !window.confirm(
+        "Rejecting cancels this membership and refunds everything paid. Continue?",
+      )
+    ) {
+      return;
+    }
     setBusyId(`${membershipId}:${action}`);
     try {
       const res = await fetch("/api/admin/founding-memberships", {
@@ -129,9 +137,16 @@ export default function ClaimVerificationPage() {
           reason: reasons[membershipId] || "",
         }),
       });
+      const json = await res.json().catch(() => ({}));
       if (!res.ok) {
-        const json = await res.json().catch(() => ({}));
         throw new Error(json?.error || "update_failed");
+      }
+      if (json?.refund?.cancelled) {
+        alert(
+          json.refund.refundedCents
+            ? `Membership cancelled and $${(json.refund.refundedCents / 100).toFixed(2)} refunded.`
+            : "Membership cancelled (nothing to refund).",
+        );
       }
       await load();
     } catch (error) {

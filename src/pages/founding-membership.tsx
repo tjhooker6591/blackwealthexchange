@@ -47,9 +47,9 @@ type OptionsPayload = {
     amountCents: number;
     currency: string;
     billing: string;
-    pilotLimit: number;
+    pilotLimit: number | null;
     activeCount: number;
-    remainingSlots: number;
+    remainingSlots: number | null;
   };
   businesses?: BusinessOption[];
 };
@@ -252,7 +252,9 @@ export default function FoundingMembershipPage() {
 
   const activeBusiness = confirmedBusiness || selectedBusiness;
   const offer = data?.offer;
-  const hasRemainingSlots = (offer?.remainingSlots ?? 0) > 0;
+  // No membership cap (remainingSlots is null); a number would still work.
+  const hasRemainingSlots =
+    offer?.remainingSlots == null || offer.remainingSlots > 0;
   const checkoutUnavailable =
     checkoutState === "checkout_error" && !confirmedBusinessId;
 
@@ -388,7 +390,7 @@ export default function FoundingMembershipPage() {
       ? "Listing is unavailable"
       : "Confirm your listing first"
     : !hasRemainingSlots
-      ? "No pilot positions remain"
+      ? "No positions remain"
       : checkoutUnavailable
         ? "Checkout is temporarily unavailable"
         : "";
@@ -428,11 +430,7 @@ export default function FoundingMembershipPage() {
                   {offer ? money(offer.amountCents) : "$49.00"} per month
                 </div>
                 <div>Monthly billing only</div>
-                <div>
-                  {offer
-                    ? `${offer.remainingSlots} of ${offer.pilotLimit} pilot positions available`
-                    : "10 pilot positions total"}
-                </div>
+                <div>Cancel anytime</div>
               </div>
             </div>
           </section>

@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { cancelAndRefundFoundingMembership } from "@/lib/foundingMembershipRefund";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
@@ -244,9 +245,23 @@ export default async function handler(
         },
       );
 
-      return res
-        .status(200)
-        .json({ ok: true, updated: true, resultingStatus, claimStatus });
+      // Rejected claim: the person who paid is not the owner, so the
+      // membership is cancelled and everything paid is refunded.
+      const refund =
+        normalizedAction === "verification_failed"
+          ? await cancelAndRefundFoundingMembership(db, membershipId, {
+              email: adminEmail,
+              reason: String(req.body?.reason || "") || null,
+            })
+          : null;
+
+      return res.status(200).json({
+        ok: true,
+        updated: true,
+        resultingStatus,
+        claimStatus,
+        refund,
+      });
     }
 
     const [memberships, _claims, reviews, fulfillment, onboarding, businesses] =

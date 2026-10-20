@@ -59,6 +59,15 @@ export default function AdminOrganizationClaimsPage() {
 
   const act = async (c: Claim, action: string, label: string) => {
     let reason = "";
+    if (
+      action === "verification_failed" &&
+      c.paymentStatus === "paid" &&
+      !window.confirm(
+        "Rejecting cancels this membership and refunds everything paid. Continue?",
+      )
+    ) {
+      return;
+    }
     if (action !== "verify") {
       reason =
         window.prompt(`${label}: add a short note for the record (optional)`) ??
@@ -80,8 +89,13 @@ export default function AdminOrganizationClaimsPage() {
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json?.error || "Update failed");
+      const refunded = json?.refund?.refundedCents
+        ? ` Membership cancelled and $${(json.refund.refundedCents / 100).toFixed(2)} refunded.`
+        : json?.refund?.cancelled
+          ? " Membership cancelled (nothing to refund)."
+          : "";
       setNotice(
-        `${c.organizationName || "Claim"}: ${label.toLowerCase()} done.`,
+        `${c.organizationName || "Claim"}: ${label.toLowerCase()} done.${refunded}`,
       );
       await load();
     } catch (err: any) {

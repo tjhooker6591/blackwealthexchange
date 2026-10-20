@@ -22,10 +22,8 @@ import {
   FOUNDING_MEMBERSHIP_CURRENCY,
   FOUNDING_MEMBERSHIP_ITEM_ID,
   FOUNDING_MEMBERSHIP_NAME,
-  FOUNDING_MEMBERSHIP_PILOT_LIMIT,
   FOUNDING_MEMBERSHIP_PRICE_CENTS,
   FOUNDING_MEMBERSHIP_PRODUCT_KEY,
-  countActiveFoundingMemberships,
   getClaimableBusinessById,
   isFoundingMembershipItemId,
 } from "@/lib/founding-membership";
@@ -815,13 +813,7 @@ export default async function handler(
             .status(check.status)
             .json({ error: check.error, code: check.code });
         }
-        const activePilotCount = await countActiveFoundingMemberships(db);
-        if (activePilotCount >= FOUNDING_MEMBERSHIP_PILOT_LIMIT) {
-          return res.status(409).json({
-            error: "The founding membership pilot is currently full",
-            code: "FOUNDING_MEMBERSHIP_PILOT_FULL",
-          });
-        }
+        // No membership cap: every claimable listing can be claimed.
       } else if (isFoundingMembershipItemId(finalItemId)) {
         if (!normalizedBusinessId) {
           return res.status(400).json({
@@ -840,14 +832,7 @@ export default async function handler(
             code: "FOUNDING_MEMBERSHIP_BUSINESS_NOT_CLAIMABLE",
           });
         }
-
-        const activePilotCount = await countActiveFoundingMemberships(db);
-        if (activePilotCount >= FOUNDING_MEMBERSHIP_PILOT_LIMIT) {
-          return res.status(409).json({
-            error: "The founding membership pilot is currently full",
-            code: "FOUNDING_MEMBERSHIP_PILOT_FULL",
-          });
-        }
+        // No membership cap: every claimable listing can be claimed.
 
         const existingMembership = await db
           .collection("business_memberships")
