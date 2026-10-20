@@ -32,6 +32,7 @@ export const ADMIN_PAGE_GROUPS: AdminPageGroup[] = [
         href: "/admin/organization-approvals",
         label: "Organization Approvals",
       },
+      { href: "/admin/organization-claims", label: "Organization Claims" },
       { href: "/admin/product-approvals", label: "Product Approvals" },
       { href: "/admin/job-approvals", label: "Job Approvals" },
       { href: "/admin/claim-verification", label: "Claim Verification" },

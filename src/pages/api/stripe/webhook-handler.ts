@@ -1,5 +1,6 @@
 // src/pages/api/stripe/webhook-handler.ts
 import type { NextApiRequest, NextApiResponse } from "next";
+import { recordOrganizationFoundingPurchase } from "@/lib/organizationFoundingMembership";
 import { buffer } from "micro";
 import Stripe from "stripe";
 
@@ -117,6 +118,13 @@ interface SessionMetadata {
   placement?: string;
   campaignIdFallback?: string;
   jobId?: string;
+
+  // Founding membership claimed for an organization (church) instead of a business
+  entityType?: string;
+  organizationId?: string;
+  claimantName?: string;
+  claimantRole?: string;
+  claimantPhone?: string;
 
   // Wealth Builder Premium / newer plan metadata
   productKey?: string;
@@ -750,6 +758,43 @@ export default async function webhookHandler(
 
     if (event.type === "invoice.payment_failed") {
       statusForEntitlement = "past_due";
+    }
+
+    // Keep Founding memberships (business or organization) in step with
+    // Stripe: renewals, failed payments and cancellations previously only
+    // reached the account, so a cancelled membership still read "active".
+    {
+      const membershipStatus =
+        event.type === "invoice.paid"
+          ? "active"
+          : event.type === "invoice.payment_failed" ||
+              statusForEntitlement === "past_due" ||
+              statusForEntitlement === "unpaid"
+            ? "past_due"
+            : statusForEntitlement === "canceled" ||
+                statusForEntitlement === "incomplete_expired" ||
+                event.type === "customer.subscription.deleted"
+              ? "cancelled"
+              : statusForEntitlement === "active" ||
+                  statusForEntitlement === "trialing"
+                ? "active"
+                : null;
+      if (membershipStatus) {
+        await db.collection("business_memberships").updateMany(
+          { stripeSubscriptionId: subscriptionId },
+          {
+            $set: {
+              membershipStatus,
+              currentPeriodEnd: periodEnd,
+              cancelAtPeriodEnd: Boolean(
+                (subscription as any).cancel_at_period_end,
+              ),
+              canceledAt,
+              updatedAt: now,
+            },
+          },
+        );
+      }
     }
 
     if (event.type === "invoice.payment_failed") {
@@ -1903,8 +1948,32 @@ export default async function webhookHandler(
           ? ((session as any).subscription as string)
           : null;
       const membershipBusinessId = businessId;
+      const membershipOrganizationId =
+        asString(mergedMeta.entityType) === "organization"
+          ? asString(mergedMeta.organizationId).trim()
+          : "";
 
-      if (!userId || !membershipBusinessId) {
+      if (membershipOrganizationId && userId) {
+        // Same Founding membership, claimed for an organization (church):
+        // the claim goes to Admin > Organization claims for review.
+        await recordOrganizationFoundingPurchase(db, {
+          organizationId: membershipOrganizationId,
+          userId,
+          email: email || null,
+          claimantName: asString(mergedMeta.claimantName),
+          claimantRole: asString(mergedMeta.claimantRole),
+          claimantPhone: asString(mergedMeta.claimantPhone),
+          stripeSessionId,
+          stripeCustomerId,
+          stripeSubscriptionId,
+          paymentIntentId: paymentIntentId || null,
+          amountCents: resolvedAmountCents || null,
+          currency: session.currency || "usd",
+          liveMode: (event as any).livemode === true,
+          paidAt,
+          now,
+        });
+      } else if (!userId || !membershipBusinessId) {
         await db.collection("flow_events").insertOne({
           eventType: "founding_membership_paid_missing_linkage",
           pageRoute: "/api/stripe/webhook-handler",

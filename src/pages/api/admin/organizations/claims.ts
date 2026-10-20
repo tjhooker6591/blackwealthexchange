@@ -51,7 +51,31 @@ export default async function handler(
         .sort({ updatedAt: -1, createdAt: -1 })
         .limit(200)
         .toArray();
-      return res.status(200).json({ ok: true, claims });
+      // Attach each organization's name and place for the review page.
+      const ids = [
+        ...new Set(claims.map((c: any) => String(c.entityId || ""))),
+      ].filter((id) => ObjectId.isValid(id));
+      const orgs = ids.length
+        ? await db
+            .collection("organizations")
+            .find(
+              { _id: { $in: ids.map((id) => new ObjectId(id)) } },
+              { projection: { name: 1, city: 1, state: 1, orgType: 1 } },
+            )
+            .toArray()
+        : [];
+      const byId = new Map(orgs.map((o: any) => [String(o._id), o]));
+      const withNames = claims.map((c: any) => {
+        const o: any = byId.get(String(c.entityId));
+        return {
+          ...c,
+          organizationName: o?.name || null,
+          organizationCity: o?.city || null,
+          organizationState: o?.state || null,
+          organizationType: o?.orgType || null,
+        };
+      });
+      return res.status(200).json({ ok: true, claims: withNames });
     }
 
     if (req.method !== "POST") {

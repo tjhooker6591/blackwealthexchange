@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { checkOrganizationClaimable } from "@/lib/organizationFoundingMembership";
 import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
@@ -348,6 +349,16 @@ export default async function handler(
     metadataIn.placement,
   );
   const requestedJobId = firstString(payload.jobId, metadataIn.jobId);
+  // The Founding membership can be bought for a business or an organization
+  // (church): same product, price and checkout; only the claim target differs.
+  const requestedOrganizationId = firstString(
+    (payload as any).organizationId,
+    (metadataIn as any).organizationId,
+  );
+  const claimantField = (key: string, max: number) =>
+    String(firstString((payload as any)[key], (metadataIn as any)[key]) || "")
+      .trim()
+      .slice(0, max);
 
   try {
     const client = await clientPromise;
@@ -530,7 +541,12 @@ export default async function handler(
         cancelUrl = `${origin}/black-card/join?tier=${BLACK_CARD_TIER_BY_ITEM_ID[itemId]}&checkout=cancel`;
       }
 
-      if (isFoundingMembershipItemId(itemId)) {
+      if (isFoundingMembershipItemId(itemId) && requestedOrganizationId) {
+        successUrl = withCheckoutSessionId(
+          `${origin}/organizations/claim?organizationId=${encodeURIComponent(requestedOrganizationId)}&checkout=success`,
+        );
+        cancelUrl = `${origin}/organizations/claim?organizationId=${encodeURIComponent(requestedOrganizationId)}&checkout=cancel`;
+      } else if (isFoundingMembershipItemId(itemId)) {
         successUrl = withCheckoutSessionId(
           `${origin}/payment-success?context=founding-membership&businessId=${encodeURIComponent(normalizedBusinessId)}`,
         );
@@ -693,8 +709,18 @@ export default async function handler(
       metadata.tier = "founding";
       metadata.billingInterval = "monthly";
       metadata.membershipName = FOUNDING_MEMBERSHIP_NAME;
-      metadata.businessId = normalizedBusinessId || "";
-      metadata.membershipContext = "founding_business_growth";
+      if (requestedOrganizationId) {
+        metadata.entityType = "organization";
+        metadata.organizationId = requestedOrganizationId;
+        metadata.businessId = "";
+        metadata.claimantName = claimantField("claimantName", 120);
+        metadata.claimantRole = claimantField("claimantRole", 80);
+        metadata.claimantPhone = claimantField("claimantPhone", 40);
+        metadata.membershipContext = "founding_organization";
+      } else {
+        metadata.businessId = normalizedBusinessId || "";
+        metadata.membershipContext = "founding_business_growth";
+      }
     }
 
     // ---------------------------------------------------------
@@ -779,7 +805,24 @@ export default async function handler(
         }
       }
 
-      if (isFoundingMembershipItemId(finalItemId)) {
+      if (isFoundingMembershipItemId(finalItemId) && requestedOrganizationId) {
+        const check = await checkOrganizationClaimable(
+          db,
+          requestedOrganizationId,
+        );
+        if (!check.ok) {
+          return res
+            .status(check.status)
+            .json({ error: check.error, code: check.code });
+        }
+        const activePilotCount = await countActiveFoundingMemberships(db);
+        if (activePilotCount >= FOUNDING_MEMBERSHIP_PILOT_LIMIT) {
+          return res.status(409).json({
+            error: "The founding membership pilot is currently full",
+            code: "FOUNDING_MEMBERSHIP_PILOT_FULL",
+          });
+        }
+      } else if (isFoundingMembershipItemId(finalItemId)) {
         if (!normalizedBusinessId) {
           return res.status(400).json({
             error: "A claimable business must be selected first",
@@ -928,7 +971,13 @@ export default async function handler(
       itemId: finalItemId,
       amountCents: unitAmount,
       durationDays: normalizedDurationDays,
-      businessId: normalizedBusinessId,
+      // An organization claim is keyed by the organization the same way a
+      // business claim is keyed by the business.
+      businessId:
+        normalizedBusinessId ||
+        (requestedOrganizationId
+          ? `organization:${requestedOrganizationId}`
+          : ""),
       campaignId: normalizedCampaignId,
       placement: normalizedPlacement,
     });

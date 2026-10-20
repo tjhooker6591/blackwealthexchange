@@ -297,9 +297,18 @@ export default function Signup() {
           case "employer":
             router.push("/employer/jobs");
             break;
-          case "user":
-            router.push("/business-directory");
+          case "user": {
+            const back =
+              typeof router.query.redirect === "string"
+                ? router.query.redirect
+                : "";
+            router.push(
+              back.startsWith("/") && !back.startsWith("//")
+                ? back
+                : "/business-directory",
+            );
             break;
+          }
           default:
             router.push("/dashboard");
             break;
