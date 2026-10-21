@@ -518,18 +518,18 @@ export default function NavBar() {
                 <div className="h-px bg-white/10" />
               </>
             ) : (
-              <div className="grid grid-cols-2 gap-2 pb-1">
+              <div className="flex items-center gap-1.5 px-1 pb-1">
                 <Link
                   href="/login"
                   onClick={handleItemClick}
-                  className="bwe-focus-ring flex h-9 items-center justify-center rounded-full border border-[#D4AF37]/60 text-sm font-semibold text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                  className="bwe-focus-ring whitespace-nowrap rounded-full border border-[#D4AF37]/60 px-3 py-1 text-xs font-semibold text-[#D4AF37] hover:bg-[#D4AF37]/10"
                 >
                   Log In
                 </Link>
                 <Link
                   href="/signup"
                   onClick={handleItemClick}
-                  className="bwe-focus-ring flex h-9 items-center justify-center rounded-full bg-[#D4AF37] text-sm font-bold text-black hover:bg-[#e2c15a]"
+                  className="bwe-focus-ring whitespace-nowrap rounded-full bg-[#D4AF37] px-3 py-1 text-xs font-bold text-black hover:bg-[#e2c15a]"
                 >
                   Sign Up
                 </Link>
