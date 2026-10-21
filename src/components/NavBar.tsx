@@ -142,11 +142,11 @@ export default function NavBar() {
           </span>
         </Link>
 
-        <div className="hidden items-center gap-1 lg:flex">
+        <div className="hidden items-center gap-0.5 lg:flex">
           <Link
             href="/pulse"
             onClick={handleItemClick}
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+            className="whitespace-nowrap rounded-lg px-2 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Pulse
             <PulseNavDot />
@@ -154,49 +154,49 @@ export default function NavBar() {
           <Link
             href="/start-here"
             onClick={handleItemClick}
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+            className="whitespace-nowrap rounded-lg px-2 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Start Here
           </Link>
           <Link
             href="/business-directory"
             onClick={handleItemClick}
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+            className="whitespace-nowrap rounded-lg px-2 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Search &amp; Directory
           </Link>
           <Link
             href="/marketplace"
             onClick={handleItemClick}
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+            className="whitespace-nowrap rounded-lg px-2 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Marketplace
           </Link>
           <Link
             href="/jobs"
             onClick={handleItemClick}
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+            className="whitespace-nowrap rounded-lg px-2 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Jobs
           </Link>
           <Link
             href="/advertising"
             onClick={handleItemClick}
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+            className="whitespace-nowrap rounded-lg px-2 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Advertising
           </Link>
           <Link
             href="/financial-literacy"
             onClick={handleItemClick}
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+            className="whitespace-nowrap rounded-lg px-2 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Learn
           </Link>
           <Link
             href="/support"
             onClick={handleItemClick}
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+            className="whitespace-nowrap rounded-lg px-2 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Support
           </Link>
@@ -209,7 +209,7 @@ export default function NavBar() {
                   prev === "explore" ? null : "explore",
                 )
               }
-              className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+              className="whitespace-nowrap rounded-lg px-2 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
               aria-expanded={desktopMenuOpen === "explore"}
             >
               Explore
@@ -295,103 +295,122 @@ export default function NavBar() {
 
           <NotificationBell />
 
-          <div className="relative ml-1">
-            <button
-              type="button"
-              onClick={() =>
-                setDesktopMenuOpen((prev) =>
-                  prev === "account" ? null : "account",
-                )
-              }
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
-              aria-expanded={desktopMenuOpen === "account"}
-            >
-              {user && accountInitial ? (
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#D4AF37]/20 text-xs font-bold text-[#D4AF37]">
-                  {accountInitial}
-                </span>
-              ) : null}
-              {user ? accountDisplayName : "Account"}
-            </button>
-            {desktopMenuOpen === "account" && (
-              <div className="absolute right-0 z-50 mt-2 w-48 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
-                {loading ? null : user ? (
-                  <>
-                    <Link
-                      href={dashboardHref}
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
-                    >
-                      Dashboard
-                    </Link>
-                    <Link
-                      href={profileHref}
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
-                    >
-                      Profile
-                    </Link>
-                    <div className="my-1 h-px bg-white/10" />
-                    <Link
-                      href="/my-bwe"
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] md:hover:bg-white/5"
-                    >
-                      My BWE
-                    </Link>
-                    <Link
-                      href="/notifications"
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
-                    >
-                      Notifications
-                    </Link>
-                    <Link
-                      href="/inbox"
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
-                    >
-                      Inbox
-                    </Link>
-                    <Link
-                      href="/referrals"
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
-                    >
-                      Referrals
-                    </Link>
-                    <div className="my-1 h-px bg-white/10" />
-                    <button
-                      onClick={() => {
-                        closeAllMenus();
-                        logout();
-                      }}
-                      className="block w-full rounded-lg px-3 py-2 text-left text-sm text-white/85 hover:bg-white/5 md:hover:text-red-500"
-                    >
-                      Sign Out
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href="/login"
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
-                    >
-                      Log In
-                    </Link>
-                    <Link
-                      href="/signup"
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
-                    >
-                      Sign Up
-                    </Link>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
+          {!loading && !user ? (
+            <div className="ml-2 flex shrink-0 items-center gap-1.5">
+              <Link
+                href="/login"
+                onClick={handleItemClick}
+                className="bwe-focus-ring whitespace-nowrap rounded-full border border-[#D4AF37]/60 px-3 py-1 text-xs font-semibold text-[#D4AF37] hover:bg-[#D4AF37]/10"
+              >
+                Log In
+              </Link>
+              <Link
+                href="/signup"
+                onClick={handleItemClick}
+                className="bwe-focus-ring whitespace-nowrap rounded-full bg-[#D4AF37] px-3 py-1 text-xs font-bold text-black hover:bg-[#e2c15a]"
+              >
+                Sign Up
+              </Link>
+            </div>
+          ) : (
+            <div className="relative ml-1">
+              <button
+                type="button"
+                onClick={() =>
+                  setDesktopMenuOpen((prev) =>
+                    prev === "account" ? null : "account",
+                  )
+                }
+                className="flex items-center gap-2 whitespace-nowrap rounded-lg px-2 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+                aria-expanded={desktopMenuOpen === "account"}
+              >
+                {user && accountInitial ? (
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#D4AF37]/20 text-xs font-bold text-[#D4AF37]">
+                    {accountInitial}
+                  </span>
+                ) : null}
+                {user ? accountDisplayName : "Account"}
+              </button>
+              {desktopMenuOpen === "account" && (
+                <div className="absolute right-0 z-50 mt-2 w-48 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
+                  {loading ? null : user ? (
+                    <>
+                      <Link
+                        href={dashboardHref}
+                        onClick={handleItemClick}
+                        className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+                      >
+                        Dashboard
+                      </Link>
+                      <Link
+                        href={profileHref}
+                        onClick={handleItemClick}
+                        className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+                      >
+                        Profile
+                      </Link>
+                      <div className="my-1 h-px bg-white/10" />
+                      <Link
+                        href="/my-bwe"
+                        onClick={handleItemClick}
+                        className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] md:hover:bg-white/5"
+                      >
+                        My BWE
+                      </Link>
+                      <Link
+                        href="/notifications"
+                        onClick={handleItemClick}
+                        className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+                      >
+                        Notifications
+                      </Link>
+                      <Link
+                        href="/inbox"
+                        onClick={handleItemClick}
+                        className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+                      >
+                        Inbox
+                      </Link>
+                      <Link
+                        href="/referrals"
+                        onClick={handleItemClick}
+                        className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+                      >
+                        Referrals
+                      </Link>
+                      <div className="my-1 h-px bg-white/10" />
+                      <button
+                        onClick={() => {
+                          closeAllMenus();
+                          logout();
+                        }}
+                        className="block w-full rounded-lg px-3 py-2 text-left text-sm text-white/85 hover:bg-white/5 md:hover:text-red-500"
+                      >
+                        Sign Out
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        href="/login"
+                        onClick={handleItemClick}
+                        className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+                      >
+                        Log In
+                      </Link>
+                      <Link
+                        href="/signup"
+                        onClick={handleItemClick}
+                        className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+                      >
+                        Sign Up
+                      </Link>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <button
@@ -434,6 +453,89 @@ export default function NavBar() {
           className="border-t border-[#D4AF37]/20 bg-[rgba(7,9,14,0.96)] px-4 pb-4 pt-3 lg:hidden"
         >
           <div className="bwe-shell-panel space-y-2 rounded-[24px] p-3">
+            {loading ? null : user ? (
+              <>
+                <div>
+                  <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#D4AF37]/90">
+                    Account
+                  </p>
+                  <div className="space-y-0.5">
+                    <>
+                      <Link
+                        href={dashboardHref}
+                        onClick={handleItemClick}
+                        className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                      >
+                        Dashboard
+                      </Link>
+                      <Link
+                        href={profileHref}
+                        onClick={handleItemClick}
+                        className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                      >
+                        Profile
+                      </Link>
+                      <Link
+                        href="/my-bwe"
+                        onClick={handleItemClick}
+                        className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] hover:bg-white/[0.04]"
+                      >
+                        My BWE
+                      </Link>
+                      <Link
+                        href="/notifications"
+                        onClick={handleItemClick}
+                        className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                      >
+                        Notifications
+                      </Link>
+                      <Link
+                        href="/inbox"
+                        onClick={handleItemClick}
+                        className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                      >
+                        Inbox
+                      </Link>
+                      <Link
+                        href="/referrals"
+                        onClick={handleItemClick}
+                        className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                      >
+                        Referrals
+                      </Link>
+                      <button
+                        onClick={() => {
+                          closeAllMenus();
+                          logout();
+                        }}
+                        className="block w-full rounded-lg px-3 py-2 text-left text-sm text-white/85 hover:bg-white/[0.04] md:hover:text-red-500"
+                      >
+                        Sign Out
+                      </button>
+                    </>
+                  </div>
+                </div>
+                <div className="h-px bg-white/10" />
+              </>
+            ) : (
+              <div className="grid grid-cols-2 gap-2 pb-1">
+                <Link
+                  href="/login"
+                  onClick={handleItemClick}
+                  className="bwe-focus-ring flex h-9 items-center justify-center rounded-full border border-[#D4AF37]/60 text-sm font-semibold text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                >
+                  Log In
+                </Link>
+                <Link
+                  href="/signup"
+                  onClick={handleItemClick}
+                  className="bwe-focus-ring flex h-9 items-center justify-center rounded-full bg-[#D4AF37] text-sm font-bold text-black hover:bg-[#e2c15a]"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
+
             <div>
               <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#D4AF37]/90">
                 Primary
@@ -578,88 +680,6 @@ export default function NavBar() {
                 >
                   BWE Live
                 </a>
-              </div>
-            </div>
-
-            <div className="h-px bg-white/10" />
-
-            <div>
-              <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#D4AF37]/90">
-                Account
-              </p>
-              <div className="space-y-0.5">
-                {loading ? null : user ? (
-                  <>
-                    <Link
-                      href={dashboardHref}
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
-                    >
-                      Dashboard
-                    </Link>
-                    <Link
-                      href={profileHref}
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
-                    >
-                      Profile
-                    </Link>
-                    <Link
-                      href="/my-bwe"
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] hover:bg-white/[0.04]"
-                    >
-                      My BWE
-                    </Link>
-                    <Link
-                      href="/notifications"
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
-                    >
-                      Notifications
-                    </Link>
-                    <Link
-                      href="/inbox"
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
-                    >
-                      Inbox
-                    </Link>
-                    <Link
-                      href="/referrals"
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
-                    >
-                      Referrals
-                    </Link>
-                    <button
-                      onClick={() => {
-                        closeAllMenus();
-                        logout();
-                      }}
-                      className="block w-full rounded-lg px-3 py-2 text-left text-sm text-white/85 hover:bg-white/[0.04] md:hover:text-red-500"
-                    >
-                      Sign Out
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href="/login"
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
-                    >
-                      Log In
-                    </Link>
-                    <Link
-                      href="/signup"
-                      onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
-                    >
-                      Sign Up
-                    </Link>
-                  </>
-                )}
               </div>
             </div>
           </div>
