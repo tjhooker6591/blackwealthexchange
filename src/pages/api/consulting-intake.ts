@@ -7,6 +7,52 @@ import {
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
 import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
+import { SMS_CONSENT_TEXT } from "@/lib/smsConsent";
+
+// Employer requests are passed to Speed-to-Lead, which texts the person
+// back within seconds if they checked the texting box, or alerts BWE to
+// call them if not. Off until STL_LEAD_WEBHOOK_URL (the "website
+// connection" address from BWE's Speed-to-Lead setup page) is set. Never
+// blocks or fails the submission: the request is already saved.
+async function sendToSpeedToLead(lead: {
+  name: string;
+  phone: string;
+  email: string;
+  company: string;
+  smsConsent: boolean;
+}) {
+  const url = process.env.STL_LEAD_WEBHOOK_URL;
+  if (!url || !lead.phone) return "skipped";
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: lead.name,
+        phone: lead.phone,
+        email: lead.email,
+        service_needed: lead.company
+          ? `Recruiting help for ${lead.company}`.slice(0, 200)
+          : "Recruiting help",
+        sms_consent: lead.smsConsent,
+        campaign: "bwe-recruiting-consulting",
+      }),
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) {
+      console.error(
+        "speed-to-lead handoff failed",
+        res.status,
+        (await res.text().catch(() => "")).slice(0, 300),
+      );
+      return "failed";
+    }
+    return "sent";
+  } catch (err) {
+    console.error("speed-to-lead handoff error", err);
+    return "failed";
+  }
+}
 
 type Ok = { success: true; message: string };
 type Err = { success: false; error: string };
@@ -60,6 +106,10 @@ export default async function handler(
     const company = sanitizeRichHtml(asText(req.body?.company)).trim();
     const phone = asText(req.body?.phone);
     const details = sanitizeRichHtml(asText(req.body?.details)).trim();
+    // Texting consent is offered on employer requests only, and only counts
+    // with a phone number.
+    const smsConsent =
+      type === "employer" && Boolean(phone) && req.body?.sms_consent === true;
 
     if (!["employer", "candidate"].includes(type)) {
       return res
@@ -114,13 +164,22 @@ export default async function handler(
     const createdAt = new Date();
     const moderation = moderateIntakeText(details);
 
-    await db.collection("consulting_intake").insertOne({
+    const inserted = await db.collection("consulting_intake").insertOne({
       type,
       name,
       email,
       company: company || null,
       phone: phone || null,
       details,
+      // The record of consent: what they agreed to, when, and from where.
+      smsConsent: smsConsent
+        ? {
+            agreed: true,
+            text: SMS_CONSENT_TEXT,
+            at: createdAt,
+            ip: getClientIp(req),
+          }
+        : { agreed: false },
       status: moderation.flagged ? "flagged" : "pending",
       lifecycleStage: "new",
       nextAction: moderation.flagged
@@ -145,6 +204,26 @@ export default async function handler(
       isAuthenticated: null,
       createdAt,
     });
+
+    // Flagged submissions stay in manual review and are not followed up
+    // automatically.
+    if (type === "employer" && !moderation.flagged) {
+      const speedToLead = await sendToSpeedToLead({
+        name,
+        phone,
+        email,
+        company,
+        smsConsent,
+      });
+      if (speedToLead !== "skipped") {
+        await db
+          .collection("consulting_intake")
+          .updateOne(
+            { _id: inserted.insertedId },
+            { $set: { speedToLead, speedToLeadAt: new Date() } },
+          );
+      }
+    }
 
     return res.status(200).json({
       success: true,

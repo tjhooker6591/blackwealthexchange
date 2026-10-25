@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
+import { SMS_CONSENT_TEXT } from "@/lib/smsConsent";
 
 type Mode = "employer" | "candidate";
 
@@ -15,6 +16,7 @@ export default function RecruitingConsultingPage() {
   const [company, setCompany] = useState("");
   const [phone, setPhone] = useState("");
   const [details, setDetails] = useState("");
+  const [smsConsent, setSmsConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
@@ -70,6 +72,7 @@ export default function RecruitingConsultingPage() {
           company,
           phone,
           details,
+          sms_consent: mode === "employer" && smsConsent,
         }),
       });
       const data = await res.json();
@@ -82,6 +85,7 @@ export default function RecruitingConsultingPage() {
         setCompany("");
         setPhone("");
         setDetails("");
+        setSmsConsent(false);
       }
     } catch {
       setErr("Submission failed.");
@@ -248,9 +252,45 @@ export default function RecruitingConsultingPage() {
               <input
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="Phone (optional)"
+                type="tel"
+                autoComplete="tel"
+                placeholder={
+                  mode === "employer"
+                    ? "Mobile phone (optional)"
+                    : "Phone (optional)"
+                }
                 className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none focus:border-[#D4AF37]/50"
               />
+              {mode === "employer" ? (
+                <div className="rounded-xl border border-white/10 bg-black/20 p-3">
+                  <label className="flex items-start gap-3 text-xs leading-relaxed text-white/80 sm:text-sm">
+                    <input
+                      type="checkbox"
+                      checked={smsConsent}
+                      onChange={(e) => setSmsConsent(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 shrink-0 accent-[#D4AF37]"
+                    />
+                    <span>{SMS_CONSENT_TEXT}</span>
+                  </label>
+                  <p className="mt-2 pl-7 text-[11px] text-white/55 sm:text-xs">
+                    Optional. Consent is not a condition of purchase. Your
+                    number is never sold or shared.{" "}
+                    <Link
+                      href="/privacy-policy#sms"
+                      className="underline hover:text-white"
+                    >
+                      Privacy Policy
+                    </Link>{" "}
+                    ·{" "}
+                    <Link
+                      href="/terms-of-service"
+                      className="underline hover:text-white"
+                    >
+                      Terms
+                    </Link>
+                  </p>
+                </div>
+              ) : null}
               <textarea
                 value={details}
                 onChange={(e) => setDetails(e.target.value)}

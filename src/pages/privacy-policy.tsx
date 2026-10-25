@@ -119,7 +119,7 @@ function FinePrint({ children }: { children: React.ReactNode }) {
 }
 
 const PrivacyPolicy = () => {
-  const lastUpdated = "October 18, 2026"; // Update as needed
+  const lastUpdated = "October 25, 2026"; // Update as needed
 
   return (
     <>
@@ -271,6 +271,7 @@ const PrivacyPolicy = () => {
                 <AnchorLink href="#sharing">
                   6. Sharing & Third Parties
                 </AnchorLink>
+                <AnchorLink href="#sms">6a. Text Messages (SMS)</AnchorLink>
                 <AnchorLink href="#cookies">7. Cookies & Tracking</AnchorLink>
                 <AnchorLink href="#retention">8. Data Retention</AnchorLink>
                 <AnchorLink href="#security">9. Security</AnchorLink>
@@ -618,6 +619,48 @@ const PrivacyPolicy = () => {
               privacy practices apply. We are not responsible for third-party
               sites.
             </FinePrint>
+          </Card>
+
+          <Card
+            id="sms"
+            title="6a. Text Messages (SMS)"
+            subtitle="We text you only if you ask us to, and only about your request."
+            icon={<ShieldCheck className="h-5 w-5" />}
+          >
+            <p className="text-gray-200">
+              Some forms, such as our recruiting and consulting request form,
+              let you check an optional box to receive text messages from Black
+              Wealth Exchange about your request. If you check it:
+            </p>
+            <BulletList>
+              <li>
+                We text you only about the request you submitted: to answer
+                questions, ask about your needs and timing, and help you
+                schedule a call. No marketing or promotional texts.
+              </li>
+              <li>
+                Message frequency varies. Message and data rates may apply.
+              </li>
+              <li>
+                Reply <strong>STOP</strong> at any time to stop receiving texts,
+                or <strong>HELP</strong> for help. You can also contact us using
+                the details below.
+              </li>
+              <li>
+                Texting is optional. Consent is not a condition of purchase, and
+                we will contact you another way if you do not agree.
+              </li>
+              <li>
+                <strong>
+                  We do not sell, rent, or share your mobile number or texting
+                  consent with third parties or affiliates for their marketing
+                  purposes.
+                </strong>{" "}
+                Texts are sent for us by our texting service provider
+                (Speed-to-Lead AI), which uses your number only to deliver our
+                messages.
+              </li>
+            </BulletList>
           </Card>
 
           <Card
