@@ -5,7 +5,10 @@ import { ObjectId } from "mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { getCanonicalBusinessName } from "@/lib/businessSubmission";
-import { computeListingCompleteness } from "@/lib/directory/completeness";
+import {
+  computeListingCompleteness,
+  listingChecklist,
+} from "@/lib/directory/completeness";
 import {
   deriveAdminBusinessStatus,
   getAdminBusinessBucketFilter,
@@ -312,6 +315,7 @@ export default async function handler(
         missingFields: normalizedApproval.missingFields,
         ineligibilityReasons: getApprovalIneligibilityReasons(b),
         searchReady,
+        listingChecklist: listingChecklist(b),
         searchMissingFields: searchReady ? [] : listing.missingFields,
         searchDetailsNeeded: searchReady
           ? 0

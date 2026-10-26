@@ -33,39 +33,70 @@ export type CompletenessResult = {
   isComplete: boolean;
 };
 
-export function computeListingCompleteness(doc: AnyDoc): CompletenessResult {
-  const checks: Array<[string, boolean]> = [
+export type ListingChecklistItem = {
+  key: string;
+  label: string;
+  value: string;
+  done: boolean;
+};
+
+function firstValue(...values: unknown[]): string {
+  for (const v of values) {
+    if (Array.isArray(v)) {
+      const joined = v
+        .map((x) => asTrimmed(x))
+        .filter(Boolean)
+        .join(", ");
+      if (joined) return joined;
+    } else if (hasValue(v)) {
+      return asTrimmed(v);
+    }
+  }
+  return "";
+}
+
+// The details public search counts, with what the listing has for each.
+export function listingChecklist(doc: AnyDoc): ListingChecklistItem[] {
+  const items: Array<[string, string, string]> = [
     [
       "name",
-      hasValue(doc.business_name) ||
-        hasValue(doc.businessName) ||
-        hasValue(doc.title) ||
-        hasValue(doc.name) ||
-        hasValue(doc.organization_name),
+      "Business name",
+      firstValue(
+        doc.business_name,
+        doc.businessName,
+        doc.title,
+        doc.name,
+        doc.organization_name,
+      ),
     ],
-    ["description", hasValue(doc.description)],
+    ["description", "Description", firstValue(doc.description)],
     // Signup writes businessAddress/businessPhone and the add-listing form
     // writes addressLine1, so those count as the same information.
     [
       "address",
-      hasValue(doc.address) ||
-        hasValue(doc.addressLine1) ||
-        hasValue(doc.businessAddress),
+      "Street address",
+      firstValue(doc.address, doc.addressLine1, doc.businessAddress),
     ],
-    ["city", hasValue(doc.city)],
-    ["state", hasValue(doc.state)],
-    ["phone", hasValue(doc.phone) || hasValue(doc.businessPhone)],
-    ["category", hasValue(getAliasCategory(doc))],
-    ["website", hasValue(doc.website)],
-    [
-      "image",
-      hasValue(doc.image) || hasValue(doc.logo) || hasValue(doc.coverImage),
-    ],
+    ["city", "City", firstValue(doc.city)],
+    ["state", "State", firstValue(doc.state)],
+    ["phone", "Phone", firstValue(doc.phone, doc.businessPhone)],
+    ["category", "Category", getAliasCategory(doc)],
+    ["website", "Website", firstValue(doc.website)],
+    ["image", "Logo or photo", firstValue(doc.image, doc.logo, doc.coverImage)],
   ];
+  return items.map(([key, label, value]) => ({
+    key,
+    label,
+    value,
+    done: value.length > 0,
+  }));
+}
 
+export function computeListingCompleteness(doc: AnyDoc): CompletenessResult {
+  const checks = listingChecklist(doc);
   const total = checks.length;
-  const present = checks.filter(([, ok]) => ok).length;
-  const missingFields = checks.filter(([, ok]) => !ok).map(([k]) => k);
+  const present = checks.filter((c) => c.done).length;
+  const missingFields = checks.filter((c) => !c.done).map((c) => c.key);
   const completenessScore = Math.round((present / total) * 100);
   const isComplete = present >= 7; // practical threshold for public listing quality
 

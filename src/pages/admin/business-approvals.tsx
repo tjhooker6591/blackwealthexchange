@@ -1,6 +1,9 @@
 // src/pages/admin/business-approvals.tsx
 import type { GetServerSideProps } from "next";
 import React, { useCallback, useEffect, useState } from "react";
+import ListingDetails, {
+  searchHiddenNote,
+} from "@/components/admin/ListingDetails";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -23,6 +26,12 @@ type Business = {
   searchReady?: boolean;
   searchMissingFields?: string[];
   searchDetailsNeeded?: number;
+  listingChecklist?: Array<{
+    key: string;
+    label: string;
+    value: string;
+    done: boolean;
+  }>;
   approvalQueueBucket?: ApprovalTab;
   sourceLabel?: string | null;
   listingType?: string | null;
@@ -91,15 +100,6 @@ function userIsAdmin(user?: MeResponse["user"]) {
   return false;
 }
 
-// Approval lists a business, but public search also needs enough details
-// (7 of 9; see computeListingCompleteness). Null when it will show in search.
-function searchHiddenNote(biz: Business): string | null {
-  if (biz.searchReady !== false) return null;
-  const missing = biz.searchMissingFields || [];
-  const need = biz.searchDetailsNeeded || 0;
-  return `Won't show in search yet: add ${need} more of ${missing.join(", ")}.`;
-}
-
 export default function BusinessApprovals() {
   const router = useRouter();
 
@@ -113,6 +113,7 @@ export default function BusinessApprovals() {
   const [summary, setSummary] = useState<Summary | null>(null);
   const [notice, setNotice] = useState("");
   // Per-row "I verified this business is Black-owned" tick; Approve needs it.
+  const [openDetails, setOpenDetails] = useState<Record<string, boolean>>({});
   const [blackOwnedChecked, setBlackOwnedChecked] = useState<
     Record<string, boolean>
   >({});
@@ -419,209 +420,240 @@ export default function BusinessApprovals() {
                       </thead>
                       <tbody>
                         {pendingBusinesses.map((biz) => (
-                          <tr
-                            key={biz._id}
-                            className="border-b border-zinc-800 last:border-b-0"
-                          >
-                            <td className="p-3">
-                              <div className="font-medium">
-                                {biz.businessName}
-                              </div>
-                              <div className="mt-1 text-xs text-zinc-500">
-                                ID: {biz._id}
-                              </div>
-                              {biz.automationDisposition ? (
-                                <div className="mt-2 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-xs text-zinc-200">
-                                  <div className="font-semibold text-gold">
-                                    {biz.automationDisposition}
-                                  </div>
-                                  {biz.automationSummary ? (
-                                    <div className="mt-1 text-zinc-300">
-                                      {biz.automationSummary}
-                                    </div>
-                                  ) : null}
-                                  {Array.isArray(biz.requiredActions) &&
-                                  biz.requiredActions.length ? (
-                                    <ul className="mt-2 list-disc space-y-1 pl-4 text-yellow-200">
-                                      {biz.requiredActions.map(
-                                        (item, index) => (
-                                          <li
-                                            key={`${biz._id}-required-${index}`}
-                                          >
-                                            {item?.message ||
-                                              "Additional evidence required"}
-                                          </li>
-                                        ),
-                                      )}
-                                    </ul>
-                                  ) : null}
-                                </div>
-                              ) : null}
-                              {biz.possibleDuplicates?.length ? (
-                                <div className="mt-2 rounded-lg border border-red-500/40 bg-red-950/30 px-3 py-2 text-xs text-red-100">
-                                  <div className="font-semibold text-red-200">
-                                    Possible duplicate
-                                  </div>
-                                  <ul className="mt-1 space-y-1">
-                                    {biz.possibleDuplicates.map((d) => (
-                                      <li key={`${biz._id}-dup-${d._id}`}>
-                                        {d.alias && d.approved ? (
-                                          <Link
-                                            href={`/business-directory/${d.alias}`}
-                                            target="_blank"
-                                            className="underline"
-                                          >
-                                            {d.businessName}
-                                          </Link>
-                                        ) : (
-                                          <span>{d.businessName}</span>
-                                        )}{" "}
-                                        <span className="text-red-200/70">
-                                          (
-                                          {d.approved
-                                            ? "approved"
-                                            : d.status || "pending"}
-                                          {d.createdAt
-                                            ? `, created ${new Date(d.createdAt).toLocaleDateString()}`
-                                            : ""}
-                                          , same {d.matchedOn}) ID: {d._id}
-                                        </span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              ) : null}
-                              {biz.ownershipSubmission &&
-                              (biz.ownershipSubmission.owners.length ||
-                                biz.ownershipSubmission.claimantName) ? (
-                                <div className="mt-2 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-xs text-zinc-200">
-                                  <div className="font-semibold text-gold">
-                                    Ownership they submitted
-                                  </div>
-                                  {biz.ownershipSubmission.owners.map(
-                                    (o, index) => (
-                                      <div
-                                        key={`${biz._id}-owner-${index}`}
-                                        className="mt-1"
-                                      >
-                                        {o.name || "Unnamed owner"}
-                                        {o.percent !== null
-                                          ? ` · ${o.percent}%`
-                                          : ""}
-                                        {o.role ? ` · ${o.role}` : ""}
-                                        {" · "}
-                                        {o.attestedBlackOwned
-                                          ? "says Black-owned"
-                                          : "did not say Black-owned"}
-                                      </div>
-                                    ),
-                                  )}
-                                  {biz.ownershipSubmission.claimantName ? (
-                                    <div className="mt-1 text-zinc-400">
-                                      Submitted by{" "}
-                                      {biz.ownershipSubmission.claimantName}
-                                      {biz.ownershipSubmission
-                                        .claimantRelationship
-                                        ? ` (${biz.ownershipSubmission.claimantRelationship.toLowerCase()}${biz.ownershipSubmission.claimantRole ? `, ${biz.ownershipSubmission.claimantRole}` : ""})`
-                                        : ""}
-                                    </div>
-                                  ) : null}
-                                </div>
-                              ) : null}
-                              {biz.queueKind &&
-                              biz.queueKind !== "approvable_submission" ? (
-                                <div className="mt-1 text-xs text-yellow-300">
-                                  {biz.queueKind === "imported_pending_record"
-                                    ? "Imported/incomplete pending record"
-                                    : "Malformed pending record"}
-                                </div>
-                              ) : null}
-                              {biz.sourceLabel ? (
-                                <div className="mt-1 text-xs text-zinc-500">
-                                  Source: {biz.sourceLabel}
-                                </div>
-                              ) : null}
-                            </td>
-                            <td className="p-3">{biz.ownerName || "N/A"}</td>
-                            <td className="p-3">{biz.email || "N/A"}</td>
-                            <td className="p-3">
-                              {biz.submittedAt
-                                ? new Date(biz.submittedAt).toLocaleDateString()
-                                : "Unknown"}
-                              {Array.isArray(biz.missingFields) &&
-                              biz.missingFields.length ? (
-                                <div className="mt-1 text-xs text-zinc-500">
-                                  Missing: {biz.missingFields.join(", ")}
-                                </div>
-                              ) : null}
-                              {searchHiddenNote(biz) ? (
-                                <div className="mt-1 text-xs text-yellow-300">
-                                  {searchHiddenNote(biz)}
-                                </div>
-                              ) : null}
-                              {activeTab !== "approval_ready" &&
-                              Array.isArray(biz.ineligibilityReasons) &&
-                              biz.ineligibilityReasons.length ? (
-                                <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-yellow-300">
-                                  {biz.ineligibilityReasons.map(
-                                    (reason, index) => (
-                                      <li key={`${biz._id}-reason-${index}`}>
-                                        {reason}
-                                      </li>
-                                    ),
-                                  )}
-                                </ul>
-                              ) : null}
-                            </td>
-                            <td className="p-3">
-                              <label className="mb-2 flex items-start gap-2 text-xs text-zinc-200">
-                                <input
-                                  type="checkbox"
-                                  className="mt-0.5"
-                                  checked={Boolean(blackOwnedChecked[biz._id])}
-                                  disabled={!biz.canApprove}
-                                  onChange={(e) =>
-                                    setBlackOwnedChecked((prev) => ({
+                          <React.Fragment key={biz._id}>
+                            <tr
+                              className={
+                                openDetails[biz._id]
+                                  ? "border-b-0"
+                                  : "border-b border-zinc-800 last:border-b-0"
+                              }
+                            >
+                              <td className="p-3">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setOpenDetails((prev) => ({
                                       ...prev,
-                                      [biz._id]: e.target.checked,
+                                      [biz._id]: !prev[biz._id],
                                     }))
                                   }
-                                />
-                                <span>Verified Black-owned</span>
-                              </label>
-                              <div className="flex gap-2">
-                                <button
-                                  onClick={() => handleApprove(biz)}
-                                  disabled={
-                                    !biz.canApprove ||
-                                    !blackOwnedChecked[biz._id]
-                                  }
-                                  className="rounded bg-green-600 px-3 py-1 font-semibold text-black hover:bg-green-500 transition disabled:cursor-not-allowed disabled:opacity-40"
-                                  title={
-                                    !biz.canApprove
-                                      ? "Only valid pending submissions can be approved"
-                                      : blackOwnedChecked[biz._id]
-                                        ? "Approve this business"
-                                        : "Tick Verified Black-owned first"
-                                  }
+                                  aria-expanded={Boolean(openDetails[biz._id])}
+                                  className="text-left font-medium text-gold underline-offset-2 hover:underline"
                                 >
-                                  Approve
+                                  {biz.businessName}{" "}
+                                  <span className="text-xs text-zinc-400">
+                                    {openDetails[biz._id]
+                                      ? "Hide details ▲"
+                                      : "View details ▼"}
+                                  </span>
                                 </button>
-                                <button
-                                  onClick={() => handleReject(biz._id)}
-                                  disabled={biz.canReject === false}
-                                  className="rounded bg-red-600 px-3 py-1 font-semibold text-black hover:bg-red-500 transition disabled:cursor-not-allowed disabled:opacity-40"
-                                  title={
-                                    biz.canReject === false
-                                      ? "Malformed records cannot be rejected from this queue"
-                                      : "Reject this business"
-                                  }
-                                >
-                                  Reject
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
+                                <div className="mt-1 text-xs text-zinc-500">
+                                  ID: {biz._id}
+                                </div>
+                                {biz.automationDisposition ? (
+                                  <div className="mt-2 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-xs text-zinc-200">
+                                    <div className="font-semibold text-gold">
+                                      {biz.automationDisposition}
+                                    </div>
+                                    {biz.automationSummary ? (
+                                      <div className="mt-1 text-zinc-300">
+                                        {biz.automationSummary}
+                                      </div>
+                                    ) : null}
+                                    {Array.isArray(biz.requiredActions) &&
+                                    biz.requiredActions.length ? (
+                                      <ul className="mt-2 list-disc space-y-1 pl-4 text-yellow-200">
+                                        {biz.requiredActions.map(
+                                          (item, index) => (
+                                            <li
+                                              key={`${biz._id}-required-${index}`}
+                                            >
+                                              {item?.message ||
+                                                "Additional evidence required"}
+                                            </li>
+                                          ),
+                                        )}
+                                      </ul>
+                                    ) : null}
+                                  </div>
+                                ) : null}
+                                {biz.possibleDuplicates?.length ? (
+                                  <div className="mt-2 rounded-lg border border-red-500/40 bg-red-950/30 px-3 py-2 text-xs text-red-100">
+                                    <div className="font-semibold text-red-200">
+                                      Possible duplicate
+                                    </div>
+                                    <ul className="mt-1 space-y-1">
+                                      {biz.possibleDuplicates.map((d) => (
+                                        <li key={`${biz._id}-dup-${d._id}`}>
+                                          {d.alias && d.approved ? (
+                                            <Link
+                                              href={`/business-directory/${d.alias}`}
+                                              target="_blank"
+                                              className="underline"
+                                            >
+                                              {d.businessName}
+                                            </Link>
+                                          ) : (
+                                            <span>{d.businessName}</span>
+                                          )}{" "}
+                                          <span className="text-red-200/70">
+                                            (
+                                            {d.approved
+                                              ? "approved"
+                                              : d.status || "pending"}
+                                            {d.createdAt
+                                              ? `, created ${new Date(d.createdAt).toLocaleDateString()}`
+                                              : ""}
+                                            , same {d.matchedOn}) ID: {d._id}
+                                          </span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                ) : null}
+                                {biz.ownershipSubmission &&
+                                (biz.ownershipSubmission.owners.length ||
+                                  biz.ownershipSubmission.claimantName) ? (
+                                  <div className="mt-2 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-xs text-zinc-200">
+                                    <div className="font-semibold text-gold">
+                                      Ownership they submitted
+                                    </div>
+                                    {biz.ownershipSubmission.owners.map(
+                                      (o, index) => (
+                                        <div
+                                          key={`${biz._id}-owner-${index}`}
+                                          className="mt-1"
+                                        >
+                                          {o.name || "Unnamed owner"}
+                                          {o.percent !== null
+                                            ? ` · ${o.percent}%`
+                                            : ""}
+                                          {o.role ? ` · ${o.role}` : ""}
+                                          {" · "}
+                                          {o.attestedBlackOwned
+                                            ? "says Black-owned"
+                                            : "did not say Black-owned"}
+                                        </div>
+                                      ),
+                                    )}
+                                    {biz.ownershipSubmission.claimantName ? (
+                                      <div className="mt-1 text-zinc-400">
+                                        Submitted by{" "}
+                                        {biz.ownershipSubmission.claimantName}
+                                        {biz.ownershipSubmission
+                                          .claimantRelationship
+                                          ? ` (${biz.ownershipSubmission.claimantRelationship.toLowerCase()}${biz.ownershipSubmission.claimantRole ? `, ${biz.ownershipSubmission.claimantRole}` : ""})`
+                                          : ""}
+                                      </div>
+                                    ) : null}
+                                  </div>
+                                ) : null}
+                                {biz.queueKind &&
+                                biz.queueKind !== "approvable_submission" ? (
+                                  <div className="mt-1 text-xs text-yellow-300">
+                                    {biz.queueKind === "imported_pending_record"
+                                      ? "Imported/incomplete pending record"
+                                      : "Malformed pending record"}
+                                  </div>
+                                ) : null}
+                                {biz.sourceLabel ? (
+                                  <div className="mt-1 text-xs text-zinc-500">
+                                    Source: {biz.sourceLabel}
+                                  </div>
+                                ) : null}
+                              </td>
+                              <td className="p-3">{biz.ownerName || "N/A"}</td>
+                              <td className="p-3">{biz.email || "N/A"}</td>
+                              <td className="p-3">
+                                {biz.submittedAt
+                                  ? new Date(
+                                      biz.submittedAt,
+                                    ).toLocaleDateString()
+                                  : "Unknown"}
+                                {Array.isArray(biz.missingFields) &&
+                                biz.missingFields.length ? (
+                                  <div className="mt-1 text-xs text-zinc-500">
+                                    Missing: {biz.missingFields.join(", ")}
+                                  </div>
+                                ) : null}
+                                {searchHiddenNote(biz) ? (
+                                  <div className="mt-1 text-xs text-yellow-300">
+                                    {searchHiddenNote(biz)}
+                                  </div>
+                                ) : null}
+                                {activeTab !== "approval_ready" &&
+                                Array.isArray(biz.ineligibilityReasons) &&
+                                biz.ineligibilityReasons.length ? (
+                                  <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-yellow-300">
+                                    {biz.ineligibilityReasons.map(
+                                      (reason, index) => (
+                                        <li key={`${biz._id}-reason-${index}`}>
+                                          {reason}
+                                        </li>
+                                      ),
+                                    )}
+                                  </ul>
+                                ) : null}
+                              </td>
+                              <td className="p-3">
+                                <label className="mb-2 flex items-start gap-2 text-xs text-zinc-200">
+                                  <input
+                                    type="checkbox"
+                                    className="mt-0.5"
+                                    checked={Boolean(
+                                      blackOwnedChecked[biz._id],
+                                    )}
+                                    disabled={!biz.canApprove}
+                                    onChange={(e) =>
+                                      setBlackOwnedChecked((prev) => ({
+                                        ...prev,
+                                        [biz._id]: e.target.checked,
+                                      }))
+                                    }
+                                  />
+                                  <span>Verified Black-owned</span>
+                                </label>
+                                <div className="flex gap-2">
+                                  <button
+                                    onClick={() => handleApprove(biz)}
+                                    disabled={
+                                      !biz.canApprove ||
+                                      !blackOwnedChecked[biz._id]
+                                    }
+                                    className="rounded bg-green-600 px-3 py-1 font-semibold text-black hover:bg-green-500 transition disabled:cursor-not-allowed disabled:opacity-40"
+                                    title={
+                                      !biz.canApprove
+                                        ? "Only valid pending submissions can be approved"
+                                        : blackOwnedChecked[biz._id]
+                                          ? "Approve this business"
+                                          : "Tick Verified Black-owned first"
+                                    }
+                                  >
+                                    Approve
+                                  </button>
+                                  <button
+                                    onClick={() => handleReject(biz._id)}
+                                    disabled={biz.canReject === false}
+                                    className="rounded bg-red-600 px-3 py-1 font-semibold text-black hover:bg-red-500 transition disabled:cursor-not-allowed disabled:opacity-40"
+                                    title={
+                                      biz.canReject === false
+                                        ? "Malformed records cannot be rejected from this queue"
+                                        : "Reject this business"
+                                    }
+                                  >
+                                    Reject
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            {openDetails[biz._id] ? (
+                              <tr className="border-b border-zinc-800 last:border-b-0">
+                                <td colSpan={5} className="px-3 pb-4">
+                                  <ListingDetails biz={biz} />
+                                </td>
+                              </tr>
+                            ) : null}
+                          </React.Fragment>
                         ))}
                       </tbody>
                     </table>
