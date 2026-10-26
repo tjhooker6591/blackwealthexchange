@@ -1,5 +1,11 @@
 import { useRef, useState } from "react";
 
+// Matches MAX_UPLOAD_BYTES in api/business/media (Vercel's request limit).
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+const TOO_LARGE = "That image is too large. Use one under 4MB.";
+const WRONG_TYPE =
+  "That file type isn't supported. Use a JPG, PNG or WebP image (iPhone HEIC photos and SVG logos won't work).";
+
 export default function ImageUploadField({
   businessId,
   slot,
@@ -20,8 +26,16 @@ export default function ImageUploadField({
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    setUploading(true);
     setError("");
+    if (file.size > MAX_UPLOAD_BYTES) {
+      setError(TOO_LARGE);
+      return;
+    }
+    if (file.type && !/^image\/(png|jpeg|webp)$/i.test(file.type)) {
+      setError(WRONG_TYPE);
+      return;
+    }
+    setUploading(true);
     try {
       const form = new FormData();
       form.append("businessId", businessId);
@@ -35,10 +49,10 @@ export default function ImageUploadField({
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json?.url) {
         throw new Error(
-          json?.error === "file_too_large"
-            ? "That image is too large -- 8MB max."
+          json?.error === "file_too_large" || res.status === 413
+            ? TOO_LARGE
             : json?.error === "unsupported_media_type"
-              ? "That file type isn't supported -- use JPG, PNG, or WebP."
+              ? WRONG_TYPE
               : json?.error === "ownership_verification_required"
                 ? "Ownership isn't verified for this business yet."
                 : "Upload failed. Please try again.",

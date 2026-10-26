@@ -1,8 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import formidable, { type File } from "formidable";
 import fs from "node:fs";
-import path from "node:path";
-import { v4 as uuidv4 } from "uuid";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import {
@@ -12,13 +10,16 @@ import {
 } from "@/lib/directoryOwnership";
 import {
   isMultipartFileTooLargeError,
-  moveUploadedFile,
   validateUploadedImageFile,
 } from "@/lib/security/imageUploadValidation";
 
 export const config = {
   api: { bodyParser: false },
 };
+
+// Vercel rejects request bodies over 4.5MB before they reach this handler,
+// so keep the limit under that.
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
 function first(value: string | string[] | undefined) {
   if (Array.isArray(value)) return value[0] || "";
@@ -54,7 +55,7 @@ export default async function handler(
   const form = formidable({
     multiples: false,
     keepExtensions: true,
-    maxFileSize: 8 * 1024 * 1024,
+    maxFileSize: MAX_UPLOAD_BYTES,
   });
   const { fields, files } = await new Promise<{
     fields: formidable.Fields;
@@ -145,7 +146,7 @@ export default async function handler(
     if (!file) {
       return res.status(400).json({ error: "file_required" });
     }
-    const validation = await validateUploadedImageFile(file, 8 * 1024 * 1024);
+    const validation = await validateUploadedImageFile(file, MAX_UPLOAD_BYTES);
     if (!validation.ok) {
       return res.status(400).json({
         error:
@@ -155,17 +156,21 @@ export default async function handler(
       });
     }
 
-    const uploadDir = path.join(
-      process.cwd(),
-      "public",
-      "uploads",
-      "businesses",
-    );
-    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-    const filename = `${uuidv4()}${validation.canonicalExtension}`;
-    const destPath = path.join(uploadDir, filename);
-    await moveUploadedFile(file.filepath, destPath);
-    const fileUrl = `/uploads/businesses/${filename}`;
+    // The live site's filesystem is read-only, so images are stored in the
+    // database and served by /api/media/[id].
+    const data = await fs.promises.readFile(file.filepath);
+    await fs.promises.unlink(file.filepath).catch(() => {});
+    const stored = await db.collection("media_files").insertOne({
+      data,
+      contentType: validation.canonicalMimeType,
+      size: data.length,
+      ownerType: "business",
+      ownerId: String(ownership.entityId),
+      slot,
+      uploadedBy: String(session.userId || ""),
+      createdAt: new Date(),
+    });
+    const fileUrl = `/api/media/${String(stored.insertedId)}${validation.canonicalExtension}`;
 
     const update: any = { $set: { updatedAt: new Date() } };
     if (slot === "logo") {

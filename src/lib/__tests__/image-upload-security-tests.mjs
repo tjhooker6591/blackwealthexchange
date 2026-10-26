@@ -531,6 +531,12 @@ globalThis.__UPLOAD_TEST_RESOLVE_VERIFIED_OWNERSHIP__ =
   );
   assert.equal(validRes.statusCode, 200);
   assert.match(validRes.body.url, /\.jpg$/);
+  // Stored in the database (the live filesystem is read-only), not on disk.
+  assert.match(validRes.body.url, /^\/api\/media\//);
+  const stored = db.collection("media_files").inserted[0];
+  assert.equal(stored?.contentType, "image/jpeg");
+  assert.ok(Buffer.isBuffer(stored?.data) && stored.data.length > 0);
+  assert.equal(db.collection("businesses").docs[0].logo, validRes.body.url);
   await cleanupUploadedUrl(validRes.body.url);
 }
 
