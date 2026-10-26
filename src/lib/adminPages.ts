@@ -38,6 +38,7 @@ export const ADMIN_PAGE_GROUPS: AdminPageGroup[] = [
       { href: "/admin/claim-verification", label: "Claim Verification" },
       { href: "/admin/intern-applications", label: "Intern Applications" },
       { href: "/admin/advertising-requests", label: "Advertising Requests" },
+      { href: "/admin/inquiries", label: "Inquiries (contact form)" },
     ],
   },
   {
