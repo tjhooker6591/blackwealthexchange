@@ -289,6 +289,14 @@ export default function NavBar() {
                 >
                   BWE Live
                 </a>
+                <div className="my-1 h-px bg-white/10" />
+                <Link
+                  href="/contact"
+                  onClick={handleItemClick}
+                  className="block rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
+                >
+                  Contact us
+                </Link>
               </div>
             )}
           </div>
@@ -597,6 +605,13 @@ export default function NavBar() {
                   className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
                 >
                   Support
+                </Link>
+                <Link
+                  href="/contact"
+                  onClick={handleItemClick}
+                  className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                >
+                  Contact
                 </Link>
               </div>
             </div>

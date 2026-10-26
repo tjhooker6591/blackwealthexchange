@@ -45,6 +45,7 @@ const footerSections: Array<{
     title: "Company / Legal",
     links: [
       { href: "/about", label: "About BWE" },
+      { href: "/contact", label: "Contact Us" },
       { href: "/terms-of-service", label: "Terms" },
       { href: "/privacy-policy", label: "Privacy" },
       { href: "/legal/community-conduct", label: "Code of Conduct" },
