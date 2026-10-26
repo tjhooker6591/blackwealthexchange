@@ -20,6 +20,9 @@ type Business = {
   canReject?: boolean;
   missingFields?: string[];
   ineligibilityReasons?: string[];
+  searchReady?: boolean;
+  searchMissingFields?: string[];
+  searchDetailsNeeded?: number;
   approvalQueueBucket?: ApprovalTab;
   sourceLabel?: string | null;
   listingType?: string | null;
@@ -86,6 +89,15 @@ function userIsAdmin(user?: MeResponse["user"]) {
   if (user.role === "admin") return true;
   if (Array.isArray(user.roles) && user.roles.includes("admin")) return true;
   return false;
+}
+
+// Approval lists a business, but public search also needs enough details
+// (7 of 9; see computeListingCompleteness). Null when it will show in search.
+function searchHiddenNote(biz: Business): string | null {
+  if (biz.searchReady !== false) return null;
+  const missing = biz.searchMissingFields || [];
+  const need = biz.searchDetailsNeeded || 0;
+  return `Won't show in search yet: add ${need} more of ${missing.join(", ")}.`;
 }
 
 export default function BusinessApprovals() {
@@ -210,9 +222,18 @@ export default function BusinessApprovals() {
       return;
     }
     const dupes = biz.possibleDuplicates || [];
-    const message = dupes.length
-      ? `This business may already be in the directory (${dupes.length} possible duplicate${dupes.length === 1 ? "" : "s"}). Approve anyway?`
-      : "Approve this business?";
+    const hidden = searchHiddenNote(biz);
+    const message = [
+      dupes.length
+        ? `This business may already be in the directory (${dupes.length} possible duplicate${dupes.length === 1 ? "" : "s"}).`
+        : "",
+      hidden
+        ? `${hidden} Its page will work, but people won't find it by searching.`
+        : "",
+      dupes.length || hidden ? "Approve anyway?" : "Approve this business?",
+    ]
+      .filter(Boolean)
+      .join("\n\n");
     if (!window.confirm(message)) return;
 
     try {
@@ -234,14 +255,16 @@ export default function BusinessApprovals() {
 
       setPendingBusinesses((prev) => prev.filter((biz) => biz._id !== id));
       const mail = data?.approvalEmail;
+      const hiddenAfter = searchHiddenNote(biz);
       setNotice(
-        mail?.sent
+        (mail?.sent
           ? `${biz.businessName} approved. The "you're live" email was sent.`
           : mail?.reason === "already_sent"
             ? `${biz.businessName} approved. The "you're live" email had already been sent before.`
             : mail?.reason === "no_email"
               ? `${biz.businessName} approved. No email on file, so no "you're live" email was sent.`
-              : `${biz.businessName} approved, but the "you're live" email could not be sent.`,
+              : `${biz.businessName} approved, but the "you're live" email could not be sent.`) +
+          (hiddenAfter ? ` ${hiddenAfter}` : ""),
       );
     } catch (err: any) {
       setError(err?.message || "Approval failed");
@@ -529,6 +552,11 @@ export default function BusinessApprovals() {
                               biz.missingFields.length ? (
                                 <div className="mt-1 text-xs text-zinc-500">
                                   Missing: {biz.missingFields.join(", ")}
+                                </div>
+                              ) : null}
+                              {searchHiddenNote(biz) ? (
+                                <div className="mt-1 text-xs text-yellow-300">
+                                  {searchHiddenNote(biz)}
                                 </div>
                               ) : null}
                               {activeTab !== "approval_ready" &&

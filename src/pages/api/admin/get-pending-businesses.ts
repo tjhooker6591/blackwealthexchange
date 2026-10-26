@@ -5,6 +5,7 @@ import { ObjectId } from "mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { getCanonicalBusinessName } from "@/lib/businessSubmission";
+import { computeListingCompleteness } from "@/lib/directory/completeness";
 import {
   deriveAdminBusinessStatus,
   getAdminBusinessBucketFilter,
@@ -289,6 +290,13 @@ export default async function handler(
 
       const derivedStatus = deriveAdminBusinessStatus(b);
       const normalizedApproval = normalizeAdminApprovalRow(b);
+      // Approving lists the business, but public search also needs enough
+      // details (see publicBusinessBaseQuery); tell the admin what is missing.
+      const listing = computeListingCompleteness(b);
+      const searchReady =
+        listing.isComplete ||
+        Number(b.qualityScore || 0) >= 70 ||
+        b.directoryVisibilityApproved === true;
 
       return {
         ...b,
@@ -303,6 +311,11 @@ export default async function handler(
         canReject: normalizedApproval.canReject,
         missingFields: normalizedApproval.missingFields,
         ineligibilityReasons: getApprovalIneligibilityReasons(b),
+        searchReady,
+        searchMissingFields: searchReady ? [] : listing.missingFields,
+        searchDetailsNeeded: searchReady
+          ? 0
+          : Math.max(0, 7 - (9 - listing.missingFields.length)),
         approvalQueueBucket: deriveApprovalQueueBucket(b),
         automationDisposition:
           typeof b?.blackOwnedVerification?.decision?.disposition === "string"
