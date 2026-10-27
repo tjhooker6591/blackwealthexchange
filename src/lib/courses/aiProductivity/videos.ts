@@ -54,10 +54,22 @@ function localPreviewTrailer(lessonNumber: number): VideoSource | null {
   };
 }
 
+/** Local preview only: full lesson videos downloaded to this computer. */
+const LOCAL_LESSON_FILES = new Set([1, 2, 3, 4, 5, 7, 8, 9]);
+function localPreviewLesson(lessonNumber: number): VideoSource | null {
+  if (process.env.NODE_ENV !== "development") return null;
+  if (!LOCAL_LESSON_FILES.has(lessonNumber)) return null;
+  const nn = String(lessonNumber).padStart(2, "0");
+  return {
+    kind: "file",
+    src: `/course-media/copilot-training/lesson-${nn}.mp4`,
+  };
+}
+
 export function videosFor(lessonNumber: number) {
   const v = LESSON_VIDEOS[lessonNumber] || { trailer: null, lesson: null };
   return {
     trailer: toVideoSource(v.trailer) || localPreviewTrailer(lessonNumber),
-    lesson: toVideoSource(v.lesson),
+    lesson: toVideoSource(v.lesson) || localPreviewLesson(lessonNumber),
   };
 }
