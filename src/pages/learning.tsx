@@ -24,6 +24,10 @@ const PATHWAYS = [
     title: "Premium learning",
     copy: "Course routes that depend on login, enrollment, or active entitlement.",
     links: [
+      {
+        href: "/courses/ai-productivity-business",
+        label: "AI Productivity for Business",
+      },
       { href: "/course-enrollment", label: "Enrollment details" },
       { href: "/course-dashboard", label: "Course dashboard" },
       { href: "/courses", label: "Course library" },

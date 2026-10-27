@@ -112,7 +112,11 @@ export async function grantCourseAccess(
   if (options?.sendAccessEmail !== false && resolvedEmail) {
     try {
       const dashboardUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/course-dashboard`;
-      const courseUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/premium-finance`;
+      const coursePath =
+        courseId === "ai-productivity-business"
+          ? "/courses/ai-productivity-business"
+          : "/premium-finance";
+      const courseUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}${coursePath}`;
       const supportUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/support`;
       const text =
         `Your course access is now active.\n\nCourse: ${resolvedCourseName}\n` +

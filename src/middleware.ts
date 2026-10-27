@@ -13,6 +13,9 @@ const loginRequiredRoutes = [
   "/courses",
 ];
 
+// Public pages inside a login-required section (exact paths only).
+const publicPagesInLoginRoutes = new Set(["/courses/ai-productivity-business"]);
+
 const roleProtectedRoutes: Record<string, string | string[]> = {
   "/seller": "seller",
   "/business": "business",
@@ -164,7 +167,11 @@ export async function middleware(req: NextRequest) {
   }
 
   for (const loginRoute of loginRequiredRoutes) {
-    if (pathname.startsWith(loginRoute) && !isLoggedIn) {
+    if (
+      pathname.startsWith(loginRoute) &&
+      !isLoggedIn &&
+      !publicPagesInLoginRoutes.has(pathname.replace(/\/+$/, ""))
+    ) {
       const loginUrl = req.nextUrl.clone();
       loginUrl.pathname = "/login";
       loginUrl.searchParams.set("redirect", pathname);

@@ -17,6 +17,15 @@ const COURSE_PRICES: Record<string, { name: string; price: number }> = {
   "personal-finance-101": { name: "Personal Finance 101", price: 2900 },
   "investing-for-beginners": { name: "Investing for Beginners", price: 3900 },
   "generational-wealth": { name: "Building Generational Wealth", price: 4900 },
+  "ai-productivity-business": {
+    name: "AI Productivity for Business",
+    price: 4900,
+  },
+};
+
+// Courses with their own page return there after checkout.
+const COURSE_RETURN_PATHS: Record<string, string> = {
+  "ai-productivity-business": "/courses/ai-productivity-business",
 };
 
 function safeJsonBody(body: unknown): Record<string, any> {
@@ -116,9 +125,14 @@ export default async function handler(
         itemId: courseSlug,
         courseId: courseSlug,
         courseSlug,
+        courseName: course.name,
       },
-      success_url: `${appUrl}/course-dashboard?course=${courseSlug}&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/course-enrollment?cancelled=1`,
+      success_url: COURSE_RETURN_PATHS[courseSlug]
+        ? `${appUrl}${COURSE_RETURN_PATHS[courseSlug]}?session_id={CHECKOUT_SESSION_ID}`
+        : `${appUrl}/course-dashboard?course=${courseSlug}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: COURSE_RETURN_PATHS[courseSlug]
+        ? `${appUrl}${COURSE_RETURN_PATHS[courseSlug]}?cancelled=1`
+        : `${appUrl}/course-enrollment?cancelled=1`,
     });
 
     return res.status(200).json({ url: session.url, sessionId: session.id });
