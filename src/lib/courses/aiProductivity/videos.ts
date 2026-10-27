@@ -7,16 +7,16 @@
 export type LessonVideos = { trailer: string | null; lesson: string | null };
 
 export const LESSON_VIDEOS: Record<number, LessonVideos> = {
-  1: { trailer: null, lesson: null },
-  2: { trailer: null, lesson: null },
-  3: { trailer: null, lesson: null },
-  4: { trailer: null, lesson: null },
-  5: { trailer: null, lesson: null },
-  6: { trailer: null, lesson: null },
-  7: { trailer: null, lesson: null },
-  8: { trailer: null, lesson: null },
-  9: { trailer: null, lesson: null },
-  10: { trailer: null, lesson: null },
+  1: { trailer: null, lesson: "https://youtu.be/4FnqKVkGpc8" },
+  2: { trailer: null, lesson: "https://youtu.be/FCqwjglW8MQ" },
+  3: { trailer: null, lesson: "https://youtu.be/xq5LZ-JE0gY" },
+  4: { trailer: null, lesson: "https://youtu.be/eRLqxGOFUSE" },
+  5: { trailer: null, lesson: "https://youtu.be/4Xx2m1Qzyi4" },
+  6: { trailer: null, lesson: "https://youtu.be/Fw62sWsQTnI" },
+  7: { trailer: null, lesson: "https://youtu.be/x4qzw9UXzGU" },
+  8: { trailer: null, lesson: "https://youtu.be/rUCm9iVVaHk" },
+  9: { trailer: null, lesson: "https://youtu.be/LTotlqIqYP8" },
+  10: { trailer: null, lesson: "https://youtu.be/QNa-VNbhEHY" },
   11: { trailer: null, lesson: null },
   12: { trailer: null, lesson: null },
 };
