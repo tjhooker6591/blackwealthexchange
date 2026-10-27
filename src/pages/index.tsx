@@ -14,6 +14,7 @@ import { FEATURED_SPONSOR_RAIL_CAP } from "@/lib/advertising/placementDefinition
 import HomepagePulsePreview from "@/components/pulse/HomepagePulsePreview";
 import HomepagePulseJoinTeaser from "@/components/pulse/HomepagePulseJoinTeaser";
 import BusinessOfTheDaySpot from "@/components/social/BusinessOfTheDaySpot";
+import CopilotCourseHomeBanner from "@/components/courses/CopilotCourseHomeBanner";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -707,6 +708,8 @@ export default function Home() {
       </header>
 
       <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0 pt-3 sm:pt-4">
+        <CopilotCourseHomeBanner />
+
         {authLoading ? null : user ? (
           <HomepagePulsePreview />
         ) : (
