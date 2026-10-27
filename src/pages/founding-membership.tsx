@@ -687,6 +687,12 @@ export default function FoundingMembershipPage() {
                         Recurring monthly activity report and member support
                         access
                       </li>
+                      <li>
+                        <strong className="text-white">
+                          Free Microsoft Copilot Training for Business course
+                        </strong>{" "}
+                        ($49 value)
+                      </li>
                     </ul>
                   </div>
                   <div>
@@ -778,8 +784,9 @@ export default function FoundingMembershipPage() {
                       </div>
                       <div className="mt-1 text-white/65">
                         Claim initiation, ownership verification intake, profile
-                        review, fulfillment setup, performance baseline, and
-                        monthly reporting.
+                        review, fulfillment setup, performance baseline, monthly
+                        reporting, and the free Microsoft Copilot Training for
+                        Business course.
                       </div>
                     </div>
                     <div>

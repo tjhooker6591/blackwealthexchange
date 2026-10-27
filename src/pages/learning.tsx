@@ -25,8 +25,8 @@ const PATHWAYS = [
     copy: "Course routes that depend on login, enrollment, or active entitlement.",
     links: [
       {
-        href: "/courses/ai-productivity-business",
-        label: "AI Productivity for Business",
+        href: "/courses/copilot-training",
+        label: "Microsoft Copilot Training for Business",
       },
       { href: "/course-enrollment", label: "Enrollment details" },
       { href: "/course-dashboard", label: "Course dashboard" },
@@ -70,6 +70,30 @@ export default function LearningPage() {
         <div className="pointer-events-none absolute -bottom-44 right-[-9rem] h-[440px] w-[440px] rounded-full bg-emerald-500/[0.04] blur-3xl" />
 
         <div className="bwe-section-wrap relative z-10 py-8 sm:py-10">
+          <Link
+            href="/courses/copilot-training"
+            className="bwe-focus-ring mb-5 flex flex-col gap-3 rounded-[24px] border-2 border-[#D4AF37]/60 bg-[#D4AF37]/[0.08] px-4 py-4 transition hover:border-[#D4AF37] sm:flex-row sm:items-center sm:justify-between sm:px-6"
+          >
+            <div>
+              <div className="bwe-eyebrow">New · Business training course</div>
+              <div className="mt-1 text-lg font-bold text-white sm:text-xl">
+                Microsoft Copilot Training for Business
+              </div>
+              <p className="mt-1 text-sm text-white/75">
+                Learn to use Microsoft&apos;s AI assistant for emails, customer
+                support, meetings, proposals and marketing. 12 short video
+                lessons.
+              </p>
+              <p className="mt-2 text-sm font-bold text-[#E8CF7A]">
+                FREE for businesses that claim their listing on BWE · $49 for
+                everyone else
+              </p>
+            </div>
+            <span className="bwe-cta-primary shrink-0 px-5">
+              See the course
+            </span>
+          </Link>
+
           <section className="bwe-hero-panel relative overflow-hidden rounded-[30px] px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.12),transparent_34%),radial-gradient(circle_at_82%_24%,rgba(255,255,255,0.08),transparent_24%)]" />
             <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.06fr)_minmax(0,0.94fr)] lg:items-end">

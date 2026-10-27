@@ -40,7 +40,24 @@ export function toVideoSource(
   };
 }
 
+/**
+ * Local preview only: in `next dev`, a lesson with no hosted trailer plays
+ * public/course-media/copilot-training/trailer-NN.mp4 if that file exists on
+ * this computer (the folder is gitignored). Never used in production.
+ */
+function localPreviewTrailer(lessonNumber: number): VideoSource | null {
+  if (process.env.NODE_ENV !== "development") return null;
+  const nn = String(lessonNumber).padStart(2, "0");
+  return {
+    kind: "file",
+    src: `/course-media/copilot-training/trailer-${nn}.mp4`,
+  };
+}
+
 export function videosFor(lessonNumber: number) {
   const v = LESSON_VIDEOS[lessonNumber] || { trailer: null, lesson: null };
-  return { trailer: toVideoSource(v.trailer), lesson: toVideoSource(v.lesson) };
+  return {
+    trailer: toVideoSource(v.trailer) || localPreviewTrailer(lessonNumber),
+    lesson: toVideoSource(v.lesson),
+  };
 }

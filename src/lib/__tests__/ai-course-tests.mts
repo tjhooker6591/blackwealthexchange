@@ -1,4 +1,4 @@
-// Tests for the AI Productivity for Business course: content integrity,
+// Tests for the Microsoft Copilot Training for Business course: content integrity,
 // server-side quiz grading, lesson unlock order, and capstone completion.
 // The database is an in-memory fake; nothing real is touched.
 // Run: npx tsx src/lib/__tests__/ai-course-tests.mts

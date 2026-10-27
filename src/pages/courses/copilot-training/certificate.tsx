@@ -8,7 +8,7 @@ import {
   resolveAiCourseAccess,
 } from "@/lib/courses/aiProductivity/server";
 
-const PATH = "/courses/ai-productivity-business";
+const PATH = "/courses/copilot-training";
 
 type Props = { name: string; completedOn: string };
 
@@ -16,7 +16,7 @@ export default function CertificatePage({ name, completedOn }: Props) {
   return (
     <>
       <Head>
-        <title>Certificate | AI Productivity for Business</title>
+        <title>Certificate | Copilot Training for Business</title>
         <meta name="robots" content="noindex" />
         <style>{`@media print { nav, header, footer, .no-print { display: none !important; } body { background: #fff !important; } }`}</style>
       </Head>

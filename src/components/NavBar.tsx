@@ -224,6 +224,13 @@ export default function NavBar() {
                   Platform Hub — Everything BWE
                 </Link>
                 <Link
+                  href="/courses/copilot-training"
+                  onClick={handleItemClick}
+                  className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] md:hover:bg-white/5"
+                >
+                  Copilot Training for Business
+                </Link>
+                <Link
                   href="/search/ai"
                   onClick={handleItemClick}
                   className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] md:hover:bg-white/5"
@@ -598,6 +605,13 @@ export default function NavBar() {
                   className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
                 >
                   Learn
+                </Link>
+                <Link
+                  href="/courses/copilot-training"
+                  onClick={handleItemClick}
+                  className="block rounded-lg px-3 py-2 text-sm font-semibold text-[#D4AF37] hover:bg-white/[0.04]"
+                >
+                  Copilot Training for Business
                 </Link>
                 <Link
                   href="/support"

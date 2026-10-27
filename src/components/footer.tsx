@@ -22,6 +22,7 @@ const footerSections: Array<{
     links: [
       { href: "/start-here", label: "Start Here" },
       { href: "/financial-literacy", label: "Learn" },
+      { href: "/courses/copilot-training", label: "Copilot Training" },
       { href: "/library-of-black-history", label: "Black History Library" },
       { href: "/wealth-builder", label: "Wealth Builder" },
       { href: "/black-student-opportunities", label: "Student Opportunities" },

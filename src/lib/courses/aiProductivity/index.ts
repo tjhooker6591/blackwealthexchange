@@ -5,14 +5,14 @@ import { lessons9to12 } from "./lessons9to12";
 
 export type { AiCourse, AiLesson, QuizQuestion } from "./types";
 
-export const AI_COURSE_ID = "ai-productivity-business";
+export const AI_COURSE_ID = "copilot-training";
 
 export const aiProductivityCourse: AiCourse = {
   id: AI_COURSE_ID,
   slug: AI_COURSE_ID,
-  title: "AI Productivity for Business",
+  title: "Microsoft Copilot Training for Business",
   subtitle:
-    "Use Microsoft Copilot to save time on email, support, meetings, documents, reports and marketing, safely.",
+    "Learn to use Microsoft Copilot for everyday business work: customer emails, support, meetings, proposals, spreadsheets and marketing.",
   priceCents: 4900,
   passPercent: 75,
   lessons: [...lessons1to4, ...lessons5to8, ...lessons9to12],

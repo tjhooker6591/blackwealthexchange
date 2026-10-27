@@ -48,3 +48,6 @@ bwes-backup/
 # Local audit artifacts
 .audit/
 mobile/node_modules/
+
+# Local-only course video previews (real videos are hosted on YouTube/Stream)
+public/course-media/

@@ -3,7 +3,7 @@ Presenter: Marcus · Target length: about 3–4 minutes · Paste everything belo
 
 ---
 
-Welcome to AI Productivity for Business. I'm Marcus, and over the next twelve lessons I'm going to help you use Microsoft Copilot to get real time back in your week, without putting your customers or your reputation at risk.
+Welcome to Microsoft Copilot Training for Business, from Black Wealth Exchange. I'm Marcus, and over the next twelve lessons I'm going to help you use Microsoft Copilot to get real time back in your week, without putting your customers or your reputation at risk.
 
 Let's start with what AI actually is, because once you understand that, everything else in this course makes sense.
 

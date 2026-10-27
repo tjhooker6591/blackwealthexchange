@@ -16,7 +16,7 @@ import {
 } from "@/lib/courses/aiProductivity/server";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
-const PATH = "/courses/ai-productivity-business";
+const PATH = "/courses/copilot-training";
 
 type Props = {
   authenticated: boolean;
@@ -26,7 +26,7 @@ type Props = {
 };
 
 const ACCESS_NOTE: Partial<Record<AccessReason, string>> = {
-  founding_member: "Included with your Founding membership.",
+  founding_member: "Free for you: your business is claimed on BWE.",
   purchased: "You own this course.",
   admin: "Admin access.",
 };
@@ -102,7 +102,9 @@ export default function AiProductivityCoursePage({
   return (
     <>
       <Head>
-        <title>AI Productivity for Business | Black Wealth Exchange</title>
+        <title>
+          Microsoft Copilot Training for Business | Black Wealth Exchange
+        </title>
         <meta name="description" content={truncateMeta(course.subtitle)} />
         <link rel="canonical" href={canonicalUrl(PATH)} />
       </Head>
@@ -114,18 +116,46 @@ export default function AiProductivityCoursePage({
           <section className="bwe-hero-panel rounded-[30px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
               <div>
-                <div className="bwe-eyebrow">BWE course · Taught by Marcus</div>
+                <div className="bwe-eyebrow">
+                  Online training course · For business owners and teams
+                </div>
                 <h1 className="bwe-display-title mt-3">{course.title}</h1>
-                <p className="bwe-lead mt-4 max-w-xl">{course.subtitle}</p>
-                <ul className="mt-5 space-y-2 text-sm text-white/75">
+                <p className="bwe-lead mt-4 max-w-xl">
+                  A step-by-step course that teaches you how to use{" "}
+                  <strong className="text-white">Microsoft Copilot</strong>,
+                  Microsoft&apos;s AI assistant, to get everyday business work
+                  done faster: customer emails, support, meetings, proposals,
+                  spreadsheets and marketing.
+                </p>
+
+                <div className="mt-5 rounded-2xl border border-[#D4AF37]/40 bg-[#D4AF37]/[0.07] px-4 py-3">
+                  <p className="text-base font-bold text-white sm:text-lg">
+                    FREE for businesses that claim their listing on BWE.
+                  </p>
+                  <p className="mt-1 text-base font-bold text-[#E8CF7A]">
+                    $49 one-time for everyone else.
+                  </p>
+                </div>
+
+                <ul className="mt-5 space-y-2 text-sm text-white/80">
                   <li>
-                    12 lessons with video, reading, a worked example and a short
-                    quiz
+                    <strong className="text-white">
+                      12 short video lessons
+                    </strong>{" "}
+                    taught by Marcus, our AI instructor
                   </li>
                   <li>
-                    Hands-on assignments you can use in your business right away
+                    <strong className="text-white">Hands-on practice</strong>{" "}
+                    with ready-to-use prompts and templates for your business
                   </li>
-                  <li>Finish with a 30-day AI action plan and a certificate</li>
+                  <li>
+                    <strong className="text-white">Quick quizzes</strong> after
+                    each lesson, at your own pace
+                  </li>
+                  <li>
+                    <strong className="text-white">A certificate</strong> when
+                    you finish your 30-day action plan
+                  </li>
                 </ul>
 
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
@@ -162,7 +192,7 @@ export default function AiProductivityCoursePage({
                       href="/founding-membership"
                       className="bwe-cta-secondary bwe-focus-ring px-6"
                     >
-                      Free with Founding membership
+                      Claim your business: course included
                     </Link>
                   )}
                   {progress?.completedAt && (
@@ -182,9 +212,8 @@ export default function AiProductivityCoursePage({
                 )}
                 {!hasAccess && (
                   <p className="mt-3 text-sm text-white/60">
-                    $49 one-time. Businesses with a $49/month Founding
-                    membership get the course free; sign in with the account you
-                    used to claim your business.
+                    Already claimed your business? Sign in with the same account
+                    and the course unlocks automatically.
                   </p>
                 )}
                 {notice && (

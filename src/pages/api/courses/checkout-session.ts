@@ -17,15 +17,15 @@ const COURSE_PRICES: Record<string, { name: string; price: number }> = {
   "personal-finance-101": { name: "Personal Finance 101", price: 2900 },
   "investing-for-beginners": { name: "Investing for Beginners", price: 3900 },
   "generational-wealth": { name: "Building Generational Wealth", price: 4900 },
-  "ai-productivity-business": {
-    name: "AI Productivity for Business",
+  "copilot-training": {
+    name: "Microsoft Copilot Training for Business",
     price: 4900,
   },
 };
 
 // Courses with their own page return there after checkout.
 const COURSE_RETURN_PATHS: Record<string, string> = {
-  "ai-productivity-business": "/courses/ai-productivity-business",
+  "copilot-training": "/courses/copilot-training",
 };
 
 function safeJsonBody(body: unknown): Record<string, any> {

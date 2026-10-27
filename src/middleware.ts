@@ -14,7 +14,7 @@ const loginRequiredRoutes = [
 ];
 
 // Public pages inside a login-required section (exact paths only).
-const publicPagesInLoginRoutes = new Set(["/courses/ai-productivity-business"]);
+const publicPagesInLoginRoutes = new Set(["/courses/copilot-training"]);
 
 const roleProtectedRoutes: Record<string, string | string[]> = {
   "/seller": "seller",

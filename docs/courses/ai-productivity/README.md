@@ -1,6 +1,6 @@
-# AI Productivity for Business — course videos
+# Microsoft Copilot Training for Business — course videos
 
-The course lives at `/courses/ai-productivity-business`. The lesson text and quizzes are in
+The course lives at `/courses/copilot-training`. The lesson text and quizzes are in
 `src/lib/courses/aiProductivity/`. Video players stay as placeholders until a video is
 added in `src/lib/courses/aiProductivity/videos.ts`.
 
