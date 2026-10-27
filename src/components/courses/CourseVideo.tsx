@@ -22,7 +22,8 @@ export default function CourseVideo({ source, title, placeholder }: Props) {
     return (
       <video
         className="aspect-video w-full rounded-2xl bg-black"
-        src={source.src}
+        // Start the preview a second in: some videos open on a black frame.
+        src={source.src.includes("#") ? source.src : `${source.src}#t=1`}
         controls
         preload="metadata"
         playsInline

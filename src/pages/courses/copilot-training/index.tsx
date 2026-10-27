@@ -274,8 +274,12 @@ export default function AiProductivityCoursePage({
                 );
                 const unlocked = hasAccess;
                 const trailer = videosFor(lesson.number).trailer;
-                const body = (
-                  <>
+                const lessonHref = `${PATH}/${lesson.slug}`;
+                return (
+                  <li
+                    key={lesson.slug}
+                    className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+                  >
                     <div className="flex items-start justify-between gap-3">
                       <div className="text-[11px] uppercase tracking-[0.14em] text-white/45">
                         Lesson {lesson.number}
@@ -293,35 +297,36 @@ export default function AiProductivityCoursePage({
                       ) : null}
                     </div>
                     <div className="mt-1 font-semibold text-white/90">
-                      {lesson.title}
+                      {unlocked ? (
+                        <Link
+                          href={lessonHref}
+                          className="bwe-focus-ring hover:text-[#E8CF7A]"
+                        >
+                          {lesson.title}
+                        </Link>
+                      ) : (
+                        lesson.title
+                      )}
                     </div>
                     <p className="mt-1 text-sm text-white/60">
                       {lesson.outcome}
                     </p>
-                    {trailer && !hasAccess && (
+                    {trailer && (
                       <div className="mt-3">
                         <CourseVideo
                           source={trailer}
-                          title={`${lesson.title} trailer`}
+                          title={`Lesson ${lesson.number} teaser: ${lesson.title}`}
                           placeholder=""
                         />
                       </div>
                     )}
-                  </>
-                );
-                return (
-                  <li key={lesson.slug}>
-                    {unlocked ? (
+                    {unlocked && (
                       <Link
-                        href={`${PATH}/${lesson.slug}`}
-                        className="bwe-focus-ring block h-full rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-[#D4AF37]/50"
+                        href={lessonHref}
+                        className="bwe-cta-secondary bwe-focus-ring mt-4 self-start px-5"
                       >
-                        {body}
+                        {row?.passedAt ? "Review lesson" : "Open lesson"}
                       </Link>
-                    ) : (
-                      <div className="h-full rounded-2xl border border-white/8 bg-white/[0.02] p-4">
-                        {body}
-                      </div>
                     )}
                   </li>
                 );
