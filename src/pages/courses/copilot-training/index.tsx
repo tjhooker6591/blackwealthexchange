@@ -91,7 +91,7 @@ export default function AiProductivityCoursePage({
 
   const loginHref = `/login?redirect=${encodeURIComponent(PATH)}`;
   const nextLesson = progress
-    ? course.lessons.find((l) => l.number === progress.unlockedThrough) ||
+    ? course.lessons.find((l) => l.number === progress.nextLessonNumber) ||
       course.lessons[0]
     : course.lessons[0];
   const started = Boolean(
@@ -261,14 +261,18 @@ export default function AiProductivityCoursePage({
 
           <section className="mt-8">
             <h2 className="bwe-section-title">What you will learn</h2>
+            {!hasAccess && (
+              <p className="mt-2 text-sm text-white/65">
+                All 12 lessons open as soon as you buy the course or claim your
+                business.
+              </p>
+            )}
             <ol className="mt-4 grid gap-3 md:grid-cols-2">
               {course.lessons.map((lesson) => {
                 const row = progress?.lessons.find(
                   (l) => l.lessonNumber === lesson.number,
                 );
-                const unlocked =
-                  hasAccess &&
-                  lesson.number <= (progress?.unlockedThrough || 1);
+                const unlocked = hasAccess;
                 const trailer = videosFor(lesson.number).trailer;
                 const body = (
                   <>

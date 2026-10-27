@@ -120,25 +120,27 @@ await test("grading: 3/4 passes at 75%, 2/4 fails, junk input scores 0", () => {
   assert.equal(gradeQuiz(l, "nope").score, 0);
 });
 
-await test("lessons unlock one at a time; first pass time is kept; best score kept", async () => {
+await test("every lesson open; resume points at first unpassed; first pass time and best score kept", async () => {
   const db = fakeDb();
   let p = await getProgress(db, "u1");
-  assert.equal(p.unlockedThrough, 1);
+  assert.equal(p.nextLessonNumber, 1);
   await recordQuizAttempt(db, "u1", 1, 50, false);
   p = await getProgress(db, "u1");
-  assert.equal(p.unlockedThrough, 1);
+  assert.equal(p.nextLessonNumber, 1);
   await recordQuizAttempt(db, "u1", 1, 100, true);
   p = await getProgress(db, "u1");
   const firstPass = p.lessons[0].passedAt;
-  assert.equal(p.unlockedThrough, 2);
+  assert.equal(p.nextLessonNumber, 2);
   await recordQuizAttempt(db, "u1", 1, 75, true);
   p = await getProgress(db, "u1");
   assert.equal(p.lessons[0].passedAt, firstPass);
   assert.equal(p.lessons[0].bestScore, 100);
   assert.equal(p.lessons[0].attempts, 3);
-  // passing lesson 3 out of order does not unlock past lesson 2
+  // lessons can be passed in any order; resume still points at lesson 2
   await recordQuizAttempt(db, "u1", 3, 100, true);
-  assert.equal((await getProgress(db, "u1")).unlockedThrough, 2);
+  p = await getProgress(db, "u1");
+  assert.equal(p.nextLessonNumber, 2);
+  assert.equal(p.passedCount, 2);
 });
 
 await test("capstone requires every field; completion needs all lessons + capstone", async () => {

@@ -61,7 +61,6 @@ export default function LessonPage({
 
   const row = progress.lessons.find((l) => l.lessonNumber === lesson.number);
   const passed = Boolean(row?.passedAt);
-  const nextUnlocked = next ? progress.unlockedThrough > lesson.number : false;
 
   const submitQuiz = async () => {
     setError("");
@@ -206,8 +205,9 @@ export default function LessonPage({
                 )}
               </div>
               <p className="mt-1 text-sm text-white/55">
-                Score {course.passPercent}% or higher to unlock the next lesson.
-                You can retry as often as you like.
+                Score {course.passPercent}% or higher to pass this lesson. You
+                can retry as often as you like. Pass all 12 and submit your
+                30-day plan to earn your certificate.
               </p>
 
               <div className="mt-4 space-y-5">
@@ -305,9 +305,7 @@ export default function LessonPage({
               </div>
             </section>
 
-            {isLast && progress.unlockedThrough >= lesson.number && (
-              <Capstone progress={progress} onSaved={setProgress} />
-            )}
+            {isLast && <Capstone progress={progress} onSaved={setProgress} />}
           </article>
 
           <nav className="mt-10 flex max-w-4xl flex-col gap-3 border-t border-white/10 pt-6 sm:flex-row sm:justify-between">
@@ -321,19 +319,14 @@ export default function LessonPage({
             ) : (
               <span />
             )}
-            {next &&
-              (nextUnlocked ? (
-                <Link
-                  href={`${PATH}/${next.slug}`}
-                  className="bwe-cta-primary bwe-focus-ring px-5"
-                >
-                  Next: {next.title} <ArrowRight className="h-4 w-4" />
-                </Link>
-              ) : (
-                <span className="text-sm text-white/50 sm:self-center">
-                  Pass the check above to unlock Lesson {lesson.number + 1}.
-                </span>
-              ))}
+            {next && (
+              <Link
+                href={`${PATH}/${next.slug}`}
+                className="bwe-cta-primary bwe-focus-ring px-5"
+              >
+                Next: {next.title} <ArrowRight className="h-4 w-4" />
+              </Link>
+            )}
             {isLast && progress.completedAt && (
               <Link
                 href={`${PATH}/certificate`}
@@ -499,14 +492,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   }
 
   const progress = await getProgress(db, access.userId);
-  if (lesson.number > progress.unlockedThrough) {
-    const current = course.lessons.find(
-      (l) => l.number === progress.unlockedThrough,
-    )!;
-    return {
-      redirect: { destination: `${PATH}/${current.slug}`, permanent: false },
-    };
-  }
 
   const { quiz: _answers, ...view } = lesson;
   const idx = course.lessons.indexOf(lesson);

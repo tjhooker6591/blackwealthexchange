@@ -134,8 +134,8 @@ export type LessonProgress = {
 export type CourseProgress = {
   lessons: LessonProgress[];
   passedCount: number;
-  /** Highest lesson number the learner may open. */
-  unlockedThrough: number;
+  /** First lesson not yet passed (the last lesson once all are passed). */
+  nextLessonNumber: number;
   capstoneSubmittedAt: string | null;
   completedAt: string | null;
 };
@@ -159,11 +159,9 @@ export async function getProgress(
     };
   });
 
-  let unlockedThrough = 1;
-  for (const l of lessons) {
-    if (!l.passedAt) break;
-    unlockedThrough = Math.min(l.lessonNumber + 1, lessons.length);
-  }
+  // Every lesson is open to anyone with access; this only says where to resume.
+  const nextLessonNumber =
+    lessons.find((l) => !l.passedAt)?.lessonNumber ?? lessons.length;
 
   const capstone = await db
     .collection(CAPSTONE_COLLECTION)
@@ -186,7 +184,7 @@ export async function getProgress(
   return {
     lessons,
     passedCount,
-    unlockedThrough,
+    nextLessonNumber,
     capstoneSubmittedAt,
     completedAt,
   };

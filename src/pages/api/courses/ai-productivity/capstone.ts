@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { aiProductivityCourse } from "@/lib/courses/aiProductivity";
 import {
   getDb,
   getProgress,
@@ -26,12 +25,6 @@ export default async function handler(
     }
     if (!access.hasAccess || !access.userId) {
       return res.status(403).json({ ok: false, code: "NO_ACCESS" });
-    }
-
-    const lastLesson = aiProductivityCourse.lessons.length;
-    const before = await getProgress(db, access.userId);
-    if (before.unlockedThrough < lastLesson) {
-      return res.status(403).json({ ok: false, code: "LESSON_LOCKED" });
     }
 
     const { answers, missing } = validateCapstone(req.body);

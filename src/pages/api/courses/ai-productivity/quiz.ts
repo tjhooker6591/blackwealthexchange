@@ -35,11 +35,6 @@ export default async function handler(
       return res.status(403).json({ ok: false, code: "NO_ACCESS" });
     }
 
-    const before = await getProgress(db, access.userId);
-    if (lesson.number > before.unlockedThrough) {
-      return res.status(403).json({ ok: false, code: "LESSON_LOCKED" });
-    }
-
     const graded = gradeQuiz(lesson, body.answers);
     await recordQuizAttempt(
       db,
