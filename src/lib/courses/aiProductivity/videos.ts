@@ -55,7 +55,7 @@ function localPreviewTrailer(lessonNumber: number): VideoSource | null {
 }
 
 /** Local preview only: full lesson videos downloaded to this computer. */
-const LOCAL_LESSON_FILES = new Set([1, 2, 3, 4, 5, 7, 8, 9]);
+const LOCAL_LESSON_FILES = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
 function localPreviewLesson(lessonNumber: number): VideoSource | null {
   if (process.env.NODE_ENV !== "development") return null;
   if (!LOCAL_LESSON_FILES.has(lessonNumber)) return null;
