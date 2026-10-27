@@ -372,6 +372,27 @@ export default function FinancialLiteracy() {
             </div>
           </section>
 
+          <section className="mt-6 flex flex-col gap-3 rounded-[24px] border border-[#D4AF37]/30 bg-[#D4AF37]/[0.05] px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+            <div>
+              <div className="bwe-eyebrow">
+                New course · For business owners
+              </div>
+              <div className="mt-1 font-semibold text-white/90">
+                AI Productivity for Business
+              </div>
+              <p className="mt-1 text-sm text-white/65">
+                Use Microsoft Copilot to save time on email, support, meetings
+                and marketing. Free with Founding membership, or $49.
+              </p>
+            </div>
+            <Link
+              href="/courses/ai-productivity-business"
+              className="bwe-cta-secondary bwe-focus-ring shrink-0 px-5"
+            >
+              See the course
+            </Link>
+          </section>
+
           <section className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)]">
             <div className="border-t border-white/8 pt-5 text-left">
               <div className="bwe-eyebrow">What you learn</div>
