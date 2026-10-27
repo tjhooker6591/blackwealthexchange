@@ -1,0 +1,13 @@
+Welcome to Lesson 6: meetings and action items. Have you ever left a meeting and realized everyone remembers it differently? A written summary fixes that, and Copilot can write one from your notes in under a minute.
+
+Ask for the same four sections every time. A short summary of what was discussed. The decisions that were actually made. Action items, each with an owner and a due date. And open questions.
+
+Keep discussion and decisions separate. "We talked about raising prices" is not the same as "We decided to raise prices on June first."
+
+Here's the biggest risk. If nobody volunteered for a task, Copilot may still assign it to someone who sounds likely. So tell it: if an action has no owner, write UNASSIGNED. If it has no date, write NO DATE. Then your team fills the gaps.
+
+And always get everyone's permission before you record a meeting or upload a transcript.
+
+Try the sample notes on this page. Maya checks stock by Thursday. The poster has no owner. The price stays twenty-five dollars. Delivery partners is an open question. If Copilot gets any of that wrong, tighten your template.
+
+Your assignment: build a four-section template, run it on made-up notes, check every name and date, and turn the action items into a simple register: owner, task, due date, status. Then take the quick check below.

@@ -1,0 +1,11 @@
+Welcome to Lesson 11: building a repeatable workflow. Using Copilot once is helpful. Using it the same way every time is where the real savings are.
+
+A workflow is a written set of steps anyone on your team could follow. Map it before you automate anything. What starts it? Where does the information come from? What is allowed into AI? What does a person check? Who approves? How is it sent? Where is it recorded?
+
+Here's an example for new leads. A request comes in. Check that the person agreed to be contacted. Sort it with your triage matrix from Lesson 5. Draft a reply with your prompt card from Lesson 3. Verify the facts and prices. Approve and send it from your normal email. Log how long it took and what happened. And if anything is unclear or sensitive, it goes to the owner.
+
+Don't roll it out everywhere on day one. Pilot it on ten or twenty cases, and compare against the baseline you recorded in Lesson 1: minutes per task, mistakes, escalations and customer response.
+
+Decide what success means before you start. If the pilot hits the goal, keep it and train your team. If not, fix the steps or stop. More text is not success. Measured improvement is.
+
+Your assignment: write the workflow for your pilot task, build a scorecard, run it on five cases, and take the check below.

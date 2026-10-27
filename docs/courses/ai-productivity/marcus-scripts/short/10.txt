@@ -1,0 +1,13 @@
+Welcome to Lesson 10: privacy, security, and keeping a person in charge. Everything you paste into an AI tool goes somewhere, so sort your information first.
+
+Public: your website, menu and posted prices. Internal: schedules and process notes. Confidential: customer lists, contracts, pricing strategy and employee details. Regulated: card numbers, Social Security numbers and health information.
+
+Public and most internal information is usually fine in an approved tool. Confidential information goes only into a tool your business has approved for it. Regulated information and passwords never go into a general AI chat.
+
+When you practice, replace real details with placeholders. The customer's name becomes CUSTOMER. The phone number becomes PHONE. The card number is removed. Then check again that nothing identifying is left.
+
+You'll notice Copilot almost never needs those details to write a good reply. You add the real name back when you send it yourself.
+
+Human oversight means a person stays in charge. Decide which AI drafts need approval, who approves them, and how mistakes get reported. Watch for unfair wording, especially about hiring, pricing or customers.
+
+Your assignment: write a one-page AI use policy covering allowed information, forbidden information, approved tools, who approves what, and how to report a mistake. Then practice redacting one made-up customer message, and take the check below.
