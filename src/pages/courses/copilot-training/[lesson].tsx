@@ -32,6 +32,8 @@ type Props = {
   lesson: LessonView;
   quiz: { question: string; choices: string[] }[];
   video: VideoSource | null;
+  /** True when only Marcus's short intro exists for this lesson. */
+  videoIsIntro: boolean;
   progress: CourseProgress;
   prev: { slug: string; title: string } | null;
   next: { slug: string; title: string } | null;
@@ -48,6 +50,7 @@ export default function LessonPage({
   lesson,
   quiz,
   video,
+  videoIsIntro,
   progress: initial,
   prev,
   next,
@@ -135,8 +138,17 @@ export default function LessonPage({
             <CourseVideo
               source={video}
               title={`Marcus: ${lesson.title}`}
-              placeholder="Marcus's full video for this lesson is coming soon. The reading and walkthrough below cover everything in the lesson."
+              placeholder="Marcus's video for this lesson is coming soon. The reading and walkthrough below cover everything in the lesson."
             />
+            {videoIsIntro && (
+              <p className="mt-2 text-sm text-white/65">
+                <strong className="text-white">
+                  Lesson introduction from Marcus.
+                </strong>{" "}
+                The full video lesson is coming soon. The reading and
+                walkthrough below cover everything in the lesson.
+              </p>
+            )}
           </div>
 
           <article className="mt-8 grid max-w-4xl gap-8">
@@ -502,7 +514,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     props: {
       lesson: view,
       quiz: publicQuiz(lesson),
-      video: lessonVideos.lesson,
+      video: lessonVideos.lesson || lessonVideos.trailer,
+      videoIsIntro: !lessonVideos.lesson && Boolean(lessonVideos.trailer),
       progress,
       prev: prev ? { slug: prev.slug, title: prev.title } : null,
       next: next ? { slug: next.slug, title: next.title } : null,
