@@ -599,9 +599,15 @@ export default function JobListingsPage({
               // click outside modal closes
               if (e.target === overlayRef.current) setSelectedJob(null);
             }}
-            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4"
+            // Long descriptions are taller than a phone screen: the overlay
+            // scrolls, and my-auto centers the box only when it fits, so the
+            // title, Close and Apply Now are always reachable.
+            className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 px-4 py-6"
+            role="dialog"
+            aria-modal="true"
+            aria-label={selectedJob.title}
           >
-            <div className="bg-gray-900 text-white rounded-xl border border-gray-800 p-6 max-w-2xl w-full relative shadow-2xl">
+            <div className="relative my-auto w-full max-w-2xl rounded-xl border border-gray-800 bg-gray-900 p-6 text-white shadow-2xl">
               <button
                 onClick={() => setSelectedJob(null)}
                 className="absolute top-4 right-4 text-gray-400 hover:text-white"
