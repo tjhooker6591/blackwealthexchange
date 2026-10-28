@@ -134,7 +134,8 @@ export default function AiProductivityCoursePage({
                     FREE for businesses that claim their listing on BWE.
                   </p>
                   <p className="mt-1 text-base font-bold text-[#E8CF7A]">
-                    $49 one-time for everyone else.
+                    Everyone else: $49 one-time for the whole course, all 12
+                    lessons.
                   </p>
                 </div>
 
@@ -178,7 +179,7 @@ export default function AiProductivityCoursePage({
                       disabled={busy}
                       className="bwe-cta-primary bwe-focus-ring px-6 disabled:opacity-60"
                     >
-                      {busy ? "Opening checkout…" : "Buy the course: $49"}
+                      {busy ? "Opening checkout…" : "Buy the full course: $49"}
                     </button>
                   ) : (
                     <Link
@@ -187,7 +188,7 @@ export default function AiProductivityCoursePage({
                     >
                       {reason === "session_expired"
                         ? "Sign in again"
-                        : "Sign in to buy: $49"}
+                        : "Sign in to buy the full course: $49"}
                     </Link>
                   )}
                   {!hasAccess && (
@@ -294,7 +295,7 @@ export default function AiProductivityCoursePage({
             <h2 className="bwe-section-title">What you will learn</h2>
             {!hasAccess && (
               <p className="mt-2 text-sm text-white/65">
-                All 12 lessons open as soon as you buy the course or claim your
+                One $49 purchase opens all 12 lessons. Free when you claim your
                 business.
               </p>
             )}
@@ -366,7 +367,9 @@ export default function AiProductivityCoursePage({
                         disabled={busy}
                         className="bwe-cta-secondary bwe-focus-ring mt-4 self-start px-5 disabled:opacity-60"
                       >
-                        {busy ? "Opening checkout…" : "Buy to open: $49"}
+                        {busy
+                          ? "Opening checkout…"
+                          : "Unlock with the full course"}
                       </button>
                     ) : (
                       <Link

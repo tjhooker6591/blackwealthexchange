@@ -286,7 +286,7 @@ export default function FinancialLiteracy() {
               </p>
               <p className="mt-2 text-sm font-bold text-[#E8CF7A]">
                 FREE for businesses that claim their listing on BWE · $49 for
-                everyone else
+                all 12 lessons for everyone else
               </p>
             </div>
             <span className="bwe-cta-primary shrink-0 px-5">
