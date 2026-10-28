@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { CheckCircle2, Lock } from "lucide-react";
@@ -226,11 +227,28 @@ export default function AiProductivityCoursePage({
                 )}
               </div>
 
-              <CourseVideo
-                source={firstTrailer}
-                title="Course trailer"
-                placeholder="Course trailer coming soon."
-              />
+              {firstTrailer ? (
+                <CourseVideo
+                  source={firstTrailer}
+                  title="Course trailer"
+                  placeholder=""
+                />
+              ) : (
+                <figure>
+                  <Image
+                    src="/images/courses/marcus-copilot.jpg"
+                    alt="Marcus, the course instructor"
+                    width={480}
+                    height={269}
+                    priority
+                    className="aspect-video w-full rounded-2xl object-cover"
+                  />
+                  <figcaption className="mt-2 text-sm text-white/65">
+                    Meet Marcus, your instructor. Every lesson has a full video
+                    from Marcus.
+                  </figcaption>
+                </figure>
+              )}
             </div>
           </section>
 
@@ -275,6 +293,7 @@ export default function AiProductivityCoursePage({
                 const unlocked = hasAccess;
                 const trailer = videosFor(lesson.number).trailer;
                 const lessonHref = `${PATH}/${lesson.slug}`;
+                const lessonLoginHref = `/login?redirect=${encodeURIComponent(lessonHref)}`;
                 return (
                   <li
                     key={lesson.slug}
@@ -297,9 +316,9 @@ export default function AiProductivityCoursePage({
                       ) : null}
                     </div>
                     <div className="mt-1 font-semibold text-white/90">
-                      {unlocked ? (
+                      {unlocked || !authenticated ? (
                         <Link
-                          href={lessonHref}
+                          href={unlocked ? lessonHref : lessonLoginHref}
                           className="bwe-focus-ring hover:text-[#E8CF7A]"
                         >
                           {lesson.title}
@@ -320,12 +339,28 @@ export default function AiProductivityCoursePage({
                         />
                       </div>
                     )}
-                    {unlocked && (
+                    {unlocked ? (
                       <Link
                         href={lessonHref}
                         className="bwe-cta-secondary bwe-focus-ring mt-4 self-start px-5"
                       >
                         {row?.passedAt ? "Review lesson" : "Open lesson"}
+                      </Link>
+                    ) : authenticated ? (
+                      <button
+                        type="button"
+                        onClick={buy}
+                        disabled={busy}
+                        className="bwe-cta-secondary bwe-focus-ring mt-4 self-start px-5 disabled:opacity-60"
+                      >
+                        {busy ? "Opening checkout…" : "Buy to open: $49"}
+                      </button>
+                    ) : (
+                      <Link
+                        href={lessonLoginHref}
+                        className="bwe-cta-secondary bwe-focus-ring mt-4 self-start px-5"
+                      >
+                        Sign in to open
                       </Link>
                     )}
                   </li>

@@ -164,13 +164,18 @@ await test("capstone requires every field; completion needs all lessons + capsto
   assert.ok(p.completedAt);
 });
 
-await test("video config accepts YouTube IDs/links and https files only", () => {
+await test("video config accepts YouTube IDs/links, https files and site videos only", () => {
   assert.equal(toVideoSource("dQw4w9WgXcQ")?.kind, "youtube");
   assert.equal(
     toVideoSource("https://youtu.be/dQw4w9WgXcQ")?.src,
     "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
   );
   assert.equal(toVideoSource("https://cdn.example.com/a.mp4")?.kind, "file");
+  assert.equal(
+    toVideoSource("/videos/copilot-training/trailer-01.mp4")?.kind,
+    "file",
+  );
+  assert.equal(toVideoSource("/videos/../secret.mp4"), null);
   assert.equal(toVideoSource("javascript:alert(1)"), null);
   assert.equal(toVideoSource(null), null);
 });

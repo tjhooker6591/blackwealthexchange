@@ -9,6 +9,8 @@ import { AI_COURSE_ID, aiProductivityCourse } from "./index";
 
 export { CAPSTONE_FIELDS, CAPSTONE_MIN_CHARS, validateCapstone } from "./index";
 
+const FOUNDING_PRODUCT_KEY = "founding_verified_business_growth_membership";
+
 export const PROGRESS_COLLECTION = "ai_course_progress";
 export const CAPSTONE_COLLECTION = "ai_course_capstones";
 
@@ -97,12 +99,16 @@ export async function resolveAiCourseAccess(
     return { ...base, hasAccess: true, reason: "admin" };
   if (!userId) return { ...base, hasAccess: false, reason: "no_access" };
 
-  const founding = await database
-    .collection("business_memberships")
-    .findOne(
-      { userId, membershipStatus: "active" },
-      { projection: { _id: 1 } },
-    );
+  const founding = await database.collection("business_memberships").findOne(
+    {
+      productKey: FOUNDING_PRODUCT_KEY,
+      membershipStatus: { $in: ["active", "past_due"] },
+      // Same match as the membership status page: the owner's account, a
+      // business account's own business, or the email on the membership.
+      $or: [{ userId }, { businessId: userId }, ...(email ? [{ email }] : [])],
+    },
+    { projection: { _id: 1 } },
+  );
   if (founding) return { ...base, hasAccess: true, reason: "founding_member" };
 
   const purchased =
