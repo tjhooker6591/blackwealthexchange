@@ -185,7 +185,9 @@ export default function AiProductivityCoursePage({
                       href={loginHref}
                       className="bwe-cta-primary bwe-focus-ring px-6"
                     >
-                      Sign in to buy: $49
+                      {reason === "session_expired"
+                        ? "Sign in again"
+                        : "Sign in to buy: $49"}
                     </Link>
                   )}
                   {!hasAccess && (
@@ -215,6 +217,17 @@ export default function AiProductivityCoursePage({
                   <p className="mt-3 text-sm text-white/60">
                     Already claimed your business? Sign in with the same account
                     and the course unlocks automatically.
+                  </p>
+                )}
+                {reason === "session_expired" && (
+                  <p role="status" className="mt-3 text-sm text-[#E8CF7A]">
+                    Your sign-in has expired. Sign in again to open the course.
+                  </p>
+                )}
+                {reason === "check_failed" && (
+                  <p role="alert" className="mt-3 text-sm text-red-300">
+                    We couldn&apos;t check your course access just now. Please
+                    refresh the page.
                   </p>
                 )}
                 {notice && (
@@ -407,7 +420,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
       props: {
         authenticated: false,
         hasAccess: false,
-        reason: "login_required",
+        reason: "check_failed",
         progress: null,
       },
     };

@@ -16,6 +16,8 @@ export const CAPSTONE_COLLECTION = "ai_course_capstones";
 
 export type AccessReason =
   | "login_required"
+  | "session_expired"
+  | "check_failed"
   | "admin"
   | "founding_member"
   | "purchased"
@@ -32,14 +34,23 @@ export type AiCourseAccess = {
 
 type Session = AdminDecoded & { id?: string; name?: string };
 
-function readSession(req: IncomingMessage): Session | null {
+function readSession(req: IncomingMessage): {
+  session: Session | null;
+  hadToken: boolean;
+} {
   const parsed = cookie.parse(req.headers.cookie || "");
   const token = parsed.session_token;
-  if (!token) return null;
+  if (!token) return { session: null, hadToken: false };
   try {
-    return jwt.verify(token, getJwtSecret()) as Session;
-  } catch {
-    return null;
+    return {
+      session: jwt.verify(token, getJwtSecret()) as Session,
+      hadToken: true,
+    };
+  } catch (err) {
+    console.warn("[copilot-course] session token not accepted:", {
+      error: err instanceof Error ? err.name : "unknown",
+    });
+    return { session: null, hadToken: true };
   }
 }
 
@@ -57,13 +68,15 @@ export async function resolveAiCourseAccess(
   req: IncomingMessage,
   db?: Db,
 ): Promise<AiCourseAccess> {
-  const session = readSession(req);
+  const { session, hadToken } = readSession(req);
   const sessionUserId = String(session?.userId || session?.id || "").trim();
   if (!session || (!sessionUserId && !session.email)) {
     return {
       authenticated: false,
       hasAccess: false,
-      reason: "login_required",
+      // A cookie that no longer verifies (expired, or signed before a secret
+      // change): tell the person to sign in again instead of "sign in to buy".
+      reason: hadToken ? "session_expired" : "login_required",
       userId: null,
       email: null,
       name: null,
@@ -83,6 +96,7 @@ export async function resolveAiCourseAccess(
           email: 1,
           name: 1,
           fullName: 1,
+          isAdmin: 1,
           purchasedCourses: 1,
         },
       },
@@ -95,7 +109,9 @@ export async function resolveAiCourseAccess(
     String(user?.fullName || user?.name || session.name || "").trim() || null;
   const base = { authenticated: true, userId, email, name };
 
-  if (isAdminDecoded(session))
+  // Admin by the sign-in token, or by the account itself (a token issued
+  // before the account was made admin, or for a different account type).
+  if (isAdminDecoded(session) || user?.isAdmin === true)
     return { ...base, hasAccess: true, reason: "admin" };
   if (!userId) return { ...base, hasAccess: false, reason: "no_access" };
 
