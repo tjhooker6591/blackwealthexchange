@@ -26,6 +26,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Pop-ups and drawers can scroll on phones
+        run: npm run check:overlay-scroll
+
       - name: Typecheck
         run: npm run typecheck
         if: always()

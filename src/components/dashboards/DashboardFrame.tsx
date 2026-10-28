@@ -235,6 +235,7 @@ export default function DashboardFrame({
     <div className="min-h-screen bg-[#050505] text-white">
       <div
         className={clsx(
+          // overlay-scroll-ok: dimmed backdrop only; the drawer itself scrolls
           "fixed inset-0 z-30 bg-black/60 backdrop-blur-sm transition-opacity md:hidden",
           open ? "opacity-100" : "pointer-events-none opacity-0",
         )}
@@ -247,9 +248,9 @@ export default function DashboardFrame({
       <div className="relative mx-auto flex min-h-screen w-full max-w-[1600px] flex-col md:flex-row">
         <aside
           className={clsx(
-            "fixed inset-y-0 left-0 z-40 w-72 border-r border-[#d4af37]/10 bg-[#090909]/95 backdrop-blur-xl transition-transform duration-200",
+            "fixed inset-y-0 left-0 z-40 w-72 overflow-y-auto overscroll-contain border-r border-[#d4af37]/10 bg-[#090909]/95 backdrop-blur-xl transition-transform duration-200",
             open ? "translate-x-0" : "-translate-x-full md:translate-x-0",
-            "md:static md:block md:min-h-screen",
+            "md:static md:block md:min-h-screen md:overflow-visible",
           )}
         >
           <div className="border-b border-[#d4af37]/10 px-6 pb-5 pt-6">

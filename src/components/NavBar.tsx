@@ -215,7 +215,7 @@ export default function NavBar() {
               Explore
             </button>
             {desktopMenuOpen === "explore" && (
-              <div className="absolute right-0 z-50 mt-2 w-64 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
+              <div className="absolute right-0 z-50 mt-2 max-h-[calc(100dvh-6rem)] w-64 overflow-y-auto overscroll-contain rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
                 <Link
                   href="/explore"
                   onClick={handleItemClick}
@@ -347,7 +347,7 @@ export default function NavBar() {
                 {user ? accountDisplayName : "Account"}
               </button>
               {desktopMenuOpen === "account" && (
-                <div className="absolute right-0 z-50 mt-2 w-48 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
+                <div className="absolute right-0 z-50 mt-2 max-h-[calc(100dvh-6rem)] w-48 overflow-y-auto overscroll-contain rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
                   {loading ? null : user ? (
                     <>
                       <Link
@@ -465,7 +465,9 @@ export default function NavBar() {
       {mobileMenuOpen && (
         <div
           id="mobile-nav-menu"
-          className="border-t border-[#D4AF37]/20 bg-[rgba(7,9,14,0.96)] px-4 pb-4 pt-3 lg:hidden"
+          // The header is sticky, so a menu taller than the screen must scroll
+          // inside itself or its last items can never be reached on a phone.
+          className="max-h-[calc(100dvh-7.5rem)] overflow-y-auto overscroll-contain border-t border-[#D4AF37]/20 bg-[rgba(7,9,14,0.96)] px-4 pb-4 pt-3 lg:hidden"
         >
           <div className="bwe-shell-panel space-y-2 rounded-[24px] p-3">
             {loading ? null : user ? (

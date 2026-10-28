@@ -712,6 +712,7 @@ function ProofModal({
   onClose: () => void;
 }) {
   return (
+    // overlay-scroll-ok: the panel is capped (header + max-h-[60vh] list that scrolls)
     <div className="fixed inset-0 z-50">
       <div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
