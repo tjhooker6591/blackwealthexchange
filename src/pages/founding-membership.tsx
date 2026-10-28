@@ -691,7 +691,7 @@ export default function FoundingMembershipPage() {
                         <strong className="text-white">
                           Free Microsoft Copilot Training for Business course
                         </strong>{" "}
-                        ($49 value)
+                        ($79 value)
                       </li>
                     </ul>
                   </div>

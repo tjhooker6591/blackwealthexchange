@@ -13,7 +13,7 @@ export const aiProductivityCourse: AiCourse = {
   title: "Microsoft Copilot Training for Business",
   subtitle:
     "Learn to use Microsoft Copilot for everyday business work: customer emails, support, meetings, proposals, spreadsheets and marketing.",
-  priceCents: 4900,
+  priceCents: 7900,
   passPercent: 75,
   lessons: [...lessons1to4, ...lessons5to8, ...lessons9to12],
 };

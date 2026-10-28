@@ -85,7 +85,7 @@ export default function LearningPage() {
                 lessons.
               </p>
               <p className="mt-2 text-sm font-bold text-[#E8CF7A]">
-                FREE for businesses that claim their listing on BWE · $49 for
+                FREE for businesses that claim their listing on BWE · $79 for
                 all 12 lessons for everyone else
               </p>
             </div>

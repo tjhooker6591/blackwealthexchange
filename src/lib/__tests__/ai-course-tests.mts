@@ -78,7 +78,7 @@ await test("12 lessons, unique slugs, 4 valid questions each", () => {
   });
 });
 
-await test("course price is $49", () => assert.equal(course.priceCents, 4900));
+await test("course price is $79", () => assert.equal(course.priceCents, 7900));
 
 await test("browser quiz never includes answers", () => {
   const json = JSON.stringify(publicQuiz(course.lessons[0]));

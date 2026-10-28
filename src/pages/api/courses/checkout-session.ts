@@ -19,7 +19,7 @@ const COURSE_PRICES: Record<string, { name: string; price: number }> = {
   "generational-wealth": { name: "Building Generational Wealth", price: 4900 },
   "copilot-training": {
     name: "Microsoft Copilot Training for Business",
-    price: 4900,
+    price: 7900,
   },
 };
 

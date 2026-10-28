@@ -153,7 +153,7 @@ export default function CopilotCourseHomeBanner() {
           taught by Marcus.
         </p>
         <p className="mt-2 text-sm font-bold text-[#E8CF7A]">
-          FREE when you claim your business · $49 for all 12 lessons for
+          FREE when you claim your business · $79 for all 12 lessons for
           everyone else
         </p>
       </div>

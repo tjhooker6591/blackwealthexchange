@@ -134,7 +134,7 @@ export default function AiProductivityCoursePage({
                     FREE for businesses that claim their listing on BWE.
                   </p>
                   <p className="mt-1 text-base font-bold text-[#E8CF7A]">
-                    Everyone else: $49 one-time for the whole course, all 12
+                    Everyone else: $79 one-time for the whole course, all 12
                     lessons.
                   </p>
                 </div>
@@ -179,7 +179,7 @@ export default function AiProductivityCoursePage({
                       disabled={busy}
                       className="bwe-cta-primary bwe-focus-ring px-6 disabled:opacity-60"
                     >
-                      {busy ? "Opening checkout…" : "Buy the full course: $49"}
+                      {busy ? "Opening checkout…" : "Buy the full course: $79"}
                     </button>
                   ) : (
                     <Link
@@ -188,7 +188,7 @@ export default function AiProductivityCoursePage({
                     >
                       {reason === "session_expired"
                         ? "Sign in again"
-                        : "Sign in to buy the full course: $49"}
+                        : "Sign in to buy the full course: $79"}
                     </Link>
                   )}
                   {!hasAccess && (
@@ -295,7 +295,7 @@ export default function AiProductivityCoursePage({
             <h2 className="bwe-section-title">What you will learn</h2>
             {!hasAccess && (
               <p className="mt-2 text-sm text-white/65">
-                One $49 purchase opens all 12 lessons. Free when you claim your
+                One $79 purchase opens all 12 lessons. Free when you claim your
                 business.
               </p>
             )}
