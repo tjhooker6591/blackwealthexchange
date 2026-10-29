@@ -50,11 +50,11 @@ export const LESSON_VIDEOS: Record<number, LessonVideos> = {
   },
   11: {
     trailer: "/videos/copilot-training/trailer-11.mp4",
-    lesson: "/videos/copilot-training/lesson-11.mp4",
+    lesson: "https://youtu.be/32gyVBynY5w",
   },
   12: {
     trailer: "/videos/copilot-training/trailer-12.mp4",
-    lesson: "/videos/copilot-training/lesson-12.mp4",
+    lesson: "https://youtu.be/rxZ0llfyV8Y",
   },
 };
 
