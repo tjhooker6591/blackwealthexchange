@@ -6,7 +6,7 @@ type Props = {
   title: string;
   /** Shown when the video is not hosted yet. */
   placeholder: string;
-  /** Shown faintly over a private lesson video (the viewer's email). */
+  /** Shown faintly over a private lesson video (the viewer's name). */
   watermark?: string | null;
 };
 

@@ -38,7 +38,7 @@ type Props = {
   video: VideoSource | null;
   /** True when only Marcus's short intro exists for this lesson. */
   videoIsIntro: boolean;
-  /** Viewer's email, shown faintly over the private lesson video. */
+  /** Viewer's name, shown faintly over the private lesson video. */
   watermark: string | null;
   /** The course is playing on another of this account's devices. */
   otherDevice: boolean;
@@ -556,7 +556,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
         : null,
       videoIsIntro:
         !privateVideo && !lessonVideos.lesson && Boolean(lessonVideos.trailer),
-      watermark: privateVideo ? access.email : null,
+      // The student's own name (email if the account has no name).
+      watermark: privateVideo ? access.name || access.email : null,
       otherDevice: !mayPlay,
       progress,
       prev: prev ? { slug: prev.slug, title: prev.title } : null,
