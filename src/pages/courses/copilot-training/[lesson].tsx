@@ -23,6 +23,10 @@ import {
   resolveAiCourseAccess,
   type CourseProgress,
 } from "@/lib/courses/aiProductivity/server";
+import {
+  claimCourseDevice,
+  signedLessonVideo,
+} from "@/lib/courses/aiProductivity/stream";
 
 const PATH = "/courses/copilot-training";
 
@@ -34,6 +38,10 @@ type Props = {
   video: VideoSource | null;
   /** True when only Marcus's short intro exists for this lesson. */
   videoIsIntro: boolean;
+  /** Viewer's email, shown faintly over the private lesson video. */
+  watermark: string | null;
+  /** The course is playing on another of this account's devices. */
+  otherDevice: boolean;
   progress: CourseProgress;
   prev: { slug: string; title: string } | null;
   next: { slug: string; title: string } | null;
@@ -51,6 +59,8 @@ export default function LessonPage({
   quiz,
   video,
   videoIsIntro,
+  watermark,
+  otherDevice,
   progress: initial,
   prev,
   next,
@@ -135,11 +145,29 @@ export default function LessonPage({
           </header>
 
           <div className="mt-6 max-w-4xl">
-            <CourseVideo
-              source={video}
-              title={`Marcus: ${lesson.title}`}
-              placeholder="Marcus's video for this lesson is coming soon. The reading and walkthrough below cover everything in the lesson."
-            />
+            {otherDevice ? (
+              <div className="flex aspect-video w-full flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-6 text-center">
+                <p className="max-w-md text-sm text-white/75">
+                  <strong className="text-white">
+                    This course is open on another device.
+                  </strong>{" "}
+                  Your course access works on one device at a time.
+                </p>
+                <a
+                  href={`${PATH}/${lesson.slug}?device=this`}
+                  className="bwe-cta-primary bwe-focus-ring px-6"
+                >
+                  Watch on this device
+                </a>
+              </div>
+            ) : (
+              <CourseVideo
+                source={video}
+                title={`Marcus: ${lesson.title}`}
+                placeholder="Marcus's video for this lesson is coming soon. The reading and walkthrough below cover everything in the lesson."
+                watermark={watermark}
+              />
+            )}
             {videoIsIntro && (
               <p className="mt-2 text-sm text-white/65">
                 <strong className="text-white">
@@ -484,6 +512,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   req,
   res,
   params,
+  query,
 }) => {
   res.setHeader("Cache-Control", "private, no-store");
   const lesson = getLesson(String(params?.lesson || ""));
@@ -508,14 +537,27 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   const { quiz: _answers, ...view } = lesson;
   const idx = course.lessons.indexOf(lesson);
   const lessonVideos = videosFor(lesson.number);
+  const mayPlay = await claimCourseDevice(
+    db,
+    access.userId,
+    req,
+    res,
+    query.device === "this",
+  );
+  const privateVideo = mayPlay ? await signedLessonVideo(lesson.number) : null;
   const prev = course.lessons[idx - 1];
   const next = course.lessons[idx + 1];
   return {
     props: {
       lesson: view,
       quiz: publicQuiz(lesson),
-      video: lessonVideos.lesson || lessonVideos.trailer,
-      videoIsIntro: !lessonVideos.lesson && Boolean(lessonVideos.trailer),
+      video: mayPlay
+        ? privateVideo || lessonVideos.lesson || lessonVideos.trailer
+        : null,
+      videoIsIntro:
+        !privateVideo && !lessonVideos.lesson && Boolean(lessonVideos.trailer),
+      watermark: privateVideo ? access.email : null,
+      otherDevice: !mayPlay,
       progress,
       prev: prev ? { slug: prev.slug, title: prev.title } : null,
       next: next ? { slug: next.slug, title: next.title } : null,

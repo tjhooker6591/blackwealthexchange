@@ -60,7 +60,9 @@ export const LESSON_VIDEOS: Record<number, LessonVideos> = {
 
 export type VideoSource =
   | { kind: "youtube"; src: string }
-  | { kind: "file"; src: string };
+  | { kind: "file"; src: string }
+  /** A private Cloudflare Stream player with a signed, expiring link (see stream.ts). */
+  | { kind: "stream"; src: string };
 
 export function toVideoSource(
   value: string | null | undefined,
