@@ -26,6 +26,7 @@ import {
 import {
   claimCourseDevice,
   signedLessonVideo,
+  STREAM_LESSONS,
 } from "@/lib/courses/aiProductivity/stream";
 
 const PATH = "/courses/copilot-training";
@@ -42,6 +43,8 @@ type Props = {
   watermark: string | null;
   /** The course is playing on another of this account's devices. */
   otherDevice: boolean;
+  /** The private video link could not be issued just now. */
+  videoFailed: boolean;
   progress: CourseProgress;
   prev: { slug: string; title: string } | null;
   next: { slug: string; title: string } | null;
@@ -61,6 +64,7 @@ export default function LessonPage({
   videoIsIntro,
   watermark,
   otherDevice,
+  videoFailed,
   progress: initial,
   prev,
   next,
@@ -164,7 +168,11 @@ export default function LessonPage({
               <CourseVideo
                 source={video}
                 title={`Marcus: ${lesson.title}`}
-                placeholder="Marcus's video for this lesson is coming soon. The reading and walkthrough below cover everything in the lesson."
+                placeholder={
+                  videoFailed
+                    ? "We couldn't load this video just now. Refresh the page to try again. The reading and walkthrough below cover everything in the lesson."
+                    : "Marcus's video for this lesson is coming soon. The reading and walkthrough below cover everything in the lesson."
+                }
                 watermark={watermark}
               />
             )}
@@ -545,17 +553,26 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     query.device === "this",
   );
   const privateVideo = mayPlay ? await signedLessonVideo(lesson.number) : null;
+  // A private video exists but its link could not be issued: say so rather
+  // than showing the short intro as if the lesson had no video.
+  const videoFailed =
+    mayPlay && !privateVideo && Boolean(STREAM_LESSONS[lesson.number]);
   const prev = course.lessons[idx - 1];
   const next = course.lessons[idx + 1];
   return {
     props: {
       lesson: view,
       quiz: publicQuiz(lesson),
-      video: mayPlay
-        ? privateVideo || lessonVideos.lesson || lessonVideos.trailer
-        : null,
+      video:
+        mayPlay && !videoFailed
+          ? privateVideo || lessonVideos.lesson || lessonVideos.trailer
+          : null,
       videoIsIntro:
-        !privateVideo && !lessonVideos.lesson && Boolean(lessonVideos.trailer),
+        !videoFailed &&
+        !privateVideo &&
+        !lessonVideos.lesson &&
+        Boolean(lessonVideos.trailer),
+      videoFailed,
       // The student's own name (email if the account has no name).
       watermark: privateVideo ? access.name || access.email : null,
       otherDevice: !mayPlay,

@@ -2,7 +2,8 @@
  * Marcus videos per lesson. Fill these in as videos are hosted:
  * - trailer: the short public intro (YouTube video ID, an https URL to an mp4,
  *   or a /videos/... mp4 served by this site)
- * - lesson: the full-length teaching video, shown only to learners with access
+ * - lesson: a public full-length video. Leave null: the full lessons are
+ *   private Cloudflare Stream videos (see stream.ts), not public links
  * A null value shows a placeholder instead of a player.
  */
 export type LessonVideos = { trailer: string | null; lesson: string | null };
@@ -10,51 +11,51 @@ export type LessonVideos = { trailer: string | null; lesson: string | null };
 export const LESSON_VIDEOS: Record<number, LessonVideos> = {
   1: {
     trailer: "/videos/copilot-training/trailer-01.mp4",
-    lesson: "https://youtu.be/4FnqKVkGpc8",
+    lesson: null,
   },
   2: {
     trailer: "/videos/copilot-training/trailer-02.mp4",
-    lesson: "https://youtu.be/FCqwjglW8MQ",
+    lesson: null,
   },
   3: {
     trailer: "/videos/copilot-training/trailer-03.mp4",
-    lesson: "https://youtu.be/xq5LZ-JE0gY",
+    lesson: null,
   },
   4: {
     trailer: "/videos/copilot-training/trailer-04.mp4",
-    lesson: "https://youtu.be/eRLqxGOFUSE",
+    lesson: null,
   },
   5: {
     trailer: "/videos/copilot-training/trailer-05.mp4",
-    lesson: "https://youtu.be/4Xx2m1Qzyi4",
+    lesson: null,
   },
   6: {
     trailer: "/videos/copilot-training/trailer-06.mp4",
-    lesson: "https://youtu.be/Fw62sWsQTnI",
+    lesson: null,
   },
   7: {
     trailer: "/videos/copilot-training/trailer-07.mp4",
-    lesson: "https://youtu.be/x4qzw9UXzGU",
+    lesson: null,
   },
   8: {
     trailer: "/videos/copilot-training/trailer-08.mp4",
-    lesson: "https://youtu.be/rUCm9iVVaHk",
+    lesson: null,
   },
   9: {
     trailer: "/videos/copilot-training/trailer-09.mp4",
-    lesson: "https://youtu.be/LTotlqIqYP8",
+    lesson: null,
   },
   10: {
     trailer: "/videos/copilot-training/trailer-10.mp4",
-    lesson: "https://youtu.be/QNa-VNbhEHY",
+    lesson: null,
   },
   11: {
     trailer: "/videos/copilot-training/trailer-11.mp4",
-    lesson: "https://youtu.be/32gyVBynY5w",
+    lesson: null,
   },
   12: {
     trailer: "/videos/copilot-training/trailer-12.mp4",
-    lesson: "https://youtu.be/rxZ0llfyV8Y",
+    lesson: null,
   },
 };
 
